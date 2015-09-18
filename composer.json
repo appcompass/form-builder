@@ -1,16 +1,19 @@
 {
-    "name": "p3in/modules/core",
-    "version": "dev-master",
-    "authors": [
-        {
-            "name": "Federico Francescato",
-            "email": "federico@p3in.com"
-        }
-    ],
-    "require": {},
-    "autoload": {
-        "psr-4": {
-            "P3in\\": "src/modules"
-        }
-    }
+	"name": "p3in/l5cms-core",
+    "description": "Plus 3 Interactive CMS Core Module",
+	"authors": [
+		{
+			"name": "Plus 3 Interactive, LLC",
+			"email": "support@p3in.com"
+		}
+	],
+	"require": {
+		"php": ">=5.5.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"P3in\\": "src/app"
+		}
+	},
+	"minimum-stability": "stable"
 }
