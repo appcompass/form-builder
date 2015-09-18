@@ -7,8 +7,15 @@
 			"email": "support@p3in.com"
 		}
 	],
+    "repositories": [
+        {
+            "type": "git",
+            "url": "git@bitbucket.org:p3in/modular.git"
+        }
+    ],
 	"require": {
-		"php": ">=5.5.0"
+		"php": ">=5.5.9",
+		"p3in/modular": "dev-develop"
 	},
 	"autoload": {
 		"psr-4": {
