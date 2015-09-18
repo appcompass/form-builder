@@ -1,0 +1,61 @@
+<?php
+
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreateNavigationItems extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('navigation_items', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('label');
+            $table->string('link_text');
+            $table->string('url');
+            $table->boolean('new_tab')->default(false);
+            $table->string('alt_text')->nullable();
+            $table->string('model')->nullable();
+            $table->integer('req_permission')->unsigned()->nullable();
+            $table->foreign('req_permission')->references('id')->on('permissions');
+            $table->json('params')->nullable();
+            $table->json('props')->nullable();
+            $table->timestamps();
+       });
+
+        Schema::create('navigation_item_navmenu', function(Blueprint $table) {
+        	$table->increments('id');
+
+        	$table->integer('navmenu_id')->unsigned();
+        	$table->integer('order')->nullable();
+        	$table->foreign('navmenu_id')
+        		->references('id')
+        		->on('navmenus')
+        		->onDelete('cascade');
+
+        	$table->integer('navigation_item_id')->unsigned();
+        	$table->foreign('navigation_item_id')
+        		->references('id')
+        		->on('navigation_items')
+        		->onDelete('cascade');
+
+        	$table->unique(['navigation_item_id', 'navmenu_id']);
+        });
+
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::drop('navigation_item_navmenu');
+        Schema::drop('navigation_items');
+    }
+}
