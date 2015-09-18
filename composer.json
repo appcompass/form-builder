@@ -1,0 +1,16 @@
+{
+    "name": "p3in/modules/core",
+    "version": "dev-master",
+    "authors": [
+        {
+            "name": "Federico Francescato",
+            "email": "federico@p3in.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "P3in\\": "src/modules"
+        }
+    }
+}
