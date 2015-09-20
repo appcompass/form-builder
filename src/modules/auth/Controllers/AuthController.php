@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use P3in\Models\User;
 use Validator;
+use Auth;
 
 class AuthController extends Controller
 {
@@ -39,7 +40,7 @@ class AuthController extends Controller
 	public function getLogin()
 	{
 
-		return view('core::login');
+		return view('ui::login');
 	}
 
 	public function getLockScreen()
@@ -48,9 +49,9 @@ class AuthController extends Controller
 			return redirect('/login');
 		}
 
-		return view('core::lock-screen',[
-			'user_fullname' => \Auth::user()->full_name,
-			'user_email' =>  \Auth::user()->email,
+		return view('ui::lock-screen',[
+			'user_fullname' => Auth::user()->full_name,
+			'user_email' =>  Auth::user()->email,
 			'user_avatar' => User::avatar(160),
 		]);
 	}

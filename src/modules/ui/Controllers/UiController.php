@@ -1,14 +1,15 @@
 <?php
 
-namespace P3in\Modules\CoreModule;
+namespace P3in\Modules\UiModule;
 
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use P3in\Models\User;
+use Auth;
 
-class CoreController extends Controller {
+class UiController extends Controller {
 
 	public function __construct()
 	{
@@ -17,32 +18,32 @@ class CoreController extends Controller {
 
 	public function getIndex()
 	{
-		return view('core::index');
+		return view('ui::index');
 	}
 
 	public function getLeftNav()
 	{
-		return view('core::sections/left-nav');
+		return view('ui::sections/left-nav');
 	}
 
 	public function getLeftAlerts()
 	{
-		return view('core::sections/left-alerts');
+		return view('ui::sections/left-alerts');
 	}
 
 	public function getNotificationCenter()
 	{
-		return view('core::sections/notification-center');
+		return view('ui::sections/notification-center');
 	}
 
 	public function getDashboard()
 	{
-		return view('core::sections/dashboard');
+		return view('ui::sections/dashboard');
 	}
 
 	public function getUserFullName()
 	{
-		return \Auth::user()->full_name;
+		return Auth::user()->full_name;
 	}
 
 	public function getUserAvatar($size = 56)
@@ -52,7 +53,7 @@ class CoreController extends Controller {
 
 	public function getUserNav()
 	{
-		return view('core::sections/user-menu');
+		return view('ui::sections/user-menu');
 	}
 
 }

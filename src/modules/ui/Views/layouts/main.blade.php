@@ -1,4 +1,4 @@
-@include("core::common.header")
+@include("ui::common.header")
 
 	<section id="container">
 		<!--header start-->
@@ -64,4 +64,4 @@
 		<!--right sidebar end-->
 
 	</section>
-@include("core::common.footer")
+@include("ui::common.footer")

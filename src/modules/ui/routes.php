@@ -2,16 +2,16 @@
 
 Route::group([
 	// 'prefix' => 'cp',
-	'namespace' => 'P3in\Modules\CoreModule'
+	'namespace' => 'P3in\Modules\UiModule'
 ], function() {
 
-	Route::get('/', 'CoreController@getIndex');
-	Route::get('left-nav', 'CoreController@getLeftNav');
-	Route::get('left-alerts', 'CoreController@getLeftAlerts');
-	Route::get('notification-center', 'CoreController@getNotificationCenter');
-	Route::get('dashboard', 'CoreController@getDashboard');
-	Route::get('user-full-name', 'CoreController@getUserFullName');
-	Route::get('user-avatar/{size}', 'CoreController@getUserAvatar');
-	Route::get('user-nav', 'CoreController@getUserNav');
+	Route::get('/', 'UiController@getIndex');
+	Route::get('left-nav', 'UiController@getLeftNav');
+	Route::get('left-alerts', 'UiController@getLeftAlerts');
+	Route::get('notification-center', 'UiController@getNotificationCenter');
+	Route::get('dashboard', 'UiController@getDashboard');
+	Route::get('user-full-name', 'UiController@getUserFullName');
+	Route::get('user-avatar/{size}', 'UiController@getUserAvatar');
+	Route::get('user-nav', 'UiController@getUserNav');
     // Route::controller('/', 'UiController');
 });

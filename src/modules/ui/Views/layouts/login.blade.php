@@ -1,4 +1,4 @@
-@include("core::common.header", ['bodyClass' => 'login-body'])
+@include("ui::common.header", ['bodyClass' => 'login-body'])
 
 	<div class="container">
 
@@ -57,4 +57,4 @@
 		<!-- modal -->
 
 	</div>
-@include("core::common.footer", ['nolock' => true])
+@include("ui::common.footer", ['nolock' => true])

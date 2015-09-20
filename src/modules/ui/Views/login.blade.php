@@ -1,1 +1,1 @@
-@extends('core::layouts.login')
+@extends('ui::layouts.login')

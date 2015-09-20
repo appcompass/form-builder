@@ -118,7 +118,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	*/
 	public function getFullNameAttribute()
 	{
-		return "{$this->first_name} {$this->last_name}";
+		return sprintf("%s %s", $this->first_name, $this->last_name);
 	}
 
 	/**
@@ -183,7 +183,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	*/
 	public function getSavedPropertiesAttribute()
 	{
-		if (Modules::isDef)
+		if (Modules::isDef()) {}
 		return rand(0,100);
 	}
 

@@ -1,4 +1,4 @@
-@include("core::common.header", ['bodyClass' => 'lock-screen', 'bodyOnLoad' => 'startTime()'])
+@include("ui::common.header", ['bodyClass' => 'lock-screen', 'bodyOnLoad' => 'startTime()'])
 	<div class="lock-wrapper">
 
 		<div id="time"></div>
@@ -45,4 +45,4 @@
 			return i;
 		}
 	</script>
-@include("core::common.footer", ['nolock' => true])
+@include("ui::common.footer", ['nolock' => true])

@@ -1,1 +1,1 @@
-@extends('core::layouts.lock-screen')
+@extends('ui::layouts.lock-screen')
