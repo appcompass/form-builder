@@ -8,7 +8,7 @@ use P3in\Traits\NavigatableTrait as Navigatable;
 Class WebsitesModule extends BaseModule
 {
 
-	public $module_name = "WebsitesModule";
+	public $module_name = "websites";
 
 	public function __construct()
 	{

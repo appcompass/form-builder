@@ -7,7 +7,7 @@ use P3in\Modules\BaseModule;
 Class AuthModule extends BaseModule
 {
 
-	public $module_name = "AuthModule";
+	public $module_name = "auth";
 
 	public function __construct()
 	{
