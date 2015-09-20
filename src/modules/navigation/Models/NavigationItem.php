@@ -3,7 +3,7 @@
 namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\JsonPropScopesTrait as JsonPropScopes;
+use P3in\Traits\JsonPropScopesTrait as JsonPropScopes;
 
 class NavigationItem extends Model
 {
