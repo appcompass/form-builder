@@ -2,7 +2,7 @@
 
 namespace P3in\Modules;
 
-use \App\Modules\BaseModule;
+use P3in\Modules\BaseModule;
 
 Class PagesModule extends BaseModule
 {
