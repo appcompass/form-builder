@@ -1,5 +1,7 @@
 <?php
 
+namespace P3in\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,8 +16,6 @@ class WebsitesModuleDatabaseSeeder extends Seeder
 	public function run()
 	{
 		Model::unguard();
-
-		// $this->call('P3in\Seeders\PermissionsTableSeeder');
 
 		Model::reguard();
 	}

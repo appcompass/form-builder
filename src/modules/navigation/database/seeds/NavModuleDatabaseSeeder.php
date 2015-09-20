@@ -1,5 +1,7 @@
 <?php
 
+namespace P3in\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 

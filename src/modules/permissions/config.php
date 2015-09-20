@@ -4,6 +4,5 @@
 *
 */
 return [
-	'dependencies' => [],
-  'foo' => 'bar'
+	'dependencies' => []
 ];
