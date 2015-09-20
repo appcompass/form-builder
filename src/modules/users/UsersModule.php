@@ -10,7 +10,7 @@ Class UsersModule extends BaseModule
 
 	// use NavigatableTrait;
 
-	public $module_name = "UsersModule";
+	public $module_name = "users";
 
 	public function __construct()
 	{
