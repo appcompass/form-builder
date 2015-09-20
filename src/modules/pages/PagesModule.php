@@ -7,7 +7,7 @@ use P3in\Modules\BaseModule;
 Class PagesModule extends BaseModule
 {
 
-	public $module_name = "PagesModule";
+	public $module_name = "pages";
 
 	public function __construct()
 	{

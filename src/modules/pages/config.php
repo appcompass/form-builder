@@ -4,5 +4,5 @@
 *
 */
 return [
-	'dependencies' => ['navigation']
+	'dependencies' => ['websites', 'navigation']
 ];

@@ -7,7 +7,7 @@ use P3in\Modules\BaseModule;
 Class NavigationModule extends BaseModule
 {
 
-	public $module_name = "NavigationModule";
+	public $module_name = "navigation";
 
 	public function __construct( )
 	{
