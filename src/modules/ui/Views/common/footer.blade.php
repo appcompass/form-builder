@@ -31,9 +31,9 @@
 	<script src="/js/flot-chart/jquery.flot.animator.min.js"></script>
 	<script src="/js/flot-chart/jquery.flot.growraf.js"></script>
 	<script src="/js/jquery.customSelect.min.js" ></script>
-	<!-- Dropzone -->
-	<script src="/js/dropzone/dropzone.js"></script>
 	<script src="/js/jquery.customSelect.min.js" ></script>
+
+	@yield('scripts.footer')
 
 	<script type="text/javascript">
 

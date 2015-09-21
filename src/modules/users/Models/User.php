@@ -221,7 +221,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 		}
 
-	  return $this->hasMany('P3in\Models\Photo');
+		return $this->morphMany('P3in\Models\Photo', 'imageable');
 
 	}
 
