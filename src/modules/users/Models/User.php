@@ -202,7 +202,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 		}
 
-			return $this->hasMany('P3in\Models\Gallery');
+		return $this->hasMany('P3in\Models\Gallery');
 
 	}
 
@@ -221,7 +221,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 		}
 
-		return $this->morphMany('P3in\Models\Photo', 'imageable');
+		return $this->hasMany('P3in\Models\Photo');
 
 	}
 
@@ -233,6 +233,8 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	*/
 	public static function avatar($size = 29)
 	{
+		// return $this->morphTo('P3in\Models\Photo', 'photoable');
+
 		$userEmail = \Auth::user()->email;
 		return "http://www.gravatar.com/avatar/".md5($userEmail)."?s={$size}";
 	}
