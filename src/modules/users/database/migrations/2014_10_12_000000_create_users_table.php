@@ -47,6 +47,24 @@ class CreateUsersTable extends Migration
 		});
 	}
 
+	//
+	//
+	Schema::create('profile_user', function (Blueprint $table) {
+		$table->increments('id');
+		$table->integer('user_id')->unsigned();
+		$table->foreign('user_id')
+			->references('id')
+			->on('users')
+			->onDelete('cascade');
+
+		$table->integer('profilable_id')->unsigned();
+		$table->integer('profilable_type');
+
+	});
+
+	// profilable_id = 1
+	// profilable_type = \BostonPads\Models\LandlrdProfile
+
 	/**
 	 * Reverse the migrations.
 	 *
@@ -54,11 +72,12 @@ class CreateUsersTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::table('permission_user', function( $table ) {
-			$table->dropForeign('permission_user_permission_id_foreign');
-			$table->dropForeign('permission_user_user_id_foreign');
-		});
+		// Schema::table('permission_user', function( $table ) {
+		// 	$table->dropForeign('permission_user_permission_id_foreign');
+		// 	$table->dropForeign('permission_user_user_id_foreign');
+		// });
 		Schema::drop('permission_user');
+		Schema::drop('profile_users');
 		Schema::drop('users');
 	}
 }
