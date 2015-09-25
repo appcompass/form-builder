@@ -2,21 +2,24 @@
 
 namespace P3in\Models;
 
+use BostonPads\Models\Gallery;
+use BostonPads\Models\Photo;
+use Exception;
 use Illuminate\Auth\Authenticatable;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Contracts\Container\Container;
 use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use P3in\Models\Permission;
+use Illuminate\Contracts\Container\Container;
+use Illuminate\Database\Eloquent\Model;
+use Modular;
 use P3in\Models\Group;
+use P3in\Models\Permission;
 use P3in\Traits\AlertableTrait as Alertable;
-use \Modules;
-use \Exception;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
-	use Authenticatable, CanResetPassword, Alertable;
+	use Authenticatable, CanResetPassword, Alertable, Authorizable;
 
 	/**
 	 * The database table used by the model.
@@ -61,7 +64,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	*/
 	public function permissions()
 	{
-		if (\Modules::isDef('permissions')) {
+		if (Modular::isDef('permissions')) {
 			return $this->belongsToMany('P3in\Models\Permission')->withTimestamps();
 		}
 
@@ -76,9 +79,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	public function hasPermission($permission)
 	{
 
-		if (\Modules::isDef('permissions')) {
+		if (Modular::isDef('permissions')) {
 
-			return $this->permissions()->where('name', $permission)->count();
+			return $this->permissions()->where('type', $permission)->count();
 
 		}
 
@@ -94,7 +97,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 		if (is_array($permissions)) {
 
-			return $this->permissions()->whereIn('name', $permissions)->count();
+			return $this->permissions()->whereIn('type', $permissions)->count();
 
 		}
 
@@ -103,7 +106,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 	/**
 	*  Get all the groups this user belongs to
-	*		we can do this because Groups and Uses are wrapped in the same module
+	*
 	*/
 	public function groups()
 	{
@@ -183,7 +186,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	*/
 	public function getSavedPropertiesAttribute()
 	{
-		if (Modules::isDef()) {}
+		if (Modular::isDef()) {}
 		return rand(0,100);
 	}
 
@@ -196,13 +199,13 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	public function galleries()
 	{
 
-		if (!Modules::isDef('galleries')) {
+		if (!Modular::isDef('galleries')) {
 
-			throw new Exception('Galleries module not loaded, unable to fetch relationship.');
+			throw new Exception('Galleries module not loaded, unable to fetch relation.');
 
 		}
 
-		return $this->hasMany('P3in\Models\Gallery');
+		return $this->hasMany(Gallery::class);
 
 	}
 
@@ -215,27 +218,45 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	public function photos()
 	{
 
-		if (!Modules::isDef('photos')) {
+		if (! Modular::isDef('photos')) {
 
-			throw new Exception('Photos module not loaded, unable to fetch relationship.');
+			throw new Exception('Photos module not loaded, unable to fetch relation.');
 
 		}
 
-		return $this->hasMany('P3in\Models\Photo');
+		return $this->hasMany(Photo::class);
 
 	}
-
 
 	/**
 	*
 	*
 	*
 	*/
-	public static function avatar($size = 29)
+	public function avatar(Photo $photo = null)
 	{
-		// return $this->morphTo('P3in\Models\Photo', 'photoable');
 
-		$userEmail = \Auth::user()->email;
-		return "http://www.gravatar.com/avatar/".md5($userEmail)."?s={$size}";
+		if (! Modular::isDef('photos')) {
+
+			$userEmail = \Auth::user()->email;
+			return "http://www.gravatar.com/avatar/".md5($userEmail)."?s={$size}";
+
+		}
+
+
+		if (! is_null($photo)) {
+
+			if (! is_null($this->avatar)) {
+
+				$this->avatar()->first()->delete();
+
+			}
+
+			$this->avatar()->save($photo);
+
+		}
+
+		return $this->morphOne(Photo::class, 'photoable');
+
 	}
 }

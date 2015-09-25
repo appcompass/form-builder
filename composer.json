@@ -19,7 +19,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"P3in\\": "src/modules"
+      "P3in\\": "src/modules"
 		}
 	},
 	"minimum-stability": "dev"

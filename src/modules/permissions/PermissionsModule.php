@@ -16,12 +16,12 @@ Class PermissionsModule extends BaseModule
 
 	public function bootstrap()
 	{
-		// echo "Bootstrapping PermissionsModule!";
+
 	}
 
 	public function register()
 	{
-		echo "Registering Auth Module";
+		// echo "Registering Auth Module";
 	}
 
 }
