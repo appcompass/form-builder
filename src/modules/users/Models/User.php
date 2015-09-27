@@ -19,6 +19,7 @@ use P3in\Traits\AlertableTrait as Alertable;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
+
 	use Authenticatable, CanResetPassword, Alertable, Authorizable;
 
 	/**
@@ -43,14 +44,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	];
 
 	/**
-	*	How Alert Prop field should be filtered for this query
-	*	gets converted in props->>'<propname>' = Model Property value
-	*	for example: $alertProps = ['id'] /// User->id = 5 /// whereRaw("props->'id' = value")
-	*
-	*/
-	protected $alert_props = ['id'];
-
-	/**
 	 * 	The attributes excluded from the model's JSON form.
 	 *
 	 * 	@var array
@@ -64,72 +57,145 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	*/
 	public function permissions()
 	{
-		if (Modular::isDef('permissions')) {
-			return $this->belongsToMany('P3in\Models\Permission')->withTimestamps();
+
+		if (!Modular::isDef('permissions')) {
+
+			throw new Exception("Permissions module is not loaded. Please load it before calling this method");
+
 		}
 
-		throw new Exception("Permissions module is not loaded. Please load it before calling this method");
+		return $this->belongsToMany(Permission::class)->withTimestamps();
+
 	}
 
 	/**
-	*	Check if user has a single permission
-	*
-	*
-	*/
+	 *	Check if user has a single permission
+	 *
+	 *	@param string $permission Permission type.
+	 *	@return bool
+	 */
 	public function hasPermission($permission)
 	{
 
-		if (Modular::isDef('permissions')) {
+		if (! Modular::isDef('permissions')) {
 
-			return $this->permissions()->where('type', $permission)->count();
-
-		}
-
-		throw new Exception("Permissions module is not loaded. Please load it before calling this method");
-	}
-
-	/**
-	*	Check if use has a group of permissions
-	*
-	*	@param array permissions
-	*/
-	public function hasPermissions($permissions) {
-
-		if (is_array($permissions)) {
-
-			return $this->permissions()->whereIn('type', $permissions)->count();
+			throw new Exception("Permissions module is not loaded. Please load it before calling this method");
 
 		}
 
-		return false;
+		return $this->permissions()
+			->where('type', $permission)
+			->count();
 	}
 
 	/**
-	*  Get all the groups this user belongs to
-	*
-	*/
+	 *	Check if user has a group of permissions
+	 *
+	 *	@param array permissions
+	 */
+	public function hasPermissions(array $permissions) {
+
+		return $this->permissions()
+			->whereIn('type', $permissions)
+			->count();
+
+	}
+
+	/**
+	 *  Get all the groups this user belongs to
+	 *
+	 */
 	public function groups()
 	{
-		return $this->belongsToMany('P3in\Models\Group')->withTimestamps();
+
+		return $this->belongsToMany(Group::class);
+
 	}
 
 	/**
-	*	Get user's full name
-	*
-	*
-	*
-	*/
+	 *	Get user's full name
+	 *
+	 */
 	public function getFullNameAttribute()
 	{
+
 		return sprintf("%s %s", $this->first_name, $this->last_name);
+
 	}
 
 	/**
-	*	Get agent's status
-	*
-	*
-	*
-	*/
+	 *		Get galleries owned by the user
+	 *
+	 *
+	 */
+	public function galleries()
+	{
+
+		if (!Modular::isDef('galleries')) {
+
+			throw new Exception('Galleries module not loaded, unable to fetch relation.');
+
+		}
+
+		return $this->hasMany(Gallery::class);
+
+	}
+
+	/**
+	 *	Get photos owned by the user
+	 *
+	 *
+ 	 */
+	public function photos()
+	{
+
+		if (! Modular::isDef('photos')) {
+
+			throw new Exception('Photos module not loaded, unable to fetch relation.');
+
+		}
+
+		return $this->hasMany(Photo::class);
+
+	}
+
+	/**
+	 *	Get/Set user's Avatar
+	 *
+	 *
+	 */
+	public function avatar(Photo $photo = null)
+	{
+
+		if (! Modular::isDef('photos')) {
+
+			$userEmail = \Auth::user()->email;
+			return "http://www.gravatar.com/avatar/".md5($userEmail)."?s={$size}";
+
+		}
+
+		if (! is_null($photo)) {
+
+			if (! is_null($this->avatar)) {
+
+				$this->avatar()
+					->first()
+					->unlink();
+
+			}
+
+			$this->avatar()->save($photo);
+
+		}
+
+		return $this->morphOne(Photo::class, 'photoable');
+
+	}
+
+	/**
+ 	 *	Get agent's status
+	 *
+	 */
 	public function getAgentStatusAttribute()
 	{
 
@@ -188,75 +254,5 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	{
 		if (Modular::isDef()) {}
 		return rand(0,100);
-	}
-
-	/**
-	*		If Gallery module is loaded we get all the medias linked to the users
-	*
-	*
-	*
-	*/
-	public function galleries()
-	{
-
-		if (!Modular::isDef('galleries')) {
-
-			throw new Exception('Galleries module not loaded, unable to fetch relation.');
-
-		}
-
-		return $this->hasMany(Gallery::class);
-
-	}
-
-	/**
-	*
-	*
-	*
-	*
-	*/
-	public function photos()
-	{
-
-		if (! Modular::isDef('photos')) {
-
-			throw new Exception('Photos module not loaded, unable to fetch relation.');
-
-		}
-
-		return $this->hasMany(Photo::class);
-
-	}
-
-	/**
-	*
-	*
-	*
-	*/
-	public function avatar(Photo $photo = null)
-	{
-
-		if (! Modular::isDef('photos')) {
-
-			$userEmail = \Auth::user()->email;
-			return "http://www.gravatar.com/avatar/".md5($userEmail)."?s={$size}";
-
-		}
-
-
-		if (! is_null($photo)) {
-
-			if (! is_null($this->avatar)) {
-
-				$this->avatar()->first()->delete();
-
-			}
-
-			$this->avatar()->save($photo);
-
-		}
-
-		return $this->morphOne(Photo::class, 'photoable');
-
 	}
 }

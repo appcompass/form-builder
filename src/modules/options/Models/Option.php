@@ -53,7 +53,7 @@ class Option extends Model
   * @param string label
   * @param array $content
   */
-  public static function add($label, array $content, $id = null)
+  public static function add($label, array $new_content)
   {
 
     try {
@@ -62,15 +62,17 @@ class Option extends Model
 
       $content = json_decode($options_set->content, true);
 
-      $content[max(array_keys($content)) + 1] = $content;
+      $content[max(array_keys($content)) + 1] = $new_content;
 
       $options_set->content = json_encode($content);
 
-      return $options_set->save();
+      $options_set->save();
+
+      return $options_set;
 
     } catch (ModelNotFoundException $e) {
 
-      $content = ["1" => $content];
+      $content = ["1" => $new_content];
 
       return Option::create([
         'label' => $label,
