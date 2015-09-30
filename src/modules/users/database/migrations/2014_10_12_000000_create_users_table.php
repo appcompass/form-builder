@@ -27,6 +27,21 @@ class CreateUsersTable extends Migration
 			$table->timestamps();
 		});
 
+		//
+		//
+		Schema::create('profile_user', function (Blueprint $table) {
+			$table->increments('id');
+			$table->integer('user_id')->unsigned();
+			$table->foreign('user_id')
+				->references('id')
+				->on('users')
+				->onDelete('cascade');
+
+			$table->integer('profilable_id')->unsigned();
+			$table->integer('profilable_type');
+
+		});
+
 		# link permissions to user
 		# naming convention: singular table name, alphabetical order, underscore to link
 		Schema::create('permission_user', function(Blueprint $table) {
@@ -45,22 +60,8 @@ class CreateUsersTable extends Migration
 		        $table->unique(['permission_id', 'user_id']);
 			$table->timestamps();
 		});
+
 	}
-
-	//
-	//
-	Schema::create('profile_user', function (Blueprint $table) {
-		$table->increments('id');
-		$table->integer('user_id')->unsigned();
-		$table->foreign('user_id')
-			->references('id')
-			->on('users')
-			->onDelete('cascade');
-
-		$table->integer('profilable_id')->unsigned();
-		$table->integer('profilable_type');
-
-	});
 
 	// profilable_id = 1
 	// profilable_type = \BostonPads\Models\LandlrdProfile
