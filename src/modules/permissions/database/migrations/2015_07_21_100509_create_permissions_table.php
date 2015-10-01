@@ -14,11 +14,9 @@ class CreatePermissionsTable extends Migration
 	{
 		Schema::create('permissions', function (Blueprint $table) {
 			$table->increments('id');
-			$table->string('name');
+			$table->string('type');
 			$table->string('label');
 			$table->text('description')->nullable();
-		// $table->integer('site_id')->unsigned();
-		// $table->foreign('site_id')->references('id')->on('websites')->onDelete('cascade');
 			$table->timestamps();
 		});
 	}
