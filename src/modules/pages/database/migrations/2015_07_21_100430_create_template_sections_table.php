@@ -37,10 +37,10 @@ class CreateTemplateSectionsTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::table('template_sections', function( $table ) {
-			$table->dropForeign("template_sections_section_id_foreign");
-			$table->dropForeign("template_sections_template_id_foreign");
-		});
+		// Schema::table('template_sections', function( $table ) {
+		// 	$table->dropForeign("template_sections_section_id_foreign");
+		// 	$table->dropForeign("template_sections_template_id_foreign");
+		// });
 		Schema::drop('template_section');
 	}
 }

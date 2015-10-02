@@ -16,6 +16,8 @@ class CreateTemplatesTable extends Migration
 		{
 			$table->increments('id');
 			$table->string("name");
+			$table->string("colspan");
+			$table->json("config");
 			$table->timestamps();
 			$table->softDeletes();
 		});
@@ -28,7 +30,6 @@ class CreateTemplatesTable extends Migration
 	 */
 	public function down()
 	{
-
 		Schema::drop('templates');
 	}
 }

@@ -31,7 +31,7 @@ class Page extends Model
 		'slug',
 		'order',
 		'parent',
-    'website_id',
+		// 'website_id',
 		'req_permission',
 		'published_at'
 	];
@@ -48,16 +48,6 @@ class Page extends Model
 	*	@var array
 	*/
 	protected $navigation_props = ['id'];
-
-	/**
-	*	Get the website the page belongs to
-	*
-	*
-	*/
-	// public function website()
-	// {
-	// 	return $this->belongsTo('Website');
-	// }
 
 	/**
 	*  Build a LinkClass out of this class
@@ -79,12 +69,22 @@ class Page extends Model
 	}
 
 	/**
+	*	Get the website the page belongs to
+	*
+	*
+	*/
+	public function website()
+	{
+		return $this->belongsTo(Website::class);
+	}
+
+	/**
 	*
 	*
 	*
 	*/
-	// public function template()
-	// {
-		// return $this->hasOne('template');
-	// }
+	public function template()
+	{
+		return $this->hasOne(Template::class);
+	}
 }

@@ -16,6 +16,10 @@ class CreateSectionsTable extends Migration
 		{
 			$table->increments('id');
 			$table->string("name");
+			$table->json("colspans");
+			$table->string("display_view");
+			$table->string("edit_view");
+			$table->json("config");
 			// does the section accept multiple instances of subsections?
 			// basically the question is: is it gonna get looped when rendered?
 			$table->boolean("multi");
