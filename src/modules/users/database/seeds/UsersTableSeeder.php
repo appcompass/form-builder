@@ -20,18 +20,22 @@ class UsersTableSeeder extends Seeder
 
 		DB::table('users')->delete();
 
-		// $user = factory('P3in\Models\User', 10)
-		// 	->create()
-		// 	->each(function($user) {
+		$user = factory('P3in\Models\User', 10)
+			->create()
+			->each(function($user) {
+				$user
+					->permissions()
+					->attach(Permission::first());
+		  });
 
-		// 		$user
-		// 			->permissions()
-		// 			->attach([Permission::firstOrFail()->id, factory('P3in\Models\Permission')->create()->id]);
+    //    $user
+    //      ->permissions()
+    //      ->attach([Permission::firstOrFail()->id, factory('P3in\Models\Permission')->create()->id]);
 
-		// 		$user
-		// 			->groups()
-		// 			->attach(Group::first());
-		// 	});
+    //    $user
+    //      ->groups()
+    //      ->attach(Group::first());
+    //  });
 
       /**
       *   create some actual users

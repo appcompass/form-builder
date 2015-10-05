@@ -7,14 +7,15 @@ use BostonPads\Models\Photo;
 use Exception;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
-use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\Access\Authorizable;
 use Modular;
 use P3in\Models\Group;
 use P3in\Models\Permission;
+use P3in\Profiles\BaseProfile;
 use P3in\Traits\AlertableTrait as Alertable;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
@@ -109,6 +110,29 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	{
 
 		return $this->belongsToMany(Group::class);
+
+	}
+
+	/**
+	 *
+	 *
+	 *
+	 *
+	 */
+	public function profiles($type = null)
+	{
+
+	  $relation = $this->hasMany(BaseProfile::class);
+
+	  if (! is_null($type)) {
+
+	  	$profile_class = $relation->where('model', $type)->firstOrFail();
+
+	  	return new $profile_class->model($profile_class->toArray());
+
+	  }
+
+	  return $relation;
 
 	}
 

@@ -17,12 +17,10 @@ class PermissionsTableSeeder extends Seeder
     {
     	DB::table('permissions')->delete();
 
-    	// factory('P3in\Models\Permission', 3)->create();
-
     	Permission::create([
-    		'name' => 'registered',
-    		'label' => 'registered',
-    		'description' => 'Lorem Ipsum'
+    		'type' => 'create-galleries',
+    		'label' => 'Create Galleries',
+    		'description' => 'User is able to create galleries'
     	]);
     }
 }
