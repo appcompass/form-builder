@@ -41,6 +41,25 @@ class Section extends Model
 	protected $navigation_props = ['id'];
 
 	/**
+	*  Build a LinkClass out of this class
+	*
+	*
+	*
+	*/
+	protected function makeLink()
+	{
+
+		return new LinkClass([
+			"label" => '',
+			"link_text" => '',
+			"model" => get_class($this),
+			"url" => '',
+			"new_tab" => false,
+			"req_permission" => '',
+		]);
+	}
+
+	/**
 	*
 	*
 	*
