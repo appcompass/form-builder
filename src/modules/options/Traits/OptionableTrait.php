@@ -8,47 +8,54 @@ use P3in\Models\OptionStorage;
 
 trait OptionableTrait
 {
-  /**
-  *
-  *
-  *
-  *
-  */
-  protected function setOption($option_label, $option_id)
-  {
+	/**
+	*
+	*
+	*
+	*
+	*/
+	protected function setOption($option_label, $option_id)
+	{
 
-    $option = OptionStorage::firstOrNew([
-      'model' => get_class($this),
-      'item_id' => $this->{$this->primaryKey}
-    ]);
+	$option = OptionStorage::firstOrNew([
+		'model' => get_class($this),
+		'item_id' => $this->{$this->primaryKey}
+	]);
 
-    $option->option_label = $option_label;
-    $option->option_id = $option_id;
+	$option->option_label = $option_label;
+	$option->option_id = $option_id;
 
-    return $option->save();
-  }
+	return $option->save();
+	}
 
-  /**
-   *   Retrieve selected options for the model
-   *
-   *
-   */
-  protected function getOption($label)
-  {
+	/**
+	*   Retrieve selected options for the model
+	*
+	*
+	*/
+	protected function getOption($label)
+	{
 
-    $option_set = Option::where('label', '=', $label)->firstOrFail();
+	try {
+		$option_set = Option::where('label', '=', $label)->firstOrFail();
 
-    $content = json_decode($option_set->content, true);
+		$content = json_decode($option_set->content, true);
 
-    try {
-      $selected_option_id = OptionStorage::where('model', '=', get_class($this))
-        ->where('item_id', '=', $this->{$this->primaryKey})
-        ->firstOrFail()
-        ->option_id;
-    } catch (ModelNotFoundException $e) {
-      return null;
-    }
+	} catch (ModelNotFoundException $e) {
+		return null;
+	}
 
-    return $content[$selected_option_id];
-  }
+	try {
+		$selected_option_id = OptionStorage::where('model', '=', get_class($this))
+			->where('item_id', '=', $this->{$this->primaryKey})
+			->firstOrFail()
+			->option_id;
+
+		return $content[$selected_option_id];
+
+	} catch (ModelNotFoundException $e) {
+		return null;
+	}
+
+	}
 }
