@@ -40,20 +40,8 @@ class AuthController extends Controller
 	public function getLogin()
 	{
 
-		return view('ui::login');
-	}
-
-	public function getLockScreen()
-	{
-		if (!\Auth::check()) {
-			return redirect('/login');
-		}
-
-		return view('ui::lock-screen',[
-			'user_fullname' => Auth::user()->full_name,
-			'user_email' =>  Auth::user()->email,
-			'user_avatar' => User::avatar(160),
-		]);
+		// We need to build the integration into pages to auto lookup and return the view for the login screen.
+		return '';
 	}
 
 	/**

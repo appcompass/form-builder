@@ -1,8 +1,8 @@
 <?php
 
 Route::group([
-	// 'prefix' => 'cp',
-	'namespace' => 'P3in\Modules\UiModule'
+	'prefix' => 'cp',
+	'namespace' => 'P3in\Controllers'
 ], function() {
 
 	Route::get('/', 'UiController@getIndex');
@@ -13,5 +13,4 @@ Route::group([
 	Route::get('user-full-name', 'UiController@getUserFullName');
 	Route::get('user-avatar/{size}', 'UiController@getUserAvatar');
 	Route::get('user-nav', 'UiController@getUserNav');
-    // Route::controller('/', 'UiController');
 });

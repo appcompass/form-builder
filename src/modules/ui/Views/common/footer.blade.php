@@ -1,37 +1,37 @@
 
 	<!--Core js-->
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
-	<script src="/js/jquery.js"></script>
-	<script src="/js/jquery-1.10.2.min.js"></script>
-	<script src="/bs3/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="/js/gritter/js/jquery.gritter.js"></script>
+	<script src="/ui/js/jquery.js"></script>
+	<script src="/ui/js/jquery-1.10.2.min.js"></script>
+	<script src="/ui/bs3/js/bootstrap.min.js"></script>
+	<script src="/ui/js/gritter/js/jquery.gritter.js" type="text/javascript"></script>
 
 	<!--script for this page-->
-	<script src="/js/gritter.js" type="text/javascript"></script>
-	<script src="/js/jquery.js"></script>
-	<script src="/js/jquery.nicescroll.js"></script>
+	<script src="/ui/js/gritter.js" type="text/javascript"></script>
+	<script src="/ui/js/jquery.js"></script>
+	<script src="/ui/js/jquery.nicescroll.js"></script>
 
-	<script src="/js/jvector-map/jquery-jvectormap-1.2.2.min.js"></script>
-	<script src="/js/jvector-map/jquery-jvectormap-us-lcc-en.js"></script>
-	<script src="/js/gauge/gauge.js"></script>
+	<script src="/ui/js/jvector-map/jquery-jvectormap-1.2.2.min.js"></script>
+	<script src="/ui/js/jvector-map/jquery-jvectormap-us-lcc-en.js"></script>
+	<script src="/ui/js/gauge/gauge.js"></script>
 	<!--clock init-->
-	<script src="/js/css3clock/js/css3clock.js"></script>
+	<script src="/ui/js/css3clock/js/css3clock.js"></script>
 	<!--Easy Pie Chart-->
-	<script src="/js/easypiechart/jquery.easypiechart.js"></script>
+	<script src="/ui/js/easypiechart/jquery.easypiechart.js"></script>
 	<!--Sparkline Chart-->
-	<script src="/js/sparkline/jquery.sparkline.js"></script>
+	<script src="/ui/js/sparkline/jquery.sparkline.js"></script>
 	<!--Morris Chart-->
-	<script src="/js/morris-chart/morris.js"></script>
-	<script src="/js/morris-chart/raphael-min.js"></script>
+	<script src="/ui/js/morris-chart/morris.js"></script>
+	<script src="/ui/js/morris-chart/raphael-min.js"></script>
 	<!--jQuery Flot Chart-->
-	<script src="/js/flot-chart/jquery.flot.js"></script>
-	<script src="/js/flot-chart/jquery.flot.tooltip.min.js"></script>
-	<script src="/js/flot-chart/jquery.flot.resize.js"></script>
-	<script src="/js/flot-chart/jquery.flot.pie.resize.js"></script>
-	<script src="/js/flot-chart/jquery.flot.animator.min.js"></script>
-	<script src="/js/flot-chart/jquery.flot.growraf.js"></script>
-	<script src="/js/jquery.customSelect.min.js" ></script>
-	<script src="/js/jquery.customSelect.min.js" ></script>
+	<script src="/ui/js/flot-chart/jquery.flot.js"></script>
+	<script src="/ui/js/flot-chart/jquery.flot.tooltip.min.js"></script>
+	<script src="/ui/js/flot-chart/jquery.flot.resize.js"></script>
+	<script src="/ui/js/flot-chart/jquery.flot.pie.resize.js"></script>
+	<script src="/ui/js/flot-chart/jquery.flot.animator.min.js"></script>
+	<script src="/ui/js/flot-chart/jquery.flot.growraf.js"></script>
+	<script src="/ui/js/jquery.customSelect.min.js" ></script>
+	<script src="/ui/js/jquery.customSelect.min.js" ></script>
 
 	@yield('scripts.footer')
 

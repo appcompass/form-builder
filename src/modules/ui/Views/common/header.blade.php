@@ -6,44 +6,44 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="">
 	<meta name="author" content="Plus 3 Interactive, LLC">
-	<link rel="shortcut icon" href="/images/favicon.png">
+	<link rel="shortcut icon" href="/ui/images/favicon.png">
 
 	<title>Plus 3 CMS</title>
 
 	<!--Core CSS -->
-	<link href="/bs3/css/bootstrap.min.css" rel="stylesheet">
-	<link href="/css/bootstrap-reset.css" rel="stylesheet">
-	<link href="/font-awesome/css/font-awesome.css" rel="stylesheet" />
+	<link href="/ui/bs3/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/ui/css/bootstrap-reset.css" rel="stylesheet">
+	<link href="/ui/font-awesome/css/font-awesome.css" rel="stylesheet" />
 
 	<!--external css-->
-    <link href="/js/jquery-ui/jquery-ui-1.10.1.custom.min.css" rel="stylesheet">
-	<link href="/js/gritter/css/jquery.gritter.css" rel="stylesheet" type="text/css" />
-    <link href="/js/jvector-map/jquery-jvectormap-1.2.2.css" rel="stylesheet">
+    <link href="/ui/js/jquery-ui/jquery-ui-1.10.1.custom.min.css" rel="stylesheet">
+	<link href="/ui/js/gritter/css/jquery.gritter.css" rel="stylesheet" type="text/css" />
+    <link href="/ui/js/jvector-map/jquery-jvectormap-1.2.2.css" rel="stylesheet">
     <link rel="stylesheet" href="css/bootstrap-switch.css" />
-    <link rel="stylesheet" type="text/css" href="/js/bootstrap-fileupload/bootstrap-fileupload.css" />
-    <link rel="stylesheet" type="text/css" href="/js/bootstrap-wysihtml5/bootstrap-wysihtml5.css" />
+    <link rel="stylesheet" type="text/css" href="/ui/js/bootstrap-fileupload/bootstrap-fileupload.css" />
+    <link rel="stylesheet" type="text/css" href="/ui/js/bootstrap-wysihtml5/bootstrap-wysihtml5.css" />
 
-    <link rel="stylesheet" type="text/css" href="/js/bootstrap-datepicker/css/datepicker.css" />
-    <link rel="stylesheet" type="text/css" href="/js/bootstrap-timepicker/css/timepicker.css" />
-    <link rel="stylesheet" type="text/css" href="/js/bootstrap-colorpicker/css/colorpicker.css" />
-    <link rel="stylesheet" type="text/css" href="/js/bootstrap-daterangepicker/daterangepicker-bs3.css" />
-    <link rel="stylesheet" type="text/css" href="/js/bootstrap-datetimepicker/css/datetimepicker.css" />
+    <link rel="stylesheet" type="text/css" href="/ui/js/bootstrap-datepicker/css/datepicker.css" />
+    <link rel="stylesheet" type="text/css" href="/ui/js/bootstrap-timepicker/css/timepicker.css" />
+    <link rel="stylesheet" type="text/css" href="/ui/js/bootstrap-colorpicker/css/colorpicker.css" />
+    <link rel="stylesheet" type="text/css" href="/ui/js/bootstrap-daterangepicker/daterangepicker-bs3.css" />
+    <link rel="stylesheet" type="text/css" href="/ui/js/bootstrap-datetimepicker/css/datetimepicker.css" />
 
-    <link rel="stylesheet" type="text/css" href="/js/jquery-multi-select/css/multi-select.css" />
-    <link rel="stylesheet" type="text/css" href="/js/jquery-tags-input/jquery.tagsinput.css" />
+    <link rel="stylesheet" type="text/css" href="/ui/js/jquery-multi-select/css/multi-select.css" />
+    <link rel="stylesheet" type="text/css" href="/ui/js/jquery-tags-input/jquery.tagsinput.css" />
 
-    <link rel="stylesheet" type="text/css" href="/js/select2/select2.css" />
-    <link href="/css/clndr.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/ui/js/select2/select2.css" />
+    <link href="/ui/css/clndr.css" rel="stylesheet">
     <!-- dropzone css -->
-    <link href="/css/dropzone.css" rel="stylesheet">
+    <link href="/ui/css/dropzone.css" rel="stylesheet">
     <!--clock css-->
-    <link href="/js/css3clock/css/style.css" rel="stylesheet">
+    <link href="/ui/js/css3clock/css/style.css" rel="stylesheet">
     <!--Morris Chart CSS -->
-    <link rel="stylesheet" href="/js/morris-chart/morris.css">
+    <link rel="stylesheet" href="/ui/js/morris-chart/morris.css">
 
 	<!-- Custom styles for this template -->
-	<link href="/css/style.css" rel="stylesheet">
-	<link href="/css/style-responsive.css" rel="stylesheet" />
+	<link href="/ui/css/style.css" rel="stylesheet">
+	<link href="/ui/css/style-responsive.css" rel="stylesheet" />
 
 	<!-- Just for debugging purposes. Don't actually copy this line! -->
 	<!--[if lt IE 9]>

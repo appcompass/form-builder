@@ -1,1 +1,0 @@
-@extends('ui::layouts.lock-screen')
