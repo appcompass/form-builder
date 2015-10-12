@@ -11,19 +11,11 @@ use Auth;
 
 class AuthCpController extends Controller
 {
-	/*
-	|--------------------------------------------------------------------------
-	| Registration & Login Controller
-	|--------------------------------------------------------------------------
-	|
-	| This controller handles the registration of new users, as well as the
-	| authentication of existing users. By default, this controller uses
-	| a simple trait to add these behaviors. Why don't you explore it?
-	|
-	*/
+
 	protected $loginPath ="/cp/auth/login";
 	protected $redirectAfterLogout = "/cp/auth/login";
 	protected $redirectPath = '/cp';
+	protected $redirectTo = '/cp';
 
 	use AuthenticatesAndRegistersUsers, ThrottlesLogins;
 
@@ -34,15 +26,22 @@ class AuthCpController extends Controller
 	 */
 	public function __construct()
 	{
-		$this->middleware('guest', ['except' => ['getLogout', 'getLockScreen']]);
+		// $this->middleware('guest', ['except' => ['getLogout', 'getLockScreen']]);
 	}
 
-	public function getLogin()
-	{
+	//-----------------------------------------------------------------------
+	//
+	//	NOTE:
+	//       getLogin is implemented in the AuthenticatesUsers Trait
+	//			 i don't think we need middleware in the AuthController
+	//-----------------------------------------------------------------------
 
-		return view('auth::login');
-	}
 
+	/**
+	 * 	Get the lock screen
+	 *
+	 *
+	 */
 	public function getLockScreen()
 	{
 		if (!\Auth::check()) {

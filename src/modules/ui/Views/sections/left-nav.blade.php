@@ -51,7 +51,7 @@
 		</div>
 		<!-- sidebar menu end-->
 
-		<script class="include" type="text/javascript" src="/ui/js/jquery.dcjqaccordion.2.7.js"></script>
-		<script src="/ui/js/jquery.scrollTo.min.js"></script>
-		<script src="/ui/js/jQuery-slimScroll-1.3.0/jquery.slimscroll.js"></script>
-		<script src="/ui/js/jquery.nicescroll.js"></script>
+		<script class="include" type="text/javascript" src="/assets/ui/js/jquery.dcjqaccordion.2.7.js"></script>
+		<script src="/assets/ui/js/jquery.scrollTo.min.js"></script>
+		<script src="/assets/ui/js/jQuery-slimScroll-1.3.0/jquery.slimscroll.js"></script>
+		<script src="/assets/ui/js/jquery.nicescroll.js"></script>
