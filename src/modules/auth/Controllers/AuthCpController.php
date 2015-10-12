@@ -37,6 +37,12 @@ class AuthCpController extends Controller
 	//-----------------------------------------------------------------------
 
 
+	public function getLogin()
+	{
+		// our CMS has it's own view for login.
+		return view('auth::login');
+	}
+
 	/**
 	 * 	Get the lock screen
 	 *

@@ -2,7 +2,7 @@
 
 	<div class="container">
 
-		<form class="form-signin" method="POST" action="/login">
+		<form class="form-signin" method="POST" action="/cp/auth/login">
 			{!! csrf_field() !!}
 			<h2 class="form-signin-heading">sign in now</h2>
 			<div class="login-wrap">

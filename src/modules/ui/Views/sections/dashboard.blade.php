@@ -1,5 +1,5 @@
 <section class="wrapper">
-
+{{--
 	<!--mini statistics start-->
 	<div class="row">
 		<div class="col-md-3">
@@ -659,8 +659,10 @@
 			<!--todolist end-->
 		</div>
 	</div>
-</section>
+ --}}
 
+</section>
+{{--
 <script src="/assets/ui/js/jquery-ui/jquery-ui-1.10.1.custom.min.js"></script>
 <script src="/assets/ui/js/jquery.dcjqaccordion.2.7.js"></script>
 <script src="/assets/ui/js/jquery.scrollTo.min.js"></script>
@@ -694,3 +696,4 @@
 <script src="/assets/ui/js/flot-chart/jquery.flot.animator.min.js"></script>
 <script src="/assets/ui/js/flot-chart/jquery.flot.growraf.js"></script>
 <script src="/assets/ui/js/dashboard.js"></script>
+ --}}
