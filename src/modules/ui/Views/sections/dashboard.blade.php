@@ -1,6 +1,5 @@
-<section class="wrapper">
-{{--
-	<!--mini statistics start-->
+<?php /* <section class="wrapper">
+<!--mini statistics start-->
 	<div class="row">
 		<div class="col-md-3">
 			<section class="panel">
@@ -659,10 +658,8 @@
 			<!--todolist end-->
 		</div>
 	</div>
- --}}
 
 </section>
-{{--
 <script src="/assets/ui/js/jquery-ui/jquery-ui-1.10.1.custom.min.js"></script>
 <script src="/assets/ui/js/jquery.dcjqaccordion.2.7.js"></script>
 <script src="/assets/ui/js/jquery.scrollTo.min.js"></script>
@@ -695,5 +692,4 @@
 <script src="/assets/ui/js/flot-chart/jquery.flot.pie.resize.js"></script>
 <script src="/assets/ui/js/flot-chart/jquery.flot.animator.min.js"></script>
 <script src="/assets/ui/js/flot-chart/jquery.flot.growraf.js"></script>
-<script src="/assets/ui/js/dashboard.js"></script>
- --}}
+<script src="/assets/ui/js/dashboard.js"></script> */ ?>

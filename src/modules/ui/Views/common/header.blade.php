@@ -19,7 +19,7 @@
     <link href="/assets/ui/js/jquery-ui/jquery-ui-1.10.1.custom.min.css" rel="stylesheet">
 	<link href="/assets/ui/js/gritter/css/jquery.gritter.css" rel="stylesheet" type="text/css" />
     <link href="/assets/ui/js/jvector-map/jquery-jvectormap-1.2.2.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/bootstrap-switch.css" />
+    <link rel="stylesheet" href="/assets/ui/css/bootstrap-switch.css" />
     <link rel="stylesheet" type="text/css" href="/assets/ui/js/bootstrap-fileupload/bootstrap-fileupload.css" />
     <link rel="stylesheet" type="text/css" href="/assets/ui/js/bootstrap-wysihtml5/bootstrap-wysihtml5.css" />
 
@@ -34,8 +34,6 @@
 
     <link rel="stylesheet" type="text/css" href="/assets/ui/js/select2/select2.css" />
     <link href="/assets/ui/css/clndr.css" rel="stylesheet">
-    <!-- dropzone css -->
-    <link href="/assets/ui/css/dropzone.css" rel="stylesheet">
     <!--clock css-->
     <link href="/assets/ui/js/css3clock/css/style.css" rel="stylesheet">
     <!--Morris Chart CSS -->

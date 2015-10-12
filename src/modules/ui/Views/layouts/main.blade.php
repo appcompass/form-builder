@@ -30,7 +30,7 @@
 							<span class="username" data-load="/cp/user-full-name"></span>
 							<b class="caret"></b>
 						</a>
-						<ul class="dropdown-menu extended logout" data-load="/user-nav">
+						<ul class="dropdown-menu extended logout" data-load="/cp/user-nav">
 						</ul>
 					</li>
 					<!-- user login dropdown end -->

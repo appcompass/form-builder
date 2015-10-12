@@ -25,7 +25,7 @@
 						<span>Websites</span>
 					</a>
 					<ul class="sub">
-						<li><a href="#">Manage Websites</a></li>
+						<li><a href="#"><i class="fa fa-book"></i><span>Manage Websites</span></a></li>
 						<li><a href="#">Manage Templates</a></li>
 						<li><a href="#">Manage Pages</a></li>
 					</ul>
