@@ -1,6 +1,6 @@
 <?php
 
-namespace P3in\Modules\UiModule;
+namespace P3in\Controllers;
 
 use Illuminate\Http\Request;
 
