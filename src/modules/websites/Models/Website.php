@@ -20,7 +20,21 @@ class Website extends Model
 	 *
 	 * @var array
 	 */
-	protected $fillable = [];
+	protected $fillable = [
+		'site_name',
+		'site_url',
+		'from_email',
+		'from_name',
+		'managed',
+		'ssh_host',
+		'ssh_username',
+		'ssh_password',
+		'ssh_key',
+		'ssh_keyphrase',
+		'ssh_root',
+		'config',
+		'published_at',
+	];
 
 	/**
 	*	Fields that needs to be treated as a date

@@ -26,7 +26,6 @@ class CreateWebsitesTable extends Migration
 			$table->string('ssh_keyphrase', 256);
 			$table->string('ssh_root', 256);
 			$table->json('config');
-			$table->timestamp('published_at');
 			$table->timestamps();
 		});
 	}
