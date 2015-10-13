@@ -8,60 +8,91 @@ use P3in\Models\Website;
 class WebsiteController extends Controller
 {
 
-	public function __construct()
-	{
-		$this->middleware('auth');
-	}
+    /**
+     *
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
-	public function index()
-	{
-		return view('websites::list', ['records' => Website::all()]);
-	}
+    /**
+     *
+     */
+    public function index()
+    {
+        return view('websites::list', ['records' => Website::all()]);
+    }
 
-	public function create()
-	{
-		Website::create([
-			'site_name' => 'BostonPads.com',
-			'site_url' => 'http://www.bostonpads.com',
-			'config' => [
-				'from_email' => 'website@bostonpads.com',
-				'from_name' => 'BostonPads.com',
-				'managed' => true,
-				'ssh_host' => '',
-				'ssh_username' => '',
-				'ssh_password' => '',
-				'ssh_key' => '',
-				'ssh_keyphrase' => '',
-				'ssh_root' => '/usr/share/nginx/bostonpads.com/htdocs/html',
-			],
-		]);
-	}
+    /**
+     *
+     */
+    public function create()
+    {
+        Website::create([
+            'site_name' => 'BostonPads.com',
+            'site_url' => 'http://www.bostonpads.com',
+            'config' => [
+                'from_email' => 'website@bostonpads.com',
+                'from_name' => 'BostonPads.com',
+                'managed' => true,
+                'ssh_host' => '',
+                'ssh_username' => '',
+                'ssh_password' => '',
+                'ssh_key' => '',
+                'ssh_keyphrase' => '',
+                'ssh_root' => '/usr/share/nginx/bostonpads.com/htdocs/html',
+            ],
+        ]);
+    }
 
-	public function show($id)
-	{
-		return view('websites::detail', ['record' => Website::findOrFail($id)]);
-	}
+    /**
+     *
+     */
+    public function show($id)
+    {
+        return view('websites::detail', ['record' => Website::findOrFail($id)]);
+    }
 
-	public function showConnection($id)
-	{
-		return view('websites::connection', ['record' => Website::findOrFail($id)]);
-	}
+    /**
+     *
+     */
+    public function showConnection($id)
+    {
+        return view('websites::connection', ['record' => Website::findOrFail($id)]);
+    }
 
-	public function updateConnection(Request $request, $id)
-	{
-		$website = Website::findOrFail($id);
-		$website->update($request->all());
-		return view('websites::connection', ['record' => $website]);
-	}
+    /**
+     *
+     */
+    public function updateConnection(Request $request, $id)
+    {
+        $website = Website::findOrFail($id);
+        $website->update($request->all());
+        return view('websites::connection', ['record' => $website]);
+    }
 
-	public function showSettings($id)
-	{
-		return view('websites::settings', ['record' => Website::findOrFail($id)]);
-	}
+    /**
+     *
+     */
+    public function showConfig($id)
+    {
+        return view('websites::config', ['record' => Website::findOrFail($id)]);
+    }
 
-	public function updateSettings(Request $request, $id)
-	{
-		return view('websites::settings', ['record' => Website::findOrFail($id)->settings($request->input('settings'))]);
-	}
+    /**
+     *
+     */
+    public function showSettings($id)
+    {
+        return view('websites::settings', ['record' => Website::findOrFail($id)]);
+    }
 
+    /**
+     *
+     */
+    public function updateSettings(Request $request, $id)
+    {
+        return view('websites::settings', ['record' => Website::findOrFail($id)->settings($request->input('settings'))]);
+    }
 }

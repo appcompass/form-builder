@@ -2,7 +2,9 @@
 
 namespace P3in\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use P3in\Models\Navmenu;
 use P3in\Traits\JsonPropScopesTrait as JsonPropScopes;
 
 class NavigationItem extends Model
@@ -58,6 +60,7 @@ class NavigationItem extends Model
 	*/
 	public function navmenu()
 	{
-		return $this->belongsTo('P3in\Models\Navmenu');
+		return $this->belongsTo(Navmenu::class);
 	}
+
 }

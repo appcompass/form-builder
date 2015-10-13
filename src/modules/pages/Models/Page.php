@@ -3,9 +3,10 @@
 namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use P3in\Models\Website;
-use P3in\Traits\NavigatableTrait as Navigatable;
 use P3in\Modules\Navigation\LinkClass;
+use P3in\Traits\NavigatableTrait as Navigatable;
 
 class Page extends Model
 {
@@ -79,12 +80,62 @@ class Page extends Model
 	}
 
 	/**
-	*
-	*
-	*
-	*/
+	 *
+	 *
+	 */
+	public function byPath($path, User $user)
+	{
+
+		try {
+
+			$page = Page::findOrFail($path);
+
+			$this->checkPermissions($user);
+
+		} catch (ModelNotFoundException $e ) {
+
+			return false;
+
+		}
+
+	}
+
+	/**
+	 * Check if User has permissions
+	 *
+	 *
+	 */
+	public function checkPermissions(User $user = null)
+	{
+
+		$this->req_permission = is_array($this->req_permission) ? $this->req_permission : explode(",", $this->req_permission);
+
+
+		if (count($this->req_permission)) {
+
+			if (is_null($user)) {
+
+				return false;
+
+			}
+
+			// dd($user->permissions()->get()->toArray());
+
+			return $user->hasPermissions($this->req_permission);
+
+		}
+
+		return true;
+
+	}
+
+	/**
+ 	 *
+	 *
+	 */
 	public function template()
 	{
-		return $this->hasOne(Template::class);
+		return $this->belongsTo(Template::class);
 	}
+
 }

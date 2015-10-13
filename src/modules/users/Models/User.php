@@ -84,7 +84,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 		}
 
-		return $this->permissions()
+		return (bool)$this->permissions()
 			->where('type', $permission)
 			->count();
 	}
@@ -96,7 +96,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 */
 	public function hasPermissions(array $permissions) {
 
-		return $this->permissions()
+		return (bool)$this->permissions()
 			->whereIn('type', $permissions)
 			->count();
 

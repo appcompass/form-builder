@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace P3in\Controllers;
 
-use Illuminate\Http\Request;
-
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Http\Requests;
+use Illuminate\Http\Request;
+use P3in\Models\Page;
+use P3in\Models\Website;
 
-class PagesController extends Controller
+class CpWebsitePagesController extends Controller
 {
 
 	public function __construct()
@@ -20,9 +21,13 @@ class PagesController extends Controller
      *
      * @return Response
      */
-    public function index()
+    public function index($website_id)
     {
-        return \App\Page::all();
+
+        $website = Website::findOrFail($website_id)->load('pages');
+
+        return view('pages::list', compact('website'));
+
     }
 
     /**

@@ -15,4 +15,6 @@ Route::group([
 		Route::get('settings', 'WebsiteController@showSettings');
 	});
 
+	Route::resource('websites.pages', 'CpWebsitePagesController');
+
 });

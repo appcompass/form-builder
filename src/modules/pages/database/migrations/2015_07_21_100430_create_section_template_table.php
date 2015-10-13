@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTemplateSectionsTable extends Migration
+class CreateSectionTemplateTable extends Migration
 {
 	/**
 	 * Run the migrations.
@@ -12,7 +12,7 @@ class CreateTemplateSectionsTable extends Migration
 	 */
 	public function up()
 	{
-		Schema::create('template_sections', function(Blueprint $table)
+		Schema::create('section_template', function(Blueprint $table)
 		{
 			$table->increments('id');
 			$table->integer('section_id')->unsigned();
@@ -37,10 +37,6 @@ class CreateTemplateSectionsTable extends Migration
 	 */
 	public function down()
 	{
-		// Schema::table('template_sections', function( $table ) {
-		// 	$table->dropForeign("template_sections_section_id_foreign");
-		// 	$table->dropForeign("template_sections_template_id_foreign");
-		// });
-		Schema::drop('template_section');
+		Schema::drop('section_template');
 	}
 }

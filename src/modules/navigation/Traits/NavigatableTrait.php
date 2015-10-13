@@ -6,13 +6,15 @@ use P3in\Models\Navigation as Nav;
 use P3in\Models\NavigationItem;
 use P3in\Models\Navmenu;
 use P3in\Modules\Navigation\LinkClass;
-use App\JsonPropPg as JsonProp;
+use P3in\Traits\JsonPropScopesTrait as JsonProp;
 use Validator;
 use Exception;
 
 trait NavigatableTrait
 
 {
+
+  use JsonProp;
 
   /**
   *  linkToNavmenu

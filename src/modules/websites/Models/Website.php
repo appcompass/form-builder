@@ -100,7 +100,11 @@ class Website extends Model
 				->where('slug', $page_path)
 				->firstOrFail();
 
-			return $page->checkPermissions(\Auth::user());
+			if ($page->checkPermissions(\Auth::user())) {
+
+                return $page;
+
+            }
 
 		} catch (ModelNotFoundException $e ) {
 

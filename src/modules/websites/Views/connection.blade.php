@@ -31,7 +31,7 @@
 					<div class="form-group">
 						<label class="col-sm-3 control-label">A Managed Website</label>
 						<div class="col-sm-6">
-							<input type="checkbox" name="config[managed]" value="true" @if($record->config->managed) checked="checked"  @endif >
+							<input type="checkbox" name="config[managed]" value="true" @if(!empty($record->config->managed)) checked="checked"  @endif >
 						</div>
 					</div>
 					<div class="form-group">
