@@ -23,16 +23,17 @@ class WebsiteController extends Controller
 		Website::create([
 			'site_name' => 'BostonPads.com',
 			'site_url' => 'http://www.bostonpads.com',
-			'from_email' => 'website@bostonpads.com',
-			'from_name' => 'BostonPads.com',
-			'managed' => true,
-			'ssh_host' => '',
-			'ssh_username' => '',
-			'ssh_password' => '',
-			'ssh_key' => '',
-			'ssh_keyphrase' => '',
-			'ssh_root' => '/usr/share/nginx/bostonpads.com/htdocs/html',
-			'config' => '{}',
+			'config' => [
+				'from_email' => 'website@bostonpads.com',
+				'from_name' => 'BostonPads.com',
+				'managed' => true,
+				'ssh_host' => '',
+				'ssh_username' => '',
+				'ssh_password' => '',
+				'ssh_key' => '',
+				'ssh_keyphrase' => '',
+				'ssh_root' => '/usr/share/nginx/bostonpads.com/htdocs/html',
+			],
 		]);
 	}
 

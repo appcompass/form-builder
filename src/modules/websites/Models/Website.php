@@ -10,7 +10,7 @@ use P3in\Traits\SettingsTrait;
 class Website extends Model
 {
 
-  use SettingsTrait;
+	use SettingsTrait;
 
 	/**
 	 * The database table used by the model.
@@ -27,27 +27,26 @@ class Website extends Model
 	protected $fillable = [
 		'site_name',
 		'site_url',
-		'from_email',
-		'from_name',
-		'managed',
-		'ssh_host',
-		'ssh_username',
-		'ssh_password',
-		'ssh_key',
-		'ssh_keyphrase',
-		'ssh_root',
 		'config',
-		'published_at',
 	];
 
 	/**
-	*	Fields that needs to be treated as a date
+	 * The attributes that should be casted to native types.
+	 *
+	 * @var array
+	 */
+	protected $casts = [
+		'config' => 'array',
+	];
+
+	/**
+	* Fields that needs to be treated as a date
 	*
 	*/
 	protected $dates = ['published_at'];
 
 	/**
-	*	Get all the pages linked to this website
+	* Get all the pages linked to this website
 	*
 	*
 	*/
@@ -56,38 +55,26 @@ class Website extends Model
 		return $this->hasMany('P3in\Models\Page');
 	}
 
-  /**
-  *
-  *
-  *
-  *
-  */
-  public function navmenus()
-  {
-    return $this->hasMany("P3in\Models\Navmenu");
-  }
+	/**
+	*
+	*
+	*
+	*
+	*/
+	public function navmenus()
+	{
+		return $this->hasMany("P3in\Models\Navmenu");
+	}
 
-  /**
-   *
-   *
-   *
-   */
-  public function scopeByName($query, $name)
-  {
-    return $query->where('site_name', '=', $name);
-  }
-
-  /**
-   * Get json_decoded configuration
-   *
-   *
-   */
-  public function getConfigAttribute()
-  {
-
-    return json_decode($this->attributes['config']);
-
-  }
+	/**
+	 *
+	 *
+	 *
+	 */
+	public function scopeByName($query, $name)
+	{
+		return $query->where('site_name', '=', $name);
+	}
 
 	/**
 	 *
@@ -100,27 +87,27 @@ class Website extends Model
 
 	/**
 	*
-	*	Website::first()->render()
+	* Website::first()->render()
 	*
 	*
 	*/
 	public function renderPage($page_path)
 	{
 
-    try {
+		try {
 
-      $page = $this->pages()
-        ->where('slug', $page_path)
-        ->firstOrFail();
+			$page = $this->pages()
+				->where('slug', $page_path)
+				->firstOrFail();
 
-      return $page->checkPermissions(\Auth::user());
+			return $page->checkPermissions(\Auth::user());
 
-    } catch (ModelNotFoundException $e ) {
+		} catch (ModelNotFoundException $e ) {
 
-      return false;
+			return false;
 
-    }
+		}
 
-    return false;
+		return false;
 	}
 }
