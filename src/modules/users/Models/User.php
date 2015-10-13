@@ -216,36 +216,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 	}
 
-	/**
- 	 *	Get agent's status
-	 *
-	 */
-	public function getAgentStatusAttribute()
-	{
-
-		$statuses = [
-			'FC',
-			'PC',
-			'ST',
-		];
-
-		$k = array_rand($statuses);
-
-		return $statuses[$k];
-	}
-
-	public function getClassProgressAttribute()
-	{
-		$emailLength = strlen($this->email)*2;
-		if ($emailLength == 50) {
-			return 100;
-		}elseif($emailLength < 50 && $emailLength >= 34){
-			return $emailLength*2;
-		}elseif($emailLength < 34){
-			return $emailLength;
-		}
-	}
-
 	public function getClassProgressStatusAttribute()
 	{
 		if ($this->class_progress == 100) {
@@ -257,6 +227,10 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 		}
 	}
 
+	// This method needs to be converted into an actual field/relationship between users and websites.
+	// Even admin users would use the "admin" website or at least be non-t assigned (0).
+	// This means an update to the schema granted, but I think is key here.
+	// We will never have users without at least one website.
 	public function getSiteRegisteredOnAttribute()
 	{
 		$sites = [
@@ -268,15 +242,4 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 		return $sites[$k];
 	}
 
-	/**
-	*		get users' saved properties
-	*
-	*
-	*
-	*/
-	public function getSavedPropertiesAttribute()
-	{
-		if (Modular::isDef()) {}
-		return rand(0,100);
-	}
 }

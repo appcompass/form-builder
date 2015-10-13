@@ -13,17 +13,7 @@ class UserController extends Controller
 
 	public function getIndex()
 	{
-		return User::all();
-	}
-
-	public function getAgents()
-	{
-		return view('users::agent-list', ['data' => User::all()]);
-	}
-
-	public function getWebUsers()
-	{
-		return view('users::web-user-list', ['data' => User::all()]);
+		return view('users::user-list', ['data' => User::all()]);
 	}
 
 }
