@@ -3,6 +3,7 @@
 namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use P3in\Models\Page;
 use P3in\Traits\SettingsTrait;
 
@@ -67,22 +68,31 @@ class Website extends Model
   }
 
   /**
-  *
-  *
-  *
-  *
-  */
+   *
+   *
+   *
+   */
   public function scopeByName($query, $name)
   {
     return $query->where('site_name', '=', $name);
   }
 
+  /**
+   * Get json_decoded configuration
+   *
+   *
+   */
+  public function getConfigAttribute()
+  {
+
+    return json_decode($this->attributes['config']);
+
+  }
+
 	/**
-	*
-	*
-	*
-	*
-	*/
+	 *
+	 *
+	 */
 	public function addPage()
 	{
 		// this->
@@ -94,14 +104,23 @@ class Website extends Model
 	*
 	*
 	*/
-	public function render()
+	public function renderPage($page_path)
 	{
-		$pages = $this->pages;
 
-		$user  =Auth::user()->permissions;
+    try {
 
-		//
-		//
-		//
+      $page = $this->pages()
+        ->where('slug', $page_path)
+        ->firstOrFail();
+
+      return $page->checkPermissions(\Auth::user());
+
+    } catch (ModelNotFoundException $e ) {
+
+      return false;
+
+    }
+
+    return false;
 	}
 }

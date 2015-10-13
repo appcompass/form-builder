@@ -56,7 +56,7 @@
 					<div class="form-group">
 						<label class="col-sm-3 control-label">SSH Key</label>
 						<div class="col-sm-6">
-							<textarea class="form-control" name="ssh_key" placeholder="SSH Key">{{ $record->ssh_key }}</textarea>
+							<textarea class="form-control" name="ssh_key" placeholder="SSH Key">{{ $record->config->ssh_key }}</textarea>
 							<span class="help-block">Must use either SSH Key or SSH Password above (key is preferable).</span>
 						</div>
 					</div>
