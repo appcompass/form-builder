@@ -36,4 +36,14 @@ Class UsersModule extends BaseModule
 	{
 		return "Alerts!!";
 	}
+
+	public function cpNav()
+	{
+		return [
+			'/cp/websites' => [
+				'label' => 'Websites Manager',
+				'sub_nav' => []
+			]
+		];
+	}
 }
