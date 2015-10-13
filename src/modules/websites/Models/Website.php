@@ -36,7 +36,7 @@ class Website extends Model
 	 * @var array
 	 */
 	protected $casts = [
-		'config' => 'array',
+		'config' => 'object',
 	];
 
 	/**

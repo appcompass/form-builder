@@ -54,9 +54,14 @@ class WebsiteController extends Controller
 		return view('websites::connection', ['record' => $website]);
 	}
 
-	public function showConfig($id)
+	public function showSettings($id)
 	{
-		return view('websites::config', ['record' => Website::findOrFail($id)]);
+		return view('websites::settings', ['record' => Website::findOrFail($id)]);
+	}
+
+	public function updateSettings(Request $request, $id)
+	{
+		return view('websites::settings', ['record' => Website::findOrFail($id)->settings($request->input('settings'))]);
 	}
 
 }

@@ -19,57 +19,57 @@
 					<div class="form-group">
 						<label class="col-sm-3 control-label">From Email Address</label>
 						<div class="col-sm-6">
-							<input type="text" class="form-control" name="from_email" placeholder="website@website.com" value="{{ $record->from_email }}">
+							<input type="text" class="form-control" name="config[from_email]" placeholder="website@website.com" value="{{ $record->config->from_email or '' }}">
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-3 control-label">From Email Name</label>
 						<div class="col-sm-6">
-							<input type="text" class="form-control" name="from_name" placeholder="Website Name" value="{{ $record->from_name }}">
+							<input type="text" class="form-control" name="config[from_name]" placeholder="Website Name" value="{{ $record->config->from_name or '' }}">
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-3 control-label">A Managed Website</label>
 						<div class="col-sm-6">
-							<input type="checkbox" name="managed" value="true" @if($record->managed) checked="checked"  @endif >
+							<input type="checkbox" name="config[managed]" value="true" @if($record->config->managed) checked="checked"  @endif >
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-3 control-label">SSH Host</label>
 						<div class="col-sm-6">
-							<input type="text" class="form-control" name="ssh_host" placeholder="SSH Host" value="{{ $record->ssh_host }}">
+							<input type="text" class="form-control" name="config[ssh_host]" placeholder="SSH Host" value="{{ $record->config->ssh_host or '' }}">
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-3 control-label">SSH Username</label>
 						<div class="col-sm-6">
-							<input type="text" class="form-control" name="ssh_username" placeholder="SSH Username" value="{{ $record->ssh_username }}">
+							<input type="text" class="form-control" name="config[ssh_username]" placeholder="SSH Username" value="{{ $record->config->ssh_username or '' }}">
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-3 control-label">SSH Password</label>
 						<div class="col-sm-6">
-							<input type="text" class="form-control" name="ssh_password" placeholder="SSH Password" value="{{ $record->ssh_password }}">
+							<input type="text" class="form-control" name="config[ssh_password]" placeholder="SSH Password" value="{{ $record->config->ssh_password or '' }}">
 							<span class="help-block">Must use either SSH Password or SSH Key below (key is preferable).</span>
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-3 control-label">SSH Key</label>
 						<div class="col-sm-6">
-							<textarea class="form-control" name="ssh_key" placeholder="SSH Key">{{ $record->config->ssh_key }}</textarea>
+							<textarea class="form-control" name="config[ssh_key]" placeholder="SSH Key">{{ $record->config->ssh_key or '' }}</textarea>
 							<span class="help-block">Must use either SSH Key or SSH Password above (key is preferable).</span>
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-3 control-label">SSH Key Phrase</label>
 						<div class="col-sm-6">
-							<input type="text" class="form-control" name="ssh_keyphrase" placeholder="SSH Key Phrase" value="{{ $record->ssh_keyphrase }}">
+							<input type="text" class="form-control" name="config[ssh_keyphrase]" placeholder="SSH Key Phrase" value="{{ $record->config->ssh_keyphrase or '' }}">
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-3 control-label">Website Document Root</label>
 						<div class="col-sm-6">
-							<input type="text" class="form-control" name="ssh_root" placeholder="/path/to/document/root" value="{{ $record->ssh_root }}">
+							<input type="text" class="form-control" name="config[ssh_root]" placeholder="/path/to/document/root" value="{{ $record->config->ssh_root or '' }}">
 						</div>
 					</div>
 

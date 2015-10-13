@@ -6,7 +6,7 @@
 						<div class="panel-body">
 							<ul class="nav nav-pills nav-stacked mail-nav">
 								<li class="active"><a href="#" data-click="/cp/websites/{{ $record->id }}/connection" data-target="#website-detail"> <i class="fa fa-list"></i> Website Connection </a></li>
-								<li><a href="#" data-click="/cp/websites/{{ $record->id }}/config" data-target="#website-detail"> <i class="fa fa-list"></i> Website Configuration </a></li>
+								<li><a href="#" data-click="/cp/websites/{{ $record->id }}/settings" data-target="#website-detail"> <i class="fa fa-list"></i> Website Configuration </a></li>
 							</ul>
 						</div>
 					</section>

@@ -12,7 +12,7 @@ Route::group([
 		Route::get('/', 'WebsiteController@show');
 		Route::get('connection', 'WebsiteController@showConnection');
 		Route::post('connection', 'WebsiteController@updateConnection');
-		Route::get('config', 'WebsiteController@showConfig');
+		Route::get('settings', 'WebsiteController@showSettings');
 	});
 
 });
