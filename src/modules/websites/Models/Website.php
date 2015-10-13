@@ -4,9 +4,12 @@ namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use P3in\Models\Page;
+use P3in\Traits\SettingsTrait;
 
 class Website extends Model
 {
+
+  use SettingsTrait;
 
 	/**
 	 * The database table used by the model.
