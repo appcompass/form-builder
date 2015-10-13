@@ -11,20 +11,22 @@
           <thead>
           <tr>
             <th>Name</th>
-            <th>URL</th>
+            <th>Slug</th>
             <th>Created</th>
             <th>Published</th>
           </tr>
           </thead>
           <tbody>
+
           @foreach($website->pages as $page)
-          <tr>
-            <td><a href="#" data-click="/cp/websites/{{ $website->id }}/pages/{{ $page->id }}" data-target="#main-content">{{ $page->title }}</a></td>
-            {{-- <td><a href="{{ $record->site_url }}" target="_blank">{{ $record->site_url }}</a></td> --}}
-            {{-- <td>{{ $record->created_at }}</td> --}}
-            {{-- <td>{{ $record->published_at }}</td> --}}
-          </tr>
+            <tr>
+              <td><a href="#" data-click="/cp/webistes/{{ $website->id }}/pages/{{ $page->id }}" data-target="#main-content">{{ $page->title }}</a></td>
+              <td><a href="{{ $page->fullUrl }}" target="_blank">{{ $page->slug }}</a></td>
+              <td>{{ $page->created_at }}</td>
+              <td>{{ $page->published_at }}</td>
+            </tr>
           @endforeach
+
           </tbody>
         </table>
       </div>

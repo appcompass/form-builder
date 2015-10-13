@@ -32,7 +32,7 @@ class Page extends Model
 		'slug',
 		'order',
 		'parent',
-		// 'website_id',
+		'website_id',
 		'req_permission',
 		'published_at'
 	];
@@ -77,6 +77,42 @@ class Page extends Model
 	public function website()
 	{
 		return $this->belongsTo(Website::class);
+	}
+
+	/**
+	 * Render the page
+	 *
+	 *
+	 */
+	public function render()
+	{
+
+		return $this->template
+			->render();
+
+	}
+
+	/**
+	 *
+	 */
+	public function components()
+	{
+
+	  return $this->template()
+	  	->with('sections');
+
+	}
+
+	/**
+	 *
+	 *
+	 *
+	 */
+	public function getFullUrlAttribute()
+	{
+
+		return 'https://'.$this->website->site_url.$this->slug;
+
 	}
 
 	/**

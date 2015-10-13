@@ -30,6 +30,25 @@ class Template extends Model
 	protected $dates = ['published_at'];
 
 	/**
+	 *
+	 *
+	 *
+	 */
+	public function render()
+	{
+
+		$out = '';
+
+	  foreach ($this->sections as $section) {
+
+	  	$out .= $section->render();
+
+	  }
+
+	  return $out;
+	}
+
+	/**
 	*
 	*
 	*

@@ -32,10 +32,22 @@ class Section extends Model
 	protected $dates = ['published_at'];
 
 	/**
-	*
-	*
-	*
-	*/
+	 *
+	 *
+	 *
+	 */
+	public function render()
+	{
+
+		return view($this->display_view)->render();
+
+	}
+
+	/**
+	 *
+	 *
+	 *
+	 */
 	public function templates()
 	{
 		return $this->belongsToMany(Template::class, 'template_sections');

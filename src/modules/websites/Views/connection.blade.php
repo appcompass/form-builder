@@ -1,86 +1,93 @@
-		<section class="panel">
-			<header class="panel-heading">
-				Connection Information
-			</header>
-			<div class="panel-body">
-				<form class="form-horizontal bucket-form ajax-form" method="post" action="/cp/websites/{{ $record->id }}/connection" data-target="#website-detail">
-					<div class="form-group">
-						<label class="col-sm-3 control-label">Name</label>
-						<div class="col-sm-6">
-							<input type="text" class="form-control" name="site_name" placeholder="Website.com" value="{{ $record->site_name }}">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-sm-3 control-label">URL</label>
-						<div class="col-sm-6">
-							<input type="text" class="form-control" name="site_url" placeholder="https://www.website.com" value="{{ $record->site_url }}">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-sm-3 control-label">From Email Address</label>
-						<div class="col-sm-6">
-							<input type="text" class="form-control" name="config[from_email]" placeholder="website@website.com" value="{{ $record->config->from_email or '' }}">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-sm-3 control-label">From Email Name</label>
-						<div class="col-sm-6">
-							<input type="text" class="form-control" name="config[from_name]" placeholder="Website Name" value="{{ $record->config->from_name or '' }}">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-sm-3 control-label">A Managed Website</label>
-						<div class="col-sm-6">
-							<input type="checkbox" name="config[managed]" value="true" @if(!empty($record->config->managed)) checked="checked"  @endif >
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-sm-3 control-label">SSH Host</label>
-						<div class="col-sm-6">
-							<input type="text" class="form-control" name="config[ssh_host]" placeholder="SSH Host" value="{{ $record->config->ssh_host or '' }}">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-sm-3 control-label">SSH Username</label>
-						<div class="col-sm-6">
-							<input type="text" class="form-control" name="config[ssh_username]" placeholder="SSH Username" value="{{ $record->config->ssh_username or '' }}">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-sm-3 control-label">SSH Password</label>
-						<div class="col-sm-6">
-							<input type="text" class="form-control" name="config[ssh_password]" placeholder="SSH Password" value="{{ $record->config->ssh_password or '' }}">
-							<span class="help-block">Must use either SSH Password or SSH Key below (key is preferable).</span>
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-sm-3 control-label">SSH Key</label>
-						<div class="col-sm-6">
-							<textarea class="form-control" name="config[ssh_key]" placeholder="SSH Key">{{ $record->config->ssh_key or '' }}</textarea>
-							<span class="help-block">Must use either SSH Key or SSH Password above (key is preferable).</span>
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-sm-3 control-label">SSH Key Phrase</label>
-						<div class="col-sm-6">
-							<input type="text" class="form-control" name="config[ssh_keyphrase]" placeholder="SSH Key Phrase" value="{{ $record->config->ssh_keyphrase or '' }}">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-sm-3 control-label">Website Document Root</label>
-						<div class="col-sm-6">
-							<input type="text" class="form-control" name="config[ssh_root]" placeholder="/path/to/document/root" value="{{ $record->config->ssh_root or '' }}">
-						</div>
-					</div>
+<section class="panel">
+	<header class="panel-heading">Header</header>
+	<div class="panel-body">
+		<h1>Body</h1>
+	</div>
+</section>
+
+<section class="panel">
+	<header class="panel-heading">
+		Connection Information
+	</header>
+	<div class="panel-body">
+		<form class="form-horizontal bucket-form ajax-form" method="post" action="/cp/websites/{{ $record->id }}/connection" data-target="#website-detail">
+			<div class="form-group">
+				<label class="col-sm-3 control-label">Name</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" name="site_name" placeholder="Website.com" value="{{ $record->site_name }}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">URL</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" name="site_url" placeholder="https://www.website.com" value="{{ $record->site_url }}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">From Email Address</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" name="config[from_email]" placeholder="website@website.com" value="{{ $record->config->from_email or '' }}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">From Email Name</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" name="config[from_name]" placeholder="Website Name" value="{{ $record->config->from_name or '' }}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">A Managed Website</label>
+				<div class="col-sm-6">
+					<input type="checkbox" name="config[managed]" value="true" @if(!empty($record->config->managed)) checked="checked"  @endif >
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">SSH Host</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" name="config[ssh_host]" placeholder="SSH Host" value="{{ $record->config->ssh_host or '' }}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">SSH Username</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" name="config[ssh_username]" placeholder="SSH Username" value="{{ $record->config->ssh_username or '' }}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">SSH Password</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" name="config[ssh_password]" placeholder="SSH Password" value="{{ $record->config->ssh_password or '' }}">
+					<span class="help-block">Must use either SSH Password or SSH Key below (key is preferable).</span>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">SSH Key</label>
+				<div class="col-sm-6">
+					<textarea class="form-control" name="config[ssh_key]" placeholder="SSH Key">{{ $record->config->ssh_key or '' }}</textarea>
+					<span class="help-block">Must use either SSH Key or SSH Password above (key is preferable).</span>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">SSH Key Phrase</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" name="config[ssh_keyphrase]" placeholder="SSH Key Phrase" value="{{ $record->config->ssh_keyphrase or '' }}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">Website Document Root</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" name="config[ssh_root]" placeholder="/path/to/document/root" value="{{ $record->config->ssh_root or '' }}">
+				</div>
+			</div>
 
 {{-- 					<div class="form-group has-error">
-						<label class="col-sm-3 control-label col-lg-3" for="inputError">Input with error</label>
-						<div class="col-lg-6">
-							<input type="text" class="form-control" id="inputError">
-						</div>
-					</div>
- --}}
- 					<button type="submit" class="btn btn-info">Save</button>
- 				</form>
+				<label class="col-sm-3 control-label col-lg-3" for="inputError">Input with error</label>
+				<div class="col-lg-6">
+					<input type="text" class="form-control" id="inputError">
+				</div>
 			</div>
-		</section>
+--}}
+				<button type="submit" class="btn btn-info">Save</button>
+			</form>
+	</div>
+</section>

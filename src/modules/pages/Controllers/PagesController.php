@@ -8,26 +8,21 @@ use Illuminate\Http\Request;
 use P3in\Models\Page;
 use P3in\Models\Website;
 
-class CpWebsitePagesController extends Controller
+class PagesController extends Controller
 {
 
-	public function __construct()
-	{
-		$this->middleware('auth');
-	}
+  public function __construct()
+  {
+  }
 
     /**
      * Display a listing of the resource.
      *
      * @return Response
      */
-    public function index($website_id)
+    public function index()
     {
-
-        $website = Website::findOrFail($website_id)->load('pages');
-
-        return view('pages::list', compact('website'));
-
+      return Page::all();
     }
 
     /**
@@ -57,15 +52,11 @@ class CpWebsitePagesController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function show($website_id, $page_id)
+    public function show($id)
     {
 
-        $page = Website::findOrFail($website_id)
-            ->load('pages')
-            ->pages()
-            ->findOrFail($page_id);
-
-        return view('pages::detail', compact('page'));
+      return Page::find($id)
+        ->render();
 
     }
 
