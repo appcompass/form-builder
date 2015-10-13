@@ -381,6 +381,43 @@
 					}
 				});
 			});
+			$(document).on('submit', '.ajax-form', function(e){
+				e.preventDefault();
+
+				var form = $(this);
+				var method = form.attr('method');
+				var target = form.attr('data-target');
+				var action = form.attr('action');
+				var formData = new FormData(form[0]);
+
+				if (form.data('loading') === true) {
+					return;
+				}
+				form.data('loading', true);
+
+				$.ajax({
+					url: action,
+					type: method,
+					data: formData,
+					processData: false,
+					contentType: false,
+					error: function(err){
+						console.log(err);
+					},
+					success: function(data){
+						$(target).html(data);
+					},
+					complete: function(xhr, status){
+						form.data('loading', false);
+						if (status =='success') {
+							loadNavJs($(target));
+							loadData($(target));
+						}else{
+							console.log(status);
+						}
+					}
+				});
+			});
 		});
 	</script>
 </body>
