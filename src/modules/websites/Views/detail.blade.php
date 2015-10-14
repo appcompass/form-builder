@@ -5,18 +5,10 @@
 					<section class="panel">
 						<div class="panel-body">
 							<ul class="nav nav-pills nav-stacked mail-nav">
-								<li class="active"><a href="#" data-click="/cp/websites/{{ $record->id }}/edit" data-target="#website-detail"> <i class="fa fa-list"></i> Website Connection </a></li>
-								<li><a href="#" data-click="/cp/websites/{{ $record->id }}/settings" data-target="#website-detail"> <i class="fa fa-list"></i> Website Configuration </a></li>
-								@if($record->load('pages.template.sections'))
-
-									@foreach($record->pages as $page)
-
-											<li><a href="" data-click="/cp/websites/{{ $record->id }}/pages/{{ $page->id }}"  data-target="#main-content"><i class="fa fa-list"></i>{{ ucfirst($page->name) }}</a></li>
-
-									@endforeach
-
-								@endif
-							</ul>
+								<li class="active"><a href="#" data-click="/cp/websites/{{ $record->id }}/edit" data-target="#website-detail"> <i class="fa fa-list"></i> Connection Info </a></li>
+								<li><a href="#" data-click="/cp/websites/{{ $record->id }}/settings" data-target="#website-detail"> <i class="fa fa-list"></i> Configuration </a></li>
+								<li><a href="#" data-click="/cp/websites/{{ $record->id }}/pages" data-target="#main-content"> <i class="fa fa-list"></i> Pages </a></li>
+						</ul>
 						</div>
 					</section>
 
