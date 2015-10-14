@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use Illuminate\Http\Request;
 use P3in\Models\Page;
+use P3in\Models\Template;
 use P3in\Models\Website;
 
 class CpWebsitePagesController extends Controller
@@ -60,12 +61,14 @@ class CpWebsitePagesController extends Controller
     public function show($website_id, $page_id)
     {
 
-        $page = Website::findOrFail($website_id)
+        $website = Website::findOrFail($website_id);
+
+        $page = $website
             ->load('pages')
             ->pages()
             ->findOrFail($page_id);
 
-        return view('pages::detail', compact('page'));
+        return view('pages::detail', compact('page', 'website'));
 
     }
 
@@ -75,9 +78,19 @@ class CpWebsitePagesController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function edit($id)
+    public function edit($website_id, $page_id)
     {
-        //
+
+        $website = Website::findOrFail($website_id);
+
+        $page = $website
+            ->load('pages')
+            ->pages()
+            ->findOrFail($page_id);
+
+        $templates = Template::all()->lists('name', 'id');
+
+        return view('pages::edit', compact('page', 'website', 'templates'));
     }
 
     /**

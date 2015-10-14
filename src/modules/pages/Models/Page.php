@@ -84,11 +84,11 @@ class Page extends Model
 	 *
 	 *
 	 */
-	public function render()
+	public function render($data)
 	{
 
 		return $this->template
-			->render();
+			->render($data);
 
 	}
 

@@ -5,6 +5,7 @@ namespace P3in\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use Illuminate\Http\Request;
+use Illuminate\View\Factory;
 use P3in\Models\Page;
 use P3in\Models\Website;
 
@@ -54,9 +55,27 @@ class PagesController extends Controller
      */
     public function show($id)
     {
+        $data = [
+            "variable" => "Foo",
+            "items" => [
+                ['name' => 'Allston'],
+                ['name' => 'North End'],
+                ['name' => 'Charlestown'],
+                ['name' => 'Beacon Hill'],
+                ['name' => 'Financial District']
+            ],
+            'page' => Page::find($id)
+        ];
 
-      return Page::find($id)
-        ->render();
+        $includes = Page::find($id)
+            ->render($data);
+
+        $template = array_keys($includes)[0];
+        $includes = $includes[$template];
+
+        return view($template)
+            ->with('includes', $includes)
+            ->with('data', $data);
 
     }
 

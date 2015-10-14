@@ -36,10 +36,14 @@ class Section extends Model
 	 *
 	 *
 	 */
-	public function render()
+	public function render($data)
 	{
 
-		return view($this->display_view)->render();
+		return $this->display_view;
+
+		// return view($this->display_view)->with('data', $data)->render();
+		// return view($this->display_view)->render();
+		// return view($this->display_view)->render();
 
 	}
 
@@ -50,6 +54,8 @@ class Section extends Model
 	 */
 	public function templates()
 	{
+
 		return $this->belongsToMany(Template::class, 'template_sections');
+
 	}
 }

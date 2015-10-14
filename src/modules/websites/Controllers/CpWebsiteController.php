@@ -33,7 +33,10 @@ class CpWebsiteController extends Controller
 
     public function show($id)
     {
-        return view('websites::detail', ['record' => Website::findOrFail($id)]);
+
+        $record = Website::findOrFail($id)->load('pages.template.sections');
+
+        return view('websites::detail')->with('record', $record);
     }
 
     public function edit($id)

@@ -34,14 +34,14 @@ class Template extends Model
 	 *
 	 *
 	 */
-	public function render()
+	public function render($data)
 	{
 
-		$out = '';
+		$out = [];
 
 	  foreach ($this->sections as $section) {
 
-	  	$out .= $section->render();
+	  	$out[$this->master][] = $section->render($data);
 
 	  }
 
@@ -55,7 +55,9 @@ class Template extends Model
 	*/
 	public function sections()
 	{
-		$rel = $this->belongsToMany(Section::class);
+		$rel = $this->belongsToMany(Section::class)
+			->withPivot(['template_section', 'order'])
+			->orderBy('pivot_order', 'asc');
 
 		return $rel;
 	}

@@ -20,7 +20,7 @@
 
           @foreach($website->pages as $page)
             <tr>
-              <td><a href="#" data-click="/cp/webistes/{{ $website->id }}/pages/{{ $page->id }}" data-target="#main-content">{{ $page->title }}</a></td>
+              <td><a href="#" data-click="/cp/websites/{{ $website->id }}/pages/{{ $page->id }}" data-target="#main-content">{{ $page->title }}</a></td>
               <td><a href="{{ $page->fullUrl }}" target="_blank">{{ $page->slug }}</a></td>
               <td>{{ $page->created_at }}</td>
               <td>{{ $page->published_at }}</td>
