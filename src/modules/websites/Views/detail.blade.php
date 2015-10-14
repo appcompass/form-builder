@@ -5,7 +5,7 @@
 					<section class="panel">
 						<div class="panel-body">
 							<ul class="nav nav-pills nav-stacked mail-nav">
-								<li class="active"><a href="#" data-click="/cp/websites/{{ $record->id }}/connection" data-target="#website-detail"> <i class="fa fa-list"></i> Website Connection </a></li>
+								<li class="active"><a href="#" data-click="/cp/websites/{{ $record->id }}/edit" data-target="#website-detail"> <i class="fa fa-list"></i> Website Connection </a></li>
 								<li><a href="#" data-click="/cp/websites/{{ $record->id }}/settings" data-target="#website-detail"> <i class="fa fa-list"></i> Website Configuration </a></li>
 							</ul>
 						</div>
@@ -39,7 +39,7 @@
 						</div>
 					</section>
 				</div>
-				<div class="col-sm-9" id="website-detail" data-load="/cp/websites/{{ $record->id }}/connection"></div>
+				<div class="col-sm-9" id="website-detail" data-load="/cp/websites/{{ $record->id }}/edit"></div>
 			</div>
 
 		<!-- page end-->

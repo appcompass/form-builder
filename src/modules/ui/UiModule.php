@@ -22,4 +22,27 @@ Class UiModule extends BaseModule
 	{
 
 	}
+
+	/**
+	 * Render cpNav
+	 *
+	 *
+	 */
+	public function cpNav()
+	{
+
+		return [
+			'name' => $this->module_name,
+			'belongs_to' => null,
+			'order' => 0,
+			'label' => 'Dashboard',
+			'icon' => 'fa-dashboard',
+			'attributes' => [
+				'data-click' => '/cp/dashboard',
+				'data-target' => '#main-content',
+			],
+			'sub_nav' => null,
+		];
+
+	}
 }

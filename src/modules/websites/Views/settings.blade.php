@@ -1,10 +1,10 @@
 	    <link rel="stylesheet" type="text/css" href="/assets/ui/js/bootstrap-colorpicker/css/colorpicker.css" />
-		<section class="panel">
-			<header class="panel-heading">
-				Website Default Header/Meta Data
-			</header>
-			<div class="panel-body">
-				<form class="form-horizontal bucket-form ajax-form" method="post" action="/cp/websites/{{ $record->id }}/settings" data-target="#website-detail">
+		<form class="form-horizontal bucket-form ajax-form" method="post" action="/cp/websites/{{ $record->id }}/settings" data-target="#website-detail">
+			<section class="panel">
+				<header class="panel-heading">
+					Website Default Header/Meta Data
+				</header>
+				<div class="panel-body">
 					<div class="form-group">
 						<label class="col-sm-3 control-label">Default Title</label>
 						<div class="col-sm-6">
@@ -36,20 +36,19 @@
 							<textarea class="form-control" name="settings[robot_txt]">{{ $record->settings()->robot_txt or '' }}</textarea>
 						</div>
 					</div>
- 				</form>
-			</div>
-		</section>
-		<section class="panel">
-			<header class="panel-heading">
-				Website Theme
-			</header>
-			<div class="panel-body">
-				<form class="form-horizontal bucket-form ajax-form" method="post" action="/cp/websites/{{ $record->id }}/settings" data-target="#website-detail">
+				</div>
+			</section>
+			<section class="panel">
+				<header class="panel-heading">
+					Website Theme
+				</header>
+				<div class="panel-body">
 					<div class="form-group">
 						<label class="col-sm-3 control-label">Website Logo</label>
 						<div class="col-sm-6">
-							<div>{{ $record->settings()->theme->logo or '' }}</div>
-							<input type="file" name="settings[theme][logo]">
+							<div>{{ $record->settings()->theme->logo->file or '' }}</div>
+							<input type="file" name="settings[theme][logo][file]">
+							<input type="hidden" name="settings[theme][logo][path]" value="/images/">
 						</div>
 					</div>
 					<div class="form-group">
@@ -64,28 +63,10 @@
 							<input type="text" class="colorpicker-default form-control" name="settings[theme][secondary_color]" value="{{ $record->settings()->theme->secondary_color or '' }}">
 						</div>
 					</div>
-					<div class="form-group">
-						<label class="col-sm-3 control-label">Headings Font</label>
-						<div class="col-sm-6">
-							{{ $record->settings()->theme->heading_font or '' }}
-							<select class="form-control" name="settings[theme][heading_font]">
-								<option></option>
-							</select>
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-sm-3 control-label">Body Text Font</label>
-						<div class="col-sm-6">
-							{{ $record->settings()->theme->body_font or '' }}
-							<select class="form-control" name="settings[theme][body_font]">
-								<option></option>
-							</select>
-						</div>
-					</div>
  					<button type="submit" class="btn btn-info">Save</button>
- 				</form>
-			</div>
-		</section>
+				</div>
+			</section>
+		</form>
 		<script type="text/javascript" src="/assets/ui/js/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
 		<script type="text/javascript">
 			$('.colorpicker-default').colorpicker({

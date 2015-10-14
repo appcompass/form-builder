@@ -7,13 +7,21 @@
 						Manage Websites
 					</header>
 					<div class="panel-body">
+                            <div class="clearfix">
+                                <div class="btn-group">
+                                    <a id="editable-sample_new" class="btn btn-primary" href="#" data-click="/cp/websites/create" data-target="#main-content">
+                                        Add New <i class="fa fa-plus"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="space15"></div>
 						<table class="table  table-hover general-table">
 							<thead>
 							<tr>
 								<th>Name</th>
 								<th>URL</th>
 								<th>Created</th>
-								<th>Published</th>
+								<th>Updated</th>
 							</tr>
 							</thead>
 							<tbody>
@@ -22,7 +30,7 @@
 								<td><a href="#" data-click="/cp/websites/{{ $record->id }}" data-target="#main-content">{{ $record->site_name }}</a></td>
 								<td><a href="{{ $record->site_url }}" target="_blank">{{ $record->site_url }}</a></td>
 								<td>{{ $record->created_at }}</td>
-								<td>{{ $record->published_at }}</td>
+								<td>{{ $record->updated_at }}</td>
 							</tr>
 							@endforeach
 							</tbody>

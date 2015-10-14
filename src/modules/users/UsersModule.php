@@ -37,13 +37,33 @@ Class UsersModule extends BaseModule
 		return "Alerts!!";
 	}
 
+	/**
+	 * Render cpNav
+	 *
+	 *
+	 */
 	public function cpNav()
 	{
 		return [
-			'/cp/websites' => [
-				'label' => 'Websites Manager',
-				'sub_nav' => []
-			]
+			'name' => $this->module_name,
+			'belongs_to' => null,
+			'order' => 1,
+			'label' => 'Users Manager',
+			'icon' => 'fa-users',
+			'attributes' => [
+				'href' => 'javascript:;',
+			],
+			'sub_nav' => [
+				[
+					'order' => 0,
+					'label' => 'All Users',
+					'icon' => '',
+					'attributes' => [
+						'data-click' => '/cp/users',
+						'data-target' => '#main-content',
+					],
+				]
+			],
 		];
 	}
 }

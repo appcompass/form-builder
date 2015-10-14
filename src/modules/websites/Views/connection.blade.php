@@ -1,11 +1,4 @@
 <section class="panel">
-	<header class="panel-heading">Header</header>
-	<div class="panel-body">
-		<h1>Body</h1>
-	</div>
-</section>
-
-<section class="panel">
 	<header class="panel-heading">
 		Connection Information
 	</header>
