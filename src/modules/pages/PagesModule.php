@@ -46,6 +46,7 @@ Class PagesModule extends BaseModule
                 'attributes' => [
                     'data-click' => "/cp/websites/{$site->id}/pages",
                     'data-target' => '#main-content',
+	                'href' => 'javascript:;',
                 ],
                 'sub_nav' => null
             ];

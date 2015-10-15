@@ -56,11 +56,13 @@ Class UsersModule extends BaseModule
 			'sub_nav' => [
 				[
 					'order' => 0,
+					'belongs_to' => $this->module_name,
 					'label' => 'All Users',
 					'icon' => '',
 					'attributes' => [
 						'data-click' => '/cp/users',
 						'data-target' => '#main-content',
+		                'href' => 'javascript:;',
 					],
 				]
 			],

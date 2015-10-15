@@ -40,6 +40,7 @@ Class PermissionsModule extends BaseModule
             'attributes' => [
                 'data-click' => '/cp/permissions',
                 'data-target' => '#main-content',
+                'href' => 'javascript:;',
             ],
             'sub_nav' => null,
         ];
