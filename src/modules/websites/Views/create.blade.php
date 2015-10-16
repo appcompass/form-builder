@@ -17,6 +17,7 @@
                         </header>
                         <div class="panel-body">
                             <form class="form-horizontal bucket-form ajax-form" method="post" action="/cp/websites" data-target="#main-content">
+								{{ csrf_field() }}
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Name</label>
                                     <div class="col-sm-6">

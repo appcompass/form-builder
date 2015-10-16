@@ -3,7 +3,8 @@
 		Connection Information
 	</header>
 	<div class="panel-body">
-		<form class="form-horizontal bucket-form ajax-form" method="post" action="/cp/websites/{{ $record->id }}/connection" data-target="#website-detail">
+		<form class="form-horizontal bucket-form ajax-form" method="put" action="/cp/websites/{{ $record->id }}" data-target="#record-detail">
+			{{ csrf_field() }}
 			<div class="form-group">
 				<label class="col-sm-3 control-label">Name</label>
 				<div class="col-sm-6">

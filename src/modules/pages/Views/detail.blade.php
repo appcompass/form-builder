@@ -5,13 +5,13 @@
           <section class="panel">
             <div class="panel-body">
               <ul class="nav nav-pills nav-stacked mail-nav">
-                <li class="active"><a href="#" data-click="/cp/websites/{{ $website->id }}/pages/{{ $page->id }}/edit" data-target="#website-detail"> <i class="fa fa-list"></i> General Informations </a></li>
-                {{-- <li><a href="#" data-click="/cp/websites/{{ $page->id }}/settings" data-target="#website-detail"> <i class="fa fa-list"></i> Website Configuration </a></li> --}}
+                <li class="active"><a href="#" data-click="/cp/websites/{{ $website->id }}/pages/{{ $page->id }}/edit" data-target="#record-detail"> <i class="fa fa-list"></i> General Informations </a></li>
+                {{-- <li><a href="#" data-click="/cp/websites/{{ $page->id }}/settings" data-target="#record-detail"> <i class="fa fa-list"></i> Website Configuration </a></li> --}}
                 @if($page->load('template.sections'))
 
                   @foreach($page->template->sections as $section)
 
-                      <li><a href="" data-click="/cp/websites/{{ $page->id }}/pages/{{ $page->id }}/section/{{ $section->id }}"  data-target="#website-detail"><i class="fa fa-list"></i>{{ ucfirst($section->name) }}</a></li>
+                      <li><a href="" data-click="/cp/websites/{{ $page->id }}/pages/{{ $page->id }}/section/{{ $section->id }}"  data-target="#record-detail"><i class="fa fa-list"></i>{{ ucfirst($section->name) }}</a></li>
 
                   @endforeach
 
@@ -49,7 +49,7 @@
             </div>
           </section>
         </div>
-        <div class="col-sm-9" id="website-detail" data-load="/cp/websites/{{ $website->id }}/pages/{{ $page->id }}/edit"></div>
+        <div class="col-sm-9" id="record-detail" data-load="/cp/websites/{{ $website->id }}/pages/{{ $page->id }}/edit"></div>
       </div>
 
     <!-- page end-->

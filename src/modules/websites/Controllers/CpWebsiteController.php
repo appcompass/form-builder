@@ -15,7 +15,8 @@ class CpWebsiteController extends Controller
 
     public function index()
     {
-        return view('websites::list', ['records' => Website::all()]);
+    	$records = Website::all();
+        return view('websites::index', compact('records'));
     }
 
     public function create()
@@ -25,8 +26,8 @@ class CpWebsiteController extends Controller
 
     public function store(Request $request)
     {
-        $website = Website::create($request->all());
-        return view('websites::detail', ['record' => $website]);
+        $record = Website::create($request->all());
+        return view('websites::show', compact('record'));
 
     }
 
@@ -36,29 +37,19 @@ class CpWebsiteController extends Controller
 
         $record = Website::findOrFail($id)->load('pages.template.sections');
 
-        return view('websites::detail')->with('record', $record);
+        return view('websites::show')->with('record', $record);
     }
 
     public function edit($id)
     {
-        return view('websites::connection', ['record' => Website::findOrFail($id)]);
+        return view('websites::edit', ['record' => Website::findOrFail($id)]);
     }
 
     public function update(Request $request, $id)
     {
-        $website = Website::findOrFail($id);
-        $website->update($request->all());
-        return view('websites::connection', ['record' => $website]);
-    }
-
-    public function showSettings($id)
-    {
-        return view('websites::settings', ['record' => Website::findOrFail($id)]);
-    }
-
-    public function updateSettings(Request $request, $id)
-    {
-        return view('websites::settings', ['record' => Website::findOrFail($id)->settings($request->input('settings'))]);
+        $record = Website::findOrFail($id);
+        $record->update($request->all());
+        return view('websites::edit', compact('record'));
     }
 
 }
