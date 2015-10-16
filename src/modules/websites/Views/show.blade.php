@@ -8,7 +8,7 @@
 								<li class="active"><a href="#" data-click="/cp/websites/{{ $record->id }}/edit" data-target="#record-detail"> <i class="fa fa-list"></i> Connection Info </a></li>
 								<li><a href="#" data-click="/cp/websites/{{ $record->id }}/settings" data-target="#record-detail"> <i class="fa fa-list"></i> Configuration </a></li>
 								<li><a href="#" data-click="/cp/websites/{{ $record->id }}/pages" data-target="#main-content"> <i class="fa fa-list"></i> Pages </a></li>
-						</ul>
+							</ul>
 						</div>
 					</section>
 
