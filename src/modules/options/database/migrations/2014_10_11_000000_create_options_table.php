@@ -30,7 +30,9 @@ class CreateOptionsTable extends Migration
                 ->on('options')
                 ->onDelete('cascade');
 
+            $table->boolean('multi')->default('false');
             $table->integer('option_id');
+            $table->index(['id', 'label']);
         });
     }
 

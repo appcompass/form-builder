@@ -17,11 +17,12 @@ use P3in\Models\Group;
 use P3in\Models\Permission;
 use P3in\Profiles\BaseProfile;
 use P3in\Traits\AlertableTrait as Alertable;
+use P3in\Traits\OptionableTrait;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
 
-	use Authenticatable, CanResetPassword, Alertable, Authorizable;
+	use Authenticatable, CanResetPassword, Alertable, Authorizable, OptionableTrait;
 
 	/**
 	 * The database table used by the model.

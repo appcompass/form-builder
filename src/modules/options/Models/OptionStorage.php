@@ -3,6 +3,7 @@
 namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use P3in\Models\Option;
 
 class OptionStorage extends Model
 {
@@ -14,11 +15,9 @@ class OptionStorage extends Model
   protected $table = 'options_storage';
 
   /**
-  * Establish timestamps presence
-  *
-  *
-  *
-  */
+   * Establish timestamps presence
+   *
+   */
   public $timestamps = false;
 
   /**
@@ -34,11 +33,22 @@ class OptionStorage extends Model
   ];
 
   /**
-  *
-  *
-  *
-  *
-  */
+   * Hidden from toArray and toJson
+   */
   protected $hidden = [];
+
+
+  /**
+   *
+   */
+  public function optionable()
+  {
+    return $this->morphTo();
+  }
+
+  public function option()
+  {
+    return $this->belongsTo(Option::class, 'option_label', 'label');
+  }
 
 }

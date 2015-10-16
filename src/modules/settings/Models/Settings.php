@@ -13,6 +13,10 @@ class Settings extends Model
     'data'
   ];
 
+  protected $casts = [
+    'data' => 'object'
+  ];
+
   public function settingable()
   {
     return $this->morphTo();

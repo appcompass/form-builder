@@ -49,7 +49,8 @@ trait SettingsTrait
     }
 
 
-    return $this->json;
+    // return $this->json;
+    return $this->morphOne(Settings::class, 'settingable');
   }
 
   /**
@@ -78,7 +79,7 @@ trait SettingsTrait
 
     $this->settings->data = json_encode($this->json);
 
-    $this->store();
+    $this->storeSetting();
 
     return $this->json;
 
@@ -90,7 +91,7 @@ trait SettingsTrait
    *
    *
    */
-  private function store()
+  private function storeSetting()
   {
 
     $rel = $this->morphOne(Settings::class, 'settingable');
@@ -118,7 +119,7 @@ trait SettingsTrait
 
         $this->settings = $rel->firstOrFail();
 
-        $this->json = json_decode($this->settings->data);
+        $this->json = $this->settings->data;
 
       } catch (ModelNotFoundException $e) {
 
@@ -131,10 +132,7 @@ trait SettingsTrait
         return $rel->save($this->settings);
 
       }
-
-
     }
-
   }
 
 }
