@@ -32,7 +32,7 @@ class CreateOptionsTable extends Migration
 
             $table->boolean('multi')->default('false');
             $table->integer('option_id');
-            $table->index(['id', 'label']);
+            $table->index(['id', 'option_label']);
         });
     }
 
