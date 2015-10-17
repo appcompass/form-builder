@@ -149,42 +149,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	}
 
 	/**
-	 *		Get galleries owned by the user
-	 *
-	 *
-	 */
-	public function galleries()
-	{
-
-		if (!Modular::isDef('galleries')) {
-
-			throw new Exception('Galleries module not loaded, unable to fetch relation.');
-
-		}
-
-		return $this->hasMany(Gallery::class);
-
-	}
-
-	/**
-	 *	Get photos owned by the user
-	 *
-	 *
- 	 */
-	public function photos()
-	{
-
-		if (! Modular::isDef('photos')) {
-
-			throw new Exception('Photos module not loaded, unable to fetch relation.');
-
-		}
-
-		return $this->hasMany(Photo::class);
-
-	}
-
-	/**
 	 *	Get/Set user's Avatar
 	 *
 	 *
@@ -215,32 +179,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 		return $this->morphOne(Photo::class, 'photoable');
 
-	}
-
-	public function getClassProgressStatusAttribute()
-	{
-		if ($this->class_progress == 100) {
-			return 'success';
-		}elseif($this->class_progress < 100 && $this->class_progress >= 50){
-			return 'warning';
-		}elseif($this->class_progress < 34){
-			return 'danger';
-		}
-	}
-
-	// This method needs to be converted into an actual field/relationship between users and websites.
-	// Even admin users would use the "admin" website or at least be non-t assigned (0).
-	// This means an update to the schema granted, but I think is key here.
-	// We will never have users without at least one website.
-	public function getSiteRegisteredOnAttribute()
-	{
-		$sites = [
-			'bostonpads.com',
-			'allstonpads.com',
-			'cambridgepads.com',
-		];
-		$k = array_rand($sites);
-		return $sites[$k];
 	}
 
 }
