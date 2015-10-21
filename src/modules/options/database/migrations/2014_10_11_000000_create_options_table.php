@@ -16,13 +16,14 @@ class CreateOptionsTable extends Migration
             $table->increments('id');
             $table->string('label')->unique();
             $table->json('content')->nullable();
+            $table->boolean('multi')->default('false');
             $table->timestamps();
         });
 
         Schema::create('options_storage', function(Blueprint $table) {
             $table->increments('id');
-            $table->string('model');
-            $table->integer('item_id');
+            $table->string('optionable_type');
+            $table->integer('optionable_id');
 
             $table->string('option_label');
             $table->foreign('option_label')
@@ -30,7 +31,6 @@ class CreateOptionsTable extends Migration
                 ->on('options')
                 ->onDelete('cascade');
 
-            $table->boolean('multi')->default('false');
             $table->integer('option_id');
             $table->index(['id', 'option_label']);
         });

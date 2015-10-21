@@ -18,14 +18,17 @@
 
 namespace P3in\Traits;
 
+use DB;
+use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Collection;
 use P3in\Models\Option;
 use P3in\Models\OptionStorage;
-use Exception;
-use DB;
 
 trait OptionableTrait
 {
+
+	private $cache = [];
 
 	/**
 	 *	Set an option
@@ -43,18 +46,15 @@ trait OptionableTrait
 	{
 
 		if (is_array($label) || is_array($id)) {
-
 			return $this->setOptions([$label => $id]);
-
 		}
 
 		if (!is_null($id) && !$this->checkOption($label, $id)) {
-
 			throw new Exception("One or more options _id <$id> don't exist in <$label>");
-
 		}
 
-		$optStored = $this->options()->firstOrNew(['option_label' => $label]);
+		$optStored = $this->options()
+			->firstOrNew(['option_label' => $label]);
 
 		if (is_null($id)) {
 
@@ -65,7 +65,7 @@ trait OptionableTrait
 		$optStored->option_id = $id;
 		$optStored->option_label = $label;
 
-		return $this->singleOption($label)->save($optStored);
+		$this->options()->save($optStored);
 
 		return true;
 	}
@@ -75,36 +75,25 @@ trait OptionableTrait
 	 *
 	 *
 	 */
-	public function getOption($label)
+	public function getOption($label, $item = null)
 	{
-		try {
 
-			$optStored = $this->singleOption($label)->firstOrFail();
+		$option = $this->singleOption($label);
 
-			$options = $this->findOption($optStored->option_label, $optStored->option_id);
+		if (is_null($option)) {
+			return;
+		}
 
-			if (!count($options)) {
-				return false;
-			}
+		$selected = Option::byLabelAndId($option->option_label, $option->option_id);
 
-			$result = [];
-			array_walk($options, function($option) use(&$result) {
-				$result[] = json_decode($option->content, true);
-			});
+		if (!is_null($item) && count($selected) == 1) {
 
-			if ($optStored->option->multi) {
-
-				return collect($result);
-
-			}
-
-			return $result[0];
-
-		} catch (ModelNotFoundException $e) {
-
-			return false;
+				return $selected->$item;
 
 		}
+
+		return $selected;
+
 	}
 
 	/**
@@ -155,9 +144,7 @@ trait OptionableTrait
 	 */
 	private function checkOption($label, $id)
 	{
-
-		return count($this->findOption($label, $id)) === count(explode(',', $id));
-
+		return count(Option::byLabelAndId($label, $id)) === count(explode(',', $id));
 	}
 
 	/**
@@ -167,21 +154,11 @@ trait OptionableTrait
 	 */
 	private function singleOption($option_label)
 	{
-		return $this->options()->where('option_label', $option_label);
-	}
 
-	/**
-	 *	Get an option value via json lookup
-	 *
-	 *	Laravel subSelects are very slow, we went from ~24ms to a ~1ms by using raw
-	 */
-	private function findOption($label, $id)
-	{
-		$id = explode(',', $id);
+		return $this->options
+			->where('option_label', $option_label)
+			->first();
 
-		$id = "'".implode("', '", $id)."'";
-
-		return DB::select(DB::raw("SELECT content FROM (SELECT id, json_array_elements(content) as content FROM options WHERE label='$label') as opts where opts.content->>'_id' in ($id)" ));
 	}
 
 

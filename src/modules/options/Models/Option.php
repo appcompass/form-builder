@@ -2,8 +2,12 @@
 
 namespace P3in\Models;
 
+use DB;
+use Cache;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Collection;
 
 class Option extends Model
 {
@@ -13,6 +17,12 @@ class Option extends Model
    * @var string
    */
   protected $table = 'options';
+
+  /**
+   * Options Cache
+   *
+   */
+  public static $cache = [];
 
   /**
    * The attributes that are mass assignable.
@@ -25,8 +35,11 @@ class Option extends Model
     'multiple'
   ];
 
+  /**
+   *
+   */
   protected $casts = [
-    'content' => 'array'
+    'content' => 'object'
   ];
 
   /**
@@ -36,17 +49,7 @@ class Option extends Model
   protected $hidden = [];
 
   /**
-   *   Get option set by label - all the content
-   *
-   */
-  public static function byLabel($label)
-  {
-    return static::where('label', '=', $label)
-      ->firstOrFail();
-  }
-
-  /**
-  * add an option to an options set or create it
+  * Add an option to an options set or create it
   *
   * @param (string) label   Option's Label
   * @param (mixed)  content   Content that will be stored
@@ -115,6 +118,116 @@ class Option extends Model
       return false;
 
     }
+
+  }
+
+  /**
+   *  Get item value
+   *
+   */
+  public static function getItemValue($label, $id, $item = '*')
+  {
+
+    $result = static::byLabelAndId($label, $id)->first();
+
+    if (count($result)) {
+
+      if ($item == '*') {
+
+        return $result;
+
+      } else {
+
+        return $result->$item;
+
+      }
+
+    }
+
+    return $result;
+
+  }
+
+  public static function items($label)
+  {
+
+    $result = static::byLabel($label);
+
+    if (!count($result)) {
+
+      return null;
+
+    }
+
+    return collect(json_decode($result->content));
+
+  }
+
+  /**
+   *   Get option set by label - all the content
+   *
+   */
+  public static function byLabel($label)
+  {
+
+    // Cache::forget($label);
+
+    return Cache::remember($label, 1, function() use($label) {
+
+      return DB::table('options')
+        ->select(['id', 'content', 'multi'])
+        ->where('label', $label)
+        ->limit(1)
+        ->first();
+
+    });
+
+  }
+
+  /**
+   *  Get an option value
+   *
+   */
+  public static function byLabelAndId($label, $id)
+  {
+
+    if (!is_array($id)) {
+
+      $id = explode(',', $id);
+
+    }
+
+    $options = static::items($label);
+
+    if (is_null($options)) {
+
+      throw new Exception("Option <$label> appears to be empty.");
+
+    }
+
+    $result = new Collection();
+
+    foreach ($id as $single_id) {
+
+      $option = $options
+        ->where('_id', intval($single_id))
+        ->first();
+
+      if (!count($option)) {
+        throw new \Exception("One or more stored option(s) not found in <$label>.");
+      }
+
+      $result->push($option);
+
+    }
+
+    if (!static::byLabel($label)->multi) {
+
+      return $result->first();
+
+    }
+
+    return $result;
 
   }
 

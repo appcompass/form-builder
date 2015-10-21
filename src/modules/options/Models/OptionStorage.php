@@ -39,6 +39,7 @@ class OptionStorage extends Model
 
 
   /**
+   *  Relation to the Model owning the option
    *
    */
   public function optionable()
@@ -46,9 +47,22 @@ class OptionStorage extends Model
     return $this->morphTo();
   }
 
+  /**
+   * Relation witn actual option
+   *
+   */
   public function option()
   {
     return $this->belongsTo(Option::class, 'option_label', 'label');
+  }
+
+  /**
+   * Get value
+   *
+   */
+  public function value($item = '*')
+  {
+    return Option::getItemValue($this->option_label, $this->option_id, $item);
   }
 
 }
