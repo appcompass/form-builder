@@ -159,7 +159,8 @@ class Option extends Model
 
     }
 
-    return collect(json_decode($result->content));
+    // return collect(json_decode($result->content));
+    return collect($result->content);
 
   }
 
@@ -174,12 +175,10 @@ class Option extends Model
 
     return Cache::remember($label, 1, function() use($label) {
 
-      return DB::table('options')
-        ->select(['id', 'content', 'multi'])
-        ->where('label', $label)
+      return Option::where('label', $label)
         ->limit(1)
+        ->get(['id', 'content', 'multi'])
         ->first();
-
     });
 
   }
