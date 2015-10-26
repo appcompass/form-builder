@@ -48,12 +48,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	];
 
 	/**
-	 * Properties to link the Model to
-	 *
-	 */
-	public $alert_props = ['id'];
-
-	/**
 	 * 	The attributes excluded from the model's JSON form.
 	 *
 	 * 	@var array
@@ -75,8 +69,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	public function permissions()
 	{
 
-		$this->checkPermissionsModule();
-
 		return $this->belongsToMany(Permission::class)->withTimestamps();
 
 	}
@@ -88,8 +80,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 */
 	public function allPermissions()
 	{
-
-		$this->checkPermissionsModule();
 
 		return Cache::remember($this->id, 1, function() {
 
@@ -122,7 +112,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	public function hasPermission($permission)
 	{
 
-		$this->checkPermissionsModule();
+		if (is_array($permission)) {
+
+			return $this->hasPermissions($permission);
+
+		}
 
 		return in_array($permission, $this->allPermissions()->toArray());
 
@@ -139,8 +133,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 		$permissions = explode(",", $permissions);
 
-		$this->checkPermissionsModule();
-
 		if (count($permissions) == 0) {
 			return true;
 		}
@@ -156,8 +148,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 */
 	public function groups()
 	{
-
-		$this->checkPermissionsModule();
 
 		return $this->belongsToMany(Group::class)->withTimestamps();
 
@@ -205,23 +195,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 		return sprintf("%s %s", $this->first_name, $this->last_name);
 
 	}
-
-	/**
-	 *
-	 *
-	 *
-	 */
-	public function checkPermissionsModule()
-	{
-
-	 if (! Modular::isDef('permissions')) {
-
-	 	throw new Exception("Permissions module is not loaded. Please load it before calling this method");
-
-	 }
-
-	}
-
 
 	/**
 	 *	Get/Set user's Avatar

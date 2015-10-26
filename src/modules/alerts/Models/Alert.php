@@ -84,13 +84,16 @@ class Alert extends Model
 
 		} else  {
 
-			if ( $user->hasPermissions($this->req_perms) ) {
+			if ( $user->hasPermission($this->req_perms) ) {
 
 				return $this;
 
 			}
 
 		}
+
+		return false;
 	}
+
 
 }
