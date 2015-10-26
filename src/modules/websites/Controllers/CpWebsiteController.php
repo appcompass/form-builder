@@ -3,6 +3,7 @@ namespace P3in\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use P3in\Models\UiConfig;
 use P3in\Models\Website;
 
 class CpWebsiteController extends Controller
@@ -11,12 +12,16 @@ class CpWebsiteController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->meta = UiConfig::where('module_name', 'websites')->firstOrFail()->config;
     }
 
     public function index()
     {
-    	$records = Website::all();
-        return view('websites::index', compact('records'));
+        $meta = $this->meta;
+
+        $records = Website::all();
+
+        return view('ui::index', compact('meta', 'records'));
     }
 
     public function create()

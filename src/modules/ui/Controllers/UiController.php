@@ -19,7 +19,7 @@ class UiController extends Controller {
 
 	public function getIndex()
 	{
-		return view('ui::index');
+		return view('ui::layouts.main');
 	}
 
 	public function getLeftNav()
