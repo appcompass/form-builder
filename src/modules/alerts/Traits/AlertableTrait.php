@@ -13,15 +13,28 @@ trait AlertableTrait
 	*
 	*
 	*/
-  public function setAlert($title, $message)
+  public function setAlert($title, $message, array $props = [])
 	{
 
-		return Alert::create([
+		$alert = new Alert([
 			'title' => $title,
-			'model' => get_class($this),
 			'message' => $message,
-			'props' => json_encode(getProps($this->alert_props, $this))
+			'props' => json_encode($props),
+			'hash' => bcrypt(time())
 		]);
+
+		return $this->alerts()->save($alert);
+
+	}
+
+	/**
+	 *
+	 *
+	 */
+	public function alerts()
+	{
+
+		return $this->morphMany(Alert::class, 'alertable');
 
 	}
 
@@ -33,22 +46,22 @@ trait AlertableTrait
 	*
 	*	@return Collection || Model Single Item
 	*/
-	public function alerts($limit = null, $id = null)
-	{
+	// public function alerts($limit = null, $id = null)
+	// {
 
-		$res = Alert::byModel(get_class($this))
-			->withProps(getPgWhereProps($this->alert_props, $this));
+	// 	$res = Alert::byModel(get_class($this))
+	// 		->withProps(getPgWhereProps($this->alert_props, $this));
 
-		if (!is_null($limit)) {
-			$res->take($limit);
-		}
+	// 	if (!is_null($limit)) {
+	// 		$res->take($limit);
+	// 	}
 
-		if (!is_null($id)) {
-			return $res->findOrFail($id);
-		}
+	// 	if (!is_null($id)) {
+	// 		return $res->findOrFail($id);
+	// 	}
 
-		return $res->get();
+	// 	return $res->get();
 
-	}
+	// }
 
 }

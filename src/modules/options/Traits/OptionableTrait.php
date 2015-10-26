@@ -28,8 +28,6 @@ use P3in\Models\OptionStorage;
 trait OptionableTrait
 {
 
-	private $cache = [];
-
 	/**
 	 *	Set an option
 	 *

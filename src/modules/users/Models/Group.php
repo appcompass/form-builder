@@ -34,14 +34,6 @@ class Group extends Model
 	protected $hidden = ['password', 'remember_token'];
 
 	/**
-	*	How Alert Prop field should be filtered for this query
-	*	gets converted in props->>'<propname>' = Model Property value
-	*	for example: $alert_props = ['id'] /// User->id = 5 /// whereRaw("props->'id' = value")
-	*
-	*/
-	protected $alert_props = [];
-
-	/**
 	*	Link groups and users
 	*
 	*

@@ -33,6 +33,10 @@
 	<script src="/assets/ui/js/jquery.customSelect.min.js" ></script>
 	<script src="/assets/ui/js/jquery.customSelect.min.js" ></script>
 
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/0.12.16/vue.min.js"></script>
+	<script src="assets/js/lity.min.js"></script>
+
 	@yield('scripts.footer')
 
 	<script type="text/javascript">

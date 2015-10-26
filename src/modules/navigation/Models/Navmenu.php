@@ -25,43 +25,62 @@ class Navmenu extends Model
 		'parent_id'
 	];
 
+	protected $with = ['children', 'items'];
+
 	/**
-	*	Get a navmenu by name
-	*
-	*
-	*
-	*/
+	 *	Get a navmenu by name
+	 *
+	 *
+	 */
 	public function scopeName($query, $name)
 	{
 		return $query->where('name', $name);
 	}
 
+	/**
+	 *
+	 *
+	 */
+	public function parent()
+	{
+	  return $this->belongsTo(Navmenu::class, 'parent_id');
+	}
+
+	/**
+	 *
+	 *
+	 */
+	public function children()
+	{
+		// return $this->hasMany(Navmenu::class)->where('parent_id', $this->id);
+		return $this->hasMany(Navmenu::class, 'parent_id');
+	}
+
   /**
-  *
-  *
-  *
-  *
-  */
+   *
+   *
+   *
+   */
   public function navigationItems()
   {
     return $this->hasMany('P3in\Models\NavigationItem');
   }
 
 	/**
-	*	Link items to Navigation Items
-	*
-	*
-	*/
+	 *	Link items to Navigation Items
+	 *
+	 *
+	 */
 	public function items()
 	{
 		return $this->belongsToMany('P3in\Models\NavigationItem');
 	}
 
 	/**
-	*
-	*
-	*
-	*/
+	 *	Get navigation menu by name
+	 *
+	 *
+	 */
 	public function scopeByName($query, $name)
 	{
 		return $query->where('name', $name)->firstOrFail();

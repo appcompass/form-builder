@@ -5,6 +5,7 @@ namespace P3in\Models;
 use BostonPads\Models\Gallery;
 use BostonPads\Models\Photo;
 use Exception;
+use Cache;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -12,6 +13,7 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\Authorizable;
+use Illuminate\Support\Collection;
 use Modular;
 use P3in\Models\Group;
 use P3in\Models\Permission;
@@ -46,11 +48,24 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	];
 
 	/**
+	 * Properties to link the Model to
+	 *
+	 */
+	public $alert_props = ['id'];
+
+	/**
 	 * 	The attributes excluded from the model's JSON form.
 	 *
 	 * 	@var array
 	 */
 	protected $hidden = ['password', 'remember_token'];
+
+	/**
+	 * Stuff to append to each request
+	 *
+	 *
+	 */
+	protected $appends = ['full_name'];
 
 	/**
 	*	Get all the permissions the user has
@@ -60,13 +75,41 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	public function permissions()
 	{
 
-		if (!Modular::isDef('permissions')) {
-
-			throw new Exception("Permissions module is not loaded. Please load it before calling this method");
-
-		}
+		$this->checkPermissionsModule();
 
 		return $this->belongsToMany(Permission::class)->withTimestamps();
+
+	}
+
+	/**
+	 * Return all the permissions of the user
+	 *
+	 * @return array permission owned by the user
+	 */
+	public function allPermissions()
+	{
+
+		$this->checkPermissionsModule();
+
+		return Cache::remember($this->id, 1, function() {
+
+			$this->load('groups.permissions')
+				->load('permissions');
+
+			$perms = collect($this->permissions->lists('type', 'id'));
+
+			$this->groups
+				->each(function($group) use($perms) {
+					$group->permissions
+						->lists('type', 'id')
+						->each(function($perm, $key) use($perms) {
+							$perms->push($perm);
+						});
+			});
+
+			return $perms->unique();
+
+		});
 
 	}
 
@@ -79,46 +122,52 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	public function hasPermission($permission)
 	{
 
-		if (! Modular::isDef('permissions')) {
+		$this->checkPermissionsModule();
 
-			throw new Exception("Permissions module is not loaded. Please load it before calling this method");
+		return in_array($permission, $this->allPermissions()->toArray());
 
-		}
-
-		return (bool)$this->permissions()
-			->where('type', $permission)
-			->count();
 	}
 
 	/**
 	 *	Check if user has a group of permissions
 	 *
 	 *	@param array permissions
+	 *	@return bool
 	 */
-	public function hasPermissions(array $permissions) {
+	public function hasPermissions($permissions)
+	{
 
-		return (bool)$this->permissions()
-			->whereIn('type', $permissions)
-			->count();
+		$permissions = explode(",", $permissions);
+
+		$this->checkPermissionsModule();
+
+		if (count($permissions) == 0) {
+			return true;
+		}
+
+		return (bool)count(array_intersect($this->allPermissions()->toArray(), $permissions)) == count($permissions);
 
 	}
 
 	/**
 	 *  Get all the groups this user belongs to
 	 *
+	 *
 	 */
 	public function groups()
 	{
 
-		return $this->belongsToMany(Group::class);
+		$this->checkPermissionsModule();
+
+		return $this->belongsToMany(Group::class)->withTimestamps();
 
 	}
 
 	/**
+	 *	Get either all or a specific profile type of a user
 	 *
 	 *
-	 *
-	 *
+	 *	TODO: this needs to be refactored a little
 	 */
 	public function profiles($type = null)
 	{
@@ -137,6 +186,15 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 	}
 
+	public function photos()
+	{
+	  return $this->hasMany(Photo::class);
+	}
+	public function galleries()
+	{
+	  return $this->hasMany(Gallery::class);
+	}
+
 	/**
 	 *	Get user's full name
 	 *
@@ -147,6 +205,23 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 		return sprintf("%s %s", $this->first_name, $this->last_name);
 
 	}
+
+	/**
+	 *
+	 *
+	 *
+	 */
+	public function checkPermissionsModule()
+	{
+
+	 if (! Modular::isDef('permissions')) {
+
+	 	throw new Exception("Permissions module is not loaded. Please load it before calling this method");
+
+	 }
+
+	}
+
 
 	/**
 	 *	Get/Set user's Avatar

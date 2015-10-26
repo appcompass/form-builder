@@ -55,7 +55,8 @@ class CreateUsersTable extends Migration
 				    ->on('users')
 				    ->onDelete('cascade');
 
-			$table->unique(['permission_id', 'user_id']);
+			// $table->unique(['permission_id', 'user_id']);
+			$table->primary(['permission_id', 'user_id']);
 			$table->timestamps();
 		});
 

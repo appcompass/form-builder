@@ -19,12 +19,6 @@ class Option extends Model
   protected $table = 'options';
 
   /**
-   * Options Cache
-   *
-   */
-  public static $cache = [];
-
-  /**
    * The attributes that are mass assignable.
    *
    * @var array
@@ -133,13 +127,9 @@ class Option extends Model
     if (count($result)) {
 
       if ($item == '*') {
-
         return $result;
-
       } else {
-
         return $result->$item;
-
       }
 
     }
@@ -148,6 +138,9 @@ class Option extends Model
 
   }
 
+  /**
+   *
+   */
   public static function items($label)
   {
 
@@ -159,7 +152,6 @@ class Option extends Model
 
     }
 
-    // return collect(json_decode($result->content));
     return collect($result->content);
 
   }
@@ -170,8 +162,6 @@ class Option extends Model
    */
   public static function byLabel($label)
   {
-
-    // Cache::forget($label);
 
     return Cache::remember($label, 1, function() use($label) {
 
