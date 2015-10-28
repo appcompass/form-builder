@@ -61,4 +61,13 @@ class LinkClass
 		}
 
 	}
+
+	/**
+	 *
+	 *
+	 */
+	public function toArray()
+	{
+	  return (array) $this->attributes;
+	}
 }

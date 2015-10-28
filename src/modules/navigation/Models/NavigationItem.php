@@ -5,12 +5,9 @@ namespace P3in\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use P3in\Models\Navmenu;
-use P3in\Traits\JsonPropScopesTrait as JsonPropScopes;
 
 class NavigationItem extends Model
 {
-
-	use JsonPropScopes;
 
 	/**
 	 * The database table used by the model.
@@ -36,11 +33,11 @@ class NavigationItem extends Model
 	];
 
 	/**
-	*
-	*
-	*
-	*/
+	 *	Validation Rules
+	 *
+	 */
 	public static $rules = [
+		'label' => 'required',
 		'link_text' => 'required',
 		'model' => 'required',
 		'url' => 'required'
@@ -54,13 +51,12 @@ class NavigationItem extends Model
 	protected $hidden = [];
 
 	/**
-	*	Link items to Navmenu
-	*
-	*
-	*/
-	public function navmenu()
+	 * Navigatable polymorphic
+	 *
+	 */
+	public function navigatable()
 	{
-		return $this->belongsTo(Navmenu::class);
+	  return $this->morphTo();
 	}
 
 }

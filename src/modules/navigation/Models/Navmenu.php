@@ -3,6 +3,7 @@
 namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 class Navmenu extends Model
 {
@@ -52,7 +53,6 @@ class Navmenu extends Model
 	 */
 	public function children()
 	{
-		// return $this->hasMany(Navmenu::class)->where('parent_id', $this->id);
 		return $this->hasMany(Navmenu::class, 'parent_id');
 	}
 
@@ -61,19 +61,44 @@ class Navmenu extends Model
    *
    *
    */
-  public function navigationItems()
+  public function item()
   {
-    return $this->hasMany('P3in\Models\NavigationItem');
+    return $this->item();
   }
 
 	/**
 	 *	Link items to Navigation Items
 	 *
-	 *
 	 */
 	public function items()
 	{
-		return $this->belongsToMany('P3in\Models\NavigationItem');
+		return $this->belongsToMany('P3in\Models\NavigationItem')->withPivot('order');
+	}
+
+	/**
+	 *	Try to link the instance passed to this navmenu
+	 *
+	 *	@param mixed $navItem either an instance of NavigationItem or an object which navItem method returns an instance of NavigationItem
+	 */
+	public function addItem($navItem)
+	{
+
+		if ($navItem instanceof NavigationItem) {
+
+			$order = intVal( DB::table('navigation_item_navmenu')
+				->where('navmenu_id', '=', $this->id)
+				->max('order') ) + 1;
+
+		  return $this->items()->attach($navItem, ['order' => $order] );
+
+		} else if(method_exists($navItem, 'navItem')) {
+
+			$navItem = $this->addItem($navItem->navItem);
+
+		}
+
+		return false;
+
 	}
 
 	/**

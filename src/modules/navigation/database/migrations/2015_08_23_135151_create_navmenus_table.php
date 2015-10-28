@@ -15,7 +15,7 @@ class CreateNavmenusTable extends Migration
         Schema::create('navmenus', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('req_permission')->nullable();
+            $table->string('req_perms')->nullable();
 
             $table->integer('parent_id')->unsigned()->nullable();
             $table->foreign('parent_id')->references('id')->on('navmenus');

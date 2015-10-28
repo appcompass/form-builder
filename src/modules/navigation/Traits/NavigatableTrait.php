@@ -2,19 +2,24 @@
 
 namespace P3in\Traits;
 
+use Exception;
+use Modular;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use P3in\Models\Navigation as Nav;
 use P3in\Models\NavigationItem;
 use P3in\Models\Navmenu;
 use P3in\Modules\Navigation\LinkClass;
-use P3in\Traits\JsonPropScopesTrait as JsonProp;
 use Validator;
-use Exception;
 
 trait NavigatableTrait
 
 {
 
-  use JsonProp;
+  /**
+   *  Return an array of attributes to be stored as NavigationItem for the model
+   *
+   */
+  abstract protected function makeLink($attributes = []);
 
   /**
   *  linkToNavmenu
@@ -39,46 +44,65 @@ trait NavigatableTrait
     }
   }
 
+  /**
+   *
+   *
+   */
+  public function navItem()
+  {
+
+    if (str_is('*Module', get_class($this))) {
+
+      $this->id = Modular::get($this->module_name)->id;
+
+      $rel = new MorphOne(
+        (new NavigationItem)->newQuery(),
+        $this,
+        'navigation_items.navigatable_type',
+        'navigation_items.navigatable_id',
+        'id'
+      );
+
+    }
+
+    $rel = $this->morphOne(NavigationItem::class, 'navigatable');
+
+    if ($rel->get()->count() == 0) {
+
+      $rel->save($this->makeNavigationItem());
+
+    }
+
+    return $rel;
+
+  }
 
 	/**
 	*	Try getting model's navigationItem or generate one
 	*
-	*  @param attrbiutes single/array list of overrides to be used instead of class' properties
+	*  @param
 	*/
-	public function navigationItem($attributes = null)
+	public function getNavigationItem($attributes = null)
   {
 
-		$navItem = NavigationItem::byModel(get_class($this))
-			->withProps(getPgWhereProps($this->navigation_props, $this))
-			->first();
+    $navItem = $this->navItem()->first();
 
-		if (is_null($navItem)) {
-			return $this->setNavigationItem($attributes);
-		} else {
-      // update database item with overrides
+    if (is_null($navItem)) {
+
+      $navItem = $this->navItem()->save($this->makeNavigationItem());
+
     }
 
-		return $navItem->first();
+    return $navItem;
 
 	}
 
 	/**
+	*  Get a Navigation Item
 	*
-	*
-	*
-	*
+	*  @return P3in\Models\NavigationItem
 	*/
-	public function getNavigation()
-	{
-		return "Navigation";
-	}
-
-	/**
-	*	Set Navigation
-	*
-	*	set LinkClass defaults for adding a NavigationItem
-	*/
-	private function setNavigationItem($attributes = [])
+	private function makeNavigationItem($attributes = [])
 	{
 
     if (!is_null($attributes) && is_array($attributes) ) {
@@ -87,29 +111,8 @@ trait NavigatableTrait
 
     }
 
-		$link = $this->makeLink();
-
-		$link->attributes['props'] = json_encode(getProps($this->navigation_props, $this));
-
-		$validate = Validator::make($link->attributes, NavigationItem::$rules);
-
-		if ($validate->passes()) {
-
-			return NavigationItem::create($link->attributes);
-
-		} else {
-
-      throw new Exception($validate->messages()->all());
-
-		}
+		return new NavigationItem((new LinkClass($this->makeLink()))->toArray());
 
 	}
 
-	/**
-	*	Make Link provides content for building a LinkClass
-	*	to be stored as a NavigationItem
-	*
-	*
-	*/
-	abstract protected function makeLink($attributes = []);
 }
