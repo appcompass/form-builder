@@ -6,55 +6,43 @@ use Illuminate\Http\Request;
 use P3in\Models\UiConfig;
 use P3in\Models\Website;
 
-class CpWebsiteController extends Controller
+class CpWebsiteController extends UiBaseController
 {
 
     public function __construct()
     {
         $this->middleware('auth');
-        $this->meta = UiConfig::where('module_name', 'websites')->firstOrFail()->config;
+        $this->setControllerDefaults(__DIR__);
     }
 
     public function index()
     {
-        $meta = $this->meta;
-
-        $records = Website::all();
-
-        return view('ui::index', compact('meta', 'records'));
+        return parent::build('index', Website::all());
     }
 
     public function create()
     {
-        return view('websites::create');
+        return parent::build('create', Website::all());
     }
 
     public function store(Request $request)
     {
-        $record = Website::create($request->all());
-        return view('websites::show', compact('record'));
-
+        return parent::build('create', Website::create($request->all()));
     }
-
 
     public function show($id)
     {
-
-        $record = Website::findOrFail($id)->load('pages.template.sections');
-
-        return view('websites::show')->with('record', $record);
+        return parent::build('show', Website::findOrFail($id));
     }
 
     public function edit($id)
     {
-        return view('websites::edit', ['record' => Website::findOrFail($id)]);
+        return parent::build('edit', Website::findOrFail($id));
     }
 
     public function update(Request $request, $id)
     {
-        $record = Website::findOrFail($id);
-        $record->update($request->all());
-        return view('websites::edit', compact('record'));
+        return parent::build('edit', Website::findOrFail($id)->update($request->all()));
     }
 
 }
