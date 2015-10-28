@@ -389,7 +389,7 @@
 				e.preventDefault();
 
 				var form = $(this);
-				var method = form.attr('method');
+				var method = form.find('[name="_method"]').val();
 				var target = form.attr('data-target');
 				var action = form.attr('action');
 				var formData = new FormData(form[0]);
