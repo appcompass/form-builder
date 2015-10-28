@@ -33,11 +33,9 @@ Class WebsitesModule extends BaseModule
     public function checkOrSetUiConfig()
     {
 
-        // $module = Module::where('name', $this->module_name)->first();
-
         $module = Modular::get($this->module_name);
 
-        if (is_null($module->config)) {
+        // if (is_null($module->config)) {
 
             $module->config = [
                 'base_url' => "/cp/{$this->module_name}",
@@ -155,7 +153,7 @@ Class WebsitesModule extends BaseModule
 
             $module->save();
 
-        }
+        // }
 
     }
 

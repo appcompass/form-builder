@@ -40,7 +40,11 @@
 	@yield('scripts.footer')
 
 	<script type="text/javascript">
-
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
 		@if(empty($nolock))
 			// This is where we put the logic which handles auto redirecting the user to the /lock-screen when they have been idle for X seconds.
 		@endif
@@ -389,7 +393,6 @@
 				e.preventDefault();
 
 				var form = $(this);
-				var method = form.find('[name="_method"]').val();
 				var target = form.attr('data-target');
 				var action = form.attr('action');
 				var formData = new FormData(form[0]);
@@ -401,7 +404,7 @@
 
 				$.ajax({
 					url: action,
-					type: method,
+					type: 'POST',
 					data: formData,
 					processData: false,
 					contentType: false,

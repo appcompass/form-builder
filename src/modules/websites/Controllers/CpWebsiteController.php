@@ -1,13 +1,12 @@
 <?php
 namespace P3in\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use P3in\Models\UiConfig;
 use P3in\Models\Website;
 
 class CpWebsiteController extends UiBaseController
 {
+    protected $allowedCalls = ['index', 'create', 'store', 'show', 'edit', 'update', 'destroy'];
 
     public function __construct()
     {
@@ -27,7 +26,7 @@ class CpWebsiteController extends UiBaseController
 
     public function store(Request $request)
     {
-        return parent::build('create', Website::create($request->all()));
+        return parent::build('store', Website::create($request->all()));
     }
 
     public function show($id)
@@ -42,7 +41,9 @@ class CpWebsiteController extends UiBaseController
 
     public function update(Request $request, $id)
     {
-        return parent::build('edit', Website::findOrFail($id)->update($request->all()));
+        $record = Website::findOrFail($id);
+        $record->update($request->all());
+        return parent::build('edit', $record);
     }
 
 }

@@ -6,6 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="">
 	<meta name="author" content="Plus 3 Interactive, LLC">
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
 	<link rel="shortcut icon" href="/assets/ui/images/favicon.png">
 
 	<title>Plus 3 CMS</title>

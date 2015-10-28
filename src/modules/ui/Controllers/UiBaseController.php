@@ -30,23 +30,27 @@ class UiBaseController extends ModularBaseController {
         return empty($args) ? call_user_func([$this, $method]) : call_user_func_array([$this,$method], $args);
     }
 
-    public function runIndex(Collection $records)
+    private function runIndex()
     {
+        $records = func_get_arg(0);
+
         return view('ui::index', [
             'meta' => $this->meta,
             'records' => $records,
         ]);
     }
 
-    public function runCreate()
+    private function runCreate()
     {
         return view('ui::create', [
             'meta' => $this->meta,
         ]);
     }
 
-    public function runStore(Model $record)
+    private function runStore()
     {
+        $record = func_get_arg(0);
+
         $subnav = Event::fire('navigation.cms.sub', json_encode(['origin' => get_class($record), 'id' => $record->id] ))[0];
 
         return view('ui::show', [
@@ -57,8 +61,10 @@ class UiBaseController extends ModularBaseController {
 
     }
 
-    public function runShow(Model $record)
+    private function runShow()
     {
+        $record = func_get_arg(0);
+
         $subnav = Event::fire('navigation.cms.sub', json_encode(['origin' => get_class($record), 'id' => $record->id] ))[0];
 
         return view('ui::show', [
@@ -69,22 +75,29 @@ class UiBaseController extends ModularBaseController {
 
     }
 
-    public function runEdit(Model $record)
+    private function runEdit()
     {
+        $record = func_get_arg(0);
         return view('ui::edit', [
             'meta' => $this->meta,
             'record' => $record,
         ]);
     }
 
-    public function runUpdate(Model $record)
+    private function runUpdate()
     {
+        $record = func_get_arg(0);
 
-        return view('ui::edit', ['record' => $record]);
+        return view('ui::edit', [
+            'meta' => $this->meta,
+            'record' => $record,
+        ]);
     }
 
-    public function runDestroy(Collection $records)
+    private function runDestroy()
     {
+        $records = func_get_arg(0);
+
         return view('ui::index', [
             'meta' => $this->meta,
             'records' => $records,

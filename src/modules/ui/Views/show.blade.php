@@ -18,7 +18,7 @@
                 </div>
             </section>
 
-            @include('alerts::alerts')
+            {{-- @include('alerts::alerts') --}}
 
         </div>
         <div class="col-sm-9" id="record-detail" data-load="{{ $meta->base_url }}/{{ $record->id }}/edit"></div>
