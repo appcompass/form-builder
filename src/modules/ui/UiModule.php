@@ -5,6 +5,7 @@ namespace P3in\Modules;
 use P3in\Models\Navmenu;
 use P3in\Modules\BaseModule;
 use P3in\Traits\NavigatableTrait;
+use Modular;
 
 Class UiModule extends BaseModule
 {
@@ -26,7 +27,9 @@ Class UiModule extends BaseModule
 	public function register()
 	{
 
-		Navmenu::byName('cp-main-nav')->addItem($this->navItem);
+        if (Modular::isLoaded('navigation')) {
+            Navmenu::byName('cp-main-nav')->addItem($this->navItem);
+        }
 
 	}
 
@@ -42,7 +45,7 @@ Class UiModule extends BaseModule
 	        "props" => [
 	            'icon' => 'dashboard',
 	            "link" => [
-	                'data-click' => '/cp/galleries',
+	                'data-click' => '/cp/dashboard',
 	                'data-target' => '#main-content'
 	            ],
 	        ]

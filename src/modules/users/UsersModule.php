@@ -2,14 +2,15 @@
 
 namespace P3in\Modules;
 
+use Modular;
 use P3in\Models\Navmenu;
 use P3in\Modules\BaseModule;
-use P3in\Traits\NavigatableTrait;
+use P3in\Traits\NavigatableTrait as Navigatable;
 
 Class UsersModule extends BaseModule
 {
 
-    use NavigatableTrait;
+    use Navigatable;
 
     public $module_name = "users";
 
@@ -26,7 +27,13 @@ Class UsersModule extends BaseModule
     public function register()
     {
 
-        Navmenu::byName('cp-main-nav')->addItem($this->navItem);
+        if (Modular::isLoaded('navigation')) {
+            $main_nav = Navmenu::byName('cp-main-nav');
+            $main_nav_sub_nav =  Navmenu::byName('cp-main-nav-users', 'Users Manager');
+
+            $main_nav_sub_nav->addItem($this->navItem);
+            $main_nav->addChildren($main_nav_sub_nav);
+        }
 
     }
 
@@ -36,7 +43,7 @@ Class UsersModule extends BaseModule
     public function makeLink()
     {
       return [
-          "label" => 'Users',
+          "label" => 'All Users',
           "url" => '',
           "new_tab" => 'false',
           "req_perms" => null,
@@ -45,40 +52,10 @@ Class UsersModule extends BaseModule
             "link" => [
                 "data-click" => "/cp/users",
                 "data-target" => "#main-content",
+                'href' => 'javascript:;',
             ]
           ]
       ];
     }
 
-    /**
-     * Render cpNav
-     *
-     *
-     */
-    public function cpNav()
-    {
-        return [
-            'name' => $this->module_name,
-            'belongs_to' => null,
-            'order' => 1,
-            'label' => 'Users Manager',
-            'icon' => 'fa-users',
-            'attributes' => [
-                'href' => 'javascript:;',
-            ],
-            'sub_nav' => [
-                [
-                    'order' => 0,
-                    'belongs_to' => $this->module_name,
-                    'label' => 'All Users',
-                    'icon' => '',
-                    'attributes' => [
-                        'data-click' => '/cp/users',
-                        'data-target' => '#main-content',
-                        'href' => 'javascript:;',
-                    ],
-                ]
-            ],
-        ];
-    }
 }

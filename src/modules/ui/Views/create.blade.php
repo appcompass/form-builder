@@ -7,7 +7,7 @@
                         <div class="panel-body">
                             <ul class="nav nav-pills nav-stacked mail-nav">
                                 {{-- {{ dd($nav->items) }} --}}
-                                <li class="active"><a href="#"> <i class="fa fa-list"></i> Gallery Info </a></li>
+                                <li class="active"><a href="#"> <i class="fa fa-list"></i> {{ $meta->create->heading }} </a></li>
                             </ul>
                         </div>
                     </section>
@@ -15,19 +15,24 @@
                 <div class="col-sm-9">
                     <section class="panel">
                         <header class="panel-heading">
-                            {{ $meta->index->heading or "Edit/Create" }}
+                            {{ $meta->create->heading }}
                         </header>
                         <div class="panel-body">
 
-                            {!! Form::open(['route' => $meta->create->form->route, 'method' => 'POST', 'data-target' => '#main-content', 'class' => 'form-horizontal bucket-form ajax-form']) !!}
-
-                                @foreach($meta->edit->form->fields as $field)
-
-                                    <div class="form-group">
-                                        {!! Form::label($field->name, $field->label, ['class' => 'col-sm-3 control-label']) !!}
-                                        {!! Form::{$field->type}($field->name, $field->label, ['class' => 'form-control']) !!}
+                            {!! Form::open(['route' => $meta->create->route, 'method' => 'POST', 'data-target' => '#main-content', 'class' => 'form-horizontal bucket-form ajax-form']) !!}
+                                @foreach($meta->form->fields as $fieldData)
+                                <div class="form-group">
+                                    {!! Form::label($fieldData->name, $fieldData->label, ['class' => 'col-sm-3 control-label']) !!}
+                                    <div class="col-sm-6">
+                                        @if($fieldData->type == 'text')
+                                            {!! Form::text($fieldData->name, null, ['class' => 'form-control', 'placeholder' => $fieldData->placeholder]) !!}
+                                        @elseif($fieldData->type == 'checkbox')
+                                            {!! Form::checkbox($fieldData->name, 'true') !!}
+                                        @elseif($fieldData->type == 'textarea')
+                                            {!! Form::textarea($fieldData->name, null, ['class' => 'form-control', 'placeholder' => $fieldData->placeholder]) !!}
+                                        @endif
                                     </div>
-
+                                </div>
                                 @endforeach
 
                                 {!! Form::submit('Save', ["class" => "btn btn-info"]) !!}

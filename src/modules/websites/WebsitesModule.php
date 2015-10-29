@@ -53,7 +53,7 @@ Class WebsitesModule extends BaseModule
         "url" => '',
         "req_perms" => null,
         "props" => [
-            'icon' => 'list',
+            'icon' => 'dashboard',
             "link" => [
                 'data-click' => '/cp/websites',
                 'data-target' => '#main-content'
@@ -106,83 +106,82 @@ Class WebsitesModule extends BaseModule
                 ],
                 'edit' => [
                     'heading' => 'Connection Information',
-                    'form' => [
-                        'route' => 'cp.websites.update',
-                        'fields' => [
-                            [
-                                'label' => 'Name',
-                                'name' => 'site_name',
-                                'placeholder' => 'Website.com',
-                                'type' => 'text',
-                                'help_block' => '',
-                            ],[
-                                'label' => 'URL',
-                                'name' => 'site_url',
-                                'placeholder' => 'https://www.website.com',
-                                'type' => 'text',
-                                'help_block' => '',
-                            ],[
-                                'label' => 'From Email Address',
-                                'name' => 'config[from_email]',
-                                'placeholder' => 'website@website.com',
-                                'type' => 'text',
-                                'help_block' => '',
-                            ],[
-                                'label' => 'From Email Name',
-                                'name' => 'config[from_name]',
-                                'placeholder' => 'Website Name',
-                                'type' => 'text',
-                                'help_block' => '',
-                            ],[
-                                'label' => 'A Managed Website',
-                                'name' => 'config[managed]',
-                                'placeholder' => '',
-                                'type' => 'checkbox',
-                                'help_block' => '',
-                            ],[
-                                'label' => 'SSH Host',
-                                'name' => 'config[ssh_host]',
-                                'placeholder' => '127.0.0.1',
-                                'type' => 'text',
-                                'help_block' => '',
-                            ],[
-                                'label' => 'SSH Username',
-                                'name' => 'config[ssh_username]',
-                                'placeholder' => 'username',
-                                'type' => 'text',
-                                'help_block' => '',
-                            ],[
-                                'label' => 'SSH Password',
-                                'name' => 'config[ssh_password]',
-                                'placeholder' => 'password',
-                                'type' => 'text',
-                                'help_block' => 'Must use either SSH Password or SSH Key below (key is preferable).',
-                            ],[
-                                'label' => 'SSH Key',
-                                'name' => 'config[ssh_key]',
-                                'placeholder' => 'ssh_idrsa_key',
-                                'type' => 'textarea',
-                                'help_block' => 'Must use either SSH Key or SSH Password above (key is preferable).',
-                            ],[
-                                'label' => 'SSH Key Phrase',
-                                'name' => 'config[ssh_keyphrase]',
-                                'placeholder' => 'idrsa_key_passphrase',
-                                'type' => 'text',
-                                'help_block' => '',
-                            ],[
-                                'label' => 'Website Document Root',
-                                'name' => 'config[ssh_root]',
-                                'placeholder' => '/path/to/document/root',
-                                'type' => 'text',
-                                'help_block' => '',
-                            ],
-                        ],
-                    ],
+                    'route' => 'cp.websites.update'
                 ],
                 'create' => [
-                    'form' => [
-                        'route' => 'cp.websites.update'
-                    ]
+                    'heading' => 'Create New Site',
+                    'route' => 'cp.websites.store'
+                ],
+                'form' => [
+                    'fields' => [
+                        [
+                            'label' => 'Name',
+                            'name' => 'site_name',
+                            'placeholder' => 'Website.com',
+                            'type' => 'text',
+                            'help_block' => '',
+                        ],[
+                            'label' => 'URL',
+                            'name' => 'site_url',
+                            'placeholder' => 'https://www.website.com',
+                            'type' => 'text',
+                            'help_block' => '',
+                        ],[
+                            'label' => 'From Email Address',
+                            'name' => 'config[from_email]',
+                            'placeholder' => 'website@website.com',
+                            'type' => 'text',
+                            'help_block' => '',
+                        ],[
+                            'label' => 'From Email Name',
+                            'name' => 'config[from_name]',
+                            'placeholder' => 'Website Name',
+                            'type' => 'text',
+                            'help_block' => '',
+                        ],[
+                            'label' => 'A Managed Website',
+                            'name' => 'config[managed]',
+                            'placeholder' => '',
+                            'type' => 'checkbox',
+                            'help_block' => '',
+                        ],[
+                            'label' => 'SSH Host',
+                            'name' => 'config[ssh_host]',
+                            'placeholder' => '127.0.0.1',
+                            'type' => 'text',
+                            'help_block' => '',
+                        ],[
+                            'label' => 'SSH Username',
+                            'name' => 'config[ssh_username]',
+                            'placeholder' => 'username',
+                            'type' => 'text',
+                            'help_block' => '',
+                        ],[
+                            'label' => 'SSH Password',
+                            'name' => 'config[ssh_password]',
+                            'placeholder' => 'password',
+                            'type' => 'text',
+                            'help_block' => 'Must use either SSH Password or SSH Key below (key is preferable).',
+                        ],[
+                            'label' => 'SSH Key',
+                            'name' => 'config[ssh_key]',
+                            'placeholder' => 'ssh_idrsa_key',
+                            'type' => 'textarea',
+                            'help_block' => 'Must use either SSH Key or SSH Password above (key is preferable).',
+                        ],[
+                            'label' => 'SSH Key Phrase',
+                            'name' => 'config[ssh_keyphrase]',
+                            'placeholder' => 'idrsa_key_passphrase',
+                            'type' => 'text',
+                            'help_block' => '',
+                        ],[
+                            'label' => 'Website Document Root',
+                            'name' => 'config[ssh_root]',
+                            'placeholder' => '/path/to/document/root',
+                            'type' => 'text',
+                            'help_block' => '',
+                        ],
+                    ],
                 ],
                 /* other stuff */
             ];
@@ -193,26 +192,4 @@ Class WebsitesModule extends BaseModule
 
     }
 
-	/**
-	 * Render cpNav
-	 *
-	 *
-	 */
-	public function cpNav()
-	{
-
-		return [
-			'name' => $this->module_name,
-			'belongs_to' => null,
-			'order' => 2,
-			'label' => 'Websites Manager',
-			'icon' => 'fa-dashboard',
-			'attributes' => [
-				'data-click' => '/cp/websites',
-				'data-target' => '#main-content',
-			],
-			'sub_nav' => null,
-		];
-
-	}
 }
