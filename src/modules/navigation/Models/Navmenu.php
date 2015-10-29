@@ -214,7 +214,7 @@ class Navmenu extends Model
 	        "label" => $this->label,
 	        "url" => '',
 	        "has_content" => true,
-	        "req_perms" => 'guest',
+	        "req_perms" => null,
 	        "props" => [
 	        	"icon" => 'list',
 	        	"link" => [
