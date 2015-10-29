@@ -83,6 +83,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 		return Cache::remember($this->id, 1, function() {
 
+			// $this->load(['groups.permissions' => function($query) { $query->where('active', true); }])
 			$this->load('groups.permissions')
 				->load('permissions');
 

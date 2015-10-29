@@ -31,9 +31,9 @@ class Permission extends Model
     *
     *
     */
-    public function scopeByName($query, $name)
+    public function scopeByType($query, $type)
     {
-    	return $query->where('name', '=', $name);
+    	return $query->where('type', '=', $type);
     }
 
     /**

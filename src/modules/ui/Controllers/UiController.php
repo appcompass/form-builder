@@ -7,6 +7,7 @@ use App\Http\Requests;
 use Auth;
 use Illuminate\Http\Request;
 use Modular;
+use P3in\Models\Navmenu;
 use P3in\Models\User;
 use P3in\Models\Website;
 
@@ -28,9 +29,9 @@ class UiController extends UiBaseController {
     {
         $cpNavs = Modular::cpNav();
 
-        $nav = $this->buildCpNav($cpNavs);
+        $nav = Navmenu::byName('cp-main-nav');
 
-        return view('ui::sections/left-nav', ['nav' => $nav]);
+        return view('ui::sections/left-nav', compact('nav'));
     }
 
     public function getLeftAlerts()
@@ -64,46 +65,46 @@ class UiController extends UiBaseController {
         return view('ui::sections/user-menu');
     }
 
-    private function buildCpNav($cpNavs)
-    {
-        $out = [];
-        $main_sort = [];
-        $sub_nav_sort = [];
+    // private function buildCpNav($cpNavs)
+    // {
+    //     $out = [];
+    //     $main_sort = [];
+    //     $sub_nav_sort = [];
 
-        // construct parents.
-        foreach ($cpNavs as $module_name => $module_nav) {
-            if (empty($module_nav['belongs_to'])) {
-                $out[$module_nav['name']] = $module_nav;
-                $main_sort[] = $module_nav['order'];
-                if (!empty($module_nav['sub_nav'])) {
-                    foreach ($module_nav['sub_nav'] as $sub_nav) {
-                        $sub_nav_sort[$module_name][] = $sub_nav['order'];
-                    }
-                }
-            }
-        }
+    //     // construct parents.
+    //     foreach ($cpNavs as $module_name => $module_nav) {
+    //         if (empty($module_nav['belongs_to'])) {
+    //             $out[$module_nav['name']] = $module_nav;
+    //             $main_sort[] = $module_nav['order'];
+    //             if (!empty($module_nav['sub_nav'])) {
+    //                 foreach ($module_nav['sub_nav'] as $sub_nav) {
+    //                     $sub_nav_sort[$module_name][] = $sub_nav['order'];
+    //                 }
+    //             }
+    //         }
+    //     }
 
-        // sort the output array by the sort order.
-        array_multisort($main_sort, $out);
+    //     // sort the output array by the sort order.
+    //     array_multisort($main_sort, $out);
 
-        // construct sub navs.
-        foreach ($cpNavs as $module_name => $module_nav) {
-            if (!empty($module_nav['belongs_to'])) {
-                $out[$module_nav['belongs_to']]['sub_nav'][] = $module_nav;
-                $sub_nav_sort[$module_nav['belongs_to']][] = $module_nav['order'];
-            }
+    //     // construct sub navs.
+    //     foreach ($cpNavs as $module_name => $module_nav) {
+    //         if (!empty($module_nav['belongs_to'])) {
+    //             $out[$module_nav['belongs_to']]['sub_nav'][] = $module_nav;
+    //             $sub_nav_sort[$module_nav['belongs_to']][] = $module_nav['order'];
+    //         }
 
-        }
+    //     }
 
-        // sort sub navs for each module.
-        foreach ($out as $module_name => $row) {
-            if (!empty($sub_nav_sort[$module_name])) {
-                array_multisort($sub_nav_sort[$module_name], $row['sub_nav']);
-                $out[$module_name]['sub_nav'] = $row['sub_nav'];
-            }
-        }
+    //     // sort sub navs for each module.
+    //     foreach ($out as $module_name => $row) {
+    //         if (!empty($sub_nav_sort[$module_name])) {
+    //             array_multisort($sub_nav_sort[$module_name], $row['sub_nav']);
+    //             $out[$module_name]['sub_nav'] = $row['sub_nav'];
+    //         }
+    //     }
 
-        return $out;
-    }
+    //     return $out;
+    // }
 
 }

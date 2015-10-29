@@ -2,13 +2,14 @@
 
 namespace P3in\Modules;
 
+use P3in\Models\Navmenu;
 use P3in\Modules\BaseModule;
 use P3in\Traits\NavigatableTrait;
 
 Class UsersModule extends BaseModule
 {
 
-	// use NavigatableTrait;
+	use NavigatableTrait;
 
 	public $module_name = "users";
 
@@ -24,17 +25,29 @@ Class UsersModule extends BaseModule
 
 	public function register()
 	{
-		echo "Registering User Module";
+
+		Navmenu::byName('cp-main-nav')->addItem($this->navItem);
+
 	}
 
-	public function getNavigation()
+	/**
+	 *
+	 */
+	public function makeLink()
 	{
-		return ['users' => []];
-	}
-
-	public function getAlerts()
-	{
-		return "Alerts!!";
+	  return [
+	      "label" => 'Users',
+	      "url" => '',
+	      "new_tab" => 'false',
+	      "req_perms" => 'get-cp-main-nav',
+	      "props" => [
+	      	"icon" => "user",
+	      	"link" => [
+		      	"data-click" => "/cp/users",
+		      	"data-target" => "#main-content",
+	      	]
+	      ]
+	  ];
 	}
 
 	/**

@@ -22,29 +22,6 @@ trait NavigatableTrait
   abstract protected function makeLink($attributes = []);
 
   /**
-  *  linkToNavmenu
-  *
-  *  @param Navmenu $navmenu instance of the navmenu the item needs to be linked to
-  *  @param @mixed attributes  single or array of overrides to pass down
-  */
-  public function linkToNavmenu(Navmenu $navmenu, $attributes = null)
-  {
-
-    try {
-      $navmenu
-        ->items()
-        ->attach($this->navigationItem($attributes));
-
-      return true;
-
-    } catch (Exception $e) {
-
-      throw new Exception($e->getMessage());
-
-    }
-  }
-
-  /**
    *
    *
    */
@@ -58,14 +35,16 @@ trait NavigatableTrait
       $rel = new MorphOne(
         (new NavigationItem)->newQuery(),
         $this,
-        'navigation_items.navigatable_type',
-        'navigation_items.navigatable_id',
+        'navigatable_type',
+        'navigatable_id',
         'id'
       );
 
-    }
+    } else {
 
-    $rel = $this->morphOne(NavigationItem::class, 'navigatable');
+      $rel = $this->morphOne(NavigationItem::class, 'navigatable');
+
+    }
 
     if ($rel->get()->count() == 0) {
 
@@ -78,40 +57,41 @@ trait NavigatableTrait
   }
 
 	/**
-	*	Try getting model's navigationItem or generate one
-	*
-	*  @param
-	*/
-	public function getNavigationItem($attributes = null)
-  {
-
-    $navItem = $this->navItem()->first();
-
-    if (is_null($navItem)) {
-
-      $navItem = $this->navItem()->save($this->makeNavigationItem());
-
-    }
-
-    return $navItem;
-
-	}
-
-	/**
 	*  Get a Navigation Item
 	*
 	*  @return P3in\Models\NavigationItem
 	*/
-	private function makeNavigationItem($attributes = [])
+	private function makeNavigationItem(array $attributes = [])
 	{
 
-    if (!is_null($attributes) && is_array($attributes) ) {
+    if (!is_null($attributes) ) {
 
       // set overrides
 
     }
 
-		return new NavigationItem((new LinkClass($this->makeLink()))->toArray());
+    $link = (new LinkClass($this->makeLink()))->toArray();
+
+    $props = '';
+
+    /**
+     * To provide a reliable matching and avoid duplicate instances we
+     * are temporary removing the json field props (if present)
+     */
+
+    if (isset($link['props'])) {
+
+      $props = $link['props'];
+
+      unset($link['props']);
+
+    }
+
+		$item = NavigationItem::firstOrNew($link);
+
+    $item->props = $props;
+
+    return $item;
 
 	}
 

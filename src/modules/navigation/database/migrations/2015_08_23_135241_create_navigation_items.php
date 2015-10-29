@@ -15,9 +15,10 @@ class CreateNavigationItems extends Migration
         Schema::create('navigation_items', function (Blueprint $table) {
             $table->increments('id');
             $table->string('label');
-            $table->string('link_text');
+
             $table->string('url');
             $table->boolean('new_tab')->default(false);
+            $table->boolean('has_content')->default(false);
             $table->string('alt_text')->nullable();
 
             $table->morphs('navigatable');

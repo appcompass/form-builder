@@ -15,6 +15,8 @@ class LinkClass
 
 	public $attributes = [];
 
+	protected $json_attributes = ['props'];
+
 	/**
 	*
 	*
@@ -39,11 +41,17 @@ class LinkClass
 
 		foreach($attributes as $attribute => $value) {
 
+			// if (in_array($attribute, $this->json_attributes)) {
+
+			// 	$value = json_encode($value);
+
+			// }
+
 			$this->attributes[$attribute] = $value;
 
 		}
 
-		return $this->attributes;
+		return $this;
 	}
 
 	/**
@@ -68,6 +76,6 @@ class LinkClass
 	 */
 	public function toArray()
 	{
-	  return (array) $this->attributes;
+	  return $this->attributes;
 	}
 }

@@ -2,10 +2,15 @@
 
 namespace P3in\Modules;
 
+use P3in\Models\Navmenu;
 use P3in\Modules\BaseModule;
+use P3in\Traits\NavigatableTrait;
 
 Class UiModule extends BaseModule
 {
+
+	use NavigatableTrait;
+
 	public $module_name = "ui";
 
 	public function __construct()
@@ -21,28 +26,27 @@ Class UiModule extends BaseModule
 	public function register()
 	{
 
+		Navmenu::byName('cp-main-nav')->addItem($this->navItem);
+
 	}
 
 	/**
-	 * Render cpNav
-	 *
 	 *
 	 */
-	public function cpNav()
+	public function makeLink()
 	{
-
-		return [
-			'name' => $this->module_name,
-			'belongs_to' => null,
-			'order' => 0,
-			'label' => 'Dashboard',
-			'icon' => 'fa-dashboard',
-			'attributes' => [
-				'data-click' => '/cp/dashboard',
-				'data-target' => '#main-content',
-			],
-			'sub_nav' => null,
-		];
-
+	    return [
+	        "label" => 'Dashboard',
+	        "url" => '',
+	        "req_perms" => null,
+	        "props" => [
+	            'icon' => 'dashboard',
+	            "link" => [
+	                'data-click' => '/cp/galleries',
+	                'data-target' => '#main-content'
+	            ],
+	        ]
+	    ];
 	}
+
 }

@@ -23,13 +23,19 @@ class NavigationItem extends Model
 	 */
 	protected $fillable = [
 		'label',
-		'link_text',
-		'model',
 		'url',
 		'new_tab',
-		'req_permission',
-		'params',
+		'has_content',
+		'alt_text',
+		'req_perms',
 		'props'
+	];
+
+	/**
+	 *
+	 */
+	protected $casts = [
+		'props' => 'array'
 	];
 
 	/**
@@ -38,7 +44,6 @@ class NavigationItem extends Model
 	 */
 	public static $rules = [
 		'label' => 'required',
-		'link_text' => 'required',
 		'model' => 'required',
 		'url' => 'required'
 	];

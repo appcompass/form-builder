@@ -2,32 +2,62 @@
 
 namespace P3in\Modules;
 
-use P3in\Module;
+use Modular;
+use P3in\Models\Navmenu;
 use P3in\Models\Website;
+use P3in\Module;
 use P3in\Modules\BaseModule;
 use P3in\Traits\NavigatableTrait as Navigatable;
-use Modular;
 
 Class WebsitesModule extends BaseModule
 {
 
+    use Navigatable;
+
+    /**
+     * Module Name
+     */
 	public $module_name = "websites";
 
-	public function __construct()
-	{
+	public function __construct() {}
 
-	}
-
+    /**
+     * Bootstrap, runs every time
+     *
+     */
 	public function bootstrap()
 	{
-		// echo "Bootstrapping AuthModule!";
+    }
+
+    /**
+     * Register, runs only on module load
+     *
+     */
+    public function register()
+    {
         $this->checkOrSetUiConfig();
+        Navmenu::byName('cp-main-nav')->addItem($this->navItem);
 	}
 
-	public function register()
-	{
-		echo "Registering Websites Module";
-	}
+
+    /**
+     *
+     */
+    public function makeLink()
+    {
+      return [
+        "label" => 'Websites Manager',
+        "url" => '',
+        "req_perms" => 'get-cp-main-nav',
+        "props" => [
+            'icon' => 'list',
+            "link" => [
+                'data-click' => '/cp/websites',
+                'data-target' => '#main-content'
+            ],
+        ]
+      ];
+    }
 
 
     public function checkOrSetUiConfig()
