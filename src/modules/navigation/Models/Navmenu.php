@@ -111,16 +111,17 @@ class Navmenu extends Model
 	public function items()
 	{
 
-		$user_permissions = [];
+		// $user_permissions = [];
 
-		if (\Auth::check()) {
+		// if (\Auth::check()) {
 
-			$user_permissions = \P3in\Models\User::find(173)->first()->allPermissions();
+			// $user_permissions = \Auth::user()->allPermissions();
 
-		}
+		// }
 
 		return $this->belongsToMany('P3in\Models\NavigationItem')
-			->whereIn('req_perms', $user_permissions)
+			// ->whereIn('req_perms', $user_permissions)
+			// ->orWhere('req_perms', null)
 			->withPivot('order')
 			->orderBy('order');
 
@@ -213,7 +214,7 @@ class Navmenu extends Model
 	        "label" => $this->label,
 	        "url" => '',
 	        "has_content" => true,
-	        "req_perms" => null,
+	        "req_perms" => 'guest',
 	        "props" => [
 	        	"icon" => 'list',
 	        	"link" => [
