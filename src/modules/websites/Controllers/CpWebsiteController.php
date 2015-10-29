@@ -16,34 +16,44 @@ class CpWebsiteController extends UiBaseController
 
     public function index()
     {
-        return parent::build('index', Website::all());
+        $this->records = Website::all();
+
+        return parent::build('index');
     }
 
     public function create()
     {
-        return parent::build('create', Website::all());
+        return parent::build('create');
     }
 
     public function store(Request $request)
     {
-        return parent::build('store', Website::create($request->all()));
+        $this->record = Website::create($request->all());
+
+        return parent::build('show');
     }
 
     public function show($id)
     {
-        return parent::build('show', Website::findOrFail($id));
+        $this->record = Website::findOrFail($id);
+
+        return parent::build('show');
     }
 
     public function edit($id)
     {
-        return parent::build('edit', Website::findOrFail($id));
+        $this->record = Website::findOrFail($id);
+
+        return parent::build('edit');
     }
 
     public function update(Request $request, $id)
     {
-        $record = Website::findOrFail($id);
-        $record->update($request->all());
-        return parent::build('edit', $record);
+        $this->record = Website::findOrFail($id);
+
+        $this->record->update($request->all());
+
+        return parent::build('edit');
     }
 
 }

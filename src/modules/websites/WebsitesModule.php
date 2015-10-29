@@ -36,7 +36,10 @@ Class WebsitesModule extends BaseModule
     public function register()
     {
         $this->checkOrSetUiConfig();
-        Navmenu::byName('cp-main-nav')->addItem($this->navItem);
+
+        if (Modular::isLoaded('navigation')) {
+            Navmenu::byName('cp-main-nav')->addItem($this->navItem);
+        }
 	}
 
 
@@ -48,7 +51,7 @@ Class WebsitesModule extends BaseModule
       return [
         "label" => 'Websites Manager',
         "url" => '',
-        "req_perms" => 'get-cp-main-nav',
+        "req_perms" => null,
         "props" => [
             'icon' => 'list',
             "link" => [

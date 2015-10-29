@@ -13,94 +13,52 @@ use P3in\Controllers\ModularBaseController;
 
 class UiBaseController extends ModularBaseController {
 
+    public $records;
+    public $record;
+
     // public function __construct()
     // {
     // }
 
-    public function build()
+    public function build($type)
     {
-        $args = func_get_args();
+        $method = 'view'.$type;
 
-        if (empty($args[0])) {
-            throw new Exception('First Param is required.');
-        }
-
-        $method = 'run'.ucwords($args[0]); unset($args[0]);
-
-        return empty($args) ? call_user_func([$this, $method]) : call_user_func_array([$this,$method], $args);
+        return call_user_func([$this, $method]);
     }
 
-    private function runIndex()
+    private function viewIndex()
     {
-        $records = func_get_arg(0);
-
         return view('ui::index', [
             'meta' => $this->meta,
-            'records' => $records,
+            'records' => $this->records,
         ]);
     }
 
-    private function runCreate()
+    private function viewCreate()
     {
         return view('ui::create', [
             'meta' => $this->meta,
         ]);
     }
 
-    private function runStore()
+    private function viewShow()
     {
-        $record = func_get_arg(0);
-
         $subnav = Event::fire('navigation.cms.sub', json_encode(['origin' => get_class($record), 'id' => $record->id] ))[0];
 
         return view('ui::show', [
             'meta' => $this->meta,
-            'record' => $record,
+            'record' => $this->record,
             'subnav' => $subnav,
         ]);
 
     }
 
-    private function runShow()
+    private function viewEdit()
     {
-        $record = func_get_arg(0);
-
-        $subnav = Event::fire('navigation.cms.sub', json_encode(['origin' => get_class($record), 'id' => $record->id] ))[0];
-
-        return view('ui::show', [
-            'meta' => $this->meta,
-            'record' => $record,
-            'subnav' => $subnav,
-        ]);
-
-    }
-
-    private function runEdit()
-    {
-        $record = func_get_arg(0);
         return view('ui::edit', [
             'meta' => $this->meta,
-            'record' => $record,
-        ]);
-    }
-
-    private function runUpdate()
-    {
-        $record = func_get_arg(0);
-
-        return view('ui::edit', [
-            'meta' => $this->meta,
-            'record' => $record,
-        ]);
-    }
-
-    private function runDestroy()
-    {
-        $records = func_get_arg(0);
-
-        return view('ui::index', [
-            'meta' => $this->meta,
-            'records' => $records,
+            'record' => $this->record,
         ]);
     }
 
