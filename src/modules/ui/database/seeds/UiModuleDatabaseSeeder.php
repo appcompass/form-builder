@@ -5,7 +5,7 @@ namespace P3in\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 
-class CoreModuleDatabaseSeeder extends Seeder
+class UiModuleDatabaseSeeder extends Seeder
 {
 
 	/**
@@ -17,7 +17,7 @@ class CoreModuleDatabaseSeeder extends Seeder
 	{
 		Model::unguard();
 
-		// $this->call('P3in\Seeders\PermissionsTableSeeder');
+		// $this->call('P3in\Seeders\UiWebsitesTableSeeder');
 
 		Model::reguard();
 	}
