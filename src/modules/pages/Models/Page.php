@@ -58,15 +58,17 @@ class Page extends Model
 	*/
 	protected function makeLink()
 	{
-
-		return new LinkClass([
-			"label" => $this->title,
-			"link_text" => $this->description,
-			"model" => get_class($this),
-			"url" => $this->slug,
-			"new_tab" => false,
-			"req_permission" => $this->req_permission,
-		]);
+		return [
+		  "label" => $this->title,
+		  "url" => $this->slug,
+		  "req_perms" => null,
+		  "props" => [
+		      'icon' => 'list',
+		      "link" => [
+		          'data-target' => '#main-content'
+		      ],
+		  ]
+		];
 	}
 
 	/**

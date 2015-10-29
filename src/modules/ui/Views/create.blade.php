@@ -2,9 +2,11 @@
             <!-- page start-->
             <div class="row">
                 <div class="col-sm-3">
+
                     <section class="panel">
                         <div class="panel-body">
                             <ul class="nav nav-pills nav-stacked mail-nav">
+                                {{-- {{ dd($nav->items) }} --}}
                                 <li class="active"><a href="#"> <i class="fa fa-list"></i> Gallery Info </a></li>
                             </ul>
                         </div>
@@ -13,10 +15,28 @@
                 <div class="col-sm-9">
                     <section class="panel">
                         <header class="panel-heading">
-                            Gallery Information
+                            {{ $meta->index->heading or "Edit/Create" }}
                         </header>
                         <div class="panel-body">
-                            <form class="form-horizontal bucket-form ajax-form" method="post" action="/cp/galleries" data-target="#main-content">
+
+                            {!! Form::open(['route' => $meta->create->form->route, 'method' => 'POST', 'data-target' => '#main-content', 'class' => 'form-horizontal bucket-form ajax-form']) !!}
+
+                                @foreach($meta->edit->form->fields as $field)
+
+                                    <div class="form-group">
+                                        {!! Form::label($field->name, $field->label, ['class' => 'col-sm-3 control-label']) !!}
+                                        {!! Form::{$field->type}($field->name, $field->label, ['class' => 'form-control']) !!}
+                                    </div>
+
+                                @endforeach
+
+                                {!! Form::submit('Save', ["class" => "btn btn-info"]) !!}
+
+                            {!! Form::close() !!}
+
+                            {{ dd($meta) }}
+
+{{--                             <form class="form-horizontal bucket-form ajax-form" method="post" action="/cp/galleries" data-target="#main-content">
 								{{ csrf_field() }}
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Name</label>
@@ -29,7 +49,7 @@
                                     <div class="col-sm-6">
                                         <textarea class="form-control" name="description" placeholder="A discription of this gallery goes here"></textarea>
                                     </div>
-                                </div>
+                                </div> --}}
 
                     {{--                    <div class="form-group has-error">
                                     <label class="col-sm-3 control-label col-lg-3" for="inputError">Input with error</label>
@@ -38,8 +58,8 @@
                                     </div>
                                 </div>
                     --}}
-                                    <button type="submit" class="btn btn-info">Create</button>
-                                </form>
+                                    {{-- <button type="submit" class="btn btn-info">Create</button> --}}
+                                {{-- </form> --}}
                         </div>
                     </section>
                 </div>

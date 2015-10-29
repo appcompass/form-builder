@@ -6,14 +6,16 @@
                 <div class="panel-body">
                     <h4>{{ $meta->show->sub_section_name }}</h4>
                     <ul class="nav nav-pills nav-stacked mail-nav">
-                        @foreach($subnav as $subnav_name => $subnav_content)
+
+                        @foreach($nav->items as $subnav_name => $subnav_content)
                         <li>
-                            <a {!! inlineAttrs($subnav_content['attributes']) !!}>
+                            <a data-click="{{ $meta->base_url.'/'.$record->id.'/'.$subnav_content['url'] }}" {!! inlineAttrs($subnav_content['props']) !!}>
                                 <i class="fa {{ $subnav_content['icon'] }}"></i>
                                 <span>{{ $subnav_content['label'] }}</span>
                             </a>
                         </li>
                         @endforeach
+
                     </ul>
                 </div>
             </section>

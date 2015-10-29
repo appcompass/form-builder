@@ -6,5 +6,6 @@ Route::group([
 ], function() {
 
   Route::resource('pages', 'PagesController');
+  Route::resource('cp/pages', 'CpPagesController');
 
 });

@@ -5,11 +5,12 @@ namespace P3in\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use Illuminate\Http\Request;
+use P3in\Controllers\UiBaseController;
 use P3in\Models\Page;
 use P3in\Models\Template;
 use P3in\Models\Website;
 
-class CpWebsitePagesController extends Controller
+class CpWebsitePagesController extends UiBaseController
 {
 
 	public function __construct()
@@ -27,7 +28,10 @@ class CpWebsitePagesController extends Controller
 
         $website = Website::findOrFail($website_id)->load('pages');
 
+        // return view('pages::detail');
         return view('pages::list', compact('website'));
+
+        // return parent::build('index', Website::findOrFail($website_id)->load('pages'));
 
     }
 

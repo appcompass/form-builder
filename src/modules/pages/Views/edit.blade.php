@@ -23,17 +23,19 @@
               <textarea class="form-control" name="description" placeholder="Desciption">{{ $page->description or '' }}</textarea>
             </div>
           </div>
-          <div class="form-group">
-            <label class="col-sm-3 control-label">Template</label>
-            <div class="col-sm-6">
-              <select name="template" id="" class="form-control m-bot15">
-                @foreach($templates as $template_id => $template_name)
-                  <option value="{{ $template_id }}" @if ($template_id == $page->template->id) selected="selected" @endif>{{ $template_name }}</option>
-                @endforeach
-              </select>
-              {{-- <textarea class="form-control" name="description" placeholder="Desciption">{{ $page->description or '' }}</textarea> --}}
+          @if(isset($templates))
+            <div class="form-group">
+              <label class="col-sm-3 control-label">Template</label>
+              <div class="col-sm-6">
+                <select name="template" id="" class="form-control m-bot15">
+                  @foreach($templates as $template_id => $template_name)
+                    <option value="{{ $template_id }}" @if ($template_id == $page->template->id) selected="selected" @endif>{{ $template_name }}</option>
+                  @endforeach
+                </select>
+                {{-- <textarea class="form-control" name="description" placeholder="Desciption">{{ $page->description or '' }}</textarea> --}}
+              </div>
             </div>
-          </div>
+          @endif
           <button type="submit" class="btn btn-info">Save</button>
         </form>
       </div>

@@ -180,6 +180,9 @@ Class WebsitesModule extends BaseModule
                     ],
                 ],
                 'create' => [
+                    'form' => [
+                        'route' => 'cp.websites.update'
+                    ]
                 ],
                 /* other stuff */
             ];

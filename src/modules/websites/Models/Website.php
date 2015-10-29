@@ -6,11 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use P3in\Models\Page;
 use P3in\Traits\SettingsTrait;
+use P3in\Traits\NavigatableTrait;
 
 class Website extends Model
 {
 
-	use SettingsTrait;
+	use SettingsTrait, NavigatableTrait;
 
 	/**
 	 * The database table used by the model.
@@ -83,6 +84,26 @@ class Website extends Model
 	public function addPage()
 	{
 		// this->
+	}
+
+	/**
+	 *
+	 */
+	public function makeLink()
+	{
+	    return [
+	        "label" => $this->site_name,
+	        "url" => '',
+	        "has_content" => false,
+	        "req_perms" => null,
+	        "props" => [
+	        	"icon" => 'globe',
+	        	"link" => [
+	        		'data-click' => 'websites/'.$this->id,
+	        		'data-target' => ''
+	        	]
+	        ]
+	    ];
 	}
 
 	/**
