@@ -49,7 +49,7 @@ class UiBaseController extends ModularBaseController {
         return view('ui::show', [
             'meta' => $this->meta,
             'record' => $this->record,
-            'nav' => $this->getNav($this->record->id)
+            'nav' => $this->getNav()
         ]);
 
     }
