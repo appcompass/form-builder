@@ -72,6 +72,15 @@ class Page extends Model
 	}
 
 	/**
+	 * Make a page
+	 *
+	 */
+	public function makePage()
+	{
+		//
+	}
+
+	/**
 	*	Get the website the page belongs to
 	*
 	*

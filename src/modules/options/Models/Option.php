@@ -57,7 +57,15 @@ class Option extends Model
       $options_set = Option::whereLabel($label)
         ->firstOrFail();
 
-      $new_content = static::setIds($new_content, static::getNextId($options_set->content));
+      // if (!is_null($options_set->content)) {
+
+        $new_content = static::setIds($new_content, static::getNextId($options_set->content));
+
+      // } else {
+
+        // $options_set->content = [];
+
+      // }
 
       $options_set->content = array_merge($options_set->content, $new_content);
 
@@ -88,22 +96,21 @@ class Option extends Model
   {
     try {
 
-      $options_set = Option::whereLabel($label)
-        ->firstOrFail();
+      $options_set = self::byLabel($label);
 
-      $content = $options_set->content;
+      $collection = collect($options_set->content);
 
-      foreach($content as $key => $values) {
+      foreach($collection as $key => $values) {
 
-        if ($values['_id'] === $id) {
+        if ($values->_id === $id) {
 
-          unset($content[$key]);
+          $collection->forget($key);
 
         }
 
       }
 
-      $options_set->content = $content;
+      $options_set->content = $collection->toArray();
 
       return $options_set->save();
 
@@ -210,13 +217,13 @@ class Option extends Model
 
     }
 
-    if (!static::byLabel($label)->multi) {
+    if (static::byLabel($label)->multi) {
 
-      return $result->first();
+      return $result;
 
     }
 
-    return $result;
+    return $result->first();
 
   }
 
@@ -226,7 +233,15 @@ class Option extends Model
    */
   private static function getNextId($items)
   {
-    return max(array_pluck($items, '_id')) + 1;
+
+    if (is_array($items) && count($items) > 1) {
+
+      return max(array_pluck($items, '_id')) + 1;
+
+    }
+
+    return 1;
+
   }
 
   /**

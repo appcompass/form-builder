@@ -81,9 +81,6 @@ Class WebsitesModule extends BaseModule
                             'Created',
                             'Updated',
                         ],
-                        // we might want to restructure this to allow for formating details.
-                        // i.e. wrapper details for things like items that require badges etc,
-                        // or other simple things like datetime formats.
                         'rows' => [
                             'site_name' => [
                                 'type' => 'link_by_id',
