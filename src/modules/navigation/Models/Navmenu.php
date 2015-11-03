@@ -10,89 +10,89 @@ use DB;
 class Navmenu extends Model
 {
 
-	use NavigatableTrait;
+    use NavigatableTrait;
 
-	/**
-	 * The database table used by the model.
-	 *
-	 * @var string
-	 */
-	protected $table = 'navmenus';
+    /**
+     * The database table used by the model.
+     *
+     * @var string
+     */
+    protected $table = 'navmenus';
 
-	/**
-	 * The attributes that are mass assignable.
-	 *
-	 * @var array
-	 */
-	protected $fillable = [
-		'name',
-		'label',
-		'req_permission',
-		'parent_id',
-		'website_id'
-	];
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name',
+        'label',
+        'req_permission',
+        'parent_id',
+        'website_id'
+    ];
 
-	protected $with = ['children.items', 'items'];
+    protected $with = ['children.items', 'items'];
 
-	/**
-	 *	Get a navmenu by name
-	 *
-	 *
-	 */
-	public function scopeName($query, $name)
-	{
-		return $query->where('name', $name);
-	}
+    /**
+     *  Get a navmenu by name
+     *
+     *
+     */
+    public function scopeName($query, $name)
+    {
+        return $query->where('name', $name);
+    }
 
-	/**
-	 *	Relation to self (parent)
-	 *
-	 */
-	public function parent()
-	{
-	  return $this->belongsTo(Navmenu::class, 'parent_id');
-	}
+    /**
+     *  Relation to self (parent)
+     *
+     */
+    public function parent()
+    {
+      return $this->belongsTo(Navmenu::class, 'parent_id');
+    }
 
-	/**
-	 * Set a parent of this navmenu
-	 *
-	 */
-	public function setParent(Navmenu $navmenu)
-	{
-	  return $this->parent()->associate($navmenu);
-	}
+    /**
+     * Set a parent of this navmenu
+     *
+     */
+    public function setParent(Navmenu $navmenu)
+    {
+      return $this->parent()->associate($navmenu);
+    }
 
-	/**
-	 *	Relation to self (children)
-	 *
-	 */
-	public function children()
-	{
-		return $this->hasMany(Navmenu::class, 'parent_id');
-	}
+    /**
+     *  Relation to self (children)
+     *
+     */
+    public function children()
+    {
+        return $this->hasMany(Navmenu::class, 'parent_id');
+    }
 
-	/**
-	 *	Add a child nav
-	 *
-	 */
-	public function addChildren(Navmenu $navmenu)
-	{
-	  $this->children()->save($navmenu);
-	  return $this->addItem($navmenu);
-	}
+    /**
+     *  Add a child nav
+     *
+     */
+    public function addChildren(Navmenu $navmenu)
+    {
+      $this->children()->save($navmenu);
+      return $this->addItem($navmenu);
+    }
 
-	/**
-	 *	Unlink a child nav
-	 *
-	 */
-	public function removeChildren(Navmenu $navmenu)
-	{
+    /**
+     *  Unlink a child nav
+     *
+     */
+    public function removeChildren(Navmenu $navmenu)
+    {
 
-	  $navmenu->parent_id = null;
+      $navmenu->parent_id = null;
 
-	  return $navmenu->save();
+      return $navmenu->save();
 
-	}
+    }
   /**
    *
    *
@@ -103,51 +103,51 @@ class Navmenu extends Model
     return $this->item();
   }
 
-	/**
-	 *	Link items to Navigation Items
-	 *
-	 *	TODO find a way to take user out of here?
-	 */
-	public function items()
-	{
+    /**
+     *  Link items to Navigation Items
+     *
+     *  TODO find a way to take user out of here?
+     */
+    public function items()
+    {
 
-		// $user_permissions = [];
+        // $user_permissions = [];
 
-		// if (\Auth::check()) {
+        // if (\Auth::check()) {
 
-			// $user_permissions = \Auth::user()->allPermissions();
+            // $user_permissions = \Auth::user()->allPermissions();
 
-		// }
+        // }
 
-		return $this->belongsToMany('P3in\Models\NavigationItem')
-			// ->whereIn('req_perms', $user_permissions)
-			// ->orWhere('req_perms', null)
-			->withPivot('order')
-			->orderBy('order');
+        return $this->belongsToMany('P3in\Models\NavigationItem')
+            // ->whereIn('req_perms', $user_permissions)
+            // ->orWhere('req_perms', null)
+            ->withPivot('order')
+            ->orderBy('order');
 
-	}
+    }
 
-	/**
-	 *	Try to link the instance passed to this navmenu
-	 *
-	 *	@param mixed $navItem either an instance of NavigationItem or an object which navItem's method returns an instance of NavigationItem
-	 */
-	public function addItem($navItem, $order = null)
-	{
+    /**
+     *  Try to link the instance passed to this navmenu
+     *
+     *  @param mixed $navItem either an instance of NavigationItem or an object which navItem's method returns an instance of NavigationItem
+     */
+    public function addItem($navItem, $order = null)
+    {
 
-		if (method_exists($navItem, 'navItem')) {
+        if (method_exists($navItem, 'navItem')) {
 
-			return $this->addItem($navItem->navItem);
+            return $this->addItem($navItem->navItem);
 
-		}
+        }
 
-		if (!$navItem instanceof NavigationItem) {
+        if (!$navItem instanceof NavigationItem) {
 
-			throw new Exception("Can't add item to {$this->name}.");
+            throw new Exception("Can't add item to {$this->name}.");
 
-		}
+        }
 
-		if (! $this->items->contains($navItem)) {
+        if (! $this->items->contains($navItem)) {
 
             if (is_null($order)) {
                 $order = intVal( DB::table('navigation_item_navmenu')
@@ -155,74 +155,74 @@ class Navmenu extends Model
                     ->max('order') ) + 1;
             }
 
-		  $this->items()->attach($navItem, ['order' => $order] );
+          $this->items()->attach($navItem, ['order' => $order] );
 
-		}
+        }
 
-		return true;
+        return true;
 
-	}
+    }
 
-	/**
-	 *	Get or create navigation menu by name
-	 *
-	 */
-	public function scopeByName($query, $name, $label = null)
-	{
+    /**
+     *  Get or create navigation menu by name
+     *
+     */
+    public function scopeByName($query, $name, $label = null)
+    {
 
-		$navmenu = Navmenu::where('name', '=', $name)->first();
+        $navmenu = Navmenu::where('name', '=', $name)->first();
 
-		if (is_null($navmenu)) {
+        if (is_null($navmenu)) {
 
-			if (is_null($label)) {
+            if (is_null($label)) {
 
-				$label = ucfirst(str_replace('-', ' ', $name));
+                $label = ucfirst(str_replace('-', ' ', $name));
 
-			}
+            }
 
-			$navmenu = $this->make([
-				'name' => $name,
-				'label' => $label,
-				'description' => null
-			]);
+            $navmenu = $this->make([
+                'name' => $name,
+                'label' => $label,
+                'description' => null
+            ]);
 
-			$navmenu->load('items', 'children.items');
+            $navmenu->load('items', 'children.items');
 
-		}
+        }
 
-		return $navmenu;
+        return $navmenu;
 
-	}
+    }
 
-	/**
-	 * Navmenu making routine
-	 *
-	 * TODO expand on overrides
-	 */
-	public function make(array $attributes = [])
-	{
+    /**
+     * Navmenu making routine
+     *
+     * TODO expand on overrides
+     */
+    public function make(array $attributes = [])
+    {
 
-	  return Navmenu::create($attributes);
+      return Navmenu::create($attributes);
 
-	}
+    }
 
-	/**
-	 *	NavigatableTrait implementation
-	 *
-	 */
-	public function makeLink()
-	{
-	    return [
-	        "label" => $this->label,
-	        "url" => '',
-	        "has_content" => true,
-	        "req_perms" => null,
-	        "props" => [
-	        	"icon" => 'list',
-	        	"link" => [
-	        		'data-click' => ''
-	        	]
-	        ]
-	    ];
-	}
+    /**
+     *  NavigatableTrait implementation
+     *
+     */
+    public function makeLink($overrides = [])
+    {
+        return [
+            "label" => $this->label,
+            "url" => '',
+            "has_content" => true,
+            "req_perms" => null,
+            "props" => [
+                "icon" => 'list',
+                "link" => [
+                    'data-click' => ''
+                ]
+            ]
+        ];
+    }
 }

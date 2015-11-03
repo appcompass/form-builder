@@ -12,8 +12,6 @@ class CpWebsiteController extends UiBaseController
     {
         $this->middleware('auth');
         $this->setControllerDefaults(__DIR__);
-
-        $this->getNav();
     }
 
     public function index()

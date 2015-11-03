@@ -50,7 +50,7 @@ class UiBaseController extends ModularBaseController {
         return view('ui::show', [
             'meta' => $this->meta,
             'record' => $this->record,
-            'nav' => $this->getNav()
+            'nav' => $this->getCpSubNav()
         ]);
 
     }
@@ -67,7 +67,7 @@ class UiBaseController extends ModularBaseController {
     /**
      *
      */
-    public function getNav($id = null)
+    public function getCpSubNav($id = null)
     {
 
         if (!is_null($id)) {
@@ -76,7 +76,7 @@ class UiBaseController extends ModularBaseController {
 
         }
 
-        $navmenu_name = 'cp-'.$this->module_name.'-subnav';
+        $navmenu_name = 'cp_'.$this->module_name.'_subnav';
 
         $navmenu = Navmenu::byName($navmenu_name);
 
