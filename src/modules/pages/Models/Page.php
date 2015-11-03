@@ -37,6 +37,13 @@ class Page extends Model
 		'published_at'
 	];
 
+    /**
+    *
+    */
+    protected $casts = [
+        'content' => 'object'
+    ];
+
 	/**
 	*	Fields that needs to be treated as a date
 	*

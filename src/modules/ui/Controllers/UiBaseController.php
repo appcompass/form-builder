@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use P3in\Controllers\ModularBaseController;
+use P3in\Models\Navmenu;
 
 class UiBaseController extends ModularBaseController {
 
@@ -62,4 +63,24 @@ class UiBaseController extends ModularBaseController {
         ]);
     }
 
+
+    /**
+     *
+     */
+    public function getNav($id = null)
+    {
+
+        if (!is_null($id)) {
+
+            // dd($id);
+
+        }
+
+        $navmenu_name = 'cp-'.$this->module_name.'-subnav';
+
+        $navmenu = Navmenu::byName($navmenu_name);
+
+        return $navmenu;
+
+    }
 }
