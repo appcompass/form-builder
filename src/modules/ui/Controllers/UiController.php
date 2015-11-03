@@ -29,7 +29,7 @@ class UiController extends UiBaseController {
     {
         $cpNavs = Modular::cpNav();
 
-        $nav = Navmenu::byName('cp-main-nav');
+        $nav = Navmenu::byName('cp_main_nav');
 
         return view('ui::sections/left-nav', compact('nav'));
     }

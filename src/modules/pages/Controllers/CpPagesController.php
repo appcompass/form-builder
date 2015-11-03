@@ -10,6 +10,19 @@ use P3in\Models\Website;
 
 class CpPagesController extends UiBaseController
 {
+
+    /**
+    *
+    */
+    public function __construct()
+    {
+
+        $this->middleware('auth');
+
+        parent::setControllerDefaults(__DIR__);
+
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -49,7 +62,12 @@ class CpPagesController extends UiBaseController
      */
     public function show($id)
     {
-        return view('pages::edit', ['page' => Page::find($id)]);
+
+        $this->record = Page::findOrFail($id);
+
+        return parent::build('show');
+
+        // return view('pages::edit', ['page' => Page::find($id)]);
         // return parent::build('index', Page::find($id));
     }
 
@@ -61,7 +79,9 @@ class CpPagesController extends UiBaseController
      */
     public function edit($id)
     {
-        //
+        $this->record = Page::findOrFail($id);
+
+        return parent::build('edit');
     }
 
     /**

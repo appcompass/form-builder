@@ -28,8 +28,8 @@ Class UsersModule extends BaseModule
     {
 
         if (Modular::isLoaded('navigation')) {
-            $main_nav = Navmenu::byName('cp-main-nav');
-            $main_nav_sub_nav =  Navmenu::byName('cp-main-nav-users', 'Users Manager');
+            $main_nav = Navmenu::byName('cp_main_nav');
+            $main_nav_sub_nav =  Navmenu::byName('cp_main_nav_users', 'Users Manager');
 
             $main_nav_sub_nav->addItem($this->navItem);
             $main_nav->addChildren($main_nav_sub_nav);

@@ -81,9 +81,9 @@ class Website extends Model
 	 *
 	 *
 	 */
-	public function addPage()
+	public function addPage(Page $page)
 	{
-		// this->
+		$this->pages()->save($page);
 	}
 
 	/**

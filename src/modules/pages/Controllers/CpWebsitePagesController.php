@@ -15,7 +15,11 @@ class CpWebsitePagesController extends UiBaseController
 
 	public function __construct()
 	{
+
 		$this->middleware('auth');
+
+        parent::setControllerDefaults(__DIR__);
+
 	}
 
     /**
@@ -26,13 +30,9 @@ class CpWebsitePagesController extends UiBaseController
     public function index($website_id)
     {
 
-        $website = Website::findOrFail($website_id)->load('pages');
+        $this->records = Website::findOrFail($website_id)->pages;
 
-        // return view('pages::detail');
-        return view('pages::list', compact('website'));
-
-        // return parent::build('index', Website::findOrFail($website_id)->load('pages'));
-
+        return $this->build('index');
     }
 
     /**
@@ -40,7 +40,7 @@ class CpWebsitePagesController extends UiBaseController
      *
      * @return Response
      */
-    public function create()
+    public function create($website_id)
     {
         //
     }
@@ -59,22 +59,11 @@ class CpWebsitePagesController extends UiBaseController
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int  $website_id
+     * @param  int  $page_id
      * @return Response
      */
-    public function show($website_id, $page_id)
-    {
-
-        $website = Website::findOrFail($website_id);
-
-        $page = $website
-            ->load('pages')
-            ->pages()
-            ->findOrFail($page_id);
-
-        return view('pages::detail', compact('page', 'website'));
-
-    }
+    public function show($website_id, $page_id) { /* Called in PhotosController */}
 
     /**
      * Show the form for editing the specified resource.

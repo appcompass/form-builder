@@ -17,7 +17,7 @@ class PagesModuleDatabaseSeeder extends Seeder
 	{
 		Model::unguard();
 
-		// $this->call('P3in\Seeders\PermissionsTableSeeder');
+
 
 		Model::reguard();
 	}

@@ -57,15 +57,7 @@ class Option extends Model
       $options_set = Option::whereLabel($label)
         ->firstOrFail();
 
-      // if (!is_null($options_set->content)) {
-
         $new_content = static::setIds($new_content, static::getNextId($options_set->content));
-
-      // } else {
-
-        // $options_set->content = [];
-
-      // }
 
       $options_set->content = array_merge($options_set->content, $new_content);
 

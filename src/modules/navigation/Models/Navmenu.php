@@ -183,7 +183,7 @@ class Navmenu extends Model
             $navmenu = $this->make([
                 'name' => $name,
                 'label' => $label,
-                'description' => null
+                // 'description' => null
             ]);
 
             $navmenu->load('items', 'children.items');

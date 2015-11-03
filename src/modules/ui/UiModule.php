@@ -28,7 +28,7 @@ Class UiModule extends BaseModule
 	{
 
         if (Modular::isLoaded('navigation')) {
-            Navmenu::byName('cp-main-nav')->addItem($this->navItem);
+            Navmenu::byName('cp_main_nav')->addItem($this->navItem);
         }
 
 	}

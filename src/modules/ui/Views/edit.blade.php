@@ -11,7 +11,7 @@
                     @if($fieldData->type == 'text')
                         {!! Form::text($fieldData->name, null, ['class' => 'form-control', 'placeholder' => $fieldData->placeholder]) !!}
                     @elseif($fieldData->type == 'checkbox')
-                        {!! Form::checkbox($fieldData->name, 'true') !!}
+                        {!! Form::checkbox($fieldData->name, $fieldData, ['class' => 'form-control']) !!}
                     @elseif($fieldData->type == 'textarea')
                         {!! Form::textarea($fieldData->name, null, ['class' => 'form-control', 'placeholder' => $fieldData->placeholder]) !!}
                     @endif
