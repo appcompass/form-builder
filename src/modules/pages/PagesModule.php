@@ -27,7 +27,7 @@ Class PagesModule extends BaseModule
         if (Modular::isLoaded('navigation')) {
             $main_nav = Navmenu::byName('cp_main_nav');
             $main_nav_sub_nav =  Navmenu::byName('cp_main_nav_pages', 'Pages Manager');
-            $pages_subnav = Navmenu::byNave('cp_pages_subnav');
+            $pages_subnav = Navmenu::byName('cp_pages_subnav');
 
             $main_nav_sub_nav->addItem($this->navItem);
             $main_nav->addChildren($main_nav_sub_nav);
