@@ -132,7 +132,7 @@ class Navmenu extends Model
 	 *
 	 *	@param mixed $navItem either an instance of NavigationItem or an object which navItem's method returns an instance of NavigationItem
 	 */
-	public function addItem($navItem)
+	public function addItem($navItem, $order = null)
 	{
 
 		if (method_exists($navItem, 'navItem')) {
@@ -149,9 +149,11 @@ class Navmenu extends Model
 
 		if (! $this->items->contains($navItem)) {
 
-			$order = intVal( DB::table('navigation_item_navmenu')
-				->where('navmenu_id', '=', $this->id)
-				->max('order') ) + 1;
+            if (is_null($order)) {
+                $order = intVal( DB::table('navigation_item_navmenu')
+                    ->where('navmenu_id', '=', $this->id)
+                    ->max('order') ) + 1;
+            }
 
 		  $this->items()->attach($navItem, ['order' => $order] );
 
