@@ -2,7 +2,7 @@
 	<!--Core js-->
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
 	<script src="/assets/ui/js/jquery.js"></script>
-	<script src="/assets/ui/js/jquery-1.10.2.min.js"></script>
+    <script src="/assets/ui/js/jquery-1.10.2.min.js"></script>
 	<script src="/assets/ui/bs3/js/bootstrap.min.js"></script>
 	<script src="/assets/ui/js/gritter/js/jquery.gritter.js" type="text/javascript"></script>
 
@@ -35,7 +35,8 @@
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/0.12.16/vue.min.js"></script>
-	<script src="assets/js/lity.min.js"></script>
+
+    <script src="/assets/ui/js/jquery-ui/jquery-ui-1.10.1.custom.min.js"></script>
 
 	@yield('scripts.footer')
 
@@ -389,6 +390,43 @@
 					}
 				});
 			});
+            $(document).on('click', '[data-bulk-update]', function(e){
+                e.preventDefault();
+                var elm = $(this);
+                var target = elm.attr('data-target');
+                var source = elm.attr('data-bulk-update');
+                var action = elm.attr('data-action');
+                var withVals = elm.attr('data-with');
+                var selectedObjects = {
+                    bulk: action,
+                    ids: $(target).find('[name="bulk_edit"]:checked').map(function(){
+                        return this.value;
+                    }).get()
+                }
+                $(withVals).each(function(i, field){
+                    selectedObjects[field.name] = field.value;
+                });
+                console.log(selectedObjects);
+                $.ajax({
+                    url: source,
+                    type: 'POST',
+                    data: selectedObjects,
+                    error: function(err){
+                        console.log(err);
+                    },
+                    success: function(data){
+                        $(target).html(data);
+                    },
+                    complete: function(xhr, status){
+                        if (status =='success') {
+                            loadNavJs($(target));
+                            loadData($(target));
+                        }else{
+                            console.log(status);
+                        }
+                    }
+                });
+            });
 			$(document).on('submit', '.ajax-form', function(e){
 				e.preventDefault();
 

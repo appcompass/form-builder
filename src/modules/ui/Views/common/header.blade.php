@@ -17,10 +17,10 @@
 	<link href="/assets/ui/font-awesome/css/font-awesome.css" rel="stylesheet" />
 
 	<!--external css-->
-    <link href="/assets/ui/js/jquery-ui/jquery-ui-1.10.1.custom.min.css" rel="stylesheet">
-	<link href="/assets/ui/js/gritter/css/jquery.gritter.css" rel="stylesheet" type="text/css" />
-    <link href="/assets/ui/js/jvector-map/jquery-jvectormap-1.2.2.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/ui/css/bootstrap-switch.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/ui/js/jquery-ui/jquery-ui-1.10.1.custom.min.css">
+	<link rel="stylesheet" type="text/css" href="/assets/ui/js/gritter/css/jquery.gritter.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/ui/js/jvector-map/jquery-jvectormap-1.2.2.css">
+    <link rel="stylesheet" type="text/css" href="/assets/ui/css/bootstrap-switch.css" />
     <link rel="stylesheet" type="text/css" href="/assets/ui/js/bootstrap-fileupload/bootstrap-fileupload.css" />
     <link rel="stylesheet" type="text/css" href="/assets/ui/js/bootstrap-wysihtml5/bootstrap-wysihtml5.css" />
 
@@ -34,17 +34,15 @@
     <link rel="stylesheet" type="text/css" href="/assets/ui/js/jquery-tags-input/jquery.tagsinput.css" />
 
     <link rel="stylesheet" type="text/css" href="/assets/ui/js/select2/select2.css" />
-    <link href="/assets/ui/css/clndr.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/assets/ui/css/clndr.css">
     <!--clock css-->
-    <link href="/assets/ui/js/css3clock/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/assets/ui/js/css3clock/css/style.css">
     <!--Morris Chart CSS -->
-    <link rel="stylesheet" href="/assets/ui/js/morris-chart/morris.css">
+    <link rel="stylesheet" type="text/css" href="/assets/ui/js/morris-chart/morris.css">
 
 	<!-- Custom styles for this template -->
-	<link href="/assets/ui/css/style.css" rel="stylesheet">
-	<link href="/assets/ui/css/style-responsive.css" rel="stylesheet" />
-
-  <link rel="stylesheet" href="/assets/css/lity.min.css">
+	<link rel="stylesheet" type="text/css" href="/assets/ui/css/style.css">
+	<link rel="stylesheet" type="text/css" href="/assets/ui/css/style-responsive.css"/>
 
 	<!-- Just for debugging purposes. Don't actually copy this line! -->
 	<!--[if lt IE 9]>
