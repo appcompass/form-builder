@@ -45,8 +45,6 @@ class UiBaseController extends ModularBaseController {
 
     private function viewShow()
     {
-        // $subnav = Event::fire('navigation.cms.sub', json_encode(['origin' => get_class($record), 'id' => $record->id] ))[0];
-
         return view('ui::show', [
             'meta' => $this->meta,
             'record' => $this->record,

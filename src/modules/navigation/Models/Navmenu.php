@@ -141,7 +141,7 @@ class Navmenu extends Model
 
         }
 
-        if (!$navItem instanceof NavigationItem) {
+        if (! $navItem instanceof NavigationItem) {
 
             throw new Exception("Can't add item to {$this->name}.");
 
@@ -150,9 +150,11 @@ class Navmenu extends Model
         if (! $this->items->contains($navItem)) {
 
             if (is_null($order)) {
+
                 $order = intVal( DB::table('navigation_item_navmenu')
                     ->where('navmenu_id', '=', $this->id)
                     ->max('order') ) + 1;
+
             }
 
           $this->items()->attach($navItem, ['order' => $order] );

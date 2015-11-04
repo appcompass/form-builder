@@ -17,6 +17,8 @@ class CreateSectionTemplateTable extends Migration
 			$table->increments('id');
 			$table->integer('section_id')->unsigned();
 			$table->integer('template_id')->unsigned();
+			$table->string('section_template')->nullable();
+			$table->integer('order')->unsigned()->nullable();
 
 			$table->foreign('section_id')
 					->references('id')

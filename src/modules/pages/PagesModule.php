@@ -4,6 +4,7 @@ namespace P3in\Modules;
 
 use Modular;
 use P3in\Models\Navmenu;
+use P3in\Models\NavigationItem;
 use P3in\Models\Website;
 use P3in\Modules\BaseModule;
 use P3in\Traits\NavigatableTrait as Navigatable;
@@ -24,13 +25,28 @@ Class PagesModule extends BaseModule
 
         $this->checkOrSetUiConfig();
 
-        if (Modular::isLoaded('navigation')) {
-            $main_nav = Navmenu::byName('cp_main_nav');
-            $main_nav_sub_nav =  Navmenu::byName('cp_main_nav_pages', 'Pages Manager');
-            $pages_subnav = Navmenu::byName('cp_pages_subnav');
+        $main_nav_sub_nav =  Navmenu::byName('cp_main_nav_pages', 'Pages Manager');
 
-            $main_nav_sub_nav->addItem($this->navItem);
-            $main_nav->addChildren($main_nav_sub_nav);
+        Navmenu::byName('cp_main_nav')
+            ->addChildren($main_nav_sub_nav);
+
+
+        foreach(Website::all() as $website) {
+
+            $item = NavigationItem::create([
+                'label' => $website->site_name.' Pages',
+                'url' => '',
+                'props' => [
+                    'icon' => 'pencil',
+                    'link' => [
+                        'data-click' => '/cp/websites/'.$website->id.'/pages',
+                        'data-target' => '#main-content'
+                    ]
+                ]
+            ]);
+
+            $main_nav_sub_nav->addItem($item);
+
         }
 
     }
@@ -42,22 +58,11 @@ Class PagesModule extends BaseModule
      */
     public function makeLink()
     {
-        $cp_website = Website::first();
-
-        return [
-            "label" => "{$cp_website->site_name} Pages",
-            "url" => "",
-            "new_tab" => "false",
-            "req_perms" => null,
-            "props" => [
-                "icon" => "pencil",
-                "link" => [
-                    "data-click" => "/cp/websites/{$cp_website->id}/pages",
-                    "data-target" => "#main-content",
-                    "href" => "javascript:;",
-                ]
-            ]
-      ];
+        //
+        //  This should only provide menu links for editing ALL the pages
+        //  for single page/all pages in a website refer to Page model.
+        //  Website pages is mediated through websites.
+        //
     }
 
     /**

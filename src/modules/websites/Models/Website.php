@@ -2,9 +2,10 @@
 
 namespace P3in\Models;
 
+use Auth;
+use P3in\Models\Page;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use P3in\Models\Page;
 use P3in\Traits\SettingsTrait;
 use P3in\Traits\NavigatableTrait;
 
@@ -47,28 +48,24 @@ class Website extends Model
 	protected $dates = ['published_at'];
 
 	/**
-	* Get all the pages linked to this website
-	*
-	*
-	*/
+	 * Get all the pages linked to this website
+	 *
+	 */
 	public function pages()
 	{
-		return $this->hasMany('P3in\Models\Page');
-	}
-
-	/**
-	*
-	*
-	*
-	*
-	*/
-	public function navmenus()
-	{
-		return $this->hasMany("P3in\Models\Navmenu");
+		return $this->hasMany(Page::class);
 	}
 
 	/**
 	 *
+	 *
+	 */
+	public function navmenus()
+	{
+		return $this->hasMany(Navmenu::class);
+	}
+
+	/**
 	 *
 	 *
 	 */
@@ -81,13 +78,14 @@ class Website extends Model
 	 *
 	 *
 	 */
-	public function addPage(Page $page)
+	public function addItem(Page $page)
 	{
 		$this->pages()->save($page);
 	}
 
 	/**
 	 *
+	 *	@param bool $pages retunrns a link to website's pages index
 	 */
 	public function makeLink()
 	{
@@ -100,7 +98,7 @@ class Website extends Model
 	        	"icon" => 'globe',
 	        	"link" => [
 	        		'data-click' => 'websites/'.$this->id,
-	        		'data-target' => ''
+	        		'data-target' => '#main-content'
 	        	]
 	        ]
 	    ];
@@ -121,7 +119,7 @@ class Website extends Model
 				->where('slug', $page_path)
 				->firstOrFail();
 
-			if ($page->checkPermissions(\Auth::user())) {
+			if ($page->checkPermissions(Auth::user())) {
 
                 return $page;
 

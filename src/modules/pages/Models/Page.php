@@ -58,48 +58,64 @@ class Page extends Model
 	protected $navigation_props = ['id'];
 
 	/**
-	*  Build a LinkClass out of this class
-	*
-	*
-	*
-	*/
-	protected function makeLink()
+	 *
+	 *
+	 */
+	public function template()
 	{
+		return $this->belongsTo(Template::class);
+	}
+
+	/**
+	 *  Build a LinkClass out of this class
+	 */
+	public function makeLink()
+	{
+
 		return [
 		  "label" => $this->title,
-		  "url" => $this->slug,
+		  "url" => '',
 		  "req_perms" => null,
 		  "props" => [
 		      'icon' => 'list',
 		      "link" => [
+		          'date-click' => $this->slug,
 		          'data-target' => '#main-content'
 		      ],
 		  ]
 		];
 	}
 
+
 	/**
 	 * Make a page
 	 *
 	 */
-	public function makePage()
+	public function makePage($w = null)
 	{
-		//
+		return $this->makeLink($w);
 	}
 
 	/**
-	*	Get the website the page belongs to
-	*
-	*
-	*/
+	 *	Get the website the page belongs to
+	 *
+	 */
 	public function website()
 	{
 		return $this->belongsTo(Website::class);
 	}
 
 	/**
-	 * Render the page
+	 *	Link the page to a website
 	 *
+	 */
+	public function linkToWebsite(Website $website)
+	{
+		return $this->website()->associate($website)->save();
+	}
+
+	/**
+	 * Render the page
 	 *
 	 */
 	public function render($data)
@@ -173,23 +189,12 @@ class Page extends Model
 
 			}
 
-			// dd($user->permissions()->get()->toArray());
-
 			return $user->hasPermissions($this->req_permission);
 
 		}
 
 		return true;
 
-	}
-
-	/**
- 	 *
-	 *
-	 */
-	public function template()
-	{
-		return $this->belongsTo(Template::class);
 	}
 
 }

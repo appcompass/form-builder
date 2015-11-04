@@ -5,6 +5,7 @@ namespace P3in\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use Illuminate\Http\Request;
+use P3in\Models\Navmenu;
 use P3in\Models\Page;
 use P3in\Models\Website;
 
@@ -67,8 +68,6 @@ class CpPagesController extends UiBaseController
 
         return parent::build('show');
 
-        // return view('pages::edit', ['page' => Page::find($id)]);
-        // return parent::build('index', Page::find($id));
     }
 
     /**
@@ -82,6 +81,28 @@ class CpPagesController extends UiBaseController
         $this->record = Page::findOrFail($id);
 
         return parent::build('edit');
+    }
+
+    /**
+     * Add Template sections to the navmenu
+     *
+     */
+    public function getCpSubNav($id = null)
+    {
+
+        $navmenu = parent::getCpSubNav($id);
+
+        if (!is_null($this->record->template)) {
+
+            foreach($this->record->template->sections as $section) {
+
+                dd($section);
+
+            }
+
+        }
+
+        dd($navmenu->items);
     }
 
     /**

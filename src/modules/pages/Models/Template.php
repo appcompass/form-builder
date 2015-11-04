@@ -32,7 +32,6 @@ class Template extends Model
 	/**
 	 *
 	 *
-	 *
 	 */
 	public function render($data)
 	{
@@ -49,10 +48,9 @@ class Template extends Model
 	}
 
 	/**
-	*
-	*
-	*
-	*/
+	 *
+	 *
+	 */
 	public function sections()
 	{
 		$rel = $this->belongsToMany(Section::class)

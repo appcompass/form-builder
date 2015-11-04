@@ -25,7 +25,7 @@ trait NavigatableTrait
    *
    *
    */
-  public function navItem()
+  public function navItem($attributes = [])
   {
 
     if (str_is('*Module', get_class($this))) {
@@ -46,13 +46,24 @@ trait NavigatableTrait
 
     }
 
-    if ($rel->get()->count() == 0) {
+    if (!$rel->get()->count() || count($attributes)) {
 
-      $rel->save($this->makeNavigationItem());
+      $rel->save($this->makeNavigationItem($attributes));
 
     }
 
     return $rel;
+
+  }
+
+  /**
+   *  Get the raw Navigation Item instance
+   *
+   */
+  public function getNavigationItem(array $attributes = [])
+  {
+
+    $navItem = $this->makeNavigationItem($attributes);
 
   }
 
@@ -61,16 +72,18 @@ trait NavigatableTrait
 	*
 	*  @return P3in\Models\NavigationItem
 	*/
-	private function makeNavigationItem(array $attributes = [])
+	private function makeNavigationItem($attributes = [])
 	{
 
-    if (!is_null($attributes) ) {
+    if (count($attributes)) {
 
-      // set overrides
+      $link = (new LinkClass($attributes))->toArray();
+
+    } else {
+
+      $link = (new LinkClass($this->makeLink()))->toArray();
 
     }
-
-    $link = (new LinkClass($this->makeLink()))->toArray();
 
     $props = '';
 
