@@ -48,7 +48,8 @@ class UiBaseController extends ModularBaseController {
         return view('ui::show', [
             'meta' => $this->meta,
             'record' => $this->record,
-            'nav' => $this->getCpSubNav()
+            'nav' => $this->getCpSubNav(),
+            'left_panels' => $this->getLeftPanels(),
         ]);
 
     }
@@ -81,4 +82,10 @@ class UiBaseController extends ModularBaseController {
         return $navmenu;
 
     }
+
+    /**
+     *
+     */
+    public function getLeftPanels() {}
+
 }

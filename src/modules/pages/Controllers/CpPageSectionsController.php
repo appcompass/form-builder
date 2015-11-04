@@ -5,26 +5,13 @@ namespace P3in\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use Illuminate\Http\Request;
-use P3in\Models\NavigationItem;
-use P3in\Models\Navmenu;
+use P3in\Controllers\UiBaseController;
+use P3in\Models\Section;
 use P3in\Models\Page;
-use P3in\Models\Website;
+use Response;
 
-class CpPagesController extends UiBaseController
+class CpPageSectionsController extends UiBaseController
 {
-
-    /**
-    *
-    */
-    public function __construct()
-    {
-
-        $this->middleware('auth');
-
-        parent::setControllerDefaults(__DIR__);
-
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -32,7 +19,7 @@ class CpPagesController extends UiBaseController
      */
     public function index()
     {
-
+        //
     }
 
     /**
@@ -64,11 +51,7 @@ class CpPagesController extends UiBaseController
      */
     public function show($id)
     {
-
-        $this->record = Page::findOrFail($id);
-
-        return parent::build('show');
-
+        //
     }
 
     /**
@@ -77,29 +60,18 @@ class CpPagesController extends UiBaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($page_id, $section_id)
     {
-        $this->record = Page::findOrFail($id);
+        $page = Page::findOrFail($page_id)->load('sections.photos');
 
-        return parent::build('edit');
-    }
+        $template = $page->template;
 
-    /**
-     *
-     *
-     */
-    public function getLeftPanels($id = null)
-    {
-        $navmenu = new Navmenu(['label' => 'Page Sections']);
+        $section = $page->sections()
+            ->findOrFail($section_id);
 
-        foreach($this->record->sections as $section) {
+        $photos = $section->photos;
 
-            $navmenu->items->push($section->navItem);
-
-        }
-
-        return [$navmenu];
-
+        return view($section->edit_view, compact('section', 'page', 'photos'));
     }
 
     /**
@@ -109,9 +81,23 @@ class CpPagesController extends UiBaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $page_id, $section_id)
     {
-        //
+
+        if ($request->file) {
+
+        //     dd($request->file);
+
+        }
+
+        $content = json_encode($request->except(['_token', '_method']));
+
+        $result = Page::findOrFail($page_id)->sections()
+            ->updateExistingPivot($section_id, [
+                'content' => $content
+            ]);
+
+        return Response::json(['success' => $result]);
     }
 
     /**

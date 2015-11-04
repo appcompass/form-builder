@@ -2,29 +2,15 @@
 
 namespace P3in\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests;
 use Illuminate\Http\Request;
-use P3in\Models\NavigationItem;
-use P3in\Models\Navmenu;
-use P3in\Models\Page;
-use P3in\Models\Website;
 
-class CpPagesController extends UiBaseController
+use P3in\Controllers\UiBaseController;
+use App\Http\Requests;
+use App\Http\Controllers\Controller;
+use P3in\Models\Section;
+
+class CpSectionsController extends UiBaseController
 {
-
-    /**
-    *
-    */
-    public function __construct()
-    {
-
-        $this->middleware('auth');
-
-        parent::setControllerDefaults(__DIR__);
-
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -32,7 +18,7 @@ class CpPagesController extends UiBaseController
      */
     public function index()
     {
-
+        //
     }
 
     /**
@@ -64,11 +50,7 @@ class CpPagesController extends UiBaseController
      */
     public function show($id)
     {
-
-        $this->record = Page::findOrFail($id);
-
-        return parent::build('show');
-
+        //
     }
 
     /**
@@ -79,27 +61,7 @@ class CpPagesController extends UiBaseController
      */
     public function edit($id)
     {
-        $this->record = Page::findOrFail($id);
-
-        return parent::build('edit');
-    }
-
-    /**
-     *
-     *
-     */
-    public function getLeftPanels($id = null)
-    {
-        $navmenu = new Navmenu(['label' => 'Page Sections']);
-
-        foreach($this->record->sections as $section) {
-
-            $navmenu->items->push($section->navItem);
-
-        }
-
-        return [$navmenu];
-
+        //
     }
 
     /**

@@ -15,6 +15,10 @@ class Template extends Model
 	 */
 	protected $table = 'templates';
 
+	protected $casts = [
+		'content' => 'array'
+	];
+
 	/**
 	 * The attributes that are mass assignable.
 	 *
@@ -54,7 +58,7 @@ class Template extends Model
 	public function sections()
 	{
 		$rel = $this->belongsToMany(Section::class)
-			->withPivot(['template_section', 'order'])
+			->withPivot(['template_section', 'order', 'content'])
 			->orderBy('pivot_order', 'asc');
 
 		return $rel;

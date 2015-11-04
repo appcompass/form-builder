@@ -108,7 +108,7 @@ Class PagesModule extends BaseModule
                 ],
             'show' => [
                 'heading' => 'Page Informations',
-                'sub_section_name' => 'Sub Sections',
+                'sub_section_name' => 'Page Administration',
             ],
             'edit' => [
                 'heading' => 'Page Informations',

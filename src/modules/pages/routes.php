@@ -7,5 +7,7 @@ Route::group([
 
   Route::resource('pages', 'PagesController');
   Route::resource('cp/pages', 'CpPagesController');
+  Route::resource('cp/pages/{id}/section', 'CpPageSectionsController');
+  Route::resource('cp/section', 'CpSectionsController');
 
 });

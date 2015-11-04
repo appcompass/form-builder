@@ -61,9 +61,24 @@ class Page extends Model
 	 *
 	 *
 	 */
-	public function template()
+	// public function template()
+	// {
+	// 	return $this->belongsTo(Template::class);
+	// }
+
+	/**
+	 *
+	 */
+	public function sections()
 	{
-		return $this->belongsTo(Template::class);
+
+		$rel = $this->belongsToMany(Section::class)
+			// ->withPivot(['template_section', 'order', 'content'])
+			->withPivot(['order', 'content'])
+			->orderBy('pivot_order', 'asc');
+
+		return $rel;
+
 	}
 
 	/**
@@ -79,21 +94,11 @@ class Page extends Model
 		  "props" => [
 		      'icon' => 'list',
 		      "link" => [
-		          'date-click' => $this->slug,
+		          'data-click' => $this->slug,
 		          'data-target' => '#main-content'
 		      ],
 		  ]
 		];
-	}
-
-
-	/**
-	 * Make a page
-	 *
-	 */
-	public function makePage($w = null)
-	{
-		return $this->makeLink($w);
 	}
 
 	/**
