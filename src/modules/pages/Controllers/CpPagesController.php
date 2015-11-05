@@ -42,7 +42,8 @@ class CpPagesController extends UiBaseController
      */
     public function create()
     {
-        //
+        return $this->build('create');
+        // return view('pages::create');
     }
 
     /**

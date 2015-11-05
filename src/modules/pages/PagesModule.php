@@ -30,7 +30,6 @@ Class PagesModule extends BaseModule
         Navmenu::byName('cp_main_nav')
             ->addChildren($main_nav_sub_nav);
 
-        $module = Modular::get($this->module_name);
         foreach(Website::all() as $website) {
             $item = $this->navItem([
                 'label' => $website->site_name.' Pages',

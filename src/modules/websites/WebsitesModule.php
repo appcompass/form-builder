@@ -37,9 +37,8 @@ Class WebsitesModule extends BaseModule
     {
         $this->setConfig();
 
-        if (Modular::isLoaded('navigation')) {
-            Navmenu::byName('cp_main_nav')->addItem($this->navItem);
-        }
+        Navmenu::byName('cp_main_nav')->addItem($this->navItem);
+
 	}
 
 
@@ -97,7 +96,7 @@ Class WebsitesModule extends BaseModule
                 ],
             ],
             'show' => [
-                'sub_section_name' => 'Sub Sections',
+                'sub_section_name' => 'Website Configuration',
             ],
             'edit' => [
                 'heading' => 'Connection Information',

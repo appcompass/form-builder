@@ -23,22 +23,20 @@ class PagesModuleDatabaseSeeder extends Seeder
 
 		Page::where('name','cp_pages_info')->delete();
 
-		$page = new Page([
+		$page = Page::firstOrCreate([
+		    'name' => 'cp_pages_info',
+		    'title' => 'Page Info',
 		    'description' => 'Page Info',
+		    'slug' => 'edit',
+		    'order' => 2,
 		    'published_at' => Carbon::now(),
 		    'active' => true,
 		    'parent' => null,
 		    'req_permission' => null,
-		    'title' => 'Page Info',
-		    'order' => 1,
-		    'slug' => 'edit',
-		    'name' => 'cp_pages_info',
-		    'content' => [],
+		    'website_id' => Website::admin()->id
 		]);
 
-		$page->linkToWebsite(Website::first());
-
-		Navmenu::byName('cp_pages_subnav')->addItem($page, 1);
+		Navmenu::byName('cp_pages_subnav')->addItem($page, 2);
 
 		Model::reguard();
 	}

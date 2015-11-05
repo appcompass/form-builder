@@ -16,16 +16,7 @@ class CreateWebsitesTable extends Migration
 			$table->increments('id');
 			$table->string('site_name', 64);
 			$table->string('site_url', 128);
-			// $table->string('from_email', 128);
-			// $table->string('from_name', 128);
-			// $table->boolean('managed')->default(false);
-			// $table->string('ssh_host', 128);
-			// $table->string('ssh_username', 128);
-			// $table->string('ssh_password', 256);
-			// $table->text('ssh_key');
-			// $table->string('ssh_keyphrase', 256);
-			// $table->string('ssh_root', 256);
-			$table->json('config');
+			$table->json('config')->nullable();
 			$table->timestamps();
 		});
 	}

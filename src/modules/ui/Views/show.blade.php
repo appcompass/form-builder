@@ -25,31 +25,31 @@
 
             @if(isset($left_panels))
 
-                @foreach($left_panels as $navmenu)
+            @foreach($left_panels as $navmenu)
 
-                    <section class="panel">
-                        <div class="panel-body">
-                            <h5>{{ $navmenu->label }}</h5>
+            <section class="panel">
+                <div class="panel-body">
+                    <h5>{{ $navmenu->label }}</h5>
 
-                            <div class="dd" id="nestable_menu">
-                                <ul class="nav nav-stacked dd-list">
+                    <div class="dd" id="nestable_menu">
+                        <ul class="nav nav-stacked dd-list">
 
-                                    @foreach($navmenu->items as $item)
-                                        <li class="dd-item" data-id="{{ $item->id }}" style="display: inline">
-                                            <i class="dd-handle fa fa-arrows-alt"></i>
-                                            <a data-click="{{ $meta->base_url.'/'.$record->id.'/'.$item->url }}" data-target="#record-detail">
-                                                {{ $item->label }}
-                                            </a>
-                                        </li>
-                                    @endforeach
+                            @foreach($navmenu->items as $item)
+                            <li class="dd-item" data-id="{{ $item->id }}" style="display: inline">
+                                <i class="dd-handle fa fa-arrows-alt"></i>
+                                <a data-click="{{ $meta->base_url.'/'.$record->id.'/'.$item->url }}" data-target="#record-detail">
+                                    {{ $item->label }}
+                                </a>
+                            </li>
+                            @endforeach
 
-                                </ul>
-                            </div>
+                        </ul>
+                    </div>
 
-                        </div>
-                    </section>
+                </div>
+            </section>
 
-                @endforeach
+            @endforeach
 
             @endif
 
@@ -58,7 +58,7 @@
         </div>
         <div class="col-sm-9" id="record-detail" data-load="{{ $meta->base_url }}/{{ $record->id }}/edit"></div>
     </div>
-<!-- page end-->
+    <!-- page end-->
 </section>
 
 <script src="/assets/ui/js/nestable/jquery.nestable.js"></script>

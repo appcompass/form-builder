@@ -2,11 +2,10 @@
 
 namespace P3in\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use P3in\Models\Website;
-use P3in\Modules\Navigation\LinkClass;
 use P3in\Traits\NavigatableTrait as Navigatable;
+use Illuminate\Database\Eloquent\Model;
+use P3in\Models\Website;
 
 class Page extends Model
 {
@@ -32,39 +31,17 @@ class Page extends Model
 		'slug',
 		'order',
 		'parent',
+		'active',
 		'website_id',
 		'req_permission',
 		'published_at'
 	];
-
-    /**
-    *
-    */
-    protected $casts = [
-        'content' => 'object'
-    ];
 
 	/**
 	*	Fields that needs to be treated as a date
 	*
 	*/
 	protected $dates = ['published_at'];
-
-	/**
-	*	Properties we want to link the class to
-	*
-	*	@var array
-	*/
-	protected $navigation_props = ['id'];
-
-	/**
-	 *
-	 *
-	 */
-	// public function template()
-	// {
-	// 	return $this->belongsTo(Template::class);
-	// }
 
 	/**
 	 *
@@ -89,7 +66,7 @@ class Page extends Model
 
 		return [
 		  "label" => $this->title,
-		  "url" => '',
+		  "url" => $this->slug,
 		  "req_perms" => null,
 		  "props" => [
 		      'icon' => 'list',
@@ -116,7 +93,9 @@ class Page extends Model
 	 */
 	public function linkToWebsite(Website $website)
 	{
-		return $this->website()->associate($website)->save();
+		return $this->website()
+			->associate($website)
+			->save();
 	}
 
 	/**
@@ -125,21 +104,8 @@ class Page extends Model
 	 */
 	public function render($data)
 	{
-
 		return $this->template
 			->render($data);
-
-	}
-
-	/**
-	 *
-	 */
-	public function components()
-	{
-
-	  return $this->template()
-	  	->with('sections');
-
 	}
 
 	/**
@@ -149,9 +115,7 @@ class Page extends Model
 	 */
 	public function getFullUrlAttribute()
 	{
-
 		return 'https://'.$this->website->site_url.$this->slug;
-
 	}
 
 	/**

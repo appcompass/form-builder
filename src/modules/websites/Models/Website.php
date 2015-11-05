@@ -85,6 +85,15 @@ class Website extends Model
 
 	/**
 	 *
+	 *
+	 */
+	public function scopeAdmin($query)
+	{
+	  return $query->where('site_name', '=', env('ADMIN_WEBSITE_NAME', 'CMS Admin CP'))->firstOrFail();
+	}
+
+	/**
+	 *
 	 *	@param bool $pages retunrns a link to website's pages index
 	 */
 	public function makeLink()
