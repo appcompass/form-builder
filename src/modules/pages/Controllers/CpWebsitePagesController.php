@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use Illuminate\Http\Request;
 use P3in\Controllers\UiBaseController;
+use P3in\Models\Navmenu;
 use P3in\Models\Page;
 use P3in\Models\Template;
 use P3in\Models\Website;
@@ -32,7 +33,10 @@ class CpWebsitePagesController extends UiBaseController
 
         $this->records = Website::findOrFail($website_id)->pages;
 
+        $this->meta->base_url = '/cp/websites/'.$website_id.'/pages';
+
         return $this->build('index');
+
     }
 
     /**
@@ -42,7 +46,7 @@ class CpWebsitePagesController extends UiBaseController
      */
     public function create($website_id)
     {
-        //
+        return $this->build('create');
     }
 
     /**
@@ -63,7 +67,13 @@ class CpWebsitePagesController extends UiBaseController
      * @param  int  $page_id
      * @return Response
      */
-    public function show($website_id, $page_id) { /* Called in PhotosController */}
+    public function show($website_id, $page_id) {
+
+        $this->record = Website::findOrFail($website_id)->pages()
+            ->findOrFail($page_id);
+
+        return parent::build('show');
+    }
 
     /**
      * Show the form for editing the specified resource.
@@ -97,6 +107,28 @@ class CpWebsitePagesController extends UiBaseController
     {
         //
     }
+
+    /**
+     *
+     *
+     */
+    public function getLeftPanels($id = null)
+    {
+
+        $navmenu = parent::getLeftPanels();
+
+        $navmenu = new Navmenu(['label' => 'Page Sections']);
+
+        foreach($this->record->sections as $section) {
+
+            $navmenu->items->push($section->navItem);
+
+        }
+
+        return is_array($navmenu) ?: [$navmenu];
+
+    }
+
 
     /**
      * Remove the specified resource from storage.

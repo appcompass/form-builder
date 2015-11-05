@@ -86,24 +86,6 @@ class CpPagesController extends UiBaseController
     }
 
     /**
-     *
-     *
-     */
-    public function getLeftPanels($id = null)
-    {
-        $navmenu = new Navmenu(['label' => 'Page Sections']);
-
-        foreach($this->record->sections as $section) {
-
-            $navmenu->items->push($section->navItem);
-
-        }
-
-        return [$navmenu];
-
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
