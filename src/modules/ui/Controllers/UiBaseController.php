@@ -62,6 +62,62 @@ class UiBaseController extends ModularBaseController {
         ]);
     }
 
+    public function processRequest(Request $request, $lib = [])
+    {
+        if ($request->reorder) {
+
+            foreach ($request->reorder as $i => $item_id) {
+
+                $itemObj = $lib['model']::findOrFail($item_id);
+
+                foreach ($lib['reorder']['chain'] as $method) {
+                    $itemObj = $itemObj->$method();
+                }
+
+                $itemObj->update([$lib['reorder']['field'] => $i]);
+
+            }
+
+        }elseif($request->bulk){
+
+            if (!empty($request->ids)) {
+
+                switch ($request->bulk) {
+                    case 'update':
+
+                        foreach ($request->ids as $item_id) {
+
+                            $itemObj = $lib['model']::findOrFail($item_id);
+
+                            if (isset($request->options)) {
+
+                                foreach ($request->options as $option_name => $option_value) {
+
+                                    $itemObj->setOption($option_name, $option_value);
+
+                                }
+
+                            }
+
+                            if (!empty($request->attributes)) {
+                               $itemObj->update((array) $request->attributes);
+                            }
+
+                        }
+
+                    break;
+                    case 'delete':
+
+                        $lib['model']::destroy($request->ids);
+
+                    break;
+                }
+            }
+        }else{
+            return false;
+        }
+        return true;
+    }
 
     /**
      *
