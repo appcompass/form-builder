@@ -30,6 +30,9 @@
     <link rel="stylesheet" type="text/css" href="/assets/ui/js/bootstrap-daterangepicker/daterangepicker-bs3.css" />
     <link rel="stylesheet" type="text/css" href="/assets/ui/js/bootstrap-datetimepicker/css/datetimepicker.css" />
 
+    <link rel="stylesheet" type="text/css" href="/assets/ui/js/iCheck/skins/minimal/minimal.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/ui/js/iCheck/skins/square/square.css" />
+
     <link rel="stylesheet" type="text/css" href="/assets/ui/js/jquery-multi-select/css/multi-select.css" />
     <link rel="stylesheet" type="text/css" href="/assets/ui/js/jquery-tags-input/jquery.tagsinput.css" />
 

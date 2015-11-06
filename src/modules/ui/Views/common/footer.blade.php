@@ -32,11 +32,13 @@
 	<script src="/assets/ui/js/flot-chart/jquery.flot.growraf.js"></script>
 	<script src="/assets/ui/js/jquery.customSelect.min.js" ></script>
 	<script src="/assets/ui/js/jquery.customSelect.min.js" ></script>
+	<!-- iCheck -->
+	<script src="/assets/ui/js/iCheck/jquery.icheck.min.js" ></script>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/0.12.16/vue.min.js"></script>
 
-    <script src="/assets/ui/js/jquery-ui/jquery-ui-1.10.1.custom.min.js"></script>
+  <script src="/assets/ui/js/jquery-ui/jquery-ui-1.10.1.custom.min.js"></script>
 
 	@yield('scripts.footer')
 
