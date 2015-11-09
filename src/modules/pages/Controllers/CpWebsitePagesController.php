@@ -4,6 +4,7 @@ namespace P3in\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use P3in\Controllers\UiBaseController;
 use P3in\Models\Navmenu;
@@ -46,7 +47,11 @@ class CpWebsitePagesController extends UiBaseController
      */
     public function create($website_id)
     {
+
+        $this->meta->create->route = '/cp/websites/'.$website_id.'/pages';
+
         return $this->build('create');
+
     }
 
     /**
@@ -55,9 +60,21 @@ class CpWebsitePagesController extends UiBaseController
      * @param  Request  $request
      * @return Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $website_id)
     {
-        //
+
+        $page = new Page($request->all());
+
+        $page->slug = '/'.$request->get('name');
+        $page->published_at = Carbon::now();
+
+        Website::findOrFail($website_id)->pages()
+            ->save($page);
+
+        $this->record = $page;
+
+        return parent::build('show');
+
     }
 
     /**

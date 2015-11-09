@@ -202,7 +202,8 @@ class Option extends Model
         ->first();
 
       if (!count($option)) {
-        throw new \Exception("One or more stored option(s) not found in <$label>.");
+        //   throw new \Exception("One or more stored option(s) not found in <$label>.");
+        return false;
       }
 
       $result->push($option);

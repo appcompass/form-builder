@@ -19,7 +19,7 @@
                 </header>
                 <div class="panel-body">
 
-                    {!! Form::open(['route' => $meta->create->route, 'method' => 'POST', 'data-target' => '#main-content', 'class' => 'form-horizontal bucket-form ajax-form']) !!}
+                    {!! Form::open(['url' => $meta->create->route, 'method' => 'POST', 'data-target' => '#main-content', 'class' => 'form-horizontal bucket-form ajax-form']) !!}
                         @foreach($meta->form->fields as $fieldData)
                         <div class="form-group">
                             {!! Form::label($fieldData->name, $fieldData->label, ['class' => 'col-sm-3 control-label']) !!}

@@ -12,7 +12,7 @@
                         @foreach($nav->items as $subnav_name => $subnav_content)
 
                         <li>
-                            <a data-click="{{ $meta->base_url.'/'.$record->id.'/'.$subnav_content['url'] }}" data-target="#record-detail">
+                            <a data-click="{{ $meta->base_url.'/'.$record->id.'/'.$subnav_content['url'] }}" {!! inlineAttrs($subnav_content->props, 'link') !!}>
                                 <i class="fa {{ $subnav_content['icon'] }}"></i>
                                 <span>{{ $subnav_content['label'] }}</span>
                             </a>

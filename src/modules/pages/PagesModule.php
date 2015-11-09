@@ -35,7 +35,7 @@ Class PagesModule extends BaseModule
                 'label' => $website->site_name.' Pages',
                 'url' => '',
                 'props' => [
-                    'icon' => 'pencil',
+                    'icon' => 'file-text-o',
                     'link' => [
                         'data-click' => '/cp/websites/'.$website->id.'/pages',
                         'data-target' => '#main-content'
@@ -72,9 +72,9 @@ Class PagesModule extends BaseModule
         $module = Modular::get($this->module_name);
 
             $module->config = [
-                'base_url' => "/cp/{$this->module_name}",
+                'base_url' => "/cp/pages",
                 'index' => [
-                    'heading' => 'Manage Websites',
+                    'heading' => 'Website\'s pages',
                     'table' => [
                         'headers' => [
                             'Title',
@@ -113,7 +113,7 @@ Class PagesModule extends BaseModule
                 'route' => 'cp.pages.update'
             ],
             'create' => [
-                'heading' => 'Create New Page',
+                'heading' => 'Add a page to this website',
                 'route' => 'cp.pages.store'
             ],
             'form' => [

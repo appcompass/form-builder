@@ -54,7 +54,7 @@ class CpPagesController extends UiBaseController
      */
     public function store(Request $request)
     {
-        //
+        // We create pages through CpWebsitePagesController
     }
 
     /**
