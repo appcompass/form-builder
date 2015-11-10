@@ -19,13 +19,13 @@ trait NavigatableTrait
    *  Return an array of attributes to be stored as NavigationItem for the model
    *
    */
-  abstract protected function makeLink($attributes = []);
+  abstract protected function makeLink($overrides = []);
 
   /**
    *
    *
    */
-  public function navItem($attributes = [])
+  public function navItem($overrides = [])
   {
 
     if (str_is('*Module', get_class($this))) {
@@ -46,9 +46,9 @@ trait NavigatableTrait
 
     }
 
-    if (!$rel->get()->count() || count($attributes)) {
+    if (!$rel->get()->count() || count($overrides)) {
 
-      $rel->save($this->makeNavigationItem($attributes));
+        $rel->save($this->makeNavigationItem($overrides));
 
     }
 
@@ -60,10 +60,10 @@ trait NavigatableTrait
    *  Get the raw Navigation Item instance
    *
    */
-  public function getNavigationItem(array $attributes = [])
+  public function getNavigationItem(array $overrides = [])
   {
 
-    $navItem = $this->makeNavigationItem($attributes);
+    return $this->makeNavigationItem($overrides);
 
   }
 
@@ -72,12 +72,14 @@ trait NavigatableTrait
 	*
 	*  @return P3in\Models\NavigationItem
 	*/
-	private function makeNavigationItem($attributes = [])
+	private function makeNavigationItem($overrides = [])
 	{
 
-    if (count($attributes)) {
+    if (count($overrides)) {
 
-      $link = (new LinkClass($attributes))->toArray();
+      $link = (new LinkClass($this->makeLink($overrides)))->toArray();
+
+      // $link = array_replace($link, $attributes);
 
     } else {
 

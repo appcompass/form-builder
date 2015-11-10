@@ -96,21 +96,19 @@ class Website extends Model
 	 *
 	 *	@param bool $pages retunrns a link to website's pages index
 	 */
-	public function makeLink()
+	public function makeLink($overrides = [])
 	{
-	    return [
+	    return array_replace([
 	        "label" => $this->site_name,
-	        "url" => '',
-	        "has_content" => false,
-	        "req_perms" => null,
+	        "url" => 'cp/websites'.$this->id.'/pages',
 	        "props" => [
 	        	"icon" => 'globe',
 	        	"link" => [
-	        		'data-click' => 'websites/'.$this->id,
+	        		'data-click' => 'cp/websites/'.$this->id,
 	        		'data-target' => '#main-content'
 	        	]
 	        ]
-	    ];
+	    ], $overrides);
 	}
 
 	/**

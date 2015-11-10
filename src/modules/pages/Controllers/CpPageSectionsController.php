@@ -62,16 +62,17 @@ class CpPageSectionsController extends UiBaseController
      */
     public function edit($page_id, $section_id)
     {
-        $page = Page::findOrFail($page_id)->load('sections.photos');
 
-        $template = $page->template;
+        $page = Page::findOrFail($page_id)->load('sections.photos');
 
         $section = $page->sections()
             ->findOrFail($section_id);
 
         $photos = $section->photos;
 
-        return view($section->edit_view, compact('section', 'page', 'photos'));
+        $edit_view = 'sections.'.$section->edit_view;
+
+        return view($edit_view, compact('section', 'page', 'photos'));
     }
 
     /**

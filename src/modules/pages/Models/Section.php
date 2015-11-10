@@ -26,6 +26,13 @@ class Section extends Model
 	 * @var array
 	 */
 	protected $fillable = [
+		'name',
+		'fits',
+		'display_view',
+		'edit_view',
+		'config',
+		'multi',
+		'type'
 	];
 
 	/**
@@ -62,31 +69,44 @@ class Section extends Model
 	/**
 	 *
 	 */
-	public function makeLink($attributes = [])
+	public function makeLink($overrides = [])
 	{
-		return [
+		return array_replace([
 		  "label" => $this->name,
-		  "url" => 'section/'.$this->id.'/edit',
+		  "url" => 'sections/'.$this->id.'/edit',
 		  "req_perms" => null,
 		  "props" => [
 		      'icon' => 'list',
 		      "link" => [
-		          'data-click' => '/cp/sections/'.$this->id,
-		          'data-target' => '#main-content'
+		          'data-click' => '',
+		          'data-target' => '#record-detail'
 		      ],
 		  ]
-		];
+		], $overrides);
 	}
 
 	/**
 	 *
-	 *
+	 */
+	public function scopeDraggable($query)
+	{
+	  return $query->where('type', '=', null);
+	}
+
+	/**
 	 *
 	 */
-	public function templates()
+	public function scopeHeaders($query)
 	{
-
-		return $this->belongsToMany(Template::class, 'template_sections');
-
+	  return $query->where('type', 'header');
 	}
+
+	/**
+	 *
+	 */
+	public function scopeFooters($query)
+	{
+	  return $query->where('type', 'footer');
+	}
+
 }

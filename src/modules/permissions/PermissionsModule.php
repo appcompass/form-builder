@@ -39,9 +39,9 @@ Class PermissionsModule extends BaseModule
     /**
      *
      */
-    public function makeLink()
+    public function makeLink($overrides = [])
     {
-      return [
+      return array_replace([
           "label" => 'Permissions',
           "url" => '',
           "new_tab" => 'false',
@@ -54,7 +54,7 @@ Class PermissionsModule extends BaseModule
                 'href' => 'javascript:;',
             ]
           ]
-      ];
+      ], $overrides);
     }
 
 }

@@ -36,9 +36,9 @@ Class UiModule extends BaseModule
 	/**
 	 *
 	 */
-	public function makeLink()
+	public function makeLink($overrides = [])
 	{
-	    return [
+	    return array_replace([
 	        "label" => 'Dashboard',
 	        "url" => '',
 	        "req_perms" => null,
@@ -49,7 +49,7 @@ Class UiModule extends BaseModule
 	                'data-target' => '#main-content'
 	            ],
 	        ]
-	    ];
+	    ], $overrides);
 	}
 
 }

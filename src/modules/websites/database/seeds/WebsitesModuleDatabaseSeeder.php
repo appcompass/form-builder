@@ -30,6 +30,8 @@ class WebsitesModuleDatabaseSeeder extends Seeder
 
 			$website->save();
 
+	    $website_subnav = Navmenu::byName('cp_websites_subnav');
+
 			$page = Page::firstOrNew([
 			    'name' => 'cp_website_pages',
 			    'title' => 'Pages',
@@ -46,7 +48,21 @@ class WebsitesModuleDatabaseSeeder extends Seeder
 
 	    $page->save();
 
-	    Navmenu::byName('cp_websites_subnav')->addItem($page, 1);
+	    $website_subnav->addItem($page, 2);
+
+			// $page = Page::firstOrNew([
+			//     'name' => 'cp_website_pages',
+			//     'title' => 'Pages',
+			//     'description' => 'Page Info',
+			//     'slug' => 'pages',
+			//     'order' => 2,
+			//     'active' => true,
+			//     'parent' => null,
+			//     'req_permission' => null,
+			//     'website_id' => Website::admin()->id
+			// ]);
+
+	  //   $website_subnav->addItem($page, 1);
 
 		Model::reguard();
 	}

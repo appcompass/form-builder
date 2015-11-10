@@ -36,7 +36,18 @@ class PagesModuleDatabaseSeeder extends Seeder
 		    'website_id' => Website::admin()->id
 		]);
 
-		Navmenu::byName('cp_pages_subnav')->addItem($page, 2);
+
+
+		Navmenu::byName('cp_pages_subnav')->addItem($page, 2, [
+			'props' => [
+			    // 'icon' => 'file-text-o',
+			    'icon' => 'globe',
+			    'link' => [
+			        'data-click' => '/cp/websites/'.Website::admin()->id.'/pages',
+			        'data-target' => '#record-detail'
+			    ]
+			]
+		]);
 
 		Model::reguard();
 	}

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use P3in\Controllers\UiBaseController;
 use P3in\Models\Navmenu;
 use P3in\Models\Page;
+use P3in\Models\Section;
 use P3in\Models\Template;
 use P3in\Models\Website;
 
@@ -48,6 +49,14 @@ class CpWebsitePagesController extends UiBaseController
     public function create($website_id)
     {
 
+        $this->meta->available_layouts = [
+            '3' => 'Full Width',
+            '1:2' => 'Left Sidenav',
+            '2:1' => 'Right Sidenav'
+        ];
+
+        // return $this->build('create');
+
         $this->meta->create->route = '/cp/websites/'.$website_id.'/pages';
 
         return $this->build('create');
@@ -62,7 +71,6 @@ class CpWebsitePagesController extends UiBaseController
      */
     public function store(Request $request, $website_id)
     {
-
         $page = new Page($request->all());
 
         $page->slug = '/'.$request->get('name');
@@ -73,8 +81,8 @@ class CpWebsitePagesController extends UiBaseController
 
         $this->record = $page;
 
-        return parent::build('show');
-
+        return $this->index($website_id);
+        // return parent::build('show');
     }
 
     /**
@@ -89,7 +97,11 @@ class CpWebsitePagesController extends UiBaseController
         $this->record = Website::findOrFail($website_id)->pages()
             ->findOrFail($page_id);
 
-        return parent::build('show');
+        return view('pages::show')
+            ->with('record', $this->record)
+            ->with('meta', $this->meta)
+            ->with('nav', $this->getCpSubNav())
+            ->with('left_panels', $this->getLeftPanels());
     }
 
     /**
@@ -108,9 +120,9 @@ class CpWebsitePagesController extends UiBaseController
             ->pages()
             ->findOrFail($page_id);
 
-        $templates = Template::all()->lists('name', 'id');
+        // $templates = Template::all()->lists('name', 'id');
 
-        return view('pages::edit', compact('page', 'website', 'templates'));
+        return view('pages::edit', compact('page', 'website'));//, 'templates'));
     }
 
     /**
@@ -132,17 +144,32 @@ class CpWebsitePagesController extends UiBaseController
     public function getLeftPanels($id = null)
     {
 
-        $navmenu = parent::getLeftPanels();
+        // fetch default panels
+        $left_panels[] = parent::getLeftPanels() ?: null;
 
-        $navmenu = new Navmenu(['label' => 'Page Sections']);
+        // add current page sections
+        $page_sections_navmenu = new Navmenu(['label' => 'Page Sections']);
 
-        foreach($this->record->sections as $section) {
+        foreach($this->record->sections()->get() as $section) {
 
-            $navmenu->items->push($section->navItem);
+            $page_sections_navmenu->items->push($section->getNavigationItem(['url' => 'section/'.$section->id.'/edit']));
 
         }
 
-        return is_array($navmenu) ?: [$navmenu];
+        // list all the aviailable sections
+        $left_panels['targets'][] = $page_sections_navmenu;
+
+        $sections_navmenu = new Navmenu(['label' => 'Available Sections']);
+
+        foreach(Section::draggable()->get() as $section) {
+
+            $sections_navmenu->items->push($section->getNavigationItem(['url' => '', 'props' => ['icon' => 'globe']]));
+
+        }
+
+        $left_panels['sources'][] = $sections_navmenu;
+
+        return $left_panels;
 
     }
 

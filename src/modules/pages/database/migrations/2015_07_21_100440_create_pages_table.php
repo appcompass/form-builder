@@ -21,6 +21,8 @@ class CreatePagesTable extends Migration
 			$table->integer('order')->nullable();
 			$table->boolean('active')->default(false);
 
+			$table->string('layout')->default(3)->nullable();
+
 			$table->integer('parent')->nullable();
 			$table->integer('website_id')->unsigned();
 			$table->string('req_permission')->nullable();

@@ -40,11 +40,7 @@ class CpPagesController extends UiBaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        return $this->build('create');
-        // return view('pages::create');
-    }
+    public function create() { /* Creation is performed in CpWebsitePagesController */ }
 
     /**
      * Store a newly created resource in storage.
@@ -52,10 +48,7 @@ class CpPagesController extends UiBaseController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        // We create pages through CpWebsitePagesController
-    }
+    public function store(Request $request) { /* We create pages through CpWebsitePagesController */ }
 
     /**
      * Display the specified resource.
@@ -88,13 +81,18 @@ class CpPagesController extends UiBaseController
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request  $reques
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $page_id)
     {
-        //
+
+        $this->record = Page::findOrFail($page_id);
+
+        $this->record->update($request->all());
+
+        return parent::build('edit');
     }
 
     /**

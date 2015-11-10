@@ -1,72 +1,50 @@
-<link rel="stylesheet" href="/assets/ui/js/nestable/jquery.nestable.css">
+@extends('ui::layouts/cms_internal_layout')
 
-<section class="wrapper">
-    <!-- page start-->
-    <div class="row">
-        <div class="col-sm-3">
-            <section class="panel">
-                <div class="panel-body">
-                    <h5>{{ $meta->show->sub_section_name }}</h5>
-                    <ul class="nav nav-pills nav-stacked mail-nav">
+@section('subnav')
 
-                        @foreach($nav->items as $subnav_name => $subnav_content)
+    @include('ui::partials/cms_subnav_panel', ['meta' => $meta, 'nav' => $nav])
 
-                        <li>
-                            <a data-click="{{ $meta->base_url.'/'.$record->id.'/'.$subnav_content['url'] }}" {!! inlineAttrs($subnav_content->props, 'link') !!}>
-                                <i class="fa {{ $subnav_content['icon'] }}"></i>
-                                <span>{{ $subnav_content['label'] }}</span>
-                            </a>
-                        </li>
-                        @endforeach
+@stop
 
-                    </ul>
-                </div>
-            </section>
+@section('left-panels')
 
-            @if(isset($left_panels))
+@if(isset($left_panels))
 
-            @foreach($left_panels as $navmenu)
+    @each('ui::partials/panel_source_draggable', array_filter($left_panels), 'navmenu');
 
-            <section class="panel">
-                <div class="panel-body">
-                    <h5>{{ $navmenu->label }}</h5>
+@endif
 
-                    <div class="dd" id="nestable_menu">
-                        <ul class="nav nav-stacked dd-list">
+{{-- @include('alerts::alerts') --}}
 
-                            @foreach($navmenu->items as $item)
-                            <li class="dd-item" data-id="{{ $item->id }}" style="display: inline">
-                                <i class="dd-handle fa fa-arrows-alt"></i>
-                                <a data-click="{{ $meta->base_url.'/'.$record->id.'/'.$item->url }}" data-target="#record-detail">
-                                    {{ $item->label }}
-                                </a>
-                            </li>
-                            @endforeach
+@stop
 
-                        </ul>
-                    </div>
+@section('content')
+    {{-- There can be default content here, or we can include instructions, render markdown maybe? --}}
+@stop
 
-                </div>
-            </section>
 
-            @endforeach
-
-            @endif
-
-            {{-- @include('alerts::alerts') --}}
-
-        </div>
-        <div class="col-sm-9" id="record-detail" data-load="{{ $meta->base_url }}/{{ $record->id }}/edit"></div>
-    </div>
-    <!-- page end-->
-</section>
-
-<script src="/assets/ui/js/nestable/jquery.nestable.js"></script>
+@section('footer.scripts')
 
 <script>
-    var Nestable = function() {
-        $('#nestable_menu').nestable({
+    $(document).ready(function() {
 
+        $('.sortable').sortable({
+            items: ".item",
+            opacity: 0.8,
+            helper: "clone",
+            cursor: 'move',
+            placeholder: "ui-sortable-placeholder",
+            connectWith: '.sortable',
+            dropOnEmpty: true,
+            receive: function(event, ui) {}
+        }).disableSelection();
+
+        $('.draggable').draggable({
+            connectToSortable: ".sortable",
+            helper: "clone",
+            // revert: "invalid"
         });
-    }();
+
+    })
 </script>
+@stop

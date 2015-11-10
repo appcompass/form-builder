@@ -46,9 +46,9 @@ Class WebsitesModule extends BaseModule
     /**
      *
      */
-    public function makeLink()
+    public function makeLink($overrides = [])
     {
-      return [
+      return array_replace([
         "label" => 'Websites Manager',
         "url" => '',
         "req_perms" => null,
@@ -59,7 +59,7 @@ Class WebsitesModule extends BaseModule
                 'data-target' => '#main-content'
             ],
         ]
-      ];
+      ], $overrides);
     }
 
 
@@ -105,7 +105,7 @@ Class WebsitesModule extends BaseModule
             ],
             'create' => [
                 'heading' => 'Create New Site',
-                'route' => 'cp.websites.store'
+                'route' => 'cp/websites/store'
             ],
             'form' => [
                 'fields' => [

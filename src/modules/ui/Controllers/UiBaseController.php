@@ -17,10 +17,6 @@ class UiBaseController extends ModularBaseController {
     public $records;
     public $record;
 
-    // public function __construct()
-    // {
-    // }
-
     public function build($type)
     {
         $method = 'view'.$type;

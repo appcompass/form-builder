@@ -31,17 +31,19 @@ Class PagesModule extends BaseModule
             ->addChildren($main_nav_sub_nav);
 
         foreach(Website::all() as $website) {
-            $item = $this->navItem([
-                'label' => $website->site_name.' Pages',
-                'url' => '',
+
+            $item = $website->navItem([
+                'label' => $website->site_name,
+                'url' => 'cp/websites'.$website->id.'/pages',
                 'props' => [
-                    'icon' => 'file-text-o',
+                    // 'icon' => 'file-text-o',
+                    'icon' => 'globe',
                     'link' => [
                         'data-click' => '/cp/websites/'.$website->id.'/pages',
                         'data-target' => '#main-content'
                     ]
                 ]
-            ])->first();
+            ])->get()->first();
 
             $main_nav_sub_nav->addItem($item);
 
@@ -54,13 +56,11 @@ Class PagesModule extends BaseModule
      * Provides means for creating a NavigationItem item
      *
      */
-    public function makeLink()
+    public function makeLink($overrides = [])
     {
-        //
-        //  This should only provide menu links for editing ALL the pages
-        //  for single page/all pages in a website refer to Page model.
-        //  Website pages is mediated through websites.
-        //
+        return array_replace([
+
+        ], $overrides);
     }
 
     /**
@@ -114,7 +114,7 @@ Class PagesModule extends BaseModule
             ],
             'create' => [
                 'heading' => 'Add a page to this website',
-                'route' => 'cp.pages.store'
+                'route' => 'cp/pages/store'
             ],
             'form' => [
                 'fields' => [
@@ -137,11 +137,17 @@ Class PagesModule extends BaseModule
                         'type' => 'textarea',
                         'help_block' => 'The title of the page.',
                     ],[
-                        'label' => 'active',
+                        'label' => 'Active',
                         'name' => 'Published',
                         'placeholder' => '',
                         'type' => 'checkbox',
                         'help_block' => 'is the page published?',
+                    ],[
+                        'label' => 'Layout Type',
+                        'name' => 'layout',
+                        'placeholder' => '',
+                        'type' => 'layout_selector',
+                        'help_block' => 'Select the page\'s layout.',
                     ]
                 ]
             ]

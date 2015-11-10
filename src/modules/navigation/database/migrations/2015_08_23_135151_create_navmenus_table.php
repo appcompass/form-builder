@@ -20,12 +20,19 @@ class CreateNavmenusTable extends Migration
             $table->string('req_perms')->nullable();
 
             $table->integer('parent_id')->unsigned()->nullable();
-            $table->foreign('parent_id')->references('id')->on('navmenus');
+            $table->foreign('parent_id')
+                ->references('id')
+                ->on('navmenus')
+                ->onDelete('cascade');
 
             $table->integer('website_id')->unsigned()->nullable();
-            $table->foreign('website_id')->references('id')->on('websites');
+            $table->foreign('website_id')
+                ->references('id')
+                ->on('websites')
+                ->onDelete('cascade');
 
             $table->timestamps();
+            $table->unique(['parent_id', 'website_id']);
         });
     }
 

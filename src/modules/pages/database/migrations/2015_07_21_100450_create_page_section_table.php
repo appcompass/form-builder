@@ -20,6 +20,7 @@ class CreatePageSectiontable extends Migration
 			$table->string('section_template')->nullable(); // this should represent the part of the template this section should appear in
 			$table->json('content')->nullable();
 			$table->integer('order')->unsigned()->nullable();
+			$table->string('type')->nullable();
 
 			$table->foreign('section_id')
 					->references('id')

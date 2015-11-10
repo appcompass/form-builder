@@ -32,6 +32,7 @@ class Page extends Model
 		'order',
 		'parent',
 		'active',
+		'layout',
 		'website_id',
 		'req_permission',
 		'published_at'
@@ -46,13 +47,23 @@ class Page extends Model
 	/**
 	 *
 	 */
-	public function sections()
+	public function sections($type = null)
 	{
 
 		$rel = $this->belongsToMany(Section::class)
 			// ->withPivot(['template_section', 'order', 'content'])
-			->withPivot(['order', 'content'])
-			->orderBy('pivot_order', 'asc');
+			->withPivot(['order', 'content', 'type'])
+			->orderBy('order', 'asc');
+
+		if (!is_null($type)) {
+
+			$rel->wherePivot('type', $type);
+
+		} else {
+
+			$rel->wherePivot('type', null);
+
+		}
 
 		return $rel;
 
@@ -61,10 +72,9 @@ class Page extends Model
 	/**
 	 *  Build a LinkClass out of this class
 	 */
-	public function makeLink()
+	public function makeLink($overrides = [])
 	{
-
-		return [
+		return array_replace([
 		  "label" => $this->title,
 		  "url" => $this->slug,
 		  "req_perms" => null,
@@ -75,7 +85,7 @@ class Page extends Model
 		          'data-target' => '#main-content'
 		      ],
 		  ]
-		];
+		], $overrides);
 	}
 
 	/**

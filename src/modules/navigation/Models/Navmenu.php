@@ -132,12 +132,12 @@ class Navmenu extends Model
      *
      *  @param mixed $navItem either an instance of NavigationItem or an object which navItem's method returns an instance of NavigationItem
      */
-    public function addItem($navItem, $order = null)
+    public function addItem($navItem, $order = null, $overrides = [])
     {
 
         if (method_exists($navItem, 'navItem')) {
 
-            return $this->addItem($navItem->navItem);
+            return $this->addItem($navItem->navItem($overrides)->get()->first());
 
         }
 
@@ -157,7 +157,7 @@ class Navmenu extends Model
 
             }
 
-          $this->items()->attach($navItem, ['order' => $order] );
+            $this->items()->attach($navItem, ['order' => $order] );
 
         }
 
@@ -214,7 +214,7 @@ class Navmenu extends Model
      */
     public function makeLink($overrides = [])
     {
-        return [
+        return array_replace([
             "label" => $this->label,
             "url" => '',
             "has_content" => true,
@@ -225,6 +225,6 @@ class Navmenu extends Model
                     'data-click' => ''
                 ]
             ]
-        ];
+        ], $overrides);
     }
 }
