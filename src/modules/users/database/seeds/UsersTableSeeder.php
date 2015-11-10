@@ -65,5 +65,16 @@ class UsersTableSeeder extends Seeder
             ->permissions()
             ->attach(Permission::firstOrFail()->id);
 
+        User::create([
+            'first_name' => 'Chris',
+            'last_name' => 'Bracco',
+            'password' => bcrypt('d3velopment'),
+            'email' => 'chris.bracco@p3in.com',
+            'phone' => '1-857-600-2702',
+            'active' => true
+        ])
+            ->permissions()
+            ->attach(Permission::firstOrFail()->id);
+
   }
 }
