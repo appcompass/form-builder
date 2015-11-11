@@ -5,9 +5,15 @@ Route::group([
   'namespace' => 'P3in\Controllers'
 ], function() {
 
-  Route::resource('pages', 'PagesController');
-  Route::resource('cp/pages', 'CpPagesController');
-  Route::resource('cp/pages/{id}/section', 'CpPageSectionsController');
-  Route::resource('cp/section', 'CpSectionsController');
+    Route::resource('pages', 'PagesController');
+
+    Route::group([
+        'prefix' => 'cp',
+    ], function(){
+        Route::resource('pages', 'CpPagesController');
+        Route::resource('pages.section', 'CpPageSectionsController');
+        Route::resource('section', 'CpSectionsController');
+        Route::resource('websites.pages', 'CpWebsitePagesController');
+    });
 
 });

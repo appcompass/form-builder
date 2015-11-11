@@ -8,6 +8,4 @@ Route::group([
 	Route::resource('websites', 'CpWebsiteController');
 	Route::resource('websites.settings', 'CpWebsiteSettingsController');
 
-	Route::resource('websites.pages', 'CpWebsitePagesController');
-
 });
