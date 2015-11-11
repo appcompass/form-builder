@@ -406,9 +406,10 @@
                     }).get()
                 }
                 $(withVals).each(function(i, field){
-                    selectedObjects[field.name] = field.value;
+                    if (field.value.length != '') {
+                        selectedObjects[field.name] = field.value;
+                    };
                 });
-                console.log(selectedObjects);
                 $.ajax({
                     url: source,
                     type: 'POST',
