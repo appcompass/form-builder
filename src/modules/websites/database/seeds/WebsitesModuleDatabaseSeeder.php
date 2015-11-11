@@ -8,62 +8,65 @@ use Illuminate\Database\Seeder;
 use P3in\Models\Navmenu;
 use P3in\Models\Page;
 use P3in\Models\Website;
+use Modular;
 
 class WebsitesModuleDatabaseSeeder extends Seeder
 {
 
-	/**
-	 * Run the database seeds.
-	 *
-	 * @return void
-	 */
-	public function run()
-	{
-		Model::unguard();
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        Model::unguard();
 
-			$website = Website::firstOrNew([
-			    'site_name' => env('ADMIN_WEBSITE_NAME', 'CMS Admin CP'),
-			    'site_url' => env('ADMIN_WEBSITE_URL', 'cp.p3in.com'),
-			]);
+            $website = Website::firstOrNew([
+                'site_name' => env('ADMIN_WEBSITE_NAME', 'CMS Admin CP'),
+                'site_url' => env('ADMIN_WEBSITE_URL', 'cp.p3in.com'),
+            ]);
 
-			$website->config = [];
+            $website->config = [];
 
-			$website->save();
+            $website->save();
 
-	    $website_subnav = Navmenu::byName('cp_websites_subnav');
+        if (Modular::isLoaded('navigation')) {
+            $website_subnav = Navmenu::byName('cp_websites_subnav');
 
-			$page = Page::firstOrNew([
-			    'name' => 'cp_website_pages',
-			    'title' => 'Pages',
-			    'description' => 'Page Info',
-			    'slug' => 'pages',
-			    'order' => 2,
-			    'active' => true,
-			    'parent' => null,
-			    'req_permission' => null,
-			    'website_id' => Website::admin()->id
-			]);
+                $page = Page::firstOrNew([
+                    'name' => 'cp_website_pages',
+                    'title' => 'Pages',
+                    'description' => 'Page Info',
+                    'slug' => 'pages',
+                    'order' => 2,
+                    'active' => true,
+                    'parent' => null,
+                    'req_permission' => null,
+                    'website_id' => Website::admin()->id
+                ]);
 
-	    $page->published_at = Carbon::now();
+            $page->published_at = Carbon::now();
 
-	    $page->save();
+            $page->save();
 
-	    $website_subnav->addItem($page, 2);
+            $website_subnav->addItem($page, 2);
 
-			// $page = Page::firstOrNew([
-			//     'name' => 'cp_website_pages',
-			//     'title' => 'Pages',
-			//     'description' => 'Page Info',
-			//     'slug' => 'pages',
-			//     'order' => 2,
-			//     'active' => true,
-			//     'parent' => null,
-			//     'req_permission' => null,
-			//     'website_id' => Website::admin()->id
-			// ]);
+                // $page = Page::firstOrNew([
+                //     'name' => 'cp_website_pages',
+                //     'title' => 'Pages',
+                //     'description' => 'Page Info',
+                //     'slug' => 'pages',
+                //     'order' => 2,
+                //     'active' => true,
+                //     'parent' => null,
+                //     'req_permission' => null,
+                //     'website_id' => Website::admin()->id
+                // ]);
 
-	  //   $website_subnav->addItem($page, 1);
+          //   $website_subnav->addItem($page, 1);
+        }
 
-		Model::reguard();
-	}
+        Model::reguard();
+    }
 }
