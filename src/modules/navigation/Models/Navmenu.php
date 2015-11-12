@@ -75,10 +75,10 @@ class Navmenu extends Model
      *  Add a child nav
      *
      */
-    public function addChildren(Navmenu $navmenu)
+    public function addChildren(Navmenu $navmenu, $order = null)
     {
       $this->children()->save($navmenu);
-      return $this->addItem($navmenu);
+      return $this->addItem($navmenu, $order);
     }
 
     /**
@@ -137,7 +137,7 @@ class Navmenu extends Model
 
         if (method_exists($navItem, 'navItem')) {
 
-            return $this->addItem($navItem->navItem($overrides)->get()->first());
+            return $this->addItem($navItem->navItem($overrides)->get()->first(), $order);
 
         }
 

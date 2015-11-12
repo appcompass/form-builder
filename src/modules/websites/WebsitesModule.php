@@ -38,7 +38,7 @@ Class WebsitesModule extends BaseModule
         $this->setConfig();
 
         if (Modular::isLoaded('navigation')) {
-            Navmenu::byName('cp_main_nav')->addItem($this->navItem);
+            Navmenu::byName('cp_main_nav')->addItem($this->navItem, 2);
         }
 	}
 

@@ -28,7 +28,7 @@ Class PagesModule extends BaseModule
         $main_nav_sub_nav =  Navmenu::byName('cp_main_nav_pages', 'Pages Manager');
 
         Navmenu::byName('cp_main_nav')
-            ->addChildren($main_nav_sub_nav);
+            ->addChildren($main_nav_sub_nav, 3);
 
         foreach(Website::all() as $website) {
 

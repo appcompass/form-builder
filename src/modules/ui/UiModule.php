@@ -28,8 +28,50 @@ Class UiModule extends BaseModule
 	{
 
         if (Modular::isLoaded('navigation')) {
-            Navmenu::byName('cp_main_nav')->addItem($this->navItem);
+            $cp_main_nav = Navmenu::byName('cp_main_nav');
+
+            $cp_main_nav->addItem($this->navItem, 0);
+
+            $cp_main_nav->addItem($this->navItem([
+                'label' => 'Control Pannel Settings',
+                'url' => 'cp/ui/settings',
+                'props' => [
+                    'icon' => 'pencil',
+                    'link' => [
+                        'data-click' => '/cp/ui/settings',
+                        'data-target' => '#main-content'
+                    ]
+                ]
+            ])->first(), 999);
         }
+
+
+
+        // $cp_main_nav =  Navmenu::byName('cp_main_nav_pages', 'Pages Manager');
+
+
+        // foreach(Website::all() as $website) {
+
+        //     $item = $website->navItem([
+        //         'label' => $website->site_name,
+        //         'url' => 'cp/websites'.$website->id.'/pages',
+        //         'props' => [
+        //             // 'icon' => 'file-text-o',
+        //             'icon' => 'globe',
+        //             'link' => [
+        //                 'data-click' => '/cp/websites/'.$website->id.'/pages',
+        //                 'data-target' => '#main-content'
+        //             ]
+        //         ]
+        //     ])->get()->first();
+
+        //     $cp_main_nav->addItem($item);
+
+        // }
+
+
+
+
 
 	}
 
