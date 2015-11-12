@@ -88,9 +88,19 @@ class Section extends Model
 	/**
 	 *
 	 */
-	public function scopeDraggable($query)
+	public function scopeDraggable($query, $fits = null)
 	{
-	  return $query->where('type', '=', null);
+
+	  $query->where('type', '=', null);
+
+	  if (! is_null($fits)) {
+
+	  	$query->where('fits', '=', $fits);
+
+	  }
+
+	  return $query;
+
 	}
 
 	/**

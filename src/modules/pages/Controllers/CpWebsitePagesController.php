@@ -143,31 +143,45 @@ class CpWebsitePagesController extends UiBaseController
      */
     public function getLeftPanels($id = null)
     {
+        // REMEMBER! this->record holds the model instance
+        $page = $this->record;
 
         // fetch default panels
         $left_panels[] = parent::getLeftPanels() ?: null;
 
-        // add current page sections
-        $page_sections_navmenu = new Navmenu(['label' => 'Page Sections']);
+        foreach(explode(':', $page->layout) as $layout_part) {
 
-        foreach($this->record->sections()->get() as $section) {
+            $section_navmenu['target'] = new Navmenu(['label' => 'Available Sections']);
 
-            $page_sections_navmenu->items->push($section->getNavigationItem(['url' => 'section/'.$section->id.'/edit']));
+            // add current page sections
+            foreach ($page->sections()->where('fits', $layout_part)->get() as $section) {
+
+                $nav_item = $section->getNavigationItem([
+                    'url' => 'section/'.$section->pivot->id.'/edit',
+                    'props' => []
+                ]);
+
+                $section_navmenu['target']->items->push($nav_item);
+
+            }
+
+            $section_navmenu['source'] = new Navmenu(['label' => 'Available Sections']);
+
+            // all the available sections
+            foreach(Section::draggable($layout_part)->get() as $section) {
+
+                $nav_item = $section->getNavigationItem([
+                    'url' => '',
+                    'props' => []
+                ]);
+
+                $section_navmenu['source']->items->push($nav_item);
+
+            }
+
+            $left_panels[] = $section_navmenu;
 
         }
-
-        // list all the aviailable sections
-        $left_panels['targets'][] = $page_sections_navmenu;
-
-        $sections_navmenu = new Navmenu(['label' => 'Available Sections']);
-
-        foreach(Section::draggable()->get() as $section) {
-
-            $sections_navmenu->items->push($section->getNavigationItem(['url' => '', 'props' => ['icon' => 'globe']]));
-
-        }
-
-        $left_panels['sources'][] = $sections_navmenu;
 
         return $left_panels;
 

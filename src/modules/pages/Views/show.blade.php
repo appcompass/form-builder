@@ -1,83 +1,24 @@
 @extends('ui::layouts/cms_internal_layout')
 
 @section('subnav')
-<section class="panel">
-    <div class="panel-body">
-        <h5>{{ $meta->show->sub_section_name }}</h5>
-        <ul class="nav nav-pills nav-stacked mail-nav">
 
-            @foreach($nav->items as $subnav_name => $subnav_content)
+    @include('ui::partials/cms_subnav_panel', ['meta' => $meta, 'nav' => $nav])
 
-            <li>
-                <a data-click="{{ $meta->base_url.'/'.$record->id.'/'.$subnav_content['url'] }}" {!! inlineAttrs($subnav_content->props, 'link') !!}>
-                    <i class="fa {{ $subnav_content['icon'] }}"></i>
-                    <span>{{ $subnav_content['label'] }}</span>
-                </a>
-            </li>
-            @endforeach
-
-        </ul>
-    </div>
-</section>
 @stop
 
 @section('left-panels')
 
-@if(isset($left_panels))
+    @if(isset($left_panels))
 
-@foreach(array_filter($left_panels['targets']) as $navmenu)
+        @foreach(array_filter($left_panels) as $navmenu)
 
-<section class="panel">
-    <div class="panel-body">
-        <h5>{{ $navmenu->label }}</h5>
+            @include('ui::partials/cms_left_panels_sortable_draggable', ['meta' => $meta, 'navmenu' => $navmenu])
 
-        <div id="">
-            <ul class="nav nav-stacked sortable">
+        @endforeach
 
-                @foreach($navmenu->items as $item)
-                <li id="reorder_{{ $item->id }}" class="item" data-id="{{ $item->id }}" style="display: inline">
-                    <a data-click="{{ $meta->base_url.'/'.$record->id.'/'.$item->url }}" data-target="#record-detail">
-                        <i class="handle fa fa-arrows-alt"> </i> {{ ucwords($item->label) }}
-                    </a>
-                </li>
-                @endforeach
+    @endif
 
-            </ul>
-        </div>
-
-    </div>
-</section>
-
-@endforeach
-
-@foreach(array_filter($left_panels['sources']) as $navmenu)
-
-<section class="panel">
-    <div class="panel-body">
-        <h5>{{ $navmenu->label }}</h5>
-
-        <div id="">
-            <ul class="nav nav-stacked">
-
-                @foreach($navmenu->items as $item)
-                <li id="reorder_{{ $item->id }}" class="draggable" data-id="{{ $item->id }}" style="display: inline">
-                    <a href="#">
-                        <i class="handle fa fa-arrows-alt"> </i> {{ ucwords($item->label) }}
-                    </a>
-                </li>
-                @endforeach
-
-            </ul>
-        </div>
-
-    </div>
-</section>
-
-@endforeach
-
-@endif
-
-{{-- @include('alerts::alerts') --}}
+    {{-- @include('alerts::alerts') --}}
 
 @stop
 
@@ -93,34 +34,11 @@
 <script src="/assets/ui/js/nestable/jquery.nestable.js"></script>
 
 <style>
-    .sortable {
-        min-height: 50px;
-    }
-
-    .ui-sortable-placeholder {
-        border: 1px dashed #aaa;
-        height: 45px;
-        width: 344px;
-        background: rgb(253, 253, 253);
-    }
-
-    .sortable {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        width: 60%;
-    }
-
-    .sortable li {
-        margin: 0 3px 3px 3px;
-        padding: 0.4em;
-        padding-left: 1.5em;
-        height: 48px;
-    }
-
-    .sortable li span {
-        position: absolute;
-    }
+    .sortable {min-height: 50px; }
+    .ui-sortable-placeholder {border: 1px dashed #aaa; height: 45px; width: 90%; background: rgb(253, 253, 253); }
+    .sortable {list-style-type: none; margin: 0; padding: 0; width: 90%; }
+    .sortable li {padding: 0.4em; height: 48px; }
+    .sortable li span {position: absolute; }
 </style>
 
 <script>
@@ -134,12 +52,19 @@
             placeholder: "ui-sortable-placeholder",
             connectWith: '.sortable',
             dropOnEmpty: true,
+            revert: 'invalid',
+
             receive: function(event, ui) {
-                console.log(ui);
+
+                var sectionName = $(ui.item[0]).attr('data-id');
+
                 $.ajax({
-                    url: 'cp/pages',
+                    url: "cp/pages/{{ $record->id}}/section",
                     type: 'POST',
-                    success: function(data) {},
+                    data: {'section_name': sectionName},
+                    success: function(data) {
+                        console.log(data);
+                    },
                     complete: function(data) {},
                     error: function(error) {},
                 })
@@ -149,7 +74,6 @@
         $('.draggable').draggable({
             connectToSortable: ".sortable",
             helper: "clone",
-            // revert: "invalid"
         });
 
     })

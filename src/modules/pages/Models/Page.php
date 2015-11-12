@@ -52,7 +52,7 @@ class Page extends Model
 
 		$rel = $this->belongsToMany(Section::class)
 			// ->withPivot(['template_section', 'order', 'content'])
-			->withPivot(['order', 'content', 'type'])
+			->withPivot(['id', 'order', 'content', 'type'])
 			->orderBy('order', 'asc');
 
 		if (!is_null($type)) {

@@ -9,6 +9,7 @@ use P3in\Controllers\UiBaseController;
 use P3in\Models\Section;
 use P3in\Models\Page;
 use Response;
+use DB;
 
 class CpPageSectionsController extends UiBaseController
 {
@@ -17,20 +18,14 @@ class CpPageSectionsController extends UiBaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        //
-    }
+    public function index() {}
 
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        //
-    }
+    public function create() {}
 
     /**
      * Store a newly created resource in storage.
@@ -38,9 +33,15 @@ class CpPageSectionsController extends UiBaseController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        //
+    public function store(Request $request, $page_id) {
+
+        $page = Page::findOrFail($page_id);
+
+        $page->sections()
+            ->attach(Section::whereName($request->section_name)->first());
+
+        return redirect()->action('\P3in\Controllers\CpWebsitePagesController@show', [$page->website->id, $page]);
+
     }
 
     /**
@@ -49,10 +50,7 @@ class CpPageSectionsController extends UiBaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        //
-    }
+    public function show($id) {}
 
     /**
      * Show the form for editing the specified resource.
@@ -62,15 +60,15 @@ class CpPageSectionsController extends UiBaseController
      */
     public function edit($page_id, $section_id)
     {
-
         $page = Page::findOrFail($page_id)->load('sections.photos');
 
         $section = $page->sections()
-            ->findOrFail($section_id);
+            ->where('page_section.id', $section_id)
+            ->firstOrFail();
 
         $photos = $section->photos;
 
-        $edit_view = 'sections.'.$section->edit_view;
+        $edit_view = 'sections/'.$section->edit_view;
 
         return view($edit_view, compact('section', 'page', 'photos'));
     }
@@ -91,14 +89,15 @@ class CpPageSectionsController extends UiBaseController
 
         }
 
+        $page = Page::findOrFail($page_id);
+
         $content = json_encode($request->except(['_token', '_method']));
 
-        $result = Page::findOrFail($page_id)->sections()
-            ->updateExistingPivot($section_id, [
-                'content' => $content
-            ]);
+        $result = DB::table('page_section')->where('id', $section_id)
+            ->update(['content' => $content]);
 
-        return Response::json(['success' => $result]);
+        return redirect()->action('CpWebsitePagesController@show', [$page]);
+        // return Response::json(['success' => $result]);
     }
 
     /**
@@ -107,8 +106,6 @@ class CpPageSectionsController extends UiBaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-        //
-    }
+    public function destroy($id) {}
+
 }
