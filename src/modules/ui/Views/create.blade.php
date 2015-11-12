@@ -30,6 +30,10 @@
                                     {!! Form::checkbox($fieldData->name, 'true') !!}
                                 @elseif($fieldData->type == 'textarea')
                                     {!! Form::textarea($fieldData->name, null, ['class' => 'form-control', 'placeholder' => $fieldData->placeholder]) !!}
+                                @elseif($fieldData->type == 'selectlist')
+                                    {!! Form::select($fieldData->name, $fieldData->data, null, ['class' => 'form-control', 'placeholder' => $fieldData->placeholder]) !!}
+                                @elseif($fieldData->type == 'model_selectlist')
+                                    {!! Form::select($fieldData->name, with(new $fieldData->data)->lists('name', 'id'), null, ['class' => 'form-control', 'placeholder' => $fieldData->placeholder]) !!}
                                 @elseif($fieldData->type == 'layout_selector')
                                     <a href="">
                                         <div style="width: 3rem; height: 3rem; display: inline-block; background: orange; border: 1px solid #000;"><div style="display: block; float: left; width: 100%; height: 100%; background: #222;"></div></div>
