@@ -16,7 +16,7 @@ class CreateSectionsTable extends Migration
 		{
 			$table->increments('id');
 			$table->string("name");
-			$table->json("fits_column");
+			$table->string("fits");
 			$table->string("display_view");
 			$table->string("edit_view");
             $table->string('type')->nullable();
