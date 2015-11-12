@@ -1,5 +1,14 @@
 <link rel="stylesheet" type="text/css" href="/assets/ui/js/bootstrap-colorpicker/css/colorpicker.css" />
 
+{!! Form::model($settings, [
+			'method' => 'post',
+			'url' => "/cp/websites/$website->id/settings",
+			'data-target' => '#record-detail',
+			'class' => 'form-horizontal bucket-form ajax-form',
+			'files' => true,
+		])
+!!}
+
 <section class="panel">
 
 	<header class="panel-heading">
@@ -7,15 +16,6 @@
 	</header>
 
 	<div class="panel-body">
-
-			{!! Form::model($settings, [
-						'url' => "/cp/websites/{{ $website->id }}/settings",
-						'data-target' => '#record-detail',
-						'class' => 'form-horizontal bucket-form ajax-form',
-						'method' => 'PUT',
-						'files' => true,
-					])
-			!!}
 
 			<div class="form-group">
 				{!! Form::label('title', 'Default title', ['class' => 'col-sm-3 control-label']) !!}
@@ -56,6 +56,7 @@
 </section>
 
 <section class="panel">
+
 	<header class="panel-heading">
 		Website Theme
 	</header>
@@ -64,26 +65,38 @@
 
 		<div class="form-group">
 			{!! Form::label('logo', 'Website Logo', ['class' => 'col-sm-3 control-label']) !!}
-			<div class="col-sm-6">
-				{!! Form::file('logo') !!}
-			</div>
+			{!! Form::file('logo', null, ['class' => 'form-control']) !!}
 		</div>
 
 		<div class="form-group">
 			{!! Form::label('color_primary', 'Primary Color', ['class' => 'col-sm-3 control-label']) !!}
 			<div class="col-sm-6">
-				{!! Form::text('color_primary', ['class' => 'colorpicker-default form-control']) !!}
+				{!! Form::text('color_primary', null, ['class' => 'colorpicker-default form-control col-sm-6']) !!}
 			</div>
 		</div>
 
 		<div class="form-group">
 			{!! Form::label('color_secondary', 'Secondary Color', ['class' => 'col-sm-3 control-label']) !!}
 			<div class="col-sm-6">
-				{!! Form::text('color_secondary', ['class' => 'colorpicker-default form-control']) !!}
+				{!! Form::text('color_secondary', null, ['class' => 'colorpicker-default form-control col-sm-6']) !!}
 			</div>
 		</div>
 
-		{!! Form::submit('Save', ['class' => 'btn btn-info pull-right']) !!}
+		<div class="form-group">
+			{!! Form::label('header', 'Website Header', ['class' => 'col-sm-3 control-label']) !!}
+			<div class="col-sm-6">
+				{!! Form::select('header', $headers ) !!}
+			</div>
+		</div>
+
+		<div class="form-group">
+			{!! Form::label('footer', 'Website Footer', ['class' => 'col-sm-3 control-label']) !!}
+			<div class="col-sm-6">
+				{!! Form::select('footer', $footers, 'footer') !!}
+			</div>
+		</div>
+
+		{!! Form::submit('Save', ['class' => 'btn btn-info']) !!}
 		{!! Form::close() !!}
 
 	</div>
@@ -91,6 +104,7 @@
 </section>
 
 <script type="text/javascript" src="/assets/ui/js/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+
 <script type="text/javascript">
 	$('.colorpicker-default').colorpicker({
 		format: 'hex'

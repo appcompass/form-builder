@@ -75,9 +75,15 @@ trait SettingsTrait
   private function addSetting($key, $value)
   {
 
+    if (!is_object($this->json)) {
+
+      $this->json = json_decode($this->json);
+
+    }
+
     $this->json->$key = $value;
 
-    $this->settings->data = json_encode($this->json);
+    $this->settings->data = $this->json;
 
     $this->storeSetting();
 
@@ -87,8 +93,6 @@ trait SettingsTrait
 
   /**
    * Store relation
-   *
-   *
    *
    */
   private function storeSetting()
@@ -124,7 +128,7 @@ trait SettingsTrait
       } catch (ModelNotFoundException $e) {
 
         $this->settings = new Settings([
-          "data" => "{}"
+          "data" => '{}'
         ]);
 
         $this->json = json_decode($this->settings->data);

@@ -3,6 +3,7 @@ namespace P3in\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use P3in\Models\Section;
 use P3in\Models\Website;
 
 class CpWebsiteSettingsController extends Controller
@@ -13,28 +14,59 @@ class CpWebsiteSettingsController extends Controller
         $this->middleware('auth');
     }
 
+    /**
+     *
+     */
     public function index($website_id)
     {
         $website = Website::findOrFail($website_id);
 
         return view('websites::settings/index', compact('website'))
-            ->with('settings', $website->settings);
+            ->with('settings', $website->settings->data)
+            ->with('headers', Section::headers()->get()->lists('name', 'id'))
+            ->with('footers', Section::footers()->get()->lists('name', 'id'));
     }
 
+    /**
+     *
+     */
     public function create($website_id)
     {
         $parent = Website::findOrFail($website_id);
         return view('websites::settings/create', compact('parent'));
     }
 
+    /**
+     *
+     */
     public function store(Request $request, $website_id)
     {
-        $parent = Website::findOrFail($website_id);
-        $records = $parent->settings($request->input('settings'));
 
-        return view('websites::settings/show', compact('parent', 'records'));
+        $website = Website::findOrFail($website_id);
+
+        $data = $request->except(['_token', '_method']);
+
+        $records = $website->settings($data);
+
+        return redirect()->action('\P3in\Controllers\CpWebsiteSettingsController@index', [$website_id]);
+
+        // return view('websites::settings/index', compact('records'))
+            // ->with('parent', $website);
     }
 
+    /**
+     *
+     *
+     */
+    public function update()
+    {
+        $parent = Website::findOrFail($website_id);
+
+    }
+
+    /**
+     *
+     */
     public function show($website_id, $id)
     {
 
