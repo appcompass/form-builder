@@ -6,7 +6,7 @@ use P3in\Models\Website;
 
 class CpWebsiteController extends UiBaseController
 {
-    protected $allowedCalls = ['index', 'create', 'store', 'show', 'edit', 'update', 'destroy'];
+    // protected $allowedCalls = ['index', 'create', 'store', 'show', 'edit', 'update', 'destroy'];
 
     /**
      *

@@ -12,16 +12,16 @@ class CreateTemplatesTable extends Migration
 	 */
 	public function up()
 	{
-		Schema::create('templates', function(Blueprint $table)
-		{
-			$table->increments('id');
-			$table->string("name");
-			$table->string("colspan");
-			$table->json("config");
-			$table->timestamps();
-			$table->softDeletes();
-		});
-	}
+		// we currently paused on using templates
+		// i'm not deleting this migration completely because we might
+		// still use it as per on discussion we had
+		//
+
+		// 	Schema::create('templates', function(Blueprint $table)
+		// 	{
+		// 		$table->increments('id');
+		// 	});
+		// }
 
 	/**
 	 * Reverse the migrations.
@@ -30,6 +30,6 @@ class CreateTemplatesTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::drop('templates');
+		// Schema::drop('templates');
 	}
 }

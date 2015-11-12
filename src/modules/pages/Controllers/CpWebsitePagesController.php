@@ -50,9 +50,9 @@ class CpWebsitePagesController extends UiBaseController
     {
 
         $this->meta->available_layouts = [
-            '3' => 'Full Width',
-            '1:2' => 'Left Sidenav',
-            '2:1' => 'Right Sidenav'
+            'full' => 'Full Width',
+            'aside:main' => 'Left Sidenav',
+            'main:aside' => 'Right Sidenav'
         ];
 
         // return $this->build('create');

@@ -15,9 +15,10 @@ class CpWebsiteSettingsController extends Controller
 
     public function index($website_id)
     {
-        $parent = Website::findOrFail($website_id);
-        $records = $parent->settings();
-        return view('websites::settings/index', compact('parent','records'));
+        $website = Website::findOrFail($website_id);
+
+        return view('websites::settings/index', compact('website'))
+            ->with('settings', $website->settings);
     }
 
     public function create($website_id)

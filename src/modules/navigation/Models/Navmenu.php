@@ -123,7 +123,7 @@ class Navmenu extends Model
             // ->whereIn('req_perms', $user_permissions)
             // ->orWhere('req_perms', null)
             ->withPivot('order')
-            ->orderBy('order');
+            ->orderBy('pivot_order');
 
     }
 

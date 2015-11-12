@@ -175,6 +175,18 @@ Class WebsitesModule extends BaseModule
                         'placeholder' => '/path/to/document/root',
                         'type' => 'text',
                         'help_block' => '',
+                    ],[
+                        'label' => 'header',
+                        'name' => 'config[header]',
+                        'placeholder' => '',
+                        'type' => 'select',
+                        'help_block' => '',
+                    ],[
+                        'label' => 'Website Document Root',
+                        'name' => 'config[ssh_root]',
+                        'placeholder' => '/path/to/document/root',
+                        'type' => 'text',
+                        'help_block' => '',
                     ],
                 ],
             ],

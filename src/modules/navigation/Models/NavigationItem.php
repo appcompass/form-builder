@@ -56,6 +56,15 @@ class NavigationItem extends Model
 	protected $hidden = [];
 
 	/**
+	 *
+	 *
+	 */
+	public function navmenu()
+	{
+	  return $this->belongsToMany(Navmenu::class);
+	}
+
+	/**
 	 * Navigatable polymorphic
 	 *
 	 */
