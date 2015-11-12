@@ -60,7 +60,7 @@ class Section extends Model
 
 		return [
 			'view' => '/sections'.$this->display_view,
-			'data' => $this->pivot->content,
+			'data' => json_decode($this->pivot->content),
 		];
 
 		// dd($this->display_view);

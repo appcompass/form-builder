@@ -77,17 +77,6 @@ class PagesController extends Controller
 
         return view($template, $data);
 
-
-        return Page::find($id)
-            ->render();
-
-        $template = array_keys($includes)[0];
-        $includes = $includes[$template];
-
-        return view($template)
-            ->with('includes', $includes)
-            ->with('data', $data);
-
     }
 
     /**
