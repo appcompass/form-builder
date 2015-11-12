@@ -7,6 +7,7 @@ use App\Http\Requests;
 use Illuminate\Http\Request;
 use Illuminate\View\Factory;
 use P3in\Models\Page;
+use P3in\Models\Section;
 use P3in\Models\Website;
 
 class PagesController extends Controller
@@ -55,20 +56,30 @@ class PagesController extends Controller
      */
     public function show($id)
     {
-        $data = [
-            "variable" => "Foo",
-            "items" => [
-                ['name' => 'Allston'],
-                ['name' => 'North End'],
-                ['name' => 'Charlestown'],
-                ['name' => 'Beacon Hill'],
-                ['name' => 'Financial District']
-            ],
-            'page' => Page::find($id)
+        $page = Page::findOrFail($id);
+
+        $template = 'layouts.master.'.$page->layout;
+
+        $data = $page::find($id)->render();
+
+        $header = Section::findOrFail($page->website->settings('header'));
+        $footer = Section::findOrFail($page->website->settings('footer'));
+
+        $data['header'] = [
+            'view' => '/sections'.$header->display_view,
+            // 'data' => $header->pivot->content // TODO MUST LINK SECTION ON WEBSITE SETTINGS STORAGE
         ];
 
-        $includes = Page::find($id)
-            ->render($data);
+        $data['footer'] = [
+            'view' => '/sections'.$footer->display_view,
+            // 'data' => $footer->pivot->content // TODO MUST LINK SECTION ON WEBSITE SETTINGS STORAGE
+        ];
+
+        return view($template, $data);
+
+
+        return Page::find($id)
+            ->render();
 
         $template = array_keys($includes)[0];
         $includes = $includes[$template];

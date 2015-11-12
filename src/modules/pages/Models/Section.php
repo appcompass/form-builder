@@ -55,12 +55,19 @@ class Section extends Model
 	 *
 	 *
 	 */
-	public function render($data)
+	public function render()
 	{
 
-		return $this->display_view;
+		return [
+			'view' => '/sections'.$this->display_view,
+			'data' => $this->pivot->content,
+		];
 
-		// return view($this->display_view)->with('data', $data)->render();
+		// dd($this->display_view);
+
+		// return view('/sections/'.$this->display_view)->with('data', $this->pivot->content)
+		// 	->render();
+
 		// return view($this->display_view)->render();
 		// return view($this->display_view)->render();
 

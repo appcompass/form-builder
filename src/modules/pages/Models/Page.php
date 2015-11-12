@@ -112,10 +112,24 @@ class Page extends Model
 	 * Render the page
 	 *
 	 */
-	public function render($data)
+	public function render()
 	{
-		return $this->template
-			->render($data);
+
+		// $output = '';
+		$views = [];
+
+		foreach($this->sections as $section) {
+
+			$views['full'][] = $section->render();
+
+			// $output .= $section->render();
+
+		}
+
+		return $views;
+
+		// return $this->template
+			// ->render($data);
 	}
 
 	/**
