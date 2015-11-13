@@ -39,10 +39,15 @@
     .sortable {list-style-type: none; margin: 0; padding: 0; width: 90%; }
     .sortable li {padding: 0.4em; height: 48px; }
     .sortable li span {position: absolute; }
+    .delete-icon i {color: red;}
 </style>
 
 <script>
     $(document).ready(function() {
+
+        var config = {
+            deleteClass: '.delete-icon'
+        }
 
         $('.sortable').sortable({
             items: ".item",
@@ -59,8 +64,6 @@
 
                 var sortData = $('.sortable').sortable('serialize');
                 var url = '{{ $meta->base_url."/".$record->id."/section" }}';
-
-                console.log(url)
 
                 $.ajax({
                     type: 'POST',
@@ -96,5 +99,31 @@
             helper: "clone",
         });
 
+        $('.item').hover(function() {
+            $(this).find(config.deleteClass).fadeIn();
+        }, function() {
+            $(this).find(config.deleteClass).fadeOut();
+        })
+
+        $(config.deleteClass).on('click', function(event) {
+            event.preventDefault;
+
+            $.ajax({
+                url: $(this).attr('href'),
+                type: 'post',
+                data: {
+                    _method: 'delete',
+                    id: $(this).attr('data-id')
+                },
+
+                success: function(data) {
+                    console.log(data);
+                    $('#main-content').html(data);
+                }
+
+            })
+
+            return false;
+        })
     })
 </script>

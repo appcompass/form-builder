@@ -121,8 +121,15 @@ class CpPageSectionsController extends UiBaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id) {
+    public function destroy($page_id, $section_id) {
 
+        $page = Page::findOrFail($page_id);
+
+        DB::table('page_section')
+            ->where('id', $section_id)
+            ->delete();
+
+        return redirect()->action('\P3in\Controllers\CpWebsitePagesController@show', [$page->website->id, $page->id]);
     }
 
 }
