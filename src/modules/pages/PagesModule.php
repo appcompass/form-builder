@@ -39,7 +39,7 @@ Class PagesModule extends BaseModule
                     // 'icon' => 'file-text-o',
                     'icon' => 'globe',
                     'link' => [
-                        'data-click' => '/cp/websites/'.$website->id.'/pages',
+                        'data-click' => '/websites/'.$website->id.'/pages',
                         'data-target' => '#main-content'
                     ]
                 ]
@@ -72,7 +72,7 @@ Class PagesModule extends BaseModule
         $module = Modular::get($this->module_name);
 
             $module->config = [
-                'base_url' => "/cp/pages",
+                'base_url' => "/pages",
                 'index' => [
                     'heading' => 'Website\'s pages',
                     'table' => [

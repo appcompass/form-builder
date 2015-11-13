@@ -12,8 +12,8 @@ use Auth;
 class AuthCpController extends Controller
 {
 
-	protected $loginPath ="/cp/auth/login";
-	protected $redirectAfterLogout = "/cp/auth/login";
+	protected $loginPath ="/auth/login";
+	protected $redirectAfterLogout = "/auth/login";
 	protected $redirectPath = '/cp';
 	protected $redirectTo = '/cp';
 

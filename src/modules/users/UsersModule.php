@@ -50,7 +50,7 @@ Class UsersModule extends BaseModule
           "props" => [
             "icon" => "user",
             "link" => [
-                "data-click" => "/cp/users",
+                "data-click" => "/users",
                 "data-target" => "#main-content",
                 'href' => 'javascript:;',
             ]

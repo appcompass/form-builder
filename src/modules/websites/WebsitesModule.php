@@ -55,7 +55,7 @@ Class WebsitesModule extends BaseModule
         "props" => [
             'icon' => 'dashboard',
             "link" => [
-                'data-click' => '/cp/websites',
+                'data-click' => '/websites',
                 'data-target' => '#main-content'
             ],
         ]
@@ -69,7 +69,7 @@ Class WebsitesModule extends BaseModule
         $module = Modular::get($this->module_name);
 
         $module->config = [
-            'base_url' => "/cp/{$this->module_name}",
+            'base_url' => "/{$this->module_name}",
             'index' => [
                 'heading' => 'Manage Websites',
                 'table' => [

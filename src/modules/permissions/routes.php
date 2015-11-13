@@ -1,6 +1,6 @@
 <?php
 // Route::group([
-// 	// 'prefix' => 'cp',
+// 	// // 'prefix' => 'cp',
 // 	'namespace' => 'P3in\Controllers'
 // ], function() {
 

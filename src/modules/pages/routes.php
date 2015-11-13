@@ -5,10 +5,10 @@ Route::group([
   'namespace' => 'P3in\Controllers'
 ], function() {
 
-    Route::resource('pages', 'PagesController');
+    Route::resource('render-page', 'PagesController');
 
     Route::group([
-        'prefix' => 'cp',
+        // 'prefix' => 'cp',
     ], function(){
         Route::resource('pages', 'CpPagesController');
         Route::resource('pages.section', 'CpPageSectionsController');

@@ -35,7 +35,7 @@ class CpWebsitePagesController extends UiBaseController
 
         $this->records = Website::findOrFail($website_id)->pages;
 
-        $this->meta->base_url = '/cp/websites/'.$website_id.'/pages';
+        $this->meta->base_url = '/websites/'.$website_id.'/pages';
 
         return $this->build('index');
 
@@ -57,7 +57,7 @@ class CpWebsitePagesController extends UiBaseController
 
         // return $this->build('create');
 
-        $this->meta->create->route = '/cp/websites/'.$website_id.'/pages';
+        $this->meta->create->route = '/websites/'.$website_id.'/pages';
 
         return $this->build('create');
 

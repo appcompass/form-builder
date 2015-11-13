@@ -38,7 +38,7 @@ Class UiModule extends BaseModule
                 'props' => [
                     'icon' => 'pencil',
                     'link' => [
-                        'data-click' => '/cp/ui/settings',
+                        'data-click' => '/ui/settings',
                         'data-target' => '#main-content'
                     ]
                 ]
@@ -59,7 +59,7 @@ Class UiModule extends BaseModule
         //             // 'icon' => 'file-text-o',
         //             'icon' => 'globe',
         //             'link' => [
-        //                 'data-click' => '/cp/websites/'.$website->id.'/pages',
+        //                 'data-click' => '/websites/'.$website->id.'/pages',
         //                 'data-target' => '#main-content'
         //             ]
         //         ]
@@ -87,7 +87,7 @@ Class UiModule extends BaseModule
 	        "props" => [
 	            'icon' => 'dashboard',
 	            "link" => [
-	                'data-click' => '/cp/dashboard',
+	                'data-click' => '/dashboard',
 	                'data-target' => '#main-content'
 	            ],
 	        ]

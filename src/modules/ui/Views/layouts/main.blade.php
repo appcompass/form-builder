@@ -15,7 +15,7 @@
 			</div>
 			<!--logo end-->
 
-			<div class="nav notify-row" id="top_menu" data-load="/cp/left-alerts">
+			<div class="nav notify-row" id="top_menu" data-load="/left-alerts">
 			</div>
 			<div class="top-nav clearfix">
 				<!--search & user info start-->
@@ -26,11 +26,11 @@
 					<!-- user login dropdown start-->
 					<li class="dropdown">
 						<a data-toggle="dropdown" class="dropdown-toggle" href="#">
-							<img alt="" src="" data-load="/cp/user-avatar/29" data-load-self="src">
-							<span class="username" data-load="/cp/user-full-name"></span>
+							<img alt="" src="" data-load="/user-avatar/29" data-load-self="src">
+							<span class="username" data-load="/user-full-name"></span>
 							<b class="caret"></b>
 						</a>
-						<ul class="dropdown-menu extended logout" data-load="/cp/user-nav">
+						<ul class="dropdown-menu extended logout" data-load="/user-nav">
 						</ul>
 					</li>
 					<!-- user login dropdown end -->
@@ -45,12 +45,12 @@
 		</header>
 		<!--header end-->
 		<aside>
-			<div id="sidebar" class="nav-collapse" data-load="/cp/left-nav">
+			<div id="sidebar" class="nav-collapse" data-load="/left-nav">
 			</div>
 		</aside>
 		<!--sidebar end-->
 			<!--main content start-->
-			<section id="main-content" data-load="/cp/dashboard">
+			<section id="main-content" data-load="/dashboard">
 			</section>
 			<!--main content end-->
 		<!--right sidebar start-->
@@ -58,7 +58,7 @@
 			<div class="search-row">
 				<input type="text" placeholder="Search" class="form-control">
 			</div>
-			<div class="right-stat-bar" data-load="/cp/notification-center">
+			<div class="right-stat-bar" data-load="/notification-center">
 			</div>
 		</div>
 		<!--right sidebar end-->
