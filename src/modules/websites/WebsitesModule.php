@@ -105,7 +105,7 @@ Class WebsitesModule extends BaseModule
             ],
             'create' => [
                 'heading' => 'Create New Site',
-                'route' => 'cp/websites/store'
+                'route' => '/websites/store'
             ],
             'form' => [
                 'fields' => [

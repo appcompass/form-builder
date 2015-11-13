@@ -1,7 +1,7 @@
 <?php
 // cp routes
 Route::group([
-	'prefix' => 'cp/auth',
+	'prefix' => '/auth',
 	'namespace' => 'P3in\Controllers'
 ], function() {
 

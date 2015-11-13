@@ -82,7 +82,7 @@
                 var sectionName = $(ui.item[0]).attr('data-id');
 
                 $.ajax({
-                    url: "cp/pages/{{ $record->id}}/section",
+                    url: "/pages/{{ $record->id}}/section",
                     type: 'POST',
                     data: {'section_name': sectionName},
                     success: function(data) {

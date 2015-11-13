@@ -34,7 +34,7 @@ Class PagesModule extends BaseModule
 
             $item = $website->navItem([
                 'label' => $website->site_name,
-                'url' => 'cp/websites'.$website->id.'/pages',
+                'url' => '/websites'.$website->id.'/pages',
                 'props' => [
                     // 'icon' => 'file-text-o',
                     'icon' => 'globe',
@@ -114,7 +114,7 @@ Class PagesModule extends BaseModule
             ],
             'create' => [
                 'heading' => 'Add a page to this website',
-                'route' => 'cp/pages/store'
+                'route' => '/pages/store'
             ],
             'form' => [
                 'fields' => [

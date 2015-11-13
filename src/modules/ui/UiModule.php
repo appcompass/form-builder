@@ -34,7 +34,7 @@ Class UiModule extends BaseModule
 
             $cp_main_nav->addItem($this->navItem([
                 'label' => 'Control Pannel Settings',
-                'url' => 'cp/ui/settings',
+                'url' => '/ui/settings',
                 'props' => [
                     'icon' => 'pencil',
                     'link' => [
@@ -54,7 +54,7 @@ Class UiModule extends BaseModule
 
         //     $item = $website->navItem([
         //         'label' => $website->site_name,
-        //         'url' => 'cp/websites'.$website->id.'/pages',
+        //         'url' => '/websites'.$website->id.'/pages',
         //         'props' => [
         //             // 'icon' => 'file-text-o',
         //             'icon' => 'globe',

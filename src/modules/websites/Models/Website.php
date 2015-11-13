@@ -100,11 +100,11 @@ class Website extends Model
 	{
 	    return array_replace([
 	        "label" => $this->site_name,
-	        "url" => 'cp/websites'.$this->id.'/pages',
+	        "url" => '/websites'.$this->id.'/pages',
 	        "props" => [
 	        	"icon" => 'globe',
 	        	"link" => [
-	        		'data-click' => 'cp/websites/'.$this->id,
+	        		'data-click' => '/websites/'.$this->id,
 	        		'data-target' => '#main-content'
 	        	]
 	        ]
