@@ -101,11 +101,11 @@ Class WebsitesModule extends BaseModule
             ],
             'edit' => [
                 'heading' => 'Connection Information',
-                'route' => 'cp.websites.update'
+                'route' => 'websites.update'
             ],
             'create' => [
                 'heading' => 'Create New Site',
-                'route' => '/websites/store'
+                'route' => '/websites'
             ],
             'form' => [
                 'fields' => [
