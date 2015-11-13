@@ -12,14 +12,14 @@ Route::group([
 
 });
 
-// public routes
-Route::group([
-	'prefix' => 'auth',
-	'namespace' => 'P3in\Controllers'
-], function() {
+// // public routes
+// Route::group([
+// 	'prefix' => 'auth',
+// 	'namespace' => 'P3in\Controllers'
+// ], function() {
 
-	Route::get('login', 'AuthController@getLogin');
-	Route::post('login', 'AuthController@postLogin');
-	Route::get('logout', 'AuthController@getLogout');
+// 	Route::get('login', 'AuthController@getLogin');
+// 	Route::post('login', 'AuthController@postLogin');
+// 	Route::get('logout', 'AuthController@getLogout');
 
-});
+// });

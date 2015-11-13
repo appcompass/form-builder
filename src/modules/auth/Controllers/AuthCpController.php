@@ -14,8 +14,8 @@ class AuthCpController extends Controller
 
 	protected $loginPath ="/auth/login";
 	protected $redirectAfterLogout = "/auth/login";
-	protected $redirectPath = '/cp';
-	protected $redirectTo = '/cp';
+	protected $redirectPath = '/';
+	protected $redirectTo = '/';
 
 	use AuthenticatesAndRegistersUsers, ThrottlesLogins;
 
