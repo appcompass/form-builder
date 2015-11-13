@@ -112,7 +112,7 @@ class CpPageSectionsController extends UiBaseController
         $result = DB::table('page_section')->where('id', $section_id)
             ->update(['content' => $content]);
 
-        return redirect()->action('CpWebsitePagesController@show', [$page]);
+        return redirect()->action('\P3in\Controllers\CpWebsitePagesController@show', [$page]);
     }
 
     /**
