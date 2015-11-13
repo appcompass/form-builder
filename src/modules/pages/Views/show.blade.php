@@ -31,7 +31,7 @@
     </div>
 @stop
 
-<script src="/assets/ui/js/nestable/jquery.nestable.js"></script>
+{{-- <script src="/assets/ui/js/nestable/jquery.nestable.js"></script> --}}
 
 <style>
     .sortable {min-height: 50px; }
@@ -52,7 +52,27 @@
             placeholder: "ui-sortable-placeholder",
             connectWith: '.sortable',
             dropOnEmpty: true,
-            revert: 'invalid',
+            // revert: 'invalid',
+
+            update: function(event, ui) {
+                event.preventDefault();
+
+                var sortData = $('.sortable').sortable('serialize');
+                var url = '{{ $meta->base_url."/".$record->id."/section" }}';
+
+                console.log(url)
+
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: sortData,
+                    success: function(data) {
+                        $('#main-content').html(data);
+                    }
+                })
+
+                return false;
+            },
 
             receive: function(event, ui) {
 
@@ -63,7 +83,7 @@
                     type: 'POST',
                     data: {'section_name': sectionName},
                     success: function(data) {
-                        console.log(data);
+                        $('#main-content').html(data);
                     },
                     complete: function(data) {},
                     error: function(error) {},

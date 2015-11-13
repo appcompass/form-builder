@@ -19,11 +19,11 @@ class CpWebsitePagesController extends UiBaseController
 	public function __construct()
 	{
 
-		$this->middleware('auth');
+        $this->middleware('auth');
 
         parent::setControllerDefaults(__DIR__);
 
-	}
+    }
 
     /**
      * Display a listing of the resource.
@@ -71,6 +71,7 @@ class CpWebsitePagesController extends UiBaseController
      */
     public function store(Request $request, $website_id)
     {
+
         $page = new Page($request->all());
 
         $page->slug = '/'.$request->get('name');
@@ -80,6 +81,7 @@ class CpWebsitePagesController extends UiBaseController
             ->save($page);
 
         $this->record = $page;
+
 
         return $this->index($website_id);
         // return parent::build('show');
@@ -160,6 +162,8 @@ class CpWebsitePagesController extends UiBaseController
                     'url' => 'section/'.$section->pivot->id.'/edit',
                     'props' => []
                 ]);
+
+                $nav_item->id = $section->pivot->id;
 
                 $section_navmenu['target']->items->push($nav_item);
 

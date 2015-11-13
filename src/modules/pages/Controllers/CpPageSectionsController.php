@@ -33,12 +33,28 @@ class CpPageSectionsController extends UiBaseController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $page_id) {
+    public function store(Request $request, $page_id)
+    {
 
         $page = Page::findOrFail($page_id);
 
+        if ($request->has('reorder')) {
+
+            foreach($request->reorder as $order => $item_id) {
+
+                DB::table('page_section')->where('id', $item_id)
+                    ->update(['order' => $order]);
+
+            }
+
+        }
+
+        $order = intVal( DB::table('page_section')
+            ->where('page_id', '=', $page_id)
+            ->max('order') ) + 1;
+
         $page->sections()
-            ->attach(Section::whereName($request->section_name)->first());
+            ->attach(Section::whereName($request->section_name)->first(), ['order' => $order]);
 
         return redirect()->action('\P3in\Controllers\CpWebsitePagesController@show', [$page->website->id, $page]);
 
@@ -97,7 +113,6 @@ class CpPageSectionsController extends UiBaseController
             ->update(['content' => $content]);
 
         return redirect()->action('CpWebsitePagesController@show', [$page]);
-        // return Response::json(['success' => $result]);
     }
 
     /**
@@ -106,6 +121,8 @@ class CpPageSectionsController extends UiBaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id) {}
+    public function destroy($id) {
+
+    }
 
 }
