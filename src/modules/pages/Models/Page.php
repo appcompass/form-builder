@@ -2,10 +2,11 @@
 
 namespace P3in\Models;
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use P3in\Traits\NavigatableTrait as Navigatable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Config;
 use P3in\Models\Website;
+use P3in\Traits\NavigatableTrait as Navigatable;
 
 class Page extends Model
 {
@@ -118,6 +119,17 @@ class Page extends Model
 		// $output = '';
 		$views = [];
 
+        $website = Website::current();
+
+        $globals = Section::whereIn('id',[$website->settings('header'), $website->settings('footer')])->get();
+
+        foreach ($globals as $global) {
+            $views[$global->type] = [
+                'view' => '/sections'.$global->display_view,
+                // 'data' => $global->pivot->content // TODO MUST LINK SECTION ON WEBSITE SETTINGS STORAGE
+            ];
+        }
+
 		foreach($this->sections as $section) {
 
 			$views['full'][] = $section->render();
@@ -131,6 +143,16 @@ class Page extends Model
 		// return $this->template
 			// ->render($data);
 	}
+
+    public function scopeOfWebsite($query, Website $website = null)
+    {
+        // if $website is passed, then we look up that website's pages.
+        // Otherwise we use the current website.
+        $website = $website ?: Website::current();
+        return $query->whereHas('website',function($q) use ($website) {
+            $q->where('id', $website->id);
+        });
+    }
 
 	/**
 	 *

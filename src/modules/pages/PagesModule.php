@@ -110,7 +110,7 @@ Class PagesModule extends BaseModule
             ],
             'edit' => [
                 'heading' => 'Page Informations',
-                'route' => 'cp.pages.update'
+                'route' => 'pages.update'
             ],
             'create' => [
                 'heading' => 'Add a page to this website',

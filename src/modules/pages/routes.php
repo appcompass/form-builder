@@ -5,7 +5,7 @@ Route::group([
   'namespace' => 'P3in\Controllers'
 ], function() {
 
-    Route::resource('render-page', 'PagesController');
+    Route::any('render-page/{path?}', 'PagesController@renderPage')->where('path', '(.*)');
 
     Route::group([
         // 'prefix' => 'cp',
