@@ -74,7 +74,11 @@ class CpWebsitePagesController extends UiBaseController
 
         $page = new Page($request->all());
 
-        $page->slug = '/'.$request->get('name');
+        // this slug will need to be converted to the full URL of the page on update
+        // of the nav menu item this page belongs to.  Also we don't have a / at the
+        // start since nginx doesn't bring it over.
+        $page->slug = $request->get('name');
+
         $page->published_at = Carbon::now();
 
         Website::findOrFail($website_id)->pages()
