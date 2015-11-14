@@ -58,7 +58,7 @@
 
                     {!! Form::close() !!}
 
-                    {{ dd($meta) }}
+                    {{ var_dump($meta) }}
 
                 </div>
             </section>

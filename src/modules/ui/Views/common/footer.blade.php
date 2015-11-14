@@ -271,30 +271,51 @@
 
 
 		}
+
+        function loadSourceToTarget(source, target, attribute){
+
+            $.ajax({
+                url: source,
+                type: 'GET',
+                error: function(err){
+                    console.log(err);
+                },
+                success: function(data){
+                    if (attribute) {
+                        $(target).attr(attribute, data);
+                    }else{
+                        $(target).html(data);
+                    }
+                },
+                complete: function(xhr, status){
+                    if (status =='success') {
+                        loadNavJs($(target));
+                        loadData($(target));
+                    }else{
+                        console.log(status);
+                    }
+                }
+            });
+
+        }
+
 		function loadData(elm){
-			$.each(elm.find('[data-load]'), function(i,e){
-				$.ajax({
-					url: $(e).attr('data-load'),
-					type: 'GET',
-					error: function(err){
-						console.log(err);
-					},
-					success: function(data){
-						if($(e).is('[data-load-self]')){
-							$(e).attr($(e).attr('data-load-self'), data);
-						}else{
-							$(e).html(data);
-						}
-					},
-					complete: function(xhr, status){
-						if (status =='success') {
-							loadNavJs($(e));
-							loadData($(e));
-						}else{
-							console.log(status);
-						}
-					}
-				});
+            $.each(elm.find('[data-trigger]'), function(i, e){
+
+                var target = $(e).attr('data-target');
+                var source = $(e).attr('data-click');
+
+                loadSourceToTarget(source, target);
+
+            });
+
+			$.each(elm.find('[data-load]'), function(i, e){
+
+                var target = e;
+                var source = $(e).attr('data-load');
+                var attribute = $(e).attr('data-load-self')
+
+                loadSourceToTarget(source, target, attribute);
 			});
 		}
 
@@ -371,26 +392,9 @@
 
 			$(document).on('click', '[data-click]', function(e){
 				e.preventDefault();
-				var target = $(this).attr('data-target');
-				var source = $(this).attr('data-click');
-				$.ajax({
-					url: source,
-					type: 'GET',
-					error: function(err){
-						console.log(err);
-					},
-					success: function(data){
-						$(target).html(data);
-					},
-					complete: function(xhr, status){
-						if (status =='success') {
-							loadNavJs($(target));
-							loadData($(target));
-						}else{
-							console.log(status);
-						}
-					}
-				});
+                var target = $(this).attr('data-target');
+                var source = $(this).attr('data-click');
+                loadSourceToTarget(source, target);
 			});
             $(document).on('click', '[data-bulk-update]', function(e){
                 e.preventDefault();

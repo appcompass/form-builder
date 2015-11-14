@@ -9,7 +9,7 @@
 
         <div class="col-sm-9" id="record-detail">
 
-          @yield('content')
+          {{-- @yield('content') --}}
 
         </div>
     </div>

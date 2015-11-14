@@ -22,6 +22,7 @@
 
 @stop
 
+{{--
 @section('content')
     <div class="panel">
         <div class="panel-body">
@@ -30,6 +31,7 @@
         </div>
     </div>
 @stop
+ --}}
 
 {{-- <script src="/assets/ui/js/nestable/jquery.nestable.js"></script> --}}
 

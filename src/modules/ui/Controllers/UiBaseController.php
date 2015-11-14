@@ -11,11 +11,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use P3in\Controllers\ModularBaseController;
 use P3in\Models\Navmenu;
+use P3in\Models\Website;
 
 class UiBaseController extends ModularBaseController {
 
     public $records;
     public $record;
+    public $site_url;
+
+    public function __construct()
+    {
+        $this->site_url = Website::current()->site_url;
+    }
 
     public function build($type)
     {
@@ -34,6 +41,7 @@ class UiBaseController extends ModularBaseController {
 
     private function viewCreate()
     {
+        $this->meta->create->route = $this->site_url.'/'.$this->meta->create->route;
         return view('ui::create', [
             'meta' => $this->meta,
         ]);
@@ -52,6 +60,7 @@ class UiBaseController extends ModularBaseController {
 
     private function viewEdit()
     {
+        $meta->edit->route = $this->site_url.'/'.$meta->edit->route;
         return view('ui::edit', [
             'meta' => $this->meta,
             'record' => $this->record,

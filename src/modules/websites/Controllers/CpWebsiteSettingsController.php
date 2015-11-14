@@ -6,12 +6,13 @@ use Illuminate\Http\Request;
 use P3in\Models\Section;
 use P3in\Models\Website;
 
-class CpWebsiteSettingsController extends Controller
+class CpWebsiteSettingsController extends UiBaseController
 {
 
     public function __construct()
     {
         $this->middleware('auth');
+        parent::__construct();
     }
 
     /**
@@ -22,6 +23,7 @@ class CpWebsiteSettingsController extends Controller
         $website = Website::findOrFail($website_id);
 
         return view('websites::settings/index', compact('website'))
+            ->with('site_url', $this->site_url)
             ->with('settings', $website->settings->data)
             ->with('headers', Section::headers()->get()->lists('name', 'id'))
             ->with('footers', Section::footers()->get()->lists('name', 'id'));
@@ -48,7 +50,7 @@ class CpWebsiteSettingsController extends Controller
 
         $records = $website->settings($data);
 
-        return redirect()->action('\P3in\Controllers\CpWebsiteSettingsController@index', [$website_id]);
+        return $this->index($website_id);
 
         // return view('websites::settings/index', compact('records'))
             // ->with('parent', $website);
