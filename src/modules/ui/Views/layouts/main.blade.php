@@ -50,7 +50,14 @@
 		</aside>
 		<!--sidebar end-->
 			<!--main content start-->
-			<section id="main-content" data-load="/dashboard">
+			<section id="main-content">
+                <section class="wrapper">
+                <!-- page start-->
+                    <div class="row">
+                        <div class="col-sm-12" id="main-content-out" data-load="/dashboard">
+                        </div>
+                    </div>
+                </section>
 			</section>
 			<!--main content end-->
 		<!--right sidebar start-->

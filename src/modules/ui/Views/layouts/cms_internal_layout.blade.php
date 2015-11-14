@@ -1,5 +1,3 @@
-<section class="wrapper">
-
     <div class="row">
         <div class="col-sm-3">
 
@@ -15,5 +13,3 @@
 
         </div>
     </div>
-
-</section>

@@ -25,30 +25,6 @@ Class PagesModule extends BaseModule
 
         $this->checkOrSetUiConfig();
 
-        $main_nav_sub_nav =  Navmenu::byName('cp_main_nav_pages', 'Pages Manager');
-
-        Navmenu::byName('cp_main_nav')
-            ->addChildren($main_nav_sub_nav, 3);
-
-        foreach(Website::all() as $i => $website) {
-
-            $item = $website->navItem([
-                'label' => $website->site_name,
-                'url' => '/websites'.$website->id.'/pages',
-                'props' => [
-                    // 'icon' => 'file-text-o',
-                    'icon' => 'globe',
-                    'link' => [
-                        'data-click' => '/websites/'.$website->id.'/pages',
-                        'data-target' => '#main-content'
-                    ]
-                ]
-            ])->get()->first();
-
-            $main_nav_sub_nav->addItem($item, $i);
-
-        }
-
     }
 
 
@@ -86,11 +62,11 @@ Class PagesModule extends BaseModule
                         'rows' => [
                             'title' => [
                                 'type' => 'link_by_id',
-                                'target' => '#main-content',
+                                'target' => '#main-content-out',
                             ],
                             'name' => [
                                 'type' => 'link_by_id',
-                                'target' => '#main-content',
+                                'target' => '#main-content-out',
                             ],
                             'slug' => [
                                 'type' => 'text',

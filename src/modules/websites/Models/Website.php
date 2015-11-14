@@ -117,12 +117,12 @@ class Website extends Model
 	{
 	    return array_replace([
 	        "label" => $this->site_name,
-	        "url" => '/websites'.$this->id.'/pages',
+	        "url" => '/websites/'.$this->id.'/pages',
 	        "props" => [
 	        	"icon" => 'globe',
 	        	"link" => [
 	        		'data-click' => '/websites/'.$this->id,
-	        		'data-target' => '#main-content'
+	        		'data-target' => '#main-content-out'
 	        	]
 	        ]
 	    ], $overrides);

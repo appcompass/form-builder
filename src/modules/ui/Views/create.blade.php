@@ -1,5 +1,3 @@
-<section class="wrapper">
-    <!-- page start-->
     <div class="row">
         <div class="col-sm-3">
 
@@ -22,7 +20,7 @@
                     {!! Form::open([
                         'url' => $meta->create->route,
                         'method' => 'POST',
-                        'data-target' => '#main-content',
+                        'data-target' => '#main-content-out',
                         'class' => 'form-horizontal bucket-form ajax-form'])
                     !!}
 
@@ -66,6 +64,3 @@
             </section>
         </div>
     </div>
-
-<!-- page end-->
-</section>

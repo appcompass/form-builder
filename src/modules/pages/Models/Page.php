@@ -83,7 +83,7 @@ class Page extends Model
 		      'icon' => 'list',
 		      "link" => [
 		          'data-click' => $this->slug,
-		          'data-target' => '#main-content'
+		          'data-target' => '#main-content-out'
 		      ],
 		  ]
 		], $overrides);

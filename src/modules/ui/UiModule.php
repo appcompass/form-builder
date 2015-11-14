@@ -39,39 +39,11 @@ Class UiModule extends BaseModule
                     'icon' => 'pencil',
                     'link' => [
                         'data-click' => '/ui/settings',
-                        'data-target' => '#main-content'
+                        'data-target' => '#main-content-out'
                     ]
                 ]
             ])->first(), 999);
         }
-
-
-
-        // $cp_main_nav =  Navmenu::byName('cp_main_nav_pages', 'Pages Manager');
-
-
-        // foreach(Website::all() as $website) {
-
-        //     $item = $website->navItem([
-        //         'label' => $website->site_name,
-        //         'url' => '/websites'.$website->id.'/pages',
-        //         'props' => [
-        //             // 'icon' => 'file-text-o',
-        //             'icon' => 'globe',
-        //             'link' => [
-        //                 'data-click' => '/websites/'.$website->id.'/pages',
-        //                 'data-target' => '#main-content'
-        //             ]
-        //         ]
-        //     ])->get()->first();
-
-        //     $cp_main_nav->addItem($item);
-
-        // }
-
-
-
-
 
 	}
 
@@ -88,7 +60,7 @@ Class UiModule extends BaseModule
 	            'icon' => 'dashboard',
 	            "link" => [
 	                'data-click' => '/dashboard',
-	                'data-target' => '#main-content'
+	                'data-target' => '#main-content-out'
 	            ],
 	        ]
 	    ], $overrides);

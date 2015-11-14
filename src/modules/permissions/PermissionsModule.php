@@ -50,7 +50,7 @@ Class PermissionsModule extends BaseModule
             "icon" => "user",
             "link" => [
                 "data-click" => "/permissions",
-                "data-target" => "#main-content",
+                "data-target" => "#main-content-out",
                 'href' => 'javascript:;',
             ]
           ]

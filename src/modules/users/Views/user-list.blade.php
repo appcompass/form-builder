@@ -1,7 +1,3 @@
-		<section class="wrapper">
-		<!-- page start-->
-			<div class="row">
-			<div class="col-sm-12">
 				<section class="panel">
 					<header class="panel-heading">
 						Manage Web Users
@@ -20,7 +16,7 @@
 							<tbody>
 							@foreach($data as $user)
 							<tr>
-								<td><a href="#" data-click="/users/{{ $user->id }}" data-target="#main-content">{{ $user->first_name.' '.$user->last_name }}</a></td>
+								<td><a href="#" data-click="/users/{{ $user->id }}" data-target="#main-content-out">{{ $user->first_name.' '.$user->last_name }}</a></td>
 								<td><a href="mailto:{{ $user->email }}">{{ $user->email }}</a></td>
 								<td class="hidden-phone">{{ $user->phone }}</td>
 								<td>{{ $user->created_at }}</td>
@@ -31,5 +27,3 @@
 						</table>
 					</div>
 				</section>
-			</div>
-		</div>

@@ -56,7 +56,7 @@ Class WebsitesModule extends BaseModule
             'icon' => 'dashboard',
             "link" => [
                 'data-click' => '/websites',
-                'data-target' => '#main-content'
+                'data-target' => '#main-content-out'
             ],
         ]
       ], $overrides);
@@ -82,7 +82,7 @@ Class WebsitesModule extends BaseModule
                     'rows' => [
                         'site_name' => [
                             'type' => 'link_by_id',
-                            'target' => '#main-content',
+                            'target' => '#main-content-out',
                         ],
                         'site_url' => [
                             'type' => 'link_to_blank',

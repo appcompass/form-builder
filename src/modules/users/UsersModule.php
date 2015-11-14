@@ -51,7 +51,7 @@ Class UsersModule extends BaseModule
             "icon" => "user",
             "link" => [
                 "data-click" => "/users",
-                "data-target" => "#main-content",
+                "data-target" => "#main-content-out",
                 'href' => 'javascript:;',
             ]
           ]
