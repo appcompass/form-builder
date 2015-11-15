@@ -24,15 +24,15 @@ class CpWebsiteController extends UiBaseController
     {
         $this->records = Website::all();
 
-        return $this->build('index');
+        return $this->build('index', ['websites']);
     }
 
     /**
      *
      */
-    public function create()
+    public function create(Request $request)
     {
-        return $this->build('create');
+        return $this->build('create', ['websites']);
     }
 
     /**
@@ -42,7 +42,7 @@ class CpWebsiteController extends UiBaseController
     {
         $this->record = Website::create($request->all());
 
-        return $this->build('show');
+        return $this->build('show', ['websites', $id]);
     }
 
     /**
@@ -52,7 +52,7 @@ class CpWebsiteController extends UiBaseController
     {
         $this->record = Website::findOrFail($id);
 
-        return $this->build('show');
+        return $this->build('show', ['websites', $id]);
     }
 
     /**
@@ -61,8 +61,7 @@ class CpWebsiteController extends UiBaseController
     public function edit($id)
     {
         $this->record = Website::findOrFail($id);
-
-        return $this->build('edit');
+        return $this->build('edit', ['websites', $id]);
     }
 
     /**
@@ -74,7 +73,7 @@ class CpWebsiteController extends UiBaseController
 
         $this->record->update($request->all());
 
-        return $this->build('edit');
+        return $this->build('edit', ['websites', $id]);
     }
 
 }

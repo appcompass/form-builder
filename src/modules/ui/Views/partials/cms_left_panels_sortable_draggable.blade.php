@@ -8,14 +8,14 @@
             @foreach($navmenu['target']->items as $item)
 
                 <li id="reorder_{{ $item->id }}" class="item" data-id="{{ $item->label }}">
-                    <a data-click="{{ $meta->base_url.'/'.$record->id.'/'.$item->url }}"
+                    <a data-click="{{ $meta->base_url.'/'.$item->url }}"
                        data-id="{{ $item->label }}"
                        data-target="#record-detail"
                        style="display: inline-block"
                     >
                         <i class="handle fa fa-arrows-alt"> </i> {{ ucwords($item->label) }}
                     </a>
-                    <a data-id="{{$item->id}}" href="{{ $meta->base_url.'/'.$record->id.'/section/'.$item->id }}" class="delete-icon" style="display: none; float: right">
+                    <a data-id="{{$item->id}}" href="{{ $meta->base_url.'/section/'.$item->id }}" class="delete-icon" style="display: none; float: right">
                         <i class="fa fa-trash-o"> </i> Delete
                     </a>
                 </li>

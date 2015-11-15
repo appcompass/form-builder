@@ -65,14 +65,14 @@
                 event.preventDefault();
 
                 var sortData = $('.sortable').sortable('serialize');
-                var url = '{{ $meta->base_url."/".$record->id."/section" }}';
+                var url = '{{ $meta->base_url }}/section';
 
                 $.ajax({
                     type: 'POST',
                     url: url,
                     data: sortData,
                     success: function(data) {
-                        $('#main-content').html(data);
+                        $('{{ $meta->data_target }}').html(data);
                     }
                 })
 
@@ -84,11 +84,11 @@
                 var sectionName = $(ui.item[0]).attr('data-id');
 
                 $.ajax({
-                    url: "/pages/{{ $record->id}}/section",
+                    url: '{{ $meta->base_url }}/section',
                     type: 'POST',
                     data: {'section_name': sectionName},
                     success: function(data) {
-                        $('#main-content').html(data);
+                        $('{{ $meta->data_target }}').html(data);
                     },
                     complete: function(data) {},
                     error: function(error) {},
@@ -120,7 +120,7 @@
 
                 success: function(data) {
                     console.log(data);
-                    $('#main-content').html(data);
+                    $('{{ $meta->data_target }}').html(data);
                 }
 
             })

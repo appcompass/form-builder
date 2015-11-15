@@ -21,7 +21,7 @@ class CpWebsitePagesController extends UiBaseController
 
         $this->middleware('auth');
 
-        parent::setControllerDefaults(__DIR__);
+        $this->setControllerDefaults(__DIR__);
 
     }
 
@@ -35,9 +35,7 @@ class CpWebsitePagesController extends UiBaseController
 
         $this->records = Website::findOrFail($website_id)->pages;
 
-        $this->meta->base_url = '/websites/'.$website_id.'/pages';
-
-        return $this->build('index');
+        return $this->build('index', ['websites', $website_id, 'pages']);
 
     }
 
@@ -55,11 +53,7 @@ class CpWebsitePagesController extends UiBaseController
             'main:aside' => 'Right Sidenav'
         ];
 
-        // return $this->build('create');
-
-        $this->meta->create->route = '/websites/'.$website_id.'/pages';
-
-        return $this->build('create');
+        return $this->build('create', ['websites', $website_id, 'pages']);
 
     }
 
@@ -103,6 +97,10 @@ class CpWebsitePagesController extends UiBaseController
         $this->record = Website::findOrFail($website_id)->pages()
             ->findOrFail($page_id);
 
+        $this->setBaseUrl(['websites', $website_id, 'pages', $page_id]);
+
+        $this->meta->no_autoload = true;
+
         return view('pages::show')
             ->with('record', $this->record)
             ->with('meta', $this->meta)
@@ -138,7 +136,7 @@ class CpWebsitePagesController extends UiBaseController
      * @param  int  $id
      * @return Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $website_id, $page_id)
     {
         //
     }

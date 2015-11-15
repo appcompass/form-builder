@@ -12,7 +12,6 @@ class CpWebsiteSettingsController extends UiBaseController
     public function __construct()
     {
         $this->middleware('auth');
-        parent::__construct();
     }
 
     /**
@@ -23,7 +22,6 @@ class CpWebsiteSettingsController extends UiBaseController
         $website = Website::findOrFail($website_id);
 
         return view('websites::settings/index', compact('website'))
-            ->with('site_url', $this->site_url)
             ->with('settings', $website->settings->data)
             ->with('headers', Section::headers()->get()->lists('name', 'id'))
             ->with('footers', Section::footers()->get()->lists('name', 'id'));

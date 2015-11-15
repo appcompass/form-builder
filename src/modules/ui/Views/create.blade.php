@@ -1,16 +1,3 @@
-    <div class="row">
-        <div class="col-sm-3">
-
-            <section class="panel">
-                <div class="panel-body">
-                    <ul class="nav nav-pills nav-stacked mail-nav">
-                        {{-- {{ dd($nav->items) }} --}}
-                        <li class="active"><a href="#"> <i class="fa fa-list"></i> {{ $meta->create->heading }} </a></li>
-                    </ul>
-                </div>
-            </section>
-        </div>
-        <div class="col-sm-9">
             <section class="panel">
                 <header class="panel-heading">
                     {{ $meta->create->heading }}
@@ -18,9 +5,9 @@
                 <div class="panel-body">
 
                     {!! Form::open([
-                        'url' => $meta->create->route,
+                        'url' => $meta->base_url,
                         'method' => 'POST',
-                        'data-target' => '#main-content-out',
+                        'data-target' => $meta->data_target,
                         'class' => 'form-horizontal bucket-form ajax-form'])
                     !!}
 
@@ -62,5 +49,3 @@
 
                 </div>
             </section>
-        </div>
-    </div>

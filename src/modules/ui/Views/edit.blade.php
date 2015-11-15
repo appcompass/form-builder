@@ -5,11 +5,13 @@
     </header>
 
     <div class="panel-body">
-        {!! Form::model($record, [
-            'class' => 'form-horizontal bucket-form ajax-form',
-            'method' => 'put',
-            'data-target' => '#record-detail',
-            'route' => [$meta->edit->route, $record->id]])
+        {!!
+            Form::model($record, [
+                'class' => 'form-horizontal bucket-form ajax-form',
+                'method' => 'put',
+                'data-target' => '#record-detail',
+                'url' => $meta->base_url
+            ])
         !!}
 
             @foreach($meta->form->fields as $field)

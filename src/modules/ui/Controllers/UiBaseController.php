@@ -19,14 +19,11 @@ class UiBaseController extends ModularBaseController {
     public $record;
     public $site_url;
 
-    public function __construct()
-    {
-        $this->site_url = Website::current()->site_url;
-    }
-
-    public function build($type)
+    public function build($type, $root = [])
     {
         $method = 'view'.$type;
+
+        $this->setBaseUrl($root);
 
         return call_user_func([$this, $method]);
     }
@@ -41,7 +38,6 @@ class UiBaseController extends ModularBaseController {
 
     private function viewCreate()
     {
-        $this->meta->create->route = $this->site_url.'/'.$this->meta->create->route;
         return view('ui::create', [
             'meta' => $this->meta,
         ]);
@@ -60,74 +56,11 @@ class UiBaseController extends ModularBaseController {
 
     private function viewEdit()
     {
-        $meta->edit->route = $this->site_url.'/'.$meta->edit->route;
         return view('ui::edit', [
             'meta' => $this->meta,
             'record' => $this->record,
         ]);
     }
-
-    // public function processRequest(Request $request, $lib = [])
-    // {
-    //     if ($request->reorder) {
-
-    //         foreach ($request->reorder as $i => $item_id) {
-
-    //             $itemObj = $lib['model']::findOrFail($item_id);
-
-    //             foreach ($lib['reorder']['chain'] as $method) {
-    //                 $itemObj = $itemObj->$method();
-    //             }
-
-    //             $itemObj->update([$lib['reorder']['field'] => $i]);
-
-    //         }
-
-    //     }elseif($request->bulk){
-
-    //         if (!empty($request->ids)) {
-
-    //             switch ($request->bulk) {
-    //                 case 'update':
-
-    //                     foreach ($request->ids as $item_id) {
-
-    //                         $itemObj = $lib['model']::findOrFail($item_id);
-
-    //                         if (isset($request->options)) {
-
-    //                             foreach ($request->options as $option_name => $option_value) {
-
-    //                                 if ($option_value) {
-
-    //                                     $itemObj->setOption($option_name, $option_value);
-
-    //                                 }
-
-
-    //                             }
-
-    //                         }
-
-    //                         if (!empty($request->attributes)) {
-    //                            $itemObj->update((array) $request->attributes);
-    //                         }
-
-    //                     }
-
-    //                 break;
-    //                 case 'delete':
-
-    //                     $lib['model']::destroy($request->ids);
-
-    //                 break;
-    //             }
-    //         }
-    //     }else{
-    //         return false;
-    //     }
-    //     return true;
-    // }
 
     /**
      *
@@ -149,6 +82,16 @@ class UiBaseController extends ModularBaseController {
 
     }
 
+    public function setBaseUrl($root)
+    {
+        $this->meta->base_url = url('', $root);
+
+        if (count($root) == 1) {
+            $this->meta->data_target = '#main-content-out';
+        }else{
+            $this->meta->data_target = '#record-detail';
+        }
+    }
     /**
      *
      */

@@ -5,7 +5,7 @@
                     <div class="panel-body">
                             <div class="clearfix">
                                 <div class="btn-group">
-                                    <a id="editable-sample_new" class="btn btn-primary" href="#" data-click="{{ $meta->base_url }}/create" data-target="#main-content-out">
+                                    <a id="editable-sample_new" class="btn btn-primary" href="#" data-click="{{ $meta->base_url }}/create" data-target="{{ $meta->data_target }}">
                                         Add New <i class="fa fa-plus"></i>
                                     </a>
                                 </div>
@@ -28,7 +28,7 @@
                             <tr>
                                 @foreach($meta->index->table->rows as $row_key => $row_data)
                                     @if ($row_data->type == 'link_by_id')
-                                        <td><a href="javascript:;" data-click="{{ $meta->base_url }}/{{ $record->id }}" data-target="#main-content-out">{{ $record->$row_key }}</a></td>
+                                        <td><a href="javascript:;" data-click="{{ $meta->base_url }}/{{ $record->id }}" data-target="{{ $meta->data_target }}">{{ $record->$row_key }}</a></td>
                                     @elseif($row_data->type == 'link_to_blank')
                                         <td><a href="{{ $record->$row_key }}" target="_blank">{{ $record->$row_key }}</a></td>
                                     @elseif($row_data->type == 'datetime')
@@ -64,7 +64,7 @@
          */
         var nCloneTh = document.createElement( 'th' );
         var nCloneTd = document.createElement( 'td' );
-        nCloneTd.innerHTML = '<img src="media/ui/details_open.png">';
+        nCloneTd.innerHTML = '<img src="/assets/ui/images/details_open.png">';
         nCloneTd.className = "center";
 
         $('#hidden-table-info thead tr').each( function () {

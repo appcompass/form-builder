@@ -11,7 +11,7 @@ use P3in\Models\Page;
 use Response;
 use DB;
 
-class CpPageSectionsController extends UiBaseController
+class CpWebsitePageSectionsController extends UiBaseController
 {
     /**
      * Display a listing of the resource.
@@ -33,7 +33,7 @@ class CpPageSectionsController extends UiBaseController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $page_id)
+    public function store(Request $request, $website_id, $page_id)
     {
 
         $page = Page::findOrFail($page_id);
@@ -74,7 +74,7 @@ class CpPageSectionsController extends UiBaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($page_id, $section_id)
+    public function edit($website_id, $page_id, $section_id)
     {
         $page = Page::findOrFail($page_id)->load('sections.photos');
 
@@ -96,7 +96,7 @@ class CpPageSectionsController extends UiBaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $page_id, $section_id)
+    public function update(Request $request, $website_id, $page_id, $section_id)
     {
 
         if ($request->file) {
@@ -121,7 +121,7 @@ class CpPageSectionsController extends UiBaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($page_id, $section_id) {
+    public function destroy(Request $request, $website_id, $page_id, $section_id) {
 
         $page = Page::findOrFail($page_id);
 

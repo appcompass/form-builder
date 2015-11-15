@@ -2,7 +2,7 @@
 
 {!! Form::model($settings, [
 			'method' => 'post',
-			'url' => "{$site_url}/websites/{$website->id}/settings",
+			'url' => "/websites/{$website->id}/settings",
 			'data-target' => '#record-detail',
 			'class' => 'form-horizontal bucket-form ajax-form',
 			'files' => true,
