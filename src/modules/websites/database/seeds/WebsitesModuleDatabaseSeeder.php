@@ -35,14 +35,14 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             $website_subnav = Navmenu::byName('cp_websites_subnav');
 
             //
-            //  SETTINGS
+            //  SETUP
             //
             $page = Page::firstOrNew([
-                'name' => 'cp_website_settings',
-                'title' => 'Settings',
-                'description' => 'Website Settings',
-                'slug' => 'settings',
-                'order' => 1,
+                'name' => 'cp_website_setup',
+                'title' => 'Setup',
+                'description' => 'Website Informations',
+                'slug' => 'edit',
+                'order' => 2,
                 'active' => true,
                 'parent' => null,
                 'req_permission' => null,
@@ -55,15 +55,16 @@ class WebsitesModuleDatabaseSeeder extends Seeder
 
             $website_subnav->addItem($page, 1, ['props' => ['link' => ['data-target' => '#record-detail']]]);
 
+
             //
-            //  INFO
+            //  SETTINGS
             //
             $page = Page::firstOrNew([
-                'name' => 'cp_website_info',
-                'title' => 'Info',
-                'description' => 'Website Informations',
-                'slug' => 'edit',
-                'order' => 2,
+                'name' => 'cp_website_settings',
+                'title' => 'Settings',
+                'description' => 'Website Settings',
+                'slug' => 'settings',
+                'order' => 1,
                 'active' => true,
                 'parent' => null,
                 'req_permission' => null,

@@ -40,9 +40,18 @@ class CpWebsiteController extends UiBaseController
      */
     public function store(Request $request)
     {
-        $this->record = Website::create($request->all());
+        $this->validate($request, [
+            'site_name' => 'required|unique:websites|max:255',
+            'site_url' => 'required',
+            'config' => 'site_connection',
+        ]);
 
-        return $this->build('show', ['websites', $id]);
+
+        $data = $request->all();
+
+        $this->record = Website::create($data);
+
+        return $this->build('show', ['websites', $this->record->id]);
     }
 
     /**
@@ -69,9 +78,18 @@ class CpWebsiteController extends UiBaseController
      */
     public function update(Request $request, $id)
     {
+        $this->validate($request, [
+            'site_name' => 'required|unique:websites|max:255',
+            'site_url' => 'required',
+            'config' => 'site_connection',
+        ]);
+
+
+        $data = $request->all();
+
         $this->record = Website::findOrFail($id);
 
-        $this->record->update($request->all());
+        $this->record->update($data);
 
         return $this->build('edit', ['websites', $id]);
     }

@@ -13,6 +13,16 @@ use DB;
 
 class CpWebsitePageSectionsController extends UiBaseController
 {
+
+    public function __construct()
+    {
+
+        $this->middleware('auth');
+
+        $this->setControllerDefaults(__DIR__);
+
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -86,7 +96,9 @@ class CpWebsitePageSectionsController extends UiBaseController
 
         $edit_view = 'sections/'.$section->edit_view;
 
-        return view($edit_view, compact('section', 'page', 'photos'));
+        $this->setBaseUrl(['websites', $website_id, 'pages', $page_id, 'section', $section->pivot->id]);
+        $meta = $this->meta;
+        return view($edit_view, compact('meta', 'section', 'page', 'photos'));
     }
 
     /**
