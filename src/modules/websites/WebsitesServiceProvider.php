@@ -31,7 +31,8 @@ Class WebsitesServiceProvider extends ServiceProvider {
     public function register()
     {
 
-        $this->app->register(Collective\Remote\RemoteServiceProvider::class);
+        $this->app->register(\Collective\Remote\RemoteServiceProvider::class);
+        $this->app->alias('SSH', \Collective\Remote\RemoteFacade::class);
 
     }
 
