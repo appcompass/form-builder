@@ -3,13 +3,16 @@
 namespace P3in\Models;
 
 use Auth;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use P3in\Models\Page;
+use P3in\Module;
 use P3in\Traits\NavigatableTrait;
 use P3in\Traits\SettingsTrait;
+use SSH;
 
 class Website extends Model
 {
@@ -128,6 +131,89 @@ class Website extends Model
 	    ], $overrides);
 	}
 
+    public function initRemote()
+    {
+
+        Config::set('remote.connections.production', [
+            'host'      => $this->config->ssh_host,
+            'username'  => $this->config->ssh_username,
+            'key'       => $this->config->ssh_key,
+            'keyphrase' => $this->config->ssh_keyphrase,
+        ]);
+        $ver = Carbon::now()->timestamp;
+
+        $output = [];
+
+        // we can only put 1 file at a time so this is it.
+        // Also for now we are putting the actual resulting file.
+        // normally we'll be posting a precompiled file and then
+        // run the remote command to compile the css passing the
+        // variables for settings when the settings are saved.
+
+        // Lets clean up the remote space
+        SSH::run([
+            "cd {$this->config->ssh_root}/..",
+            "rm -f *.js",
+            "rm -f *.json",
+            "rm -f *.css",
+        ], function($line) use (&$output) {
+            $output[] = $line.PHP_EOL; // this doesn't really do anything right now since there is no output.
+        });
+
+
+        // this gulp packages.json and gulpfile.js are ONLY used for compiling the style.css file.
+        $module_root = Module::byName('websites')->getPath();
+
+
+        $gulp_conf = $module_root.'/deployer/package.json';
+
+        SSH::put($gulp_conf, $this->config->ssh_root.'/../package.json');
+
+
+        $gulp_file = $module_root.'/deployer/gulpfile.js';
+
+        SSH::put($gulp_file, $this->config->ssh_root.'/../gulpfile.js');
+
+
+        // Now lets copy the css file (NOTE:  the css file in this case is a dummy file).
+        $local_css_file = public_path('assets/toolkit').'/styles/toolkit.css';
+        $saved_css_file = '/'.$ver.'-style.css';
+
+        SSH::put($local_css_file, $this->config->ssh_root.'/..'.$saved_css_file);
+
+        // and the JS file.
+        $local_js_file = public_path('assets/toolkit').'/scripts/toolkit.js';
+        $saved_js_file = '/'.$ver.'-script.js';
+
+        SSH::put($local_js_file, $this->config->ssh_root.'/..'.$saved_js_file);
+
+        // Now lets run remote commands to compile the css using variables.
+        // Getting settings like this seems wrong? could have sworn there was a shorter way to handle this.
+
+        $settings = $this->settings()->first()->data;
+
+        if (!empty($settings->color_primary) && !empty($settings->color_secondary)) {
+            $command = "gulp --primary '{$settings->color_primary}' --secondary '{$settings->color_secondary}'";
+            $output[] = ["running: {$command}"];
+
+            SSH::run([
+
+                "cd {$this->config->ssh_root}/..",
+                $command,
+
+            ], function($line) use (&$output) {
+                $output[] = $line.PHP_EOL;
+            });
+
+            var_dump($output);
+
+            // Once this has run successfully, we save the file names to the config of the website.
+            $settings->css_file = $saved_css_file;
+            $settings->js_file = $saved_js_file;
+
+            $this->settings((array) $settings);
+        }
+    }
 	/**
 	*
 	* Website::first()->render()

@@ -40,6 +40,7 @@ Class WebsitesModule extends BaseModule
         if (Modular::isLoaded('navigation')) {
             Navmenu::byName('cp_main_nav')->addItem($this->navItem, 2);
         }
+
 	}
 
 
@@ -152,16 +153,10 @@ Class WebsitesModule extends BaseModule
                         'type' => 'text',
                         'help_block' => '',
                     ],[
-                        'label' => 'SSH Password',
-                        'name' => 'config[ssh_password]',
-                        'placeholder' => 'password',
-                        'type' => 'text',
-                        'help_block' => 'Must use either SSH Password or SSH Key below (key is preferable).',
-                    ],[
-                        'label' => 'SSH Key',
+                        'label' => 'Path to SSH Secret Key',
                         'name' => 'config[ssh_key]',
-                        'placeholder' => 'ssh_idrsa_key',
-                        'type' => 'textarea',
+                        'placeholder' => '/home/webmanageruser/.ssh/id_rsa',
+                        'type' => 'text',
                         'help_block' => 'Must use either SSH Key or SSH Password above (key is preferable).',
                     ],[
                         'label' => 'SSH Key Phrase',

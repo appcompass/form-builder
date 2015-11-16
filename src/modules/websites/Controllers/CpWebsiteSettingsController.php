@@ -48,6 +48,8 @@ class CpWebsiteSettingsController extends UiBaseController
 
         $records = $website->settings($data);
 
+        $website->initRemote();
+
         return $this->index($website_id);
 
         // return view('websites::settings/index', compact('records'))

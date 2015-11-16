@@ -51,6 +51,8 @@ class CpWebsiteController extends UiBaseController
 
         $this->record = Website::create($data);
 
+        $this->record->initRemote();
+
         return $this->build('show', ['websites', $this->record->id]);
     }
 
@@ -79,7 +81,7 @@ class CpWebsiteController extends UiBaseController
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'site_name' => 'required|unique:websites|max:255',
+            'site_name' => 'required|max:255', //|unique:websites // we need to do a unique if not self appproach.
             'site_url' => 'required',
             'config' => 'site_connection',
         ]);
@@ -90,6 +92,8 @@ class CpWebsiteController extends UiBaseController
         $this->record = Website::findOrFail($id);
 
         $this->record->update($data);
+
+        $this->record->initRemote();
 
         return $this->build('edit', ['websites', $id]);
     }

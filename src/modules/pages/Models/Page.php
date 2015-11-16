@@ -123,6 +123,11 @@ class Page extends Model
 
         $globals = Section::whereIn('id',[$website->settings('header'), $website->settings('footer')])->get();
 
+        $views['files'] = [
+            'css_file' => $website->settings('css_file'),
+            'js_file' => $website->settings('js_file'),
+        ];
+
         foreach ($globals as $global) {
             $views[$global->type] = [
                 'view' => '/sections'.$global->display_view,

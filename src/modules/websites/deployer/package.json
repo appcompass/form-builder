@@ -1,0 +1,14 @@
+{
+  "engines": {
+    "node": ">=0.10.0",
+    "npm": ">=2.0.0"
+  },
+  "dependencies": {
+    "del": "^1.1.1",
+    "gulp": "^3.8.11",
+    "gulp-param": "^0.6.4",
+    "gulp-less": "^3.0.3",
+    "gulp-sass": "^2.0.0",
+    "gulp-util": "^3.0.4"
+  }
+}
