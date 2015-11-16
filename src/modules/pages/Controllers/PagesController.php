@@ -24,7 +24,7 @@ class PagesController extends Controller
         // Config like so: Config::get('current_site_record')
         Website::current($request);
 
-        $page = Page::ofWebsite()->firstOrFail();
+        $page = Page::where('slug', $url)->ofWebsite()->firstOrFail();
 
         $template = 'layouts.master.'.$page->layout;
 
