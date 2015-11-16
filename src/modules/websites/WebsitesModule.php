@@ -2,6 +2,8 @@
 
 namespace P3in\Modules;
 
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 use Modular;
 use P3in\Models\Navmenu;
 use P3in\Models\Website;
@@ -41,8 +43,30 @@ Class WebsitesModule extends BaseModule
             Navmenu::byName('cp_main_nav')->addItem($this->navItem, 2);
         }
 
+        // $this->installDeployerDeps();
 	}
 
+    // public function installDeployerDeps()
+    // {
+    //     $root_dir = Modular::get($this->module_name)->getPath();
+
+    //     $process = new Process("npm install --prefix {$root_dir}/deployer");
+    //     $process->setTimeout(3600);
+    //     $process->setIdleTimeout(600);
+
+    //     $process->run(function ($type, $buffer) {
+    //         if (Process::ERR === $type) {
+    //             echo "\033[31m {$buffer} \033[0m";
+    //         } else {
+    //             echo "\033[32m {$buffer} \033[0m";
+    //         }
+    //     });
+
+    //     if (!$process->isSuccessful()) {
+    //         throw new ProcessFailedException($process);
+    //     }
+
+    // }
 
     /**
      *

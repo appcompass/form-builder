@@ -7,7 +7,6 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Config;
 use P3in\Models\Page;
 use P3in\Module;
 use P3in\Traits\NavigatableTrait;
@@ -94,11 +93,11 @@ class Website extends Model
     {
         // unfortunately the first time we run this we need to pass the current Request. which is why we need to
         // run this on app before filters for all requests.
-        if (!Config::get('current_site_record')) {
-            Config::set('current_site_record',  $query->where('site_name','=', $request->header('site-name'))->firstOrFail());
+        if (!config('current_site_record')) {
+            config(['current_site_record' => $query->where('site_name','=', $request->header('site-name'))->firstOrFail()]);
         }
 
-        return Config::get('current_site_record');
+        return config('current_site_record');
     }
 
 
@@ -134,12 +133,13 @@ class Website extends Model
     public function initRemote()
     {
 
-        Config::set('remote.connections.production', [
+        config(['remote.connections.production' => [
             'host'      => $this->config->ssh_host,
             'username'  => $this->config->ssh_username,
             'key'       => $this->config->ssh_key,
             'keyphrase' => $this->config->ssh_keyphrase,
-        ]);
+        ]]);
+
         $ver = Carbon::now()->timestamp;
 
         $output = [];
@@ -150,32 +150,24 @@ class Website extends Model
         // run the remote command to compile the css passing the
         // variables for settings when the settings are saved.
 
-        // Lets clean up the remote space
-        SSH::run([
-            "cd {$this->config->ssh_root}/..",
-            "rm -f *.js",
-            "rm -f *.json",
-            "rm -f *.css",
-        ], function($line) use (&$output) {
-            $output[] = $line.PHP_EOL; // this doesn't really do anything right now since there is no output.
-        });
-
-
         // this gulp packages.json and gulpfile.js are ONLY used for compiling the style.css file.
         $module_root = Module::byName('websites')->getPath();
 
 
-        $gulp_conf = $module_root.'/deployer/package.json';
+        // $gulp_conf = $module_root.'/deployer/package.json';
 
-        SSH::put($gulp_conf, $this->config->ssh_root.'/../package.json');
+        // SSH::put($gulp_conf, $this->config->ssh_root.'/../package.json');
 
-
-        $gulp_file = $module_root.'/deployer/gulpfile.js';
-
-        SSH::put($gulp_file, $this->config->ssh_root.'/../gulpfile.js');
+        // config('app.less_file_path')
+        // $gulp_file = $module_root.'/deployer/gulpfile.js';
 
 
-        // Now lets copy the css file (NOTE:  the css file in this case is a dummy file).
+// gulp --gulpfile public/gulpfile.js
+
+        // SSH::put($gulp_file, $this->config->ssh_root.'/../gulpfile.js');
+
+
+        // Now lets compile and output the css file to the site.
         $local_css_file = public_path('assets/toolkit').'/styles/toolkit.css';
         $saved_css_file = '/'.$ver.'-style.css';
 
@@ -187,32 +179,32 @@ class Website extends Model
 
         SSH::put($local_js_file, $this->config->ssh_root.'/..'.$saved_js_file);
 
-        // Now lets run remote commands to compile the css using variables.
-        // Getting settings like this seems wrong? could have sworn there was a shorter way to handle this.
+        // // Now lets run remote commands to compile the css using variables.
+        // // Getting settings like this seems wrong? could have sworn there was a shorter way to handle this.
 
-        $settings = $this->settings()->first()->data;
+        // $settings = $this->settings()->first()->data;
 
-        if (!empty($settings->color_primary) && !empty($settings->color_secondary)) {
-            $command = "gulp --primary '{$settings->color_primary}' --secondary '{$settings->color_secondary}'";
-            $output[] = ["running: {$command}"];
+        // if (!empty($settings->color_primary) && !empty($settings->color_secondary)) {
+        //     $command = "gulp --primary '{$settings->color_primary}' --secondary '{$settings->color_secondary}'";
+        //     $output[] = ["running: {$command}"];
 
-            SSH::run([
+        //     SSH::run([
 
-                "cd {$this->config->ssh_root}/..",
-                $command,
+        //         "cd {$this->config->ssh_root}/..",
+        //         $command,
 
-            ], function($line) use (&$output) {
-                $output[] = $line.PHP_EOL;
-            });
+        //     ], function($line) use (&$output) {
+        //         $output[] = $line.PHP_EOL;
+        //     });
 
-            var_dump($output);
+        //     var_dump($output);
 
-            // Once this has run successfully, we save the file names to the config of the website.
-            $settings->css_file = $saved_css_file;
-            $settings->js_file = $saved_js_file;
+        //     // Once this has run successfully, we save the file names to the config of the website.
+        //     $settings->css_file = $saved_css_file;
+        //     $settings->js_file = $saved_js_file;
 
-            $this->settings((array) $settings);
-        }
+        //     $this->settings((array) $settings);
+        // }
     }
 	/**
 	*
