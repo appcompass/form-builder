@@ -22,7 +22,6 @@ class PagesController extends Controller
         // TODO: This belongs in middleware!
         // all requests require this so it should be set and simply accessed via
         // Config like so: Config::get('current_site_record')
-        Website::current($request);
 
         $page = Page::where('slug', $url)->ofWebsite()->firstOrFail();
 

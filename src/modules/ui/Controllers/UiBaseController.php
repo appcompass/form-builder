@@ -95,7 +95,7 @@ class UiBaseController extends ModularBaseController {
     public function setBaseUrl($root)
     {
 
-        $this->meta->base_url = url('', $root);
+        $this->meta->base_url = '/'.implode('/', $root);
 
         return $this->meta->base_url;
 
