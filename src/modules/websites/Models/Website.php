@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Less_Parser;
 use P3in\Models\Page;
 use P3in\Module;
@@ -92,26 +93,28 @@ class Website extends Model
   /**
    *
    */
-  public function scopeCurrent($query, Request $request = null)
-  {
+    public static function current(Request $request = null)
+    {
 
-    // unfortunately the first time we run this we need to pass the current Request. which is why we need to
-    // run this on app before filters for all requests.
-    if (!config('current_site_record')) {
+        // unfortunately the first time we run this we need to pass the current Request. which is why we need to
+        // run this on app before filters for all requests.
+        if (!Config::get('current_site_record') && $request) {
 
-      $site_name = $request->header('site-name');
+            $site_name = $request->header('site-name');
 
-      if (isset($site_name)) {
+            if (!empty($site_name)) {
 
-        $website = Website::where('site_name', '=', $request->header('site-name'))
-          ->firstOrFail();
+                $website = Website::where('site_name', '=', $site_name)->firstOrFail();
 
-        config(['current_site_record', $website]);
+                Config::set('current_site_record', $website);
 
-      }
+            }
+
+        }
+
+        return Config::get('current_site_record');
 
     }
-  }
 
 	/**
 	 *
