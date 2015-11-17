@@ -18,7 +18,6 @@ class CpWebsitePagesController extends UiBaseController
 
 	public function __construct()
 	{
-
         $this->middleware('auth');
 
         $this->setControllerDefaults(__DIR__);
@@ -34,6 +33,8 @@ class CpWebsitePagesController extends UiBaseController
     {
 
         $this->records = Website::findOrFail($website_id)->pages;
+
+        $this->meta->data_target = '#main-content-out';
 
         return $this->build('index', ['websites', $website_id, 'pages']);
 
@@ -80,6 +81,7 @@ class CpWebsitePagesController extends UiBaseController
 
         $this->record = $page;
 
+        $this->meta->data_target = '#main-content-out';
 
         return $this->index($website_id);
         // return parent::build('show');
@@ -92,7 +94,8 @@ class CpWebsitePagesController extends UiBaseController
      * @param  int  $page_id
      * @return Response
      */
-    public function show($website_id, $page_id) {
+    public function show($website_id, $page_id)
+    {
 
         $this->record = Website::findOrFail($website_id)->pages()
             ->findOrFail($page_id);
@@ -100,6 +103,8 @@ class CpWebsitePagesController extends UiBaseController
         $this->setBaseUrl(['websites', $website_id, 'pages', $page_id]);
 
         $this->meta->no_autoload = true;
+
+        $this->meta->data_target = '#main-content-out';
 
         return view('pages::show')
             ->with('record', $this->record)
@@ -116,7 +121,6 @@ class CpWebsitePagesController extends UiBaseController
      */
     public function edit($website_id, $page_id)
     {
-
         $website = Website::findOrFail($website_id);
 
         $page = $website
@@ -124,9 +128,7 @@ class CpWebsitePagesController extends UiBaseController
             ->pages()
             ->findOrFail($page_id);
 
-        // $templates = Template::all()->lists('name', 'id');
-
-        return view('pages::edit', compact('page', 'website'));//, 'templates'));
+        return view('pages::edit', compact('page', 'website'));
     }
 
     /**

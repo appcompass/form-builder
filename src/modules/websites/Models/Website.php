@@ -89,19 +89,29 @@ class Website extends Model
 		$this->pages()->save($page);
 	}
 
+  /**
+   *
+   */
+  public function scopeCurrent($query, Request $request = null)
+  {
 
-    public function scopeCurrent($query, Request $request = null)
-    {
-        // unfortunately the first time we run this we need to pass the current Request. which is why we need to
-        // run this on app before filters for all requests.
-        if (!config('current_site_record')) {
-            config(['current_site_record' => $query->where('site_name','=', $request->header('site-name'))->firstOrFail()]);
-        }
+    // unfortunately the first time we run this we need to pass the current Request. which is why we need to
+    // run this on app before filters for all requests.
+    if (!config('current_site_record')) {
 
-        return config('current_site_record');
+      $site_name = $request->header('site-name');
+
+      if (isset($site_name)) {
+
+        $website = Website::where('site_name', '=', $request->header('site-name'))
+          ->firstOrFail();
+
+        config(['current_site_record', $website]);
+
+      }
+
     }
-
-
+  }
 
 	/**
 	 *

@@ -25,6 +25,12 @@ class UiBaseController extends ModularBaseController {
 
         $this->setBaseUrl($root);
 
+        if (!isset($this->meta->data_target)) {
+
+            $this->setDataTarget($root);
+
+        }
+
         return call_user_func([$this, $method]);
     }
 
@@ -82,16 +88,39 @@ class UiBaseController extends ModularBaseController {
 
     }
 
+    /**
+     *  SetBaseUrl
+     *
+     */
     public function setBaseUrl($root)
     {
+
         $this->meta->base_url = url('', $root);
 
-        if (count($root) == 1) {
-            $this->meta->data_target = '#main-content-out';
-        }else{
-            $this->meta->data_target = '#record-detail';
-        }
+        return $this->meta->base_url;
+
     }
+
+    /**
+     *
+     */
+    public function setDataTarget($root)
+    {
+
+        if (count($root) == 1 && !isset($this->meta->data_target)) {
+
+            $this->meta->data_target = '#main-content-out';
+
+        } else {
+
+            $this->meta->data_target = '#record-detail';
+
+        }
+
+        return $this->meta->data_target;
+
+    }
+
     /**
      *
      */

@@ -23,6 +23,8 @@ class ValidateAndSetWebsite implements Middleware
             return $next($request);
         } catch (Exception $e) {
             App::abort(401, trans('websites::accessnotauthorized'));
+        } catch (ModelNotFoundException $e) {
+            App::abort(401, trans('websites::accessnotauthorized'));
         }
     }
 }
