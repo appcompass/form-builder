@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Less_Parser;
 use P3in\Models\Page;
 use P3in\Module;
 use P3in\Traits\NavigatableTrait;
@@ -130,81 +131,66 @@ class Website extends Model
 	    ], $overrides);
 	}
 
+    private function connectionConfig($config)
+    {
+        // set the remote site's ssh connection config.
+        config(['remote.connections.production' => [
+            'host'      => $config->ssh_host,
+            'username'  => $config->ssh_username,
+            'key'       => $config->ssh_key,
+            'keyphrase' => $config->ssh_keyphrase,
+        ]]);
+
+    }
+
     public function initRemote()
     {
+        $this->connectionConfig($this->config);
+        $data = $this->config->server;
+        $data->document_root = $this->config->ssh_root;
+        $data->site_name = $this->site_name;
 
-        config(['remote.connections.production' => [
-            'host'      => $this->config->ssh_host,
-            'username'  => $this->config->ssh_username,
-            'key'       => $this->config->ssh_key,
-            'keyphrase' => $this->config->ssh_keyphrase,
-        ]]);
+        $nginx_config = (string) view('websites::server.nginx_main', ['data' => $data]);
+
+        SSH::putString($this->config->ssh_root.'/../nginx.conf', $nginx_config);
+
+        SSH::run("sudo service nginx restart &", function($line) {
+            var_dump($line);
+        });
+    }
+
+    public function deploy()
+    {
+        $this->connectionConfig($this->config);
+
+        // Getting settings like this seems wrong? could have sworn there was a shorter way to handle this.
+        $settings = $this->settings()->first()->data;
 
         $ver = Carbon::now()->timestamp;
 
         $output = [];
 
-        // we can only put 1 file at a time so this is it.
-        // Also for now we are putting the actual resulting file.
-        // normally we'll be posting a precompiled file and then
-        // run the remote command to compile the css passing the
-        // variables for settings when the settings are saved.
-
-        // this gulp packages.json and gulpfile.js are ONLY used for compiling the style.css file.
-        $module_root = Module::byName('websites')->getPath();
-
-
-        // $gulp_conf = $module_root.'/deployer/package.json';
-
-        // SSH::put($gulp_conf, $this->config->ssh_root.'/../package.json');
-
-        // config('app.less_file_path')
-        // $gulp_file = $module_root.'/deployer/gulpfile.js';
-
-
-// gulp --gulpfile public/gulpfile.js
-
-        // SSH::put($gulp_file, $this->config->ssh_root.'/../gulpfile.js');
-
-
-        // Now lets compile and output the css file to the site.
-        $local_css_file = public_path('assets/toolkit').'/styles/toolkit.css';
+        // Now lets compile and output the css contents to a string.
         $saved_css_file = '/'.$ver.'-style.css';
 
-        SSH::put($local_css_file, $this->config->ssh_root.'/..'.$saved_css_file);
+        $parser = new Less_Parser(config('less'));
+        $parser->parseFile(config('less.less_path'));
+        $parser->ModifyVars([
+            'color-theme-primary'=> $settings->color_primary,
+            'color-theme-secondary' => $settings->color_secondary,
+        ]);
 
-        // and the JS file.
-        $local_js_file = public_path('assets/toolkit').'/scripts/toolkit.js';
-        $saved_js_file = '/'.$ver.'-script.js';
+        // the string containing this sites' CSS file.
+        $css = $parser->getCss();
 
-        SSH::put($local_js_file, $this->config->ssh_root.'/..'.$saved_js_file);
+        // Now lets put that file on the remote site.
+        SSH::putString($this->config->ssh_root.$saved_css_file, $css);
 
-        // // Now lets run remote commands to compile the css using variables.
-        // // Getting settings like this seems wrong? could have sworn there was a shorter way to handle this.
+        // Once this has run successfully, we save the file names to the config of the website.
+        $settings->css_file = $saved_css_file;
 
-        // $settings = $this->settings()->first()->data;
+        $this->settings((array) $settings); // doesn't like objects :/
 
-        // if (!empty($settings->color_primary) && !empty($settings->color_secondary)) {
-        //     $command = "gulp --primary '{$settings->color_primary}' --secondary '{$settings->color_secondary}'";
-        //     $output[] = ["running: {$command}"];
-
-        //     SSH::run([
-
-        //         "cd {$this->config->ssh_root}/..",
-        //         $command,
-
-        //     ], function($line) use (&$output) {
-        //         $output[] = $line.PHP_EOL;
-        //     });
-
-        //     var_dump($output);
-
-        //     // Once this has run successfully, we save the file names to the config of the website.
-        //     $settings->css_file = $saved_css_file;
-        //     $settings->js_file = $saved_js_file;
-
-        //     $this->settings((array) $settings);
-        // }
     }
 	/**
 	*

@@ -29,8 +29,7 @@ Class WebsitesServiceProvider extends ServiceProvider {
 
             $counter = 0;
 
-            // \SSH should work here but for what ever reason it's not so we're just using the full path.
-            $test = \SSH::run([
+            \SSH::run([
 
                 "cd {$value['ssh_root']}",
                 "ls -a",
@@ -58,9 +57,11 @@ Class WebsitesServiceProvider extends ServiceProvider {
     {
 
         $this->app->register(\Collective\Remote\RemoteServiceProvider::class);
+        $this->app->register(\Langemike\Laravel5Less\LessServiceProvider::class);
 
         $loader = AliasLoader::getInstance();
         $loader->alias('SSH', \Collective\Remote\RemoteFacade::class);
+        $loader->alias('Less', \Langemike\Laravel5Less\LessFacade::class);
 
     }
 

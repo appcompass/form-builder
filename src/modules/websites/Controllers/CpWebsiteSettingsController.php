@@ -48,7 +48,7 @@ class CpWebsiteSettingsController extends UiBaseController
 
         $records = $website->settings($data);
 
-        $website->initRemote();
+        $website->deploy();
 
         return $this->index($website_id);
 
