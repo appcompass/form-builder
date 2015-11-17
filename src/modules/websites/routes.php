@@ -6,6 +6,6 @@ Route::group([
 
 	// website routes
 	Route::resource('websites', 'CpWebsiteController');
-	Route::resource('websites.settings', 'CpWebsiteSettingsController');
+  Route::resource('websites.settings', 'CpWebsiteSettingsController');
 
 });

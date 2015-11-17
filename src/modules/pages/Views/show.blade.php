@@ -22,19 +22,6 @@
 
 @stop
 
-{{--
-@section('content')
-    <div class="panel">
-        <div class="panel-body">
-            <h3>Instructions</h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error, assumenda neque dolor cum ducimus adipisci velit voluptate quae perferendis! Dolorem rem eius facere deserunt iure saepe nihil aspernatur asperiores minima.</p>
-        </div>
-    </div>
-@stop
- --}}
-
-{{-- <script src="/assets/ui/js/nestable/jquery.nestable.js"></script> --}}
-
 <style>
     .sortable {min-height: 50px; }
     .ui-sortable-placeholder {border: 1px dashed #aaa; height: 45px; width: 90%; background: rgb(253, 253, 253); }

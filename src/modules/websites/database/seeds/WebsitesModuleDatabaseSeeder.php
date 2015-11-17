@@ -22,14 +22,14 @@ class WebsitesModuleDatabaseSeeder extends Seeder
     {
         Model::unguard();
 
-            $website = Website::firstOrNew([
-                'site_name' => env('ADMIN_WEBSITE_NAME', 'CMS Admin CP'),
-                'site_url' => env('ADMIN_WEBSITE_URL', 'cp.p3in.com'),
-            ]);
+        $website = Website::firstOrNew([
+            'site_name' => env('ADMIN_WEBSITE_NAME', 'CMS Admin CP'),
+            'site_url' => env('ADMIN_WEBSITE_URL', 'cp.p3in.com'),
+        ]);
 
-            $website->config = [];
+        $website->config = [];
 
-            $website->save();
+        $website->save();
 
         if (Modular::isLoaded('navigation') && Modular::isLoaded('pages')) {
             $website_subnav = Navmenu::byName('cp_websites_subnav');
@@ -99,13 +99,13 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             $website_subnav->addItem($page, 3, ['props' => ['link' => ['data-target' => '#record-detail']]]);
 
             //
-            //  BLOG ENTRIES
+            //  NAVMENUS
             //
             $page = Page::firstOrNew([
-                'name' => 'cp_website_blog_entries',
-                'title' => 'Blog Entries',
-                'description' => 'Blog Info',
-                'slug' => 'blog-entries',
+                'name' => 'cp_website_pages',
+                'title' => 'Navigation',
+                'description' => 'Website Navigation Menus',
+                'slug' => 'navigation',
                 'order' => 4,
                 'active' => true,
                 'parent' => null,
@@ -117,7 +117,28 @@ class WebsitesModuleDatabaseSeeder extends Seeder
 
             $page->save();
 
-            $website_subnav->addItem($page, 3, ['props' => ['link' => ['data-target' => '#record-detail']]]);
+            $website_subnav->addItem($page, 4, ['props' => ['link' => ['data-target' => '#record-detail']]]);
+
+            //
+            //  BLOG ENTRIES
+            //
+            $page = Page::firstOrNew([
+                'name' => 'cp_website_blog_entries',
+                'title' => 'Blog Entries',
+                'description' => 'Blog Info',
+                'slug' => 'blog-entries',
+                'order' => 5,
+                'active' => true,
+                'parent' => null,
+                'req_permission' => null,
+                'website_id' => Website::admin()->id
+            ]);
+
+            $page->published_at = Carbon::now();
+
+            $page->save();
+
+            $website_subnav->addItem($page, 5, ['props' => ['link' => ['data-target' => '#record-detail']]]);
 
             //
             //  BLOG CATEGORIES
@@ -127,7 +148,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 'title' => 'Blog Categories',
                 'description' => 'Blog Categories',
                 'slug' => 'blog-categories',
-                'order' => 4,
+                'order' => 6,
                 'active' => true,
                 'parent' => null,
                 'req_permission' => null,
@@ -138,7 +159,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
 
             $page->save();
 
-            $website_subnav->addItem($page, 3, ['props' => ['link' => ['data-target' => '#record-detail']]]);
+            $website_subnav->addItem($page, 6, ['props' => ['link' => ['data-target' => '#record-detail']]]);
 
             //
             //  BLOG TAGS
@@ -148,7 +169,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 'title' => 'Blog Tags',
                 'description' => 'Blog Tags',
                 'slug' => 'blog-tags',
-                'order' => 4,
+                'order' => 7,
                 'active' => true,
                 'parent' => null,
                 'req_permission' => null,
@@ -159,7 +180,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
 
             $page->save();
 
-            $website_subnav->addItem($page, 3, ['props' => ['link' => ['data-target' => '#record-detail']]]);
+            $website_subnav->addItem($page, 7, ['props' => ['link' => ['data-target' => '#record-detail']]]);
 
             //
             //  BLOG SETTINGS
@@ -169,7 +190,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 'title' => 'Blog Settings',
                 'description' => 'Blog Settings',
                 'slug' => 'blog-settings',
-                'order' => 4,
+                'order' => 8,
                 'active' => true,
                 'parent' => null,
                 'req_permission' => null,
@@ -180,7 +201,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
 
             $page->save();
 
-            $website_subnav->addItem($page, 3, ['props' => ['link' => ['data-target' => '#record-detail']]]);
+            $website_subnav->addItem($page, 8, ['props' => ['link' => ['data-target' => '#record-detail']]]);
         }
 
         Model::reguard();
