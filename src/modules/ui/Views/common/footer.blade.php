@@ -38,7 +38,9 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/0.12.16/vue.min.js"></script>
 
-  <script src="/assets/ui/js/jquery-ui/jquery-ui-1.10.1.custom.min.js"></script>
+    <script src="/assets/ui/js/jquery-ui/jquery-ui-1.10.1.custom.min.js"></script>
+
+    <script src="/assets/ui/js/simrou.min.js" ></script>
 
 	@yield('scripts.footer')
 
@@ -48,10 +50,10 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+
 		@if(empty($nolock))
 			// This is where we put the logic which handles auto redirecting the user to the /lock-screen when they have been idle for X seconds.
 		@endif
-
 
 		function loadNavJs(elm){
 			/*==Left Navigation Accordion ==*/
@@ -272,54 +274,103 @@
 
 		}
 
-        function loadSourceToTarget(source, target, attribute){
-
-            $.ajax({
-                url: source,
+        function loadSourceToTarget(obj){
+            console.log(obj);
+            var call = $.ajax({
+                url: obj.url,
                 type: 'GET',
                 error: function(err){
                     console.log(err);
                 },
                 success: function(data){
-                    if (attribute) {
-                        $(target).attr(attribute, data);
+                    if (obj.attribute) {
+                        $(obj.target).attr(obj.attribute, data);
                     }else{
-                        $(target).html(data);
+                        $(obj.target).html(data);
                     }
                 },
                 complete: function(xhr, status){
-                    if (status =='success') {
-                        loadNavJs($(target));
-                        loadData($(target));
-                    }else{
-                        console.log(status);
-                    }
+                    // if (status =='success') {
+                    //     loadNavJs($(obj.target));
+                    //     loadData($(obj.target));
+                    // }else{
+                    //     console.log(status);
+                    // }
                 }
             });
 
+            call.done(function(){
+                if (obj.next.url) {
+                    loadSourceToTarget(obj.next);
+                };
+            })
         }
 
 		function loadData(elm){
-            $.each(elm.find('[data-trigger]'), function(i, e){
 
-                var target = $(e).attr('data-target');
-                var source = $(e).attr('data-click');
-
-                loadSourceToTarget(source, target);
-
-            });
 
 			$.each(elm.find('[data-load]'), function(i, e){
 
-                var target = e;
-                var source = $(e).attr('data-load');
-                var attribute = $(e).attr('data-load-self')
+                var obj = {
+                    target: e,
+                    url: $(e).attr('data-load'),
+                    attribute: $(e).attr('data-load-self')
+                };
 
-                loadSourceToTarget(source, target, attribute);
+                loadSourceToTarget(obj);
 			});
 		}
 
 		$(document).ready(function () {
+
+            var router = new Simrou();
+
+            router.addRoute('*sp').get(function(e, params){
+                $.ajax({
+                    url: '/request-meta',
+                    type: 'post',
+                    data: {
+                        url: params.sp
+                    },
+                    error: function(err){
+                        console.log(err);
+                    },
+                    success: function(data){
+                        if (data.success) {
+                            loadSourceToTarget(data.data);
+                        }
+                    },
+                    complete: function(xhr, status){
+                        if (status =='success') {
+                            loadNavJs($(target));
+                            loadData($(target));
+                        }else{
+                            console.log(status);
+                        }
+                    }
+                });
+            });
+
+            router.start('/');
+
+            $(document).on('click', 'a', function(e){
+                e.preventDefault();
+                var url = $(this).attr('href');
+                if (url) {
+                    router.navigate(url);
+                };
+            });
+
+
+
+
+
+
+
+
+
+
+
 
 			if ($.fn.niceScroll) {
 				$('.sidebar-toggle-box .fa-bars').on('click',function (e) {
@@ -393,14 +444,15 @@
 			$(document).on('click', '[data-click]', function(e){
 				e.preventDefault();
                 var target = $(this).attr('data-target');
-                var source = $(this).attr('data-click');
+                var url = $(this).attr('data-click');
+                router.navigate(source);
                 loadSourceToTarget(source, target);
 			});
             $(document).on('click', '[data-bulk-update]', function(e){
                 e.preventDefault();
                 var elm = $(this);
                 var target = elm.attr('data-target');
-                var source = elm.attr('data-bulk-update');
+                var url = elm.attr('data-bulk-update');
                 var action = elm.attr('data-action');
                 var withVals = elm.attr('data-with');
                 var selectedObjects = {

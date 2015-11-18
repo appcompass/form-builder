@@ -21,7 +21,104 @@ class CpWebsitePagesController extends UiBaseController
         $this->middleware('auth');
 
         $this->setControllerDefaults(__DIR__);
-
+        $this->meta = json_decode(json_encode([
+            'index' => [
+                'data_targets' => [
+                    [
+                        'route' => 'websites.show',
+                        'target' => '#main-content-out',
+                    ],[
+                        'route' => 'websites.pages.index',
+                        'target' => '#record-detail',
+                    ],
+                ],
+                'heading' => 'Website\'s pages',
+                'table' => [
+                    'headers' => [
+                        'Title',
+                        'Name',
+                        'Slug',
+                        'Created',
+                        'Updated',
+                    ],
+                    'rows' => [
+                        'title' => [
+                            'type' => 'link_by_id',
+                            'target' => '#main-content-out',
+                        ],
+                        'name' => [
+                            'type' => 'link_by_id',
+                            'target' => '#main-content-out',
+                        ],
+                        'slug' => [
+                            'type' => 'text',
+                        ],
+                        'created_at' => [
+                            'type' => 'datetime',
+                        ],
+                        'updated_at' => [
+                            'type' => 'datetime',
+                        ],
+                    ],
+                ],
+            ],
+            'show' => [
+                'data_targets' => [
+                    [
+                        'route' => 'websites.show',
+                        'target' => '#main-content-out',
+                    ],[
+                        'route' => 'websites.pages.show',
+                        'target' => '#record-detail',
+                    ],
+                ],
+                'heading' => 'Page Informations',
+                'sub_section_name' => 'Page Administration',
+            ],
+            'edit' => [
+                'heading' => 'Page Informations',
+                'route' => 'pages.update'
+            ],
+            'create' => [
+                'heading' => 'Add a page to this website',
+                'route' => '/pages/store'
+            ],
+            'form' => [
+                'fields' => [
+                    [
+                        'label' => 'Page Title',
+                        'name' => 'title',
+                        'placeholder' => 'Page Title',
+                        'type' => 'text',
+                        'help_block' => 'The title of the page.',
+                    ],[
+                        'label' => 'Name',
+                        'name' => 'name',
+                        'placeholder' => 'Page Name',
+                        'type' => 'text',
+                        'help_block' => 'Name to be used to reference the page internally.',
+                    ],[
+                        'label' => 'Description',
+                        'name' => 'description',
+                        'placeholder' => 'Page Description Block',
+                        'type' => 'textarea',
+                        'help_block' => 'The title of the page.',
+                    ],[
+                        'label' => 'Active',
+                        'name' => 'Published',
+                        'placeholder' => '',
+                        'type' => 'checkbox',
+                        'help_block' => 'is the page published?',
+                    ],[
+                        'label' => 'Layout Type',
+                        'name' => 'layout',
+                        'placeholder' => '',
+                        'type' => 'layout_selector',
+                        'help_block' => 'Select the page\'s layout.',
+                    ]
+                ]
+            ]
+        ]));
     }
 
     /**

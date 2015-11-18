@@ -8,7 +8,7 @@
             @foreach($navmenu['target']->items as $item)
 
                 <li id="reorder_{{ $item->id }}" class="item" data-id="{{ $item->label }}">
-                    <a data-click="{{ $meta->base_url.'/'.$item->url }}"
+                    <a href="#{{ $meta->base_url.'/'.$item->url }}" data-click="{{ $meta->base_url.'/'.$item->url }}"
                        data-id="{{ $item->label }}"
                        data-target="#record-detail"
                        style="display: inline-block"

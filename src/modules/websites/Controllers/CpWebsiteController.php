@@ -17,8 +17,13 @@ class CpWebsiteController extends UiBaseController
         $this->setControllerDefaults(__DIR__);
 
         $this->meta = json_decode(json_encode([
-            'base_url' => "/websites",
             'index' => [
+                'data_targets' => [
+                    [
+                        'route' => 'websites.index',
+                        'target' => '#main-content-out',
+                    ],
+                ],
                 'heading' => 'Manage Websites',
                 'table' => [
                     'headers' => [

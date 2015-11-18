@@ -20,7 +20,22 @@ class CpWebsitePageSectionsController extends UiBaseController
         $this->middleware('auth');
 
         $this->setControllerDefaults(__DIR__);
-
+        $this->meta = json_decode(json_encode([
+            'edit' => [
+                'data_targets' => [
+                    [
+                        'route' => 'websites.show',
+                        'target' => '#main-content-out',
+                    ],[
+                        'route' => 'websites.pages.show',
+                        'target' => '#record-detail',
+                    ],[
+                        'route' => 'websites.pages.section.edit',
+                        'target' => '#record-detail',
+                    ],
+                ],
+            ],
+        ]));
     }
 
     /**

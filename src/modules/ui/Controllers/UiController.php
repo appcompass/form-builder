@@ -3,9 +3,10 @@
 namespace P3in\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests;
 use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Routing\Router;
 use Modular;
 use P3in\Models\Navmenu;
 use P3in\Models\User;
@@ -18,6 +19,8 @@ class UiController extends UiBaseController {
         // parent::__construct();
         $this->middleware('auth');
         $this->setControllerDefaults(__DIR__);
+
+        $this->meta = new \stdClass(); // we don't need anything here atm, but we need this to be defined.
     }
 
     public function getIndex()
@@ -65,46 +68,78 @@ class UiController extends UiBaseController {
         return view('ui::sections/user-menu');
     }
 
-    // private function buildCpNav($cpNavs)
-    // {
-    //     $out = [];
-    //     $main_sort = [];
-    //     $sub_nav_sort = [];
+    // this method needs some SERIOUS abstraction...
+    public function postRequestMeta(Request $request)
+    {
+        $rtn = [
+            'success' => false,
+            'data' => [],
+            'message' => 'a url must be passed.',
+        ];
 
-    //     // construct parents.
-    //     foreach ($cpNavs as $module_name => $module_nav) {
-    //         if (empty($module_nav['belongs_to'])) {
-    //             $out[$module_nav['name']] = $module_nav;
-    //             $main_sort[] = $module_nav['order'];
-    //             if (!empty($module_nav['sub_nav'])) {
-    //                 foreach ($module_nav['sub_nav'] as $sub_nav) {
-    //                     $sub_nav_sort[$module_name][] = $sub_nav['order'];
-    //                 }
-    //             }
-    //         }
-    //     }
+        if (!empty($request->url)) {
+            // default catch all.
+            $uriAry = explode('/',trim($request->url,'/'));
+            $target = $this->setDataTarget($uriAry);
 
-    //     // sort the output array by the sort order.
-    //     array_multisort($main_sort, $out);
+            // now lets split the url up into the resources and it's params
+            $resources = [];
+            $params = [];
+            $both = [&$resources, &$params];
+            array_walk($uriAry, function($v, $k) use ($both) { $both[$k % 2][] = $v; });
 
-    //     // construct sub navs.
-    //     foreach ($cpNavs as $module_name => $module_nav) {
-    //         if (!empty($module_nav['belongs_to'])) {
-    //             $out[$module_nav['belongs_to']]['sub_nav'][] = $module_nav;
-    //             $sub_nav_sort[$module_nav['belongs_to']][] = $module_nav['order'];
-    //         }
+            // get url's route controller name and method (aka the route action)
+            $action = Route::getRoutes()->match(Request::create($request->url))->getActionName();
+            list($class, $method) = explode('@', $action);
 
-    //     }
+            $rtn['message'] = 'The url must have a defined route.';
+            if ($class && $method) {
 
-    //     // sort sub navs for each module.
-    //     foreach ($out as $module_name => $row) {
-    //         if (!empty($sub_nav_sort[$module_name])) {
-    //             array_multisort($sub_nav_sort[$module_name], $row['sub_nav']);
-    //             $out[$module_name]['sub_nav'] = $row['sub_nav'];
-    //         }
-    //     }
+                // lets get the meta data for this controller.
+                $metaData = with(new $class)->meta;
 
-    //     return $out;
-    // }
+                $rtn['message'] = 'The controller for this route needs target meta data.';
+                if (!empty($metaData->$method) && !empty($metaData->$method->data_targets)) {
+                    $rtn['success'] = true;
+                    $rtn['message'] = '';
+                    $tree = [];
+                    $rtn['data'] = $this->buildTree($tree, $metaData->$method->data_targets, $params);
+                }
+            }
+
+            if (!$rtn['success']) {
+                $rtn['data'] = [
+                    'url' => $request->url,
+                    'target' => $target,
+                ];
+            }
+        }
+
+        return response()->json($rtn);
+    }
+
+    private function buildTree(&$tree, $data, $params)
+    {
+        foreach ($data as $i => $row) {
+            // lets find out how many params we are working with.
+            $route = Route::getRoutes()->getByName($row->route);
+            $matches = [];
+            preg_match_all('/{\$?([_a-z][\w\.]+[\w])}/' , $route->uri(), $matches);
+
+            // now lets get the url using the route and the params that apply to this route.
+            $url =  route($row->route, array_slice($params, 0, count($matches[0])), false);
+            $target = $row->target;
+
+            unset($data[$i]);
+
+            $tree = [
+                'url' => $url,
+                'target' => $target,
+                'next' => !empty($data) ? $this->buildTree($tree, $data, $params) : [],
+            ];
+            break;
+        }
+        return $tree;
+    }
 
 }

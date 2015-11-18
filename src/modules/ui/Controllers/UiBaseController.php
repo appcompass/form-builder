@@ -18,6 +18,7 @@ class UiBaseController extends ModularBaseController {
     public $records;
     public $record;
     public $site_url;
+    public $meta;
 
     public function build($type, $root = [])
     {
