@@ -13,7 +13,7 @@
         </li>
       @endforeach
 
-      <li class="pull-right"><a class="btn" href="">+ Add Navmenu</a></li>
+      <li class="pull-right"><a class="btn">+ Add Navmenu</a></li>
     </ul>
 </header>
 @stop

@@ -54,7 +54,7 @@
                 <section class="wrapper">
                 <!-- page start-->
                     <div class="row">
-                        <div class="col-sm-12" id="main-content-out" data-load="/dashboard">
+                        <div class="col-sm-12" id="main-content-out">
                         </div>
                     </div>
                 </section>

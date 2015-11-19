@@ -12,14 +12,32 @@ use P3in\Models\Website;
 
 class CpWebsiteNavigationController extends UiBaseController
 {
+    public $meta_install = [
+        'index' => [
+            'data_targets' => [
+                [
+                    'route' => 'websites.show',
+                    'target' => '#main-content-out',
+                ],[
+                    'route' => 'websites.navigation.index',
+                    'target' => '#record-detail',
+                ],
+            ],
+        ],
+    ];
 
+    /**
+     *
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
 
-  public function __construct()
-  {
-    $this->middleware('auth');
+        $this->controller_class = __CLASS__;
+        $this->module_name = 'websites';
 
-    $this->setControllerDefaults(__DIR__);
-  }
+        $this->setControllerDefaults();
+    }
 
   /**
    *
