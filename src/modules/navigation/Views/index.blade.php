@@ -1,10 +1,14 @@
 @extends('layouts/basic_admin_panel')
 
 @section('header')
+
+{{--
+      TABS HEADER
+ --}}
 <header class="panel-heading tab-bg-dark-navy-blue ">
     <ul class="nav nav-tabs">
       @foreach ($navmenus as $navmenu)
-        <li class="active">
+        <li>
             <a data-toggle="tab" href="#{{ $navmenu->label }}" aria-expanded="true">{{ str_replace('_', ' ', $navmenu->name) }}</a>
         </li>
       @endforeach
@@ -16,51 +20,74 @@
 
 @section('body')
 
+  {{--
+        TABS CONTENT
+   --}}
   <div class="tab-content">
     @foreach($navmenus as $navmenu)
-        <div id="{{ $navmenu->label }}" class="tab-pane active">
-
-          <ol class="sortable" data-navmenu="{{ $navmenu->name }}">
+        <div id="{{ $navmenu->label }}" class="tab-pane">
+          <ol class="sortable" data-navmenu="{{ $navmenu->name }}" href="/websites/{{ $website->id }}/navigation">
             @foreach($navmenu->items as $item)
-              <li id="menuItem_{{ $item->id }}"><i class="handle fa fa-arrows"> </i><div>{{ $item->label }}</div></li>
+              @include('navigation::navmenu_section', ['item' => $item, 'navmenu' => $navmenu])
             @endforeach
           </ol>
-
         </div>
     @endforeach
   </div>
 
-{{--  TODO this is closing the panel we opened in the base template, you can do better --}}
       </div>
     </div>
   </div>
 </section>
-{{--  end of horror --}}
 
+{{--
+      PAGES
+ --}}
 <section class="panel">
   <div class="panel-heading">Pages</div>
-
   <div class="panel-body">
-
       <ol class="inline-draggable">
         @foreach ($pages as $page)
-          <li class="draggable" data-id="menuItem_{{ $page->navItem->id }}"> <i class="handle fa fa-arrows"> </i> <img src="https://placehold.it/120x120"> <div>{{ $page->title }}</div> </li>
+          <li
+            id="menuItem_{{ $page->navItem->id }}"
+            data-id="menuItem_{{ $page->navItem->id }}"
+            class="draggable"
+          >
+            <i class="handle fa fa-arrows"> </i>
+            <img src="https://placehold.it/120x120">
+            <div>{{ $page->title }}</div>
+          </li>
         @endforeach
       </ol>
-
     </div>
-
   </div>
-
 </section>
 
+{{--
+      UTILS
+ --}}
 <section class="panel">
-  <div class="panel-heading">Additional Items</div>
+  <div class="panel-heading">Utilities</div>
 
   <div class="panel-body">
 
       <ol class="inline-draggable">
-        <li class="draggable" id="navitem_22" data-has-content="true"> <i class="handle fa fa-arrows"> </i> <img src="https://placehold.it/120x120"> <div>Empty Container</div> </li>
+
+        @foreach($utilities as $util)
+
+          <li
+            id="navitem_sub_nav"
+            data-id="menuItem_{{ $util->navItem->id }}"
+            href="/websites/{{ $website->id }}/navigation"
+            class="draggable"
+            data-has-content="{{ $util->navItem->has_content === true ?: 'false' }}"
+          >
+            <i class="handle fa fa-arrows"> </i>
+            <img src="https://placehold.it/120x120">
+            <div>{{ $util->navItem->label }}</div>
+          </li>
+
+        @endforeach
       </ol>
 
     </div>
@@ -83,37 +110,50 @@
           forcePlaceholderSize: true,
           tolerance: 'pointer',
           placeholder: 'placeholder',
+          isTree: true,
 
-          change: function(event, ui) {
-
+          isAllowed: function(placeholder, placeholderParent, currentItem) {
+            // console.log($(placeholder))
+            console.log($(placeholderParent))
+            // console.log($(currentItem))
+            var result = $(placeholderParent).attr('data-has-content');
+            // console.log(result === undefined)
+            if (result === undefined || result === '1' ) { // stupid php don't have time for this
+              return true;
+            }
           },
 
           receive: function(event, ui) {
-            var newHierarchy = $(ui.item[0]).attr('data-id');
+            var newHierarchy = $(this).sortable('toHierarchy', {startDepthCount: 0})
             var droppedItem = $(ui.item[0]);
+            var navmenu = droppedItem.parents().find('[data-navmenu]');
 
             var data = {
               item_id: droppedItem.attr('data-id'),
-              navmenu_name: droppedItem.parents().find('[data-navmenu]').attr('[data-navmenu]'),
-              hierarchy: newHierarchy
+              navmenu_name: navmenu.attr('data-navmenu'),
+              hierarchy: JSON.stringify(newHierarchy)
             }
 
-            $.ajax({
-              type: 'post',
-              url: droppedItem.attr('href'),
-              data: data,
-              success: function(data) {
-                console.log(data);
-              }
-            })
+            console.log(data);
+
+            // $.ajax({
+            //   type: 'post',
+            //   url: navmenu.attr('href'),
+            //   data: data,
+            //   success: function(data) {
+            //     $('#record-detail').html(data);
+            //   },
+
+            //   error: function(data) {
+            //     // fireModal(data.message, error);
+            //   }
+            // })
 
           },
 
           update: function(event, ui) {
-
             var sortData = $('.sortable').sortable('toHierarchy', {startDepthCount: 0});
-            console.log($(ui.item).attr('data-id'));
-            console.log(sortData)
+            console.log(sortData);
           }
 
         }).disableSelection();
@@ -123,12 +163,6 @@
           helper: 'clone',
           handle: '.handle',
           maxLevels: 3,
-          stop: function(event, ui) {
-            // $(this).attr('id', 'foooo');
-            // console.log($(this).attr("data-id"));
-
-            // console.log($(this).parents().find('[data-navmenu]').attr('data-navmenu'))
-          }
         }).disableSelection();
 
     });
@@ -138,7 +172,7 @@
 
   <style>
 
-    .sortable { min-height: initial; margin-bottom: 5rem;}
+    .sortable { min-height: 50px; margin-bottom: 5rem;}
     .sortable i, .draggable i { display: inline-block; }
     .sortable div, .draggable div { display: inline-block; }
 
@@ -150,6 +184,7 @@
     li div { padding: 5px 10px; }
     ol.sortable li.ui-draggable { max-width: 100%; }
     li .handle { background: #ddd; display: inline-block; line-height: 32px; width: 30px; text-align: center; }
+    li .handle:hover {cursor: pointer; background: #eee;}
 
     .placeholder { border: 1px dashed #aaa; height: 30px; width: 100%; background: rgba(175, 238, 238, 0.1); }
     .helper { background: #ddd; width: 100%;}

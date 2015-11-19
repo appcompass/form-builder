@@ -85,7 +85,7 @@ class Section extends Model
 		  "props" => [
 		      'icon' => 'list',
 		      "link" => [
-		          'data-click' => '',
+		          'href' => '',
 		          'data-target' => '#record-detail'
 		      ],
 		  ]
@@ -124,6 +124,14 @@ class Section extends Model
 	public function scopeFooters($query)
 	{
 	  return $query->where('type', 'footer');
+	}
+
+	/**
+	 *
+	 */
+	public function scopeByType($query, $type)
+	{
+	  return $query->where('type', '=', $type);
 	}
 
 }

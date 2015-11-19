@@ -106,25 +106,78 @@ class Navmenu extends Model
     /**
      *  Link items to Navigation Items
      *
-     *  TODO find a way to take user out of here?
      */
     public function items()
     {
 
-        // $user_permissions = [];
-
-        // if (\Auth::check()) {
-
-            // $user_permissions = \Auth::user()->allPermissions();
-
-        // }
-
         return $this->belongsToMany('P3in\Models\NavigationItem')
-            // ->whereIn('req_perms', $user_permissions)
-            // ->orWhere('req_perms', null)
             ->withPivot('order')
             ->orderBy('pivot_order');
 
+    }
+
+    /**
+     *  Keep data consistent
+     */
+    public function clean()
+    {
+
+        foreach($this->children as $child) {
+
+            $child->clean();
+
+            $this->removeChildren($child);
+
+            // $child->navItem()->delete();
+
+            // $child->delete();
+
+        }
+
+        $this->items()->detach();
+
+        $this->load('items');
+
+        // dd($this->items);
+
+        // $this->items = collect([]);
+
+        return $this;
+
+    }
+
+    /**
+     *
+     */
+    public function hasParent()
+    {
+        return (bool)count($this->parent);
+    }
+
+    /**
+     *
+     */
+    public function getNextSubNav()
+    {
+        $prefix = $this->name.'_sub';
+
+        $latest_name = static::whereRaw("name ~ '^{$this->name}_sub(-[0-9]*)?$'")
+            ->latest('id')
+            ->pluck('name');
+
+        if (is_null($latest_name)) {
+
+            return $prefix.'-1';
+
+        } else {
+
+            $parts = explode('-', $latest_name);
+
+            $number = end($parts);
+
+            return $prefix.'-'.($number + 1);
+
+        }
     }
 
     /**
@@ -147,7 +200,11 @@ class Navmenu extends Model
 
         }
 
+        echo "<br>\nAddItem would like to add $navItem->id<br>\n";
+
         if (! $this->items->contains($navItem)) {
+
+            echo "AddItem is adding $navItem->id<br>\n";
 
             if (is_null($order)) {
 
@@ -222,7 +279,7 @@ class Navmenu extends Model
             "props" => [
                 "icon" => 'list',
                 "link" => [
-                    'data-click' => ''
+                    'href' => ''
                 ]
             ]
         ], $overrides);
