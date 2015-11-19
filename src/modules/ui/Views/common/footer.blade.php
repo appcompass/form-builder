@@ -478,7 +478,7 @@
 
 			loadData($(document));
 
-			$(document).on('click', 'a[href]', function(e){
+			$(document).on('click', 'a[href]:not(.no-link)', function(e){
 				e.preventDefault();
                 var obj = {
                     target: $(this).attr('data-target'),
