@@ -13,26 +13,9 @@
                 'url' => $meta->base_url
             ])
         !!}
-            @foreach($meta->form->fields as $field)
-            <div class="form-group">
-                {!! Form::label($field->name, $field->label, ['class' => 'col-sm-3 control-label']) !!}
-                <div class="col-sm-6">
-                    @if($field->type == 'text')
-                        {!! Form::text($field->name, null, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
-                    @elseif($field->type == 'checkbox')
-                        {!! Form::checkbox($field->name, true, ['class' => 'form-control']) !!}
-                    @elseif($field->type == 'radio')
-                        @foreach($field->data as $rad_key => $rad_val)
-                            {!! Form::radio($field->name, $rad_val, ['class' => 'form-control']) !!} {{ $rad_key }}
-                        @endforeach
-                    @elseif($field->type == 'textarea')
-                        {!! Form::textarea($field->name, null, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
-                    @endif
-                </div>
-            </div>
-            @endforeach
 
-            <button type="submit" class="btn btn-info">Save</button>
+            @include('ui::partials.form_fields', ['fields' => $meta->form->fields])
+
         {!! Form::close() !!}
     </div>
 </section>

@@ -53,7 +53,11 @@ class Website extends Model
 	*/
 	protected $dates = ['published_at'];
 
-
+    public static $validator_rules = [
+        'site_name' => 'required|unique:websites|max:255',
+        'site_url' => 'required',
+        'config' => 'site_connection',
+    ];
 	/**
 	 * Get all the pages linked to this website
 	 *
@@ -137,7 +141,7 @@ class Website extends Model
 	        "props" => [
 	        	"icon" => 'globe',
 	        	"link" => [
-	        		'data-click' => '/websites/'.$this->id,
+	        		'href' => '/websites/'.$this->id,
 	        		'data-target' => '#main-content-out'
 	        	]
 	        ]

@@ -28,7 +28,7 @@
                             <tr>
                                 @foreach($meta->index->table->rows as $row_key => $row_data)
                                     @if ($row_data->type == 'link_by_id')
-                                        <td><a href="#{{ $meta->base_url }}/{{ $record->id }}" data-click="{{ $meta->base_url }}/{{ $record->id }}" data-target="{{ $meta->data_target }}">{{ $record->$row_key }}</a></td>
+                                        <td><a href="{{ $meta->base_url }}/{{ $record->id }}" data-click="{{ $meta->base_url }}/{{ $record->id }}" data-target="{{ $meta->data_target }}">{{ $record->$row_key }}</a></td>
                                     @elseif($row_data->type == 'link_to_blank')
                                         <td><a href="{{ $record->$row_key }}" target="_blank">{{ $record->$row_key }}</a></td>
                                     @elseif($row_data->type == 'datetime')

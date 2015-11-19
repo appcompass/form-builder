@@ -6,7 +6,198 @@ use P3in\Models\Website;
 
 class CpWebsiteController extends UiBaseController
 {
-    // protected $allowedCalls = ['index', 'create', 'store', 'show', 'edit', 'update', 'destroy'];
+    public $meta_install = [
+        'index' => [
+            'data_targets' => [
+                [
+                    'route' => 'websites.index',
+                    'target' => '#main-content-out',
+                ],
+            ],
+            'heading' => 'Manage Websites',
+            'table' => [
+                'headers' => [
+                    'Name',
+                    'Site URL',
+                    'Created',
+                    'Updated',
+                ],
+                'rows' => [
+                    'site_name' => [
+                        'type' => 'link_by_id',
+                        'target' => '#main-content-out',
+                    ],
+                    'site_url' => [
+                        'type' => 'link_to_blank',
+                    ],
+                    'created_at' => [
+                        'type' => 'datetime',
+                    ],
+                    'updated_at' => [
+                        'type' => 'datetime',
+                    ],
+                ],
+            ],
+        ],
+        'show' => [
+            'data_targets' => [
+                [
+                    'route' => 'websites.show',
+                    'target' => '#main-content-out',
+                ],[
+                    'route' => 'websites.show',
+                    'target' => '#record-detail',
+                ],
+            ],
+            'sub_section_name' => 'Website Configuration',
+            'data_targets' => [
+                [
+                    'route' => 'websites.show',
+                    'target' => '#main-content-out',
+                ],[
+                    'route' => 'websites.edit',
+                    'target' => '#record-detail',
+                ]
+            ],
+        ],
+        'edit' => [
+            'data_targets' => [
+                [
+                    'route' => 'websites.show',
+                    'target' => '#main-content-out',
+                ],[
+                    'route' => 'websites.edit',
+                    'target' => '#record-detail',
+                ],
+            ],
+            'heading' => 'Connection Information',
+            'route' => 'websites.update'
+        ],
+        'create' => [
+            'data_targets' => [
+                [
+                    'route' => 'websites.show',
+                    'target' => '#main-content-out',
+                ],[
+                    'route' => 'websites.create',
+                    'target' => '#record-detail',
+                ],
+            ],
+            'heading' => 'Create New Site',
+            'route' => '/websites'
+        ],
+        'form' => [
+            'fields' => [
+                [
+                    'label' => 'Name',
+                    'name' => 'site_name',
+                    'placeholder' => 'Website.com',
+                    'type' => 'text',
+                    'help_block' => '',
+                ],[
+                    'label' => 'URL',
+                    'name' => 'site_url',
+                    'placeholder' => 'https://www.website.com',
+                    'type' => 'text',
+                    'help_block' => '',
+                ],[
+                    'label' => 'From Email Address',
+                    'name' => 'config[from_email]',
+                    'placeholder' => 'website@website.com',
+                    'type' => 'text',
+                    'help_block' => '',
+                ],[
+                    'label' => 'From Email Name',
+                    'name' => 'config[from_name]',
+                    'placeholder' => 'Website Name',
+                    'type' => 'text',
+                    'help_block' => '',
+                ],[
+                    'label' => 'A Managed Website',
+                    'name' => 'config[managed]',
+                    'placeholder' => '',
+                    'type' => 'checkbox',
+                    'help_block' => '',
+                ],[
+                    'label' => 'SSH Host',
+                    'name' => 'config[ssh_host]',
+                    'placeholder' => '127.0.0.1',
+                    'type' => 'text',
+                    'help_block' => '',
+                ],[
+                    'label' => 'SSH Username',
+                    'name' => 'config[ssh_username]',
+                    'placeholder' => 'username',
+                    'type' => 'text',
+                    'help_block' => '',
+                ],[
+                    'label' => 'Path to SSH Secret Key',
+                    'name' => 'config[ssh_key]',
+                    'placeholder' => '/home/webmanageruser/.ssh/id_rsa',
+                    'type' => 'text',
+                    'help_block' => 'The path to the SSH key authorized on the api remote server.',
+                ],[
+                    'label' => 'SSH Key Phrase',
+                    'name' => 'config[ssh_keyphrase]',
+                    'placeholder' => 'idrsa_key_passphrase',
+                    'type' => 'text',
+                    'help_block' => '',
+                ],[
+                    'label' => 'Website Document Root',
+                    'name' => 'config[ssh_root]',
+                    'placeholder' => '/path/to/document/root',
+                    'type' => 'text',
+                    'help_block' => '',
+                ],[
+                    'label' => 'Nginx Server Name',
+                    'name' => 'config[server][server_name]',
+                    'placeholder' => 'www.sitename.com',
+                    'type' => 'text',
+                    'help_block' => '',
+                ],[
+                    'label' => 'Nginx Server Error Log Path',
+                    'name' => 'config[server][error_log_path]',
+                    'placeholder' => '/var/logs/www-sitename-com.log',
+                    'type' => 'text',
+                    'help_block' => '',
+                ],[
+                    'label' => 'Strict SSL Params',
+                    'name' => 'config[server][server_ssl][strict]',
+                    'placeholder' => '',
+                    'type' => 'radio',
+                    'data' => [
+                        'Yes' => 1,
+                        'No' => 0,
+                    ],
+                    'help_block' => '',
+                ],[
+                    'label' => 'Nginx Server SSL Cert Path',
+                    'name' => 'config[server][server_ssl][cert_path]',
+                    'placeholder' => '/path/to/cert',
+                    'type' => 'text',
+                    'help_block' => '',
+                ],[
+                    'label' => 'Nginx Server SSL Cert Key Path',
+                    'name' => 'config[server][server_ssl][cert_key_path]',
+                    'placeholder' => '/path/to/cert.key',
+                    'type' => 'text',
+                    'help_block' => '',
+                ],[
+                    'label' => 'SSL dhparam.pem Path',
+                    'name' => 'config[server][server_ssl][ssl_dhparam]',
+                    'placeholder' => '/path/to/dhparam.pem',
+                    'type' => 'text',
+                    'help_block' => '',
+                ],[
+                    'label' => 'Nginx Server Reverse Proxy URL',
+                    'name' => 'config[server][proxy_url]',
+                    'placeholder' => 'https://127.0.0.1:4433',
+                    'type' => 'text',
+                    'help_block' => 'The address of the reverse proxy as read from this website\'s server.',
+                ],
+            ],
+        ],
+    ];
 
     /**
      *
@@ -14,164 +205,11 @@ class CpWebsiteController extends UiBaseController
     public function __construct()
     {
         $this->middleware('auth');
-        $this->setControllerDefaults(__DIR__);
 
-        $this->meta = json_decode(json_encode([
-            'index' => [
-                'data_targets' => [
-                    [
-                        'route' => 'websites.index',
-                        'target' => '#main-content-out',
-                    ],
-                ],
-                'heading' => 'Manage Websites',
-                'table' => [
-                    'headers' => [
-                        'Name',
-                        'Site URL',
-                        'Created',
-                        'Updated',
-                    ],
-                    'rows' => [
-                        'site_name' => [
-                            'type' => 'link_by_id',
-                            'target' => '#main-content-out',
-                        ],
-                        'site_url' => [
-                            'type' => 'link_to_blank',
-                        ],
-                        'created_at' => [
-                            'type' => 'datetime',
-                        ],
-                        'updated_at' => [
-                            'type' => 'datetime',
-                        ],
-                    ],
-                ],
-            ],
-            'show' => [
-                'sub_section_name' => 'Website Configuration',
-            ],
-            'edit' => [
-                'heading' => 'Connection Information',
-                'route' => 'websites.update'
-            ],
-            'create' => [
-                'heading' => 'Create New Site',
-                'route' => '/websites'
-            ],
-            'form' => [
-                'fields' => [
-                    [
-                        'label' => 'Name',
-                        'name' => 'site_name',
-                        'placeholder' => 'Website.com',
-                        'type' => 'text',
-                        'help_block' => '',
-                    ],[
-                        'label' => 'URL',
-                        'name' => 'site_url',
-                        'placeholder' => 'https://www.website.com',
-                        'type' => 'text',
-                        'help_block' => '',
-                    ],[
-                        'label' => 'From Email Address',
-                        'name' => 'config[from_email]',
-                        'placeholder' => 'website@website.com',
-                        'type' => 'text',
-                        'help_block' => '',
-                    ],[
-                        'label' => 'From Email Name',
-                        'name' => 'config[from_name]',
-                        'placeholder' => 'Website Name',
-                        'type' => 'text',
-                        'help_block' => '',
-                    ],[
-                        'label' => 'A Managed Website',
-                        'name' => 'config[managed]',
-                        'placeholder' => '',
-                        'type' => 'checkbox',
-                        'help_block' => '',
-                    ],[
-                        'label' => 'SSH Host',
-                        'name' => 'config[ssh_host]',
-                        'placeholder' => '127.0.0.1',
-                        'type' => 'text',
-                        'help_block' => '',
-                    ],[
-                        'label' => 'SSH Username',
-                        'name' => 'config[ssh_username]',
-                        'placeholder' => 'username',
-                        'type' => 'text',
-                        'help_block' => '',
-                    ],[
-                        'label' => 'Path to SSH Secret Key',
-                        'name' => 'config[ssh_key]',
-                        'placeholder' => '/home/webmanageruser/.ssh/id_rsa',
-                        'type' => 'text',
-                        'help_block' => 'Must use either SSH Key or SSH Password above (key is preferable).',
-                    ],[
-                        'label' => 'SSH Key Phrase',
-                        'name' => 'config[ssh_keyphrase]',
-                        'placeholder' => 'idrsa_key_passphrase',
-                        'type' => 'text',
-                        'help_block' => '',
-                    ],[
-                        'label' => 'Website Document Root',
-                        'name' => 'config[ssh_root]',
-                        'placeholder' => '/path/to/document/root',
-                        'type' => 'text',
-                        'help_block' => '',
-                    ],[
-                        'label' => 'Nginx Server Name',
-                        'name' => 'config[server][server_name]',
-                        'placeholder' => 'www.sitename.com',
-                        'type' => 'text',
-                        'help_block' => '',
-                    ],[
-                        'label' => 'Nginx Server Error Log Path',
-                        'name' => 'config[server][error_log_path]',
-                        'placeholder' => '/var/logs/www-sitename-com.log',
-                        'type' => 'text',
-                        'help_block' => '',
-                    ],[
-                        'label' => 'Strict SSL Params',
-                        'name' => 'config[server][server_ssl][strict]',
-                        'placeholder' => '',
-                        'type' => 'radio',
-                        'data' => [
-                            'Yes' => 1,
-                            'No' => 0,
-                        ],
-                        'help_block' => '',
-                    ],[
-                        'label' => 'Nginx Server SSL Cert Path',
-                        'name' => 'config[server][server_ssl][cert_path]',
-                        'placeholder' => '/path/to/cert',
-                        'type' => 'text',
-                        'help_block' => '',
-                    ],[
-                        'label' => 'Nginx Server SSL Cert Key Path',
-                        'name' => 'config[server][server_ssl][cert_key_path]',
-                        'placeholder' => '/path/to/cert.key',
-                        'type' => 'text',
-                        'help_block' => '',
-                    ],[
-                        'label' => 'SSL dhparam.pem Path',
-                        'name' => 'config[server][server_ssl][ssl_dhparam]',
-                        'placeholder' => '/path/to/dhparam.pem',
-                        'type' => 'text',
-                        'help_block' => '',
-                    ],[
-                        'label' => 'Nginx Server Reverse Proxy URL',
-                        'name' => 'config[server][proxy_url]',
-                        'placeholder' => 'https://127.0.0.1:4433',
-                        'type' => 'text',
-                        'help_block' => '',
-                    ],
-                ],
-            ],
-        ]));
+        $this->controller_class = __CLASS__;
+        $this->module_name = 'websites';
+
+        $this->setControllerDefaults();
     }
 
     /**
@@ -197,11 +235,7 @@ class CpWebsiteController extends UiBaseController
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'site_name' => 'required|unique:websites|max:255',
-            'site_url' => 'required',
-            'config' => 'site_connection',
-        ]);
+        $this->validate($request, Website::$validator_rules);
 
 
         $data = $request->all();
@@ -210,7 +244,7 @@ class CpWebsiteController extends UiBaseController
 
         $this->record->initRemote();
 
-        return $this->build('show', ['websites', $this->record->id]);
+        return $this->json($this->setBaseUrl(['websites', $id, 'edit']));
     }
 
     /**
@@ -252,7 +286,7 @@ class CpWebsiteController extends UiBaseController
 
         $this->record->initRemote();
 
-        return $this->build('edit', ['websites', $id]);
+        return $this->json($this->setBaseUrl(['websites', $id, 'edit']));
     }
 
 }

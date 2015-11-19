@@ -61,6 +61,14 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 */
 	protected $appends = ['full_name'];
 
+    public static $validator_rules = [
+        'first_name' => 'required|max:255',
+        'last_name' => 'required|max:255',
+        'phone' => 'required|max:255',
+        'email' => 'required|email|unique:users|max:255',
+        'password' => 'required|max:255',
+    ];
+
 	/**
 	*	Get all the permissions the user has
 	*

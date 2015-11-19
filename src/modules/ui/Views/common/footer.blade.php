@@ -8,7 +8,6 @@
 
 	<!--script for this page-->
 	<script src="/assets/ui/js/gritter.js" type="text/javascript"></script>
-	<script src="/assets/ui/js/jquery.js"></script>
 	<script src="/assets/ui/js/jquery.nicescroll.js"></script>
 
 	<script src="/assets/ui/js/jvector-map/jquery-jvectormap-1.2.2.min.js"></script>
@@ -275,12 +274,12 @@
 		}
 
         function loadSourceToTarget(obj){
-            console.log(obj);
             var call = $.ajax({
                 url: obj.url,
                 type: 'GET',
                 error: function(err){
                     console.log(err);
+                    notify('error', err, true);
                 },
                 success: function(data){
                     if (obj.attribute) {
@@ -300,8 +299,8 @@
             });
 
             call.done(function(){
-                if (obj.next.url) {
-                    loadSourceToTarget(obj.next);
+                if (obj.next && obj.next.url) {
+                    loadSourceToTarget(obj.next, true);
                 };
             })
         }
@@ -321,45 +320,83 @@
 			});
 		}
 
+        function notify(title, message, is_error){
+            switch(title){
+                case 'success':
+                    title = 'Success!';
+                break;
+                case 'info':
+                    title = 'Heads up!';
+                break;
+                case 'warning':
+                    title = 'Warning!';
+                break;
+                case 'error':
+                    title = 'Failure!';
+                break;
+
+            }
+
+            $('#modal-alert').find('h4 span').text(title);
+            $('#modal-alert').find('.message').text(message);
+
+            if (is_error) {
+                $('#modal-alert').addClass('error-modal')
+            };
+
+            $('#modal-alert').modal('show');
+        }
+
+
+
 		$(document).ready(function () {
+            var alertModal = $('#modal-alert');
+
+            $(this).ajaxStart(function(){
+                notify('Loading', 'Loading Please wait..');
+            });
+
+            $(this).ajaxStop(function(){
+                if (!alertModal.hasClass('error-modal')) {
+                    alertModal.modal('hide');
+                };
+            });
+
+            alertModal.on('hidden.bs.modal', function (e) {
+                alertModal.removeClass('error-modal');
+                alertModal.find('h4 span').text('');
+                alertModal.find('.message').text('');
+            });
 
             var router = new Simrou();
 
             router.addRoute('*sp').get(function(e, params){
-                $.ajax({
+                var req = $.ajax({
                     url: '/request-meta',
                     type: 'post',
                     data: {
                         url: params.sp
-                    },
-                    error: function(err){
-                        console.log(err);
-                    },
-                    success: function(data){
-                        if (data.success) {
-                            loadSourceToTarget(data.data);
-                        }
-                    },
-                    complete: function(xhr, status){
-                        if (status =='success') {
-                            loadNavJs($(target));
-                            loadData($(target));
-                        }else{
-                            console.log(status);
-                        }
+                    }});
+
+                req.done(function(data){
+                    if (data.success) {
+                        loadSourceToTarget(data.data);
+                    }else{
+                        notify('error', data.message, true);
                     }
+
                 });
             });
 
-            router.start('/');
+            router.start('/dashboard');
 
-            $(document).on('click', 'a', function(e){
-                e.preventDefault();
-                var url = $(this).attr('href');
-                if (url) {
-                    router.navigate(url);
-                };
-            });
+            // $(document).on('click', 'a', function(e){
+            //     e.preventDefault();
+            //     var url = $(this).attr('href');
+            //     if (url) {
+            //         router.navigate(url);
+            //     };
+            // });
 
 
 
@@ -441,13 +478,20 @@
 
 			loadData($(document));
 
-			$(document).on('click', '[data-click]', function(e){
+			$(document).on('click', 'a[href]', function(e){
 				e.preventDefault();
-                var target = $(this).attr('data-target');
-                var url = $(this).attr('data-click');
-                router.navigate(source);
-                loadSourceToTarget(source, target);
+                var obj = {
+                    target: $(this).attr('data-target'),
+                    url: $(this).attr('href')
+                };
+                console.log(obj.url);
+                if ($(this).attr('href')) {
+                    router.navigate(obj.url);
+                    // loadSourceToTarget(obj);
+                    // window.history.pushState({"page":obj.url},"", '#'+obj.url);
+                };
 			});
+
             $(document).on('click', '[data-bulk-update]', function(e){
                 e.preventDefault();
                 var elm = $(this);
@@ -471,7 +515,7 @@
                     type: 'POST',
                     data: selectedObjects,
                     error: function(err){
-                        console.log(err);
+                        notify('error', err, true);
                     },
                     success: function(data){
                         $(target).html(data);
@@ -481,11 +525,17 @@
                             loadNavJs($(target));
                             loadData($(target));
                         }else{
-                            console.log(status);
+                            notify('error', status, true);
                         }
                     }
                 });
             });
+
+            $(document).on('change', '.ajax-form input', function(e){
+                $(this).parents('.form-group').removeClass('has-error');
+                $(this).next('.input-error').remove();
+            });
+
 			$(document).on('submit', '.ajax-form', function(e){
 				e.preventDefault();
 
@@ -497,7 +547,11 @@
 				if (form.data('loading') === true) {
 					return;
 				}
+
 				form.data('loading', true);
+
+                form.find('.input-error').remove();
+                form.find('.form-group').removeClass('has-error');
 
 				$.ajax({
 					url: action,
@@ -506,19 +560,32 @@
 					processData: false,
 					contentType: false,
 					error: function(err){
-						console.log(err);
+                        if( err.status === 401)
+                            router.navigate('/login');
+                        if( err.status === 422) {
+                            var errors = err.responseJSON;
+                            console.log(errors);
+                            $.each(errors, function(key, val){
+                                field = form.find("[name='"+key+"']");
+                                field.parents('.form-group').addClass('has-error');
+                                $('<span class="help-block input-error">'+val.join('<br/>')+'</em></span>').insertAfter(field);
+                            });
+                        } else {
+                            notify('error', err, true);
+                        }
+                        form.data('loading', false);
 					},
-					success: function(data){
-						$(target).html(data);
+					success: function(res){
+                        form.data('loading', false);
+
+                        if (res.success) {
+                            router.navigate(res.data);
+                        }else{
+                            notify('error', res.message, true);
+                        }
 					},
 					complete: function(xhr, status){
 						form.data('loading', false);
-						if (status =='success') {
-							loadNavJs($(target));
-							loadData($(target));
-						}else{
-							console.log(status);
-						}
 					}
 				});
 			});

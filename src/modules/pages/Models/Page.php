@@ -82,7 +82,7 @@ class Page extends Model
 		  "props" => [
 		      'icon' => 'list',
 		      "link" => [
-		          'data-click' => $this->slug,
+		          'href' => $this->slug,
 		          'data-target' => '#main-content-out'
 		      ],
 		  ]

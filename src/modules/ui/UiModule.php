@@ -38,7 +38,7 @@ Class UiModule extends BaseModule
                 'props' => [
                     'icon' => 'pencil',
                     'link' => [
-                        'data-click' => '/ui/settings',
+                        'href' => '/ui/settings',
                         'data-target' => '#main-content-out'
                     ]
                 ]
@@ -59,7 +59,7 @@ Class UiModule extends BaseModule
 	        "props" => [
 	            'icon' => 'dashboard',
 	            "link" => [
-	                'data-click' => '/dashboard',
+	                'href' => '/dashboard',
 	                'data-target' => '#main-content-out'
 	            ],
 	        ]
