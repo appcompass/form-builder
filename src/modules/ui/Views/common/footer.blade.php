@@ -279,7 +279,7 @@
                 type: 'GET',
                 error: function(err){
                     console.log(err);
-                    notify('error', err, true);
+                    openModal('error', err, true);
                 },
                 success: function(data){
                     if (obj.attribute) {
@@ -320,7 +320,7 @@
 			});
 		}
 
-        function notify(title, message, is_error){
+        function openModal(title, message, is_error){
             switch(title){
                 case 'success':
                     title = 'Success!';
@@ -353,7 +353,7 @@
             var alertModal = $('#modal-alert');
 
             $(this).ajaxStart(function(){
-                notify('Loading', 'Loading Please wait..');
+                openModal('Loading', 'Loading Please wait..');
             });
 
             $(this).ajaxStop(function(){
@@ -382,7 +382,7 @@
                     if (data.success) {
                         loadSourceToTarget(data.data);
                     }else{
-                        notify('error', data.message, true);
+                        openModal('error', data.message, true);
                     }
 
                 });
@@ -515,7 +515,7 @@
                     type: 'POST',
                     data: selectedObjects,
                     error: function(err){
-                        notify('error', err, true);
+                        openModal('error', err, true);
                     },
                     success: function(data){
                         $(target).html(data);
@@ -525,7 +525,7 @@
                             loadNavJs($(target));
                             loadData($(target));
                         }else{
-                            notify('error', status, true);
+                            openModal('error', status, true);
                         }
                     }
                 });
@@ -571,7 +571,7 @@
                                 $('<span class="help-block input-error">'+val.join('<br/>')+'</em></span>').insertAfter(field);
                             });
                         } else {
-                            notify('error', err, true);
+                            openModal('error', err, true);
                         }
                         form.data('loading', false);
 					},
@@ -581,7 +581,7 @@
                         if (res.success) {
                             router.navigate(res.data);
                         }else{
-                            notify('error', res.message, true);
+                            openModal('error', res.message, true);
                         }
 					},
 					complete: function(xhr, status){
