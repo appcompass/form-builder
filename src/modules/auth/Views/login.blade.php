@@ -57,4 +57,4 @@
 		<!-- modal -->
 
 	</div>
-@include("ui::common.footer", ['nolock' => true])
+@include("ui::common.footer", ['nolock' => true, 'login' => true])

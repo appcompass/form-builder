@@ -1,4 +1,4 @@
-
+@if(empty($login))
 	<!--Core js-->
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
 	<script src="/assets/ui/js/jquery.js"></script>
@@ -591,5 +591,6 @@
 			});
 		});
 	</script>
+@endif
 </body>
 </html>
