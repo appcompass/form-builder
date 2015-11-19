@@ -6,7 +6,7 @@
             @foreach($nav->items as $i => $subnav_content)
 
             <li>
-                <a data-click="{{ $meta->base_url.'/'.$subnav_content['url'] }}" {!! inlineAttrs($subnav_content->props, 'link') !!} @if($i === 0 && !isset($meta->no_autoload)) data-trigger @endif >
+                <a href="#{{ $meta->base_url.'/'.$subnav_content['url'] }}" data-click="{{ $meta->base_url.'/'.$subnav_content['url'] }}" {!! inlineAttrs($subnav_content->props, 'link') !!} >
                     <i class="fa {{ $subnav_content['icon'] }}"></i>
                     <span>{{ $subnav_content['label'] }}</span>
                 </a>

@@ -8,7 +8,6 @@
 
 	<!--script for this page-->
 	<script src="/assets/ui/js/gritter.js" type="text/javascript"></script>
-	<script src="/assets/ui/js/jquery.js"></script>
 	<script src="/assets/ui/js/jquery.nicescroll.js"></script>
 
 	<script src="/assets/ui/js/jvector-map/jquery-jvectormap-1.2.2.min.js"></script>
@@ -38,7 +37,9 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/0.12.16/vue.min.js"></script>
 
-  <script src="/assets/ui/js/jquery-ui/jquery-ui-1.10.1.custom.min.js"></script>
+    <script src="/assets/ui/js/jquery-ui/jquery-ui-1.10.1.custom.min.js"></script>
+
+    <script src="/assets/ui/js/simrou.min.js" ></script>
 
 	@yield('scripts.footer')
 
@@ -48,10 +49,10 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+
 		@if(empty($nolock))
 			// This is where we put the logic which handles auto redirecting the user to the /lock-screen when they have been idle for X seconds.
 		@endif
-
 
 		function loadNavJs(elm){
 			/*==Left Navigation Accordion ==*/
@@ -272,54 +273,141 @@
 
 		}
 
-        function loadSourceToTarget(source, target, attribute){
-
-            $.ajax({
-                url: source,
+        function loadSourceToTarget(obj){
+            var call = $.ajax({
+                url: obj.url,
                 type: 'GET',
                 error: function(err){
                     console.log(err);
+                    notify('error', err, true);
                 },
                 success: function(data){
-                    if (attribute) {
-                        $(target).attr(attribute, data);
+                    if (obj.attribute) {
+                        $(obj.target).attr(obj.attribute, data);
                     }else{
-                        $(target).html(data);
+                        $(obj.target).html(data);
                     }
                 },
                 complete: function(xhr, status){
-                    if (status =='success') {
-                        loadNavJs($(target));
-                        loadData($(target));
-                    }else{
-                        console.log(status);
-                    }
+                    // if (status =='success') {
+                    //     loadNavJs($(obj.target));
+                    //     loadData($(obj.target));
+                    // }else{
+                    //     console.log(status);
+                    // }
                 }
             });
 
+            call.done(function(){
+                if (obj.next && obj.next.url) {
+                    loadSourceToTarget(obj.next, true);
+                };
+            })
         }
 
 		function loadData(elm){
-            $.each(elm.find('[data-trigger]'), function(i, e){
 
-                var target = $(e).attr('data-target');
-                var source = $(e).attr('data-click');
-
-                loadSourceToTarget(source, target);
-
-            });
 
 			$.each(elm.find('[data-load]'), function(i, e){
 
-                var target = e;
-                var source = $(e).attr('data-load');
-                var attribute = $(e).attr('data-load-self')
+                var obj = {
+                    target: e,
+                    url: $(e).attr('data-load'),
+                    attribute: $(e).attr('data-load-self')
+                };
 
-                loadSourceToTarget(source, target, attribute);
+                loadSourceToTarget(obj);
 			});
 		}
 
+        function notify(title, message, is_error){
+            switch(title){
+                case 'success':
+                    title = 'Success!';
+                break;
+                case 'info':
+                    title = 'Heads up!';
+                break;
+                case 'warning':
+                    title = 'Warning!';
+                break;
+                case 'error':
+                    title = 'Failure!';
+                break;
+
+            }
+
+            $('#modal-alert').find('h4 span').text(title);
+            $('#modal-alert').find('.message').text(message);
+
+            if (is_error) {
+                $('#modal-alert').addClass('error-modal')
+            };
+
+            $('#modal-alert').modal('show');
+        }
+
+
+
 		$(document).ready(function () {
+            var alertModal = $('#modal-alert');
+
+            $(this).ajaxStart(function(){
+                notify('Loading', 'Loading Please wait..');
+            });
+
+            $(this).ajaxStop(function(){
+                if (!alertModal.hasClass('error-modal')) {
+                    alertModal.modal('hide');
+                };
+            });
+
+            alertModal.on('hidden.bs.modal', function (e) {
+                alertModal.removeClass('error-modal');
+                alertModal.find('h4 span').text('');
+                alertModal.find('.message').text('');
+            });
+
+            var router = new Simrou();
+
+            router.addRoute('*sp').get(function(e, params){
+                var req = $.ajax({
+                    url: '/request-meta',
+                    type: 'post',
+                    data: {
+                        url: params.sp
+                    }});
+
+                req.done(function(data){
+                    if (data.success) {
+                        loadSourceToTarget(data.data);
+                    }else{
+                        notify('error', data.message, true);
+                    }
+
+                });
+            });
+
+            router.start('/dashboard');
+
+            // $(document).on('click', 'a', function(e){
+            //     e.preventDefault();
+            //     var url = $(this).attr('href');
+            //     if (url) {
+            //         router.navigate(url);
+            //     };
+            // });
+
+
+
+
+
+
+
+
+
+
+
 
 			if ($.fn.niceScroll) {
 				$('.sidebar-toggle-box .fa-bars').on('click',function (e) {
@@ -390,17 +478,25 @@
 
 			loadData($(document));
 
-			$(document).on('click', '[data-click]', function(e){
+			$(document).on('click', 'a[href]', function(e){
 				e.preventDefault();
-                var target = $(this).attr('data-target');
-                var source = $(this).attr('data-click');
-                loadSourceToTarget(source, target);
+                var obj = {
+                    target: $(this).attr('data-target'),
+                    url: $(this).attr('href')
+                };
+                console.log(obj.url);
+                if ($(this).attr('href')) {
+                    router.navigate(obj.url);
+                    // loadSourceToTarget(obj);
+                    // window.history.pushState({"page":obj.url},"", '#'+obj.url);
+                };
 			});
+
             $(document).on('click', '[data-bulk-update]', function(e){
                 e.preventDefault();
                 var elm = $(this);
                 var target = elm.attr('data-target');
-                var source = elm.attr('data-bulk-update');
+                var url = elm.attr('data-bulk-update');
                 var action = elm.attr('data-action');
                 var withVals = elm.attr('data-with');
                 var selectedObjects = {
@@ -419,7 +515,7 @@
                     type: 'POST',
                     data: selectedObjects,
                     error: function(err){
-                        console.log(err);
+                        notify('error', err, true);
                     },
                     success: function(data){
                         $(target).html(data);
@@ -429,11 +525,17 @@
                             loadNavJs($(target));
                             loadData($(target));
                         }else{
-                            console.log(status);
+                            notify('error', status, true);
                         }
                     }
                 });
             });
+
+            $(document).on('change', '.ajax-form input', function(e){
+                $(this).parents('.form-group').removeClass('has-error');
+                $(this).next('.input-error').remove();
+            });
+
 			$(document).on('submit', '.ajax-form', function(e){
 				e.preventDefault();
 
@@ -445,7 +547,11 @@
 				if (form.data('loading') === true) {
 					return;
 				}
+
 				form.data('loading', true);
+
+                form.find('.input-error').remove();
+                form.find('.form-group').removeClass('has-error');
 
 				$.ajax({
 					url: action,
@@ -454,19 +560,32 @@
 					processData: false,
 					contentType: false,
 					error: function(err){
-						console.log(err);
+                        if( err.status === 401)
+                            router.navigate('/login');
+                        if( err.status === 422) {
+                            var errors = err.responseJSON;
+                            console.log(errors);
+                            $.each(errors, function(key, val){
+                                field = form.find("[name='"+key+"']");
+                                field.parents('.form-group').addClass('has-error');
+                                $('<span class="help-block input-error">'+val.join('<br/>')+'</em></span>').insertAfter(field);
+                            });
+                        } else {
+                            notify('error', err, true);
+                        }
+                        form.data('loading', false);
 					},
-					success: function(data){
-						$(target).html(data);
+					success: function(res){
+                        form.data('loading', false);
+
+                        if (res.success) {
+                            router.navigate(res.data);
+                        }else{
+                            notify('error', res.message, true);
+                        }
 					},
 					complete: function(xhr, status){
 						form.data('loading', false);
-						if (status =='success') {
-							loadNavJs($(target));
-							loadData($(target));
-						}else{
-							console.log(status);
-						}
 					}
 				});
 			});

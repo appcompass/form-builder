@@ -56,7 +56,7 @@ Class WebsitesModule extends BaseModule
         "props" => [
             'icon' => 'dashboard',
             "link" => [
-                'data-click' => '/websites',
+                'href' => '/websites',
                 'data-target' => '#main-content-out'
             ],
         ]

@@ -13,14 +13,29 @@ use DB;
 
 class CpWebsitePageSectionsController extends UiBaseController
 {
+    public $meta_install = [
+        'edit' => [
+            'data_targets' => [
+                [
+                    'route' => 'websites.show',
+                    'target' => '#main-content-out',
+                ],[
+                    'route' => 'websites.pages.section.edit',
+                    'target' => '#record-detail',
+                ],
+            ],
+        ],
+    ];
 
     public function __construct()
     {
 
         $this->middleware('auth');
 
-        $this->setControllerDefaults(__DIR__);
+        $this->controller_class = __CLASS__;
+        $this->module_name = 'pages';
 
+        $this->setControllerDefaults();
     }
 
     /**

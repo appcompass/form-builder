@@ -43,7 +43,7 @@ class PagesModuleDatabaseSeeder extends Seeder
 			    // 'icon' => 'file-text-o',
 			    'icon' => 'globe',
 			    'link' => [
-			        'data-click' => '/websites/'.Website::admin()->id.'/pages',
+			        'href' => '/websites/'.Website::admin()->id.'/pages',
 			        'data-target' => '#record-detail'
 			    ]
 			]
