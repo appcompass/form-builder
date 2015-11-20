@@ -231,6 +231,14 @@ class Website extends Model
 
   }
 
+  /**
+   *
+   */
+  public function getMachineName()
+  {
+    return strtolower(str_replace(' ', '_', $this->site_name));
+  }
+
 	/**
 	*
 	* Website::first()->render()

@@ -25,6 +25,8 @@ class PagesController extends Controller
 
         $data = $page->render();
 
+        $data['website'] = Website::current();
+
         $data['navmenus'] = [];
 
         $navmenus = Website::current()->navmenus()
@@ -36,6 +38,8 @@ class PagesController extends Controller
             $data['navmenus'][$navmenu->name] = $navmenu;
 
         }
+
+
 
         return view($template, $data);
     }

@@ -8,7 +8,7 @@
       <header class="panel-heading tab-bg-dark-navy-blue ">
         <ul class="nav nav-tabs">
           @foreach ($navmenus as $navmenu)
-          <li>
+          <li class="active">
             <a data-toggle="tab" class="no-link" href="#{{ $navmenu->name }}" aria-expanded="false">{{ str_replace('_', ' ', $navmenu->name) }}</a>
         </li>
         @endforeach
@@ -20,12 +20,12 @@
 
 @section('body')
 
-  {{--
+        {{--
         TABS CONTENT
         --}}
         <div class="tab-content">
           @foreach($navmenus as $navmenu)
-          <div id="{{ $navmenu->name }}" class="tab-pane">
+          <div id="{{ $navmenu->name }}" class="tab-pane active">
             <ol class="sortable" data-navmenu="{{ $navmenu->name }}" href="/websites/{{ $website->id }}/navigation">
               @foreach($navmenu->items as $item)
               @include('navigation::navmenu_section', ['item' => $item, 'navmenu' => $navmenu, 'website' => $website])
