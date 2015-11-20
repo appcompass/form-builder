@@ -8,15 +8,17 @@
             {!! Form::password($field->name, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
         @elseif($field->type == 'textarea')
             {!! Form::textarea($field->name, null, ['class' => 'form-control', 'rows' => '6', 'placeholder' => $field->placeholder]) !!}
+        @elseif($field->type == 'wysiwyg')
+            {!! Form::textarea($field->name, null, ['class' => 'wysihtml5 form-control', 'rows' => '9', 'placeholder' => $field->placeholder]) !!}
         @elseif($field->type == 'selectlist')
             {!! Form::select($field->name, $field->data, null, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
         @elseif($field->type == 'checkbox')
             @if(!empty($field->data))
-                @foreach($field->data as $label => $name)
+                @foreach($field->data as $checkbox)
                 <div class="checkbox">
                     <label>
-                        {!! Form::checkbox($field->name[$name], 'true', ['class' => 'form-control']) !!}
-                       {{ $label }}
+                        {!! Form::checkbox($checkbox->name, 'true', ['class' => 'form-control']) !!}
+                       {{ $checkbox->label }}
                     </label>
                 </div>
                 @endforeach
@@ -39,7 +41,7 @@
         @elseif($field->type == 'file')
             {!! Form::file($field->name, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
         @elseif($field->type == 'datepicker')
-            {!! Form::text($field->name, ['class' => 'form-control form-control-inline input-medium date-picker-default', 'placeholder' => $field->placeholder]) !!}
+            {!! Form::text($field->name, null, ['class' => 'form-control form-control-inline input-medium date-picker-default', 'placeholder' => $field->placeholder]) !!}
         @elseif($field->type == 'from_to_input')
             <div class="input-group input-large">
                 @foreach($field->data as $i => $from_to)
@@ -47,9 +49,9 @@
                     @if($field->type == 'text')
                         {!! Form::text($from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
                     @elseif($from_to->type == 'password')
-                        {!! Form::password($from_to->name, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
+                        {!! Form::password($from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
                     @elseif($from_to->type == 'datepicker')
-                        {!! Form::text($from_to->name, ['class' => 'form-control date-picker-default', 'placeholder' => $from_to->placeholder]) !!}
+                        {!! Form::text($from_to->name, null, ['class' => 'form-control date-picker-default', 'placeholder' => $from_to->placeholder]) !!}
                     @endif
                 @endforeach
             </div>
@@ -76,6 +78,14 @@
 @endforeach
 
 {!! Form::submit('Save', ["class" => "btn btn-info"]) !!}
+<script src="/assets/ui/js/bootstrap-wysihtml5/wysihtml5-0.3.0.js" type="text/javascript"></script>
+<script src="/assets/ui/js/bootstrap-wysihtml5/bootstrap-wysihtml5.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.wysihtml5').wysihtml5();
+    });
+</script>
 {{--
 The below is the example array of all possibilities.
 [
@@ -174,38 +184,44 @@ The below is the example array of all possibilities.
         'help_block' => '',
     ],[
         'label' => 'From To Inputs',
+        'name' => 'this_is_not_used',
         'type' => 'from_to_input',
         'operator' => 'to',
         'data' => [
-            'name' => 'from_name',
-            'placeholder' => '',
-            'type' => 'datepicker', // or text, or password
-        ],[
-            'name' => 'to_name',
-            'placeholder' => '',
-            'type' => 'datepicker', // or text, or password
+            [
+                'name' => 'from_name',
+                'placeholder' => '',
+                'type' => 'datepicker', // or text, or password
+            ],[
+                'name' => 'to_name',
+                'placeholder' => '',
+                'type' => 'datepicker', // or text, or password
+            ]
         ],
         'help_block' => '',
     ],[
         'label' => 'From To lists',
         'type' => 'from_to_list',
+        'name' => 'this_is_not_used',
         'data' => [
-            'name' => 'from_name',
-            'placeholder' => '',
-            'type' => 'selectlist',
-            'data' => [
-                'published' => 'Published',
-                'draft' => 'Draft',
-                'private' => 'Private',
-            ],
-        ],[
-            'name' => 'to_name',
-            'placeholder' => '',
-            'type' => 'selectlist',
-            'data' => [
-                'published' => 'Published',
-                'draft' => 'Draft',
-                'private' => 'Private',
+            [
+                'name' => 'from_name',
+                'placeholder' => '',
+                'type' => 'selectlist',
+                'data' => [
+                    'published' => 'Published',
+                    'draft' => 'Draft',
+                    'private' => 'Private',
+                ],
+            ],[
+                'name' => 'to_name',
+                'placeholder' => '',
+                'type' => 'selectlist',
+                'data' => [
+                    'published' => 'Published',
+                    'draft' => 'Draft',
+                    'private' => 'Private',
+                ],
             ],
         ],
         'help_block' => '',
@@ -234,6 +250,7 @@ The below is the example array of all possibilities.
                 'help_block' => '',
             ]
         ],
+        'help_block' => '',
     ]
 
 ] --}}
