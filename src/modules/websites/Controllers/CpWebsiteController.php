@@ -81,6 +81,8 @@ class CpWebsiteController extends UiBaseController
                 ],
             ],
             'heading' => 'Create New Site',
+            'description_title' => 'Website Creation Form',
+            'description_text' => 'Use this form to create a website, and configure it\'s web server',
             'route' => '/websites'
         ],
         'form' => [
