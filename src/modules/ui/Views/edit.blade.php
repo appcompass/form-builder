@@ -4,18 +4,27 @@
         {{ $meta->edit->heading }}
     </header>
 
-    <div class="panel-body">
-        {!!
-            Form::model($record, [
-                'class' => 'form-horizontal bucket-form ajax-form',
-                'method' => 'put',
-                'data-target' => '#record-detail',
-                'url' => $meta->base_url
-            ])
-        !!}
+    <div class="panel-body row">
+        @if (!empty($meta->create->description_title))
+            <div class="col-lg-12">
+                <h4>{{ $meta->create->description_title }}</h4>
+                @if(!empty($meta->create->description_text)) <p>{{ $meta->create->description_text }}</p> @endif
+                <br>
+            </div>
+        @endif
+        <div class="col-lg-12">
+            {!!
+                Form::model($record, [
+                    'class' => 'form-horizontal bucket-form ajax-form',
+                    'method' => 'put',
+                    'data-target' => '#record-detail',
+                    'url' => $meta->base_url
+                ])
+            !!}
 
-            @include('ui::partials.form_fields', ['fields' => $meta->form->fields])
+                @include('ui::partials.form_fields', ['fields' => $meta->form->fields])
 
-        {!! Form::close() !!}
+            {!! Form::close() !!}
+        </div>
     </div>
 </section>

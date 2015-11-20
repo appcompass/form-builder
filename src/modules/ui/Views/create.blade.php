@@ -3,10 +3,10 @@
         {{ $meta->create->heading || '' }}
     </header>
     <div class="panel-body row">
-        @if ($meta->create->description_title)
+        @if (!empty($meta->create->description_title))
             <div class="col-lg-12">
                 <h4>{{ $meta->create->description_title }}</h4>
-                @if($meta->create->description_text) <p>{{ $meta->create->description_text }}</p> @endif
+                @if(!empty($meta->create->description_text)) <p>{{ $meta->create->description_text }}</p> @endif
                 <br>
             </div>
         @endif

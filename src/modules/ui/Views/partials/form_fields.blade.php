@@ -1,7 +1,7 @@
 @foreach($fields as $field)
-<div class="form-group">
-    {!! Form::label($field->name, $field->label, ['class' => 'col-sm-3 control-label']) !!}
-    <div class="col-sm-6">
+<div class="form-group @if($field->type == 'repeatable') form-repeatable @endif ">
+    {!! Form::label($field->name, $field->label, ['class' => empty($repeatable) ? 'col-sm-3 control-label' : '']) !!}
+    @if(empty($repeatable)) <div class="col-sm-6"> @endif
         @if($field->type == 'text')
             {!! Form::text($field->name, null, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
         @elseif($field->type == 'password')
@@ -69,15 +69,36 @@
             {!! Form::select($field->name, with(new $field->data)->lists($field->label, $field->value), null, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
         @elseif($field->type == 'layout_selector')
             {!! Form::select($field->name, $meta->available_layouts) !!}
+        @elseif($field->type == 'repeatable')
+            <div class="panel">
+                <div class="panel-heading">
+                    Repeatable Item #1
+                    <span class="tools pull-right">
+                        <a href="javascript:;" class="fa fa-arrows no-link"></a>
+                        <a href="javascript:;" class="fa fa-chevron-down no-link"></a>
+                        <a href="javascript:;" class="fa fa-times text-danger no-link"></a>
+                    </span>
+                </div>
+                <div class="panel-body">
+                    @include('ui::partials.form_fields', ['fields' => $field->data, 'repeatable' => true])
+                </div>
+            </div>
+            <div class="text-right">
+                <button class="btn btn-sm btn-white form-repeatable-add">
+                    <i class="fa fa-plus"></i>
+                    Add Item
+                </button>
+            </div>
         @endif
         @if ($field->help_block)
             <small class="help-block">{{ $field->help_block }}</small>
         @endif
-    </div>
+    @if(empty($repeatable)) </div> @endif
 </div>
 @endforeach
 
 {!! Form::submit('Save', ["class" => "btn btn-info"]) !!}
+
 <script src="/assets/ui/js/bootstrap-wysihtml5/wysihtml5-0.3.0.js" type="text/javascript"></script>
 <script src="/assets/ui/js/bootstrap-wysihtml5/bootstrap-wysihtml5.js" type="text/javascript"></script>
 
