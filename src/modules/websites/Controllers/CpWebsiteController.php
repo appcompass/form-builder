@@ -76,11 +76,8 @@ class CpWebsiteController extends UiBaseController
         'create' => [
             'data_targets' => [
                 [
-                    'route' => 'websites.show',
-                    'target' => '#main-content-out',
-                ],[
                     'route' => 'websites.create',
-                    'target' => '#record-detail',
+                    'target' => '#main-content-out',
                 ],
             ],
             'heading' => 'Create New Site',

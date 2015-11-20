@@ -141,6 +141,13 @@ class CpWebsitePagesController extends UiBaseController
         $this->module_name = 'pages';
 
         $this->setControllerDefaults();
+
+        $this->meta->available_layouts = [
+            'full' => 'Full Width',
+            'aside:main' => 'Left Sidenav',
+            'main:aside' => 'Right Sidenav'
+        ];
+
     }
 
     /**
@@ -166,12 +173,6 @@ class CpWebsitePagesController extends UiBaseController
      */
     public function create($website_id)
     {
-
-        $this->meta->available_layouts = [
-            'full' => 'Full Width',
-            'aside:main' => 'Left Sidenav',
-            'main:aside' => 'Right Sidenav'
-        ];
 
         return $this->build('create', ['websites', $website_id, 'pages']);
 
@@ -202,7 +203,7 @@ class CpWebsitePagesController extends UiBaseController
 
         $this->meta->data_target = '#main-content-out';
 
-        return $this->index($website_id);
+        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $this->record->id]));
         // return parent::build('show');
     }
 
@@ -242,11 +243,9 @@ class CpWebsitePagesController extends UiBaseController
     {
         $website = Website::findOrFail($website_id);
 
-        $page = $website
-            ->load('pages')
-            ->pages()
-            ->findOrFail($page_id);
+        $this->record = Page::ofWebsite($website)->findOrFail($page_id);
 
+        return $this->build('edit', ['websites', $website_id, 'pages', $page_id]);
         return view('pages::edit', compact('page', 'website'));
     }
 

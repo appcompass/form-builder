@@ -15,6 +15,14 @@ use P3in\Models\Website;
 class UiController extends UiBaseController {
 
     public $meta_install = [
+        'getDashboard' => [
+            'data_targets' => [
+                [
+                    'route' => 'dashboard',
+                    'target' => '#main-content-out',
+                ]
+            ],
+        ],
     ];
 
     public function __construct()

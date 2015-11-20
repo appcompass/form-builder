@@ -176,7 +176,6 @@ class UiBaseController extends ModularBaseController {
             // default catch all.
             $uriAry = explode('/',trim($url,'/'));
             $target = $this->setDataTarget($uriAry);
-
             // now lets split the url up into the resources and it's params
             $resources = [];
             $params = [];

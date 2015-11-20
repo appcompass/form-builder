@@ -17,7 +17,7 @@ class CpWebsitePageSectionsController extends UiBaseController
         'edit' => [
             'data_targets' => [
                 [
-                    'route' => 'websites.show',
+                    'route' => 'websites.pages.show',
                     'target' => '#main-content-out',
                 ],[
                     'route' => 'websites.pages.section.edit',

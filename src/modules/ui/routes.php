@@ -8,7 +8,10 @@ Route::group([
     Route::get('/left-nav', 'UiController@getLeftNav');
     Route::get('/left-alerts', 'UiController@getLeftAlerts');
     Route::get('/notification-center', 'UiController@getNotificationCenter');
-    Route::get('/dashboard', 'UiController@getDashboard');
+    Route::get('/dashboard', [
+        'as' => 'dashboard',
+        'uses' => 'UiController@getDashboard'
+    ]);
     Route::get('/user-full-name', 'UiController@getUserFullName');
     Route::get('/user-avatar/{size}', 'UiController@getUserAvatar');
     Route::get('/user-nav', 'UiController@getUserNav');
