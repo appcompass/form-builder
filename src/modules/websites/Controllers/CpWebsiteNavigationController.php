@@ -24,6 +24,19 @@ class CpWebsiteNavigationController extends UiBaseController
                 ],
             ],
         ],
+        'update' => [
+            'data_targets' => [
+                [
+                    'route' => 'websites.show',
+                    'target' => '#main-content-out',
+                ],[
+                    'route' => 'websites.pages.edit',
+                    'target' => '#record-detail',
+                ],
+            ],
+            'heading' => 'Page Informations',
+            'route' => 'pages.update'
+        ],
     ];
 
     /**
@@ -60,9 +73,11 @@ class CpWebsiteNavigationController extends UiBaseController
       ->with('utilities', $utilities);
   }
 
-  public function update(Request $request, $website_id)
+  public function update(Request $request, $website_id, $navitem_id)
   {
+    NavigationItem::findOrFail($navitem_id)->update(['label' => $request->label]);
 
+    return \Response::json(['success' => true]);
   }
 
 

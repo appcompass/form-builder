@@ -17,9 +17,11 @@ Class WebsitesServiceProvider extends ServiceProvider {
 
         // Register Website Validation
         Validator::extend('site_connection', function($attribute, $value, $parameters, $validator) {
+
             if (empty($value['ssh_host'])) {
                 return false;
             }
+
             Config::set('remote.connections.production', [
                 'host'      => $value['ssh_host'],
                 'username'  => $value['ssh_username'],

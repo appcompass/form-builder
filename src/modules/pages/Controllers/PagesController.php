@@ -13,11 +13,7 @@ use P3in\Models\Website;
 class PagesController extends Controller
 {
 
-    public function __construct()
-    {
-    }
-
-    public function renderPage(Request $request, $url = 'home-page')
+    public function renderPage(Request $request, $url = '/')
     {
         // TODO: This belongs in middleware!
         // all requests require this so it should be set and simply accessed via
@@ -28,6 +24,18 @@ class PagesController extends Controller
         $template = 'layouts.master.'.$page->layout;
 
         $data = $page->render();
+
+        $data['navmenus'] = [];
+
+        $navmenus = Website::current()->navmenus()
+            ->whereNull('parent_id')
+            ->get();
+
+        foreach ($navmenus as $navmenu) {
+
+            $data['navmenus'][$navmenu->name] = $navmenu;
+
+        }
 
         return view($template, $data);
     }

@@ -52,7 +52,6 @@ class Page extends Model
 	{
 
 		$rel = $this->belongsToMany(Section::class)
-			// ->withPivot(['template_section', 'order', 'content'])
 			->withPivot(['id', 'order', 'content', 'type'])
 			->orderBy('order', 'asc');
 
@@ -116,7 +115,6 @@ class Page extends Model
 	public function render()
 	{
 
-		// $output = '';
 		$views = [];
 
         $website = Website::current();
@@ -137,27 +135,29 @@ class Page extends Model
 
 		foreach($this->sections as $section) {
 
-			$views['full'][] = $section->render();
-
-			// $output .= $section->render();
+			$views[$this->layout][] = $section->render();
 
 		}
 
 		return $views;
 
-		// return $this->template
-			// ->render($data);
 	}
 
-    public function scopeOfWebsite($query, Website $website = null)
-    {
-        // if $website is passed, then we look up that website's pages.
-        // Otherwise we use the current website.
-        $website = $website ?: Website::current();
-        return $query->whereHas('website',function($q) use ($website) {
-            $q->where('id', $website->id);
-        });
-    }
+	/**
+	 * scopeOfWebsite
+	 * if $website is passed, then we look up that website's pages.
+	 * Otherwise we use the current website.
+	 */
+	public function scopeOfWebsite($query, Website $website = null)
+	{
+	    $website = $website ?: Website::current();
+
+	    return $query->whereHas('website',function($q) use ($website) {
+
+	        $q->where('id', $website->id);
+
+	    });
+	}
 
 	/**
 	 *

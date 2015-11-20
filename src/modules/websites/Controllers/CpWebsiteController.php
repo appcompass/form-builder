@@ -276,7 +276,6 @@ class CpWebsiteController extends UiBaseController
             'config' => 'site_connection',
         ]);
 
-
         $data = $request->all();
 
         $this->record = Website::findOrFail($id);

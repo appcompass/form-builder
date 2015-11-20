@@ -53,11 +53,14 @@ class Website extends Model
 	*/
 	protected $dates = ['published_at'];
 
-    public static $validator_rules = [
-        'site_name' => 'required|unique:websites|max:255',
-        'site_url' => 'required',
-        'config' => 'site_connection',
-    ];
+  /**
+   * Model's rules
+   */
+  public static $rules = [
+      'site_name' => 'required|max:255',
+      'site_url' => 'required',
+      // 'config' => 'site_connection',
+  ];
 	/**
 	 * Get all the pages linked to this website
 	 *
@@ -85,6 +88,15 @@ class Website extends Model
 		return $query->where('site_name', '=', $name);
 	}
 
+  /**
+   *  Link a page
+   *
+   */
+  public function addPage(Page $page)
+  {
+    $this->pages()->save($page);
+  }
+
 	/**
 	 *
 	 *
@@ -97,28 +109,27 @@ class Website extends Model
   /**
    *
    */
-    public static function current(Request $request = null)
-    {
+  public static function current(Request $request = null)
+  {
+    // unfortunately the first time we run this we need to pass the current Request. which is why we need to
+    // run this on app before filters for all requests.
+    if (!Config::get('current_site_record') && $request) {
 
-        // unfortunately the first time we run this we need to pass the current Request. which is why we need to
-        // run this on app before filters for all requests.
-        if (!Config::get('current_site_record') && $request) {
+        $site_name = $request->header('site-name');
 
-            $site_name = $request->header('site-name');
+        if (!empty($site_name)) {
 
-            if (!empty($site_name)) {
+            $website = Website::where('site_name', '=', $site_name)->firstOrFail();
 
-                $website = Website::where('site_name', '=', $site_name)->firstOrFail();
-
-                Config::set('current_site_record', $website);
-
-            }
+            Config::set('current_site_record', $website);
 
         }
 
-        return Config::get('current_site_record');
-
     }
+
+    return Config::get('current_site_record');
+
+  }
 
 	/**
 	 *
@@ -148,67 +159,78 @@ class Website extends Model
 	    ], $overrides);
 	}
 
-    private function connectionConfig($config)
-    {
-        // set the remote site's ssh connection config.
-        config(['remote.connections.production' => [
-            'host'      => $config->ssh_host,
-            'username'  => $config->ssh_username,
-            'key'       => $config->ssh_key,
-            'keyphrase' => $config->ssh_keyphrase,
-        ]]);
+  /**
+   *
+   */
+  private function connectionConfig($config)
+  {
 
-    }
+    // set the remote site's ssh connection config.
+    config(['remote.connections.production' => [
+        'host'      => $config->ssh_host,
+        'username'  => $config->ssh_username,
+        'key'       => $config->ssh_key,
+        'keyphrase' => $config->ssh_keyphrase,
+    ]]);
 
-    public function initRemote()
-    {
-        $this->connectionConfig($this->config);
-        $data = $this->config->server;
-        $data->document_root = $this->config->ssh_root;
-        $data->site_name = $this->site_name;
+  }
 
-        $nginx_config = (string) view('websites::server.nginx_main', ['data' => $data]);
+  /**
+   *
+   */
+  public function initRemote()
+  {
+      $this->connectionConfig($this->config);
+      $data = $this->config->server;
+      $data->document_root = $this->config->ssh_root;
+      $data->site_name = $this->site_name;
 
-        SSH::putString($this->config->ssh_root.'/../nginx.conf', $nginx_config);
+      $nginx_config = (string) view('websites::server.nginx_main', ['data' => $data]);
 
-        SSH::run("sudo service nginx restart &", function($line) {
-            var_dump($line);
-        });
-    }
+      SSH::putString($this->config->ssh_root.'/../nginx.conf', $nginx_config);
 
-    public function deploy()
-    {
-        $this->connectionConfig($this->config);
+      SSH::run("sudo service nginx restart &", function($line) {
+          var_dump($line);
+      });
+  }
 
-        // Getting settings like this seems wrong? could have sworn there was a shorter way to handle this.
-        $settings = $this->settings()->first()->data;
+  /**
+   *
+   */
+  public function deploy()
+  {
+      $this->connectionConfig($this->config);
 
-        $ver = Carbon::now()->timestamp;
+      // Getting settings like this seems wrong? could have sworn there was a shorter way to handle this.
+      $settings = $this->settings()->first()->data;
 
-        $output = [];
+      $ver = Carbon::now()->timestamp;
 
-        // Now lets compile and output the css contents to a string.
-        $saved_css_file = '/'.$ver.'-style.css';
+      $output = [];
 
-        $parser = new Less_Parser(config('less'));
-        $parser->parseFile(config('less.less_path'));
-        $parser->ModifyVars([
-            'color-theme-primary'=> $settings->color_primary,
-            'color-theme-secondary' => $settings->color_secondary,
-        ]);
+      // Now lets compile and output the css contents to a string.
+      $saved_css_file = '/'.$ver.'-style.css';
 
-        // the string containing this sites' CSS file.
-        $css = $parser->getCss();
+      $parser = new Less_Parser(config('less'));
+      $parser->parseFile(config('less.less_path'));
+      $parser->ModifyVars([
+          'color-theme-primary'=> $settings->color_primary,
+          'color-theme-secondary' => $settings->color_secondary,
+      ]);
 
-        // Now lets put that file on the remote site.
-        SSH::putString($this->config->ssh_root.$saved_css_file, $css);
+      // the string containing this sites' CSS file.
+      $css = $parser->getCss();
 
-        // Once this has run successfully, we save the file names to the config of the website.
-        $settings->css_file = $saved_css_file;
+      // Now lets put that file on the remote site.
+      SSH::putString($this->config->ssh_root.$saved_css_file, $css);
 
-        $this->settings((array) $settings); // doesn't like objects :/
+      // Once this has run successfully, we save the file names to the config of the website.
+      $settings->css_file = $saved_css_file;
 
-    }
+      $this->settings((array) $settings); // doesn't like objects :/
+
+  }
+
 	/**
 	*
 	* Website::first()->render()
@@ -224,15 +246,13 @@ class Website extends Model
 				->where('slug', $page_path)
 				->firstOrFail();
 
-			if ($page->checkPermissions(Auth::user())) {
-
-                return $page;
-
-            }
+  		if ($page->checkPermissions(Auth::user())) {
+        return $page;
+      }
 
 		} catch (ModelNotFoundException $e ) {
 
-			return false;
+      return false;
 
 		}
 
