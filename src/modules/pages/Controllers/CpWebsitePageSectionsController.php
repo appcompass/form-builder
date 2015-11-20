@@ -83,6 +83,8 @@ class CpWebsitePageSectionsController extends UiBaseController
 
         return redirect()->action('\P3in\Controllers\CpWebsitePagesController@show', [$page->website->id, $page]);
 
+        // return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $page->id]));
+
     }
 
     /**
@@ -138,8 +140,7 @@ class CpWebsitePageSectionsController extends UiBaseController
 
         $result = DB::table('page_section')->where('id', $section_id)
             ->update(['content' => $content]);
-
-        return redirect()->action('\P3in\Controllers\CpWebsitePagesController@show', [$page]);
+        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $page->id, 'section', $section_id, 'edit']));
     }
 
     /**

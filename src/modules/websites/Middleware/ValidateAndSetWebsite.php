@@ -2,7 +2,7 @@
 
 namespace P3in\Modules\Middleware;
 
-use App\App;
+use App;
 use Closure;
 use Illuminate\Contracts\Routing\Middleware;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
