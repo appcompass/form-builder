@@ -13,7 +13,7 @@ use P3in\Models\Website;
 class PagesController extends Controller
 {
 
-    public function renderPage(Request $request, $url = '/')
+    public function renderPage(Request $request, $url = '')
     {
         // TODO: This belongs in middleware!
         // all requests require this so it should be set and simply accessed via
