@@ -119,80 +119,80 @@ class CpWebsiteController extends UiBaseController
                     'help_block' => '',
                 ],[
                     'label' => 'SSH Host',
-                    'name' => 'config[ssh_host]',
+                    'name' => 'config[host]',
                     'placeholder' => '127.0.0.1',
                     'type' => 'text',
-                    'help_block' => '',
+                    'help_block' => 'Deployment target host IP Address.',
                 ],[
                     'label' => 'SSH Username',
-                    'name' => 'config[ssh_username]',
+                    'name' => 'config[username]',
                     'placeholder' => 'username',
                     'type' => 'text',
-                    'help_block' => '',
+                    'help_block' => 'Authentication can happen via Username / Password or Private Key / Passphrase combinations.',
                 ],[
                     'label' => 'Path to SSH Secret Key',
-                    'name' => 'config[ssh_key]',
-                    'placeholder' => '/home/webmanageruser/.ssh/id_rsa',
+                    'name' => 'config[privateKey]',
+                    'placeholder' => '/path/to/id_rsa',
                     'type' => 'text',
-                    'help_block' => 'The path to the SSH key authorized on the api remote server.',
+                    'help_block' => 'Optionally connect using your pre-authorized private key.',
                 ],[
-                    'label' => 'SSH Key Phrase',
-                    'name' => 'config[ssh_keyphrase]',
-                    'placeholder' => 'idrsa_key_passphrase',
-                    'type' => 'text',
-                    'help_block' => '',
+                    'label' => 'SSH Password / SSH Key Phrase',
+                    'name' => 'config[password]',
+                    'placeholder' => 'SSH Password or Private Key Passphrase',
+                    'type' => 'password',
+                    'help_block' => 'SSH Password or Private Key Passphrase.',
                 ],[
                     'label' => 'Website Document Root',
-                    'name' => 'config[ssh_root]',
+                    'name' => 'config[root]',
                     'placeholder' => '/path/to/document/root',
                     'type' => 'text',
                     'help_block' => '',
-                ],[
-                    'label' => 'Nginx Server Name',
-                    'name' => 'config[server][server_name]',
-                    'placeholder' => 'www.sitename.com',
-                    'type' => 'text',
-                    'help_block' => '',
-                ],[
-                    'label' => 'Nginx Server Error Log Path',
-                    'name' => 'config[server][error_log_path]',
-                    'placeholder' => '/var/logs/www-sitename-com.log',
-                    'type' => 'text',
-                    'help_block' => '',
-                ],[
-                    'label' => 'Strict SSL Params',
-                    'name' => 'config[server][server_ssl][strict]',
-                    'placeholder' => '',
-                    'type' => 'radio',
-                    'data' => [
-                        'Yes' => 1,
-                        'No' => 0,
-                    ],
-                    'help_block' => '',
-                ],[
-                    'label' => 'Nginx Server SSL Cert Path',
-                    'name' => 'config[server][server_ssl][cert_path]',
-                    'placeholder' => '/path/to/cert',
-                    'type' => 'text',
-                    'help_block' => '',
-                ],[
-                    'label' => 'Nginx Server SSL Cert Key Path',
-                    'name' => 'config[server][server_ssl][cert_key_path]',
-                    'placeholder' => '/path/to/cert.key',
-                    'type' => 'text',
-                    'help_block' => '',
-                ],[
-                    'label' => 'SSL dhparam.pem Path',
-                    'name' => 'config[server][server_ssl][ssl_dhparam]',
-                    'placeholder' => '/path/to/dhparam.pem',
-                    'type' => 'text',
-                    'help_block' => '',
-                ],[
-                    'label' => 'Nginx Server Reverse Proxy URL',
-                    'name' => 'config[server][proxy_url]',
-                    'placeholder' => 'https://127.0.0.1:4433',
-                    'type' => 'text',
-                    'help_block' => 'The address of the reverse proxy as read from this website\'s server.',
+                // ],[
+                //     'label' => 'Nginx Server Name',
+                //     'name' => 'config[server][server_name]',
+                //     'placeholder' => 'www.sitename.com',
+                //     'type' => 'text',
+                //     'help_block' => '',
+                // ],[
+                //     'label' => 'Nginx Server Error Log Path',
+                //     'name' => 'config[server][error_log_path]',
+                //     'placeholder' => '/var/logs/www-sitename-com.log',
+                //     'type' => 'text',
+                //     'help_block' => '',
+                // ],[
+                //     'label' => 'Strict SSL Params',
+                //     'name' => 'config[server][server_ssl][strict]',
+                //     'placeholder' => '',
+                //     'type' => 'radio',
+                //     'data' => [
+                //         'Yes' => 1,
+                //         'No' => 0,
+                //     ],
+                //     'help_block' => '',
+                // ],[
+                //     'label' => 'Nginx Server SSL Cert Path',
+                //     'name' => 'config[server][server_ssl][cert_path]',
+                //     'placeholder' => '/path/to/cert',
+                //     'type' => 'text',
+                //     'help_block' => '',
+                // ],[
+                //     'label' => 'Nginx Server SSL Cert Key Path',
+                //     'name' => 'config[server][server_ssl][cert_key_path]',
+                //     'placeholder' => '/path/to/cert.key',
+                //     'type' => 'text',
+                //     'help_block' => '',
+                // ],[
+                //     'label' => 'SSL dhparam.pem Path',
+                //     'name' => 'config[server][server_ssl][ssl_dhparam]',
+                //     'placeholder' => '/path/to/dhparam.pem',
+                //     'type' => 'text',
+                //     'help_block' => '',
+                // ],[
+                //     'label' => 'Nginx Server Reverse Proxy URL',
+                //     'name' => 'config[server][proxy_url]',
+                //     'placeholder' => 'https://127.0.0.1:4433',
+                //     'type' => 'text',
+                //     'help_block' => 'The address of the reverse proxy as read from this website\'s server.',
                 ],
             ],
         ],
@@ -234,14 +234,13 @@ class CpWebsiteController extends UiBaseController
      */
     public function store(Request $request)
     {
-        $this->validate($request, Website::$validator_rules);
-
+        $this->validate($request, Website::$rules);
 
         $data = $request->all();
 
         $this->record = Website::create($data);
 
-        $this->record->initRemote();
+        // $this->record->initRemote();
 
         return $this->json($this->setBaseUrl(['websites', $id, 'edit']));
     }
@@ -270,19 +269,24 @@ class CpWebsiteController extends UiBaseController
      */
     public function update(Request $request, $id)
     {
+
         $this->validate($request, [
             'site_name' => 'required|max:255', //|unique:websites // we need to do a unique if not self appproach.
             'site_url' => 'required',
-            'config' => 'site_connection',
+            'config.host' => 'required:ip',
+            'config.username' => 'required',
+            'config.password' => 'required',
+            'config.root' => 'required',
+            // 'config' => 'site_connection',
         ]);
 
-        $data = $request->all();
+        $website = $this->record = Website::findOrFail($id);
 
-        $this->record = Website::findOrFail($id);
+        if ($website->testConnection($request->config)) {
 
-        $this->record->update($data);
+            $website->update($request->all());
 
-        $this->record->initRemote();
+        }
 
         return $this->json($this->setBaseUrl(['websites', $id, 'edit']));
     }

@@ -19,13 +19,28 @@ class ValidateAndSetWebsite implements Middleware
      */
     public function handle($request, Closure $next)
     {
-        try {
-            Website::current($request);
+        // try {
+
+            if (is_null(Website::getCurrent())) {
+
+                $site_name = $request->header('site-name');
+
+                Website::setCurrent(Website::where('site_name', '=', $site_name)->firstOrFail());
+
+            }
+
             return $next($request);
-        } catch (Exception $e) {
-            App::abort(401, trans('websites::accessnotauthorized'));
-        } catch (ModelNotFoundException $e) {
-            App::abort(401, trans('websites::accessnotauthorized'));
-        }
+
+        // } catch (Exception $e) {
+
+        //     App::abort(401, trans('websites::accessnotauthorized'));
+
+        // } catch (ModelNotFoundException $e) {
+
+        //     dd($e->getMessage());
+
+        //     App::abort(401, trans('websites::accessnotauthorized'));
+
+        // }
     }
 }

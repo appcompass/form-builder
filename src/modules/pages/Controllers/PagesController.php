@@ -15,13 +15,10 @@ class PagesController extends Controller
 
     public function renderPage(Request $request, $url = '')
     {
-        // TODO: This belongs in middleware!
-        // all requests require this so it should be set and simply accessed via
-        // Config like so: Config::get('current_site_record')
 
         $page = Page::where('slug', $url)->ofWebsite()->firstOrFail();
 
-        $template = 'layouts.master.'.$page->layout;
+        $template = 'layouts.master.'.str_replace(':', '_', $page->layout);
 
         $data = $page->render();
 
@@ -39,8 +36,7 @@ class PagesController extends Controller
 
         }
 
-
-
         return view($template, $data);
+
     }
 }

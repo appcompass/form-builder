@@ -128,7 +128,7 @@ class CpWebsiteNavigationController extends UiBaseController
         continue;
 
       }
-      var_dump($content);
+      // var_dump($content);
 
       $item = NavigationItem::findOrFail($content['id']);
 
@@ -144,7 +144,7 @@ class CpWebsiteNavigationController extends UiBaseController
 
       } else {
 
-        echo "Adding Item: $item->id<br> to $navmenu->name \n";
+        // echo "Adding Item: $item->id<br> to $navmenu->name \n";
 
         $navmenu->addItem($item);
 

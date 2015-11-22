@@ -126,6 +126,7 @@ class CpWebsiteSettingsController extends UiBaseController
                     'placeholder' => '/path/to/document/root',
                     'type' => 'text',
                     'help_block' => '',
+                /*
                 ],[
                     'label' => 'Nginx Server Name',
                     'name' => 'config[server][server_name]',
@@ -172,6 +173,7 @@ class CpWebsiteSettingsController extends UiBaseController
                     'placeholder' => 'https://127.0.0.1:4433',
                     'type' => 'text',
                     'help_block' => '',
+                */
                 ],
             ],
         ],
@@ -221,9 +223,20 @@ class CpWebsiteSettingsController extends UiBaseController
 
         $records = $website->settings($data);
 
-        $website->deploy();
+        try {
 
-        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages']));
+            $website->deploy();
+
+            return $this->json($this->setBaseUrl(['websites', $website_id, 'pages']));
+
+        } catch (\RuntimeException $e) {
+
+            \Log::error("Error while deploying $website->site_name: ".$e->getMessage());
+
+            return $this->json([], false, 'Error during deployment. Please contact us.' );
+
+        }
+
     }
 
     /**
@@ -232,8 +245,7 @@ class CpWebsiteSettingsController extends UiBaseController
      */
     public function update(Request $request, $website_id)
     {
-        $website = Website::findOrFail($website_id);
-
+        // $website = Website::findOrFail($website_id);
     }
 
     /**

@@ -117,27 +117,31 @@ class Page extends Model
 
 		$views = [];
 
-        $website = Website::current();
+    $website = Website::current();
 
-        $globals = Section::whereIn('id',[$website->settings('header'), $website->settings('footer')])->get();
+    $globals = Section::whereIn('id',[$website->settings('header'), $website->settings('footer')])->get();
 
-        $views['files'] = [
-            'css_file' => $website->settings('css_file'),
-            'js_file' => $website->settings('js_file'),
+    $views['files'] = [
+        'css_file' => $website->settings('css_file'),
+        'js_file' => $website->settings('js_file'),
+    ];
+
+    foreach ($globals as $global) {
+        $views[$global->type] = [
+            'view' => '/sections'.$global->display_view,
+            // 'data' => $global->pivot->content // TODO MUST LINK SECTION ON WEBSITE SETTINGS STORAGE
         ];
+    }
 
-        foreach ($globals as $global) {
-            $views[$global->type] = [
-                'view' => '/sections'.$global->display_view,
-                // 'data' => $global->pivot->content // TODO MUST LINK SECTION ON WEBSITE SETTINGS STORAGE
-            ];
-        }
+    foreach(explode(':', $this->layout) as $layout_part) {
 
-		foreach($this->sections as $section) {
+			foreach($this->sections()->where('fits', $layout_part)->get() as $section) {
 
-			$views[$this->layout][] = $section->render();
+				$views[$layout_part][] = $section->render();
 
-		}
+			}
+
+    }
 
 		return $views;
 

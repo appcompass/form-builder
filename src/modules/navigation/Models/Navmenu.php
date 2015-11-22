@@ -200,11 +200,11 @@ class Navmenu extends Model
 
         }
 
-        echo "<br>\nAddItem would like to add $navItem->id<br>\n";
+        // echo "<br>\nAddItem would like to add $navItem->id<br>\n";
 
         if (! $this->items->contains($navItem)) {
 
-            echo "AddItem is adding $navItem->id<br>\n";
+            // echo "AddItem is adding $navItem->id<br>\n";
 
             if (is_null($order)) {
 

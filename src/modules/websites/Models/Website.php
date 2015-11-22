@@ -54,13 +54,28 @@ class Website extends Model
 	protected $dates = ['published_at'];
 
   /**
+   *
+   */
+  public static $current = null;
+
+  /**
+   *
+   */
+  protected $with = ['settings'];
+
+  /**
    * Model's rules
    */
   public static $rules = [
-      'site_name' => 'required|max:255',
-      'site_url' => 'required',
-      // 'config' => 'site_connection',
+    'site_name' => 'required|max:255', //|unique:websites // we need to do a unique if not self appproach.
+    'site_url' => 'required',
+    'config.host' => 'required:ip',
+    'config.username' => 'required',
+    'config.password' => 'required',
+    'config.root' => 'required',
+    'config' => 'site_connection',
   ];
+
 	/**
 	 * Get all the pages linked to this website
 	 *
@@ -109,25 +124,40 @@ class Website extends Model
   /**
    *
    */
+  public static function setCurrent(Website $website)
+  {
+
+    return static::$current = $website;
+
+  }
+
+  /**
+   *
+   */
+  public static function getCurrent()
+  {
+
+    return static::$current;
+
+  }
+
+  /**
+   *
+   */
   public static function current(Request $request = null)
   {
-    // unfortunately the first time we run this we need to pass the current Request. which is why we need to
-    // run this on app before filters for all requests.
-    if (!Config::get('current_site_record') && $request) {
 
-        $site_name = $request->header('site-name');
+    return static::$current;
 
-        if (!empty($site_name)) {
+    // if (!Config::get('current_site_record') && !is_null($request) && $request->header('site-name')) {
 
-            $website = Website::where('site_name', '=', $site_name)->firstOrFail();
+    //     $website = Website::where('site_name', '=', $request->header('site-name'))->firstOrFail();
 
-            Config::set('current_site_record', $website);
+    //     Config::set('current_site_record', $website);
 
-        }
+    // }
 
-    }
-
-    return Config::get('current_site_record');
+    // return Config::get('current_site_record');
 
   }
 
@@ -165,13 +195,13 @@ class Website extends Model
   private function connectionConfig($config)
   {
 
-    // set the remote site's ssh connection config.
-    config(['remote.connections.production' => [
-        'host'      => $config->ssh_host,
-        'username'  => $config->ssh_username,
-        'key'       => $config->ssh_key,
-        'keyphrase' => $config->ssh_keyphrase,
-    ]]);
+    // // set the remote site's ssh connection config.
+    // config(['remote.connections.production' => [
+    //     'host'      => $config->ssh_host,
+    //     'username'  => $config->ssh_username,
+    //     'key'       => $config->ssh_key,
+    //     'keyphrase' => $config->ssh_keyphrase,
+    // ]]);
 
   }
 
@@ -180,18 +210,18 @@ class Website extends Model
    */
   public function initRemote()
   {
-      $this->connectionConfig($this->config);
-      $data = $this->config->server;
-      $data->document_root = $this->config->ssh_root;
-      $data->site_name = $this->site_name;
+      // $this->connectionConfig($this->config);
+      // $data = $this->config->server;
+      // $data->document_root = $this->config->ssh_root;
+      // $data->site_name = $this->site_name;
 
-      $nginx_config = (string) view('websites::server.nginx_main', ['data' => $data]);
+      // $nginx_config = (string) view('websites::server.nginx_main', ['data' => $data]);
 
-      SSH::putString($this->config->ssh_root.'/../nginx.conf', $nginx_config);
+      // SSH::putString($this->config->ssh_root.'/../nginx.conf', $nginx_config);
 
-      SSH::run("sudo service nginx restart &", function($line) {
-          var_dump($line);
-      });
+      // SSH::run("sudo service nginx restart &", function($line) {
+      //     var_dump($line);
+      // });
   }
 
   /**
@@ -199,35 +229,120 @@ class Website extends Model
    */
   public function deploy()
   {
-      $this->connectionConfig($this->config);
 
-      // Getting settings like this seems wrong? could have sworn there was a shorter way to handle this.
-      $settings = $this->settings()->first()->data;
+      if (!$this->testConnection((array) $this->config)) {
+
+        return false;
+
+      }
 
       $ver = Carbon::now()->timestamp;
 
-      $output = [];
-
-      // Now lets compile and output the css contents to a string.
       $saved_css_file = '/'.$ver.'-style.css';
 
-      $parser = new Less_Parser(config('less'));
-      $parser->parseFile(config('less.less_path'));
-      $parser->ModifyVars([
-          'color-theme-primary'=> $settings->color_primary,
-          'color-theme-secondary' => $settings->color_secondary,
-      ]);
+      $css = $this->buildCss();
 
-      // the string containing this sites' CSS file.
-      $css = $parser->getCss();
+      try {
 
-      // Now lets put that file on the remote site.
-      SSH::putString($this->config->ssh_root.$saved_css_file, $css);
+        if (!$this->getDiskInstance()->put($saved_css_file, $css) ) {
 
-      // Once this has run successfully, we save the file names to the config of the website.
-      $settings->css_file = $saved_css_file;
+          \Log::error('Unable to write file on the remote server: '.$this->config->host);
 
-      $this->settings((array) $settings); // doesn't like objects :/
+          return false;
+
+        }
+
+        $this->settings('css_file', $saved_css_file);
+
+        return true;
+
+      } catch (\RuntimeException $e) {
+
+        \Log::error($e->getMessage());
+
+        return false;
+
+      }
+
+  }
+
+  /**
+   *
+   */
+  public function getDiskInstance()
+  {
+
+    $connection_info = array_replace(Config::get('filesystems.disks.sftp'), (array) $this->config);
+
+    Config::set('filesystems.disks.sftp', $connection_info);
+
+    try {
+
+      $disk = \Storage::disk('sftp');
+
+      return $disk;
+
+    } catch (\RuntimeException $e) {
+
+        \Log::error($e->getMessage());
+        return false;
+
+    } catch (\ErrorException $e) {
+
+        \Log::error($e->getMessage());
+        return false;
+
+    } catch (\LogicException $e) {
+
+        \Log::error($e->getMessage());
+        return false;
+
+    }
+
+  }
+
+  /**
+   *  Test connection to website
+   */
+  public static function testConnection(array $overrides = [])
+  {
+
+    $instance = new static;
+
+    $instance->config = $overrides;
+
+    $connection_details = array_replace((array) config('filesystems.disks.sftp'), $overrides);
+
+    $disk = $instance->getDiskInstance()
+      ->getDriver()
+      ->getAdapter();
+
+    $disk->connect();
+
+    $result = $disk->isConnected();
+
+    $disk->disconnect();
+
+    return $result;
+
+  }
+
+  /**
+   *
+   */
+  public function buildCss()
+  {
+
+    $parser = new Less_Parser(config('less'));
+
+    $parser->parseFile(config('less.less_path'));
+
+    $parser->ModifyVars([
+        'color-theme-primary'=> $this->settings('color_primary'),
+        'color-theme-secondary' => $this->settings('color_secondary'),
+    ]);
+
+    return $parser->getCss();
 
   }
 

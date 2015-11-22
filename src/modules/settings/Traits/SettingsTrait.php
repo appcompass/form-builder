@@ -48,8 +48,6 @@ trait SettingsTrait
 
     }
 
-
-    // return $this->json;
     return $this->morphOne(Settings::class, 'settingable');
   }
 
