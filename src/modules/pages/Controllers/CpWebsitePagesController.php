@@ -105,11 +105,12 @@ class CpWebsitePagesController extends UiBaseController
                     'type' => 'text',
                     'help_block' => 'The title of the page.',
                 ],[
-                    'label' => 'Name',
-                    'name' => 'name',
-                    'placeholder' => 'Page Name',
-                    'type' => 'text',
-                    'help_block' => 'Name to be used to reference the page internally.',
+                    'label' => 'Page URL',
+                    'name' => 'slug',
+                    'placeholder' => '',
+                    'type' => 'slugify',
+                    'field' => 'title',
+                    'help_block' => 'This field is set automatically.  But if you need to ovride it, do so AFTER you set the Title above.',
                 ],[
                     'label' => 'Description',
                     'name' => 'description',
@@ -186,6 +187,7 @@ class CpWebsitePagesController extends UiBaseController
      */
     public function store(Request $request, $website_id)
     {
+        // $this->validate($request, []);
 
         $page = new Page($request->all());
 
@@ -246,7 +248,6 @@ class CpWebsitePagesController extends UiBaseController
         $this->record = Page::ofWebsite($website)->findOrFail($page_id);
 
         return $this->build('edit', ['websites', $website_id, 'pages', $page_id]);
-        return view('pages::edit', compact('page', 'website'));
     }
 
     /**
@@ -258,7 +259,16 @@ class CpWebsitePagesController extends UiBaseController
      */
     public function update(Request $request, $website_id, $page_id)
     {
-        //
+        // $this->validate($request, []);
+
+
+        $website = Website::findOrFail($website_id);
+
+        $page = Page::ofWebsite($website)->findOrFail($page_id);
+
+        $page->update($request->all());
+
+        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $page_id]));
     }
 
     /**

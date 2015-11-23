@@ -4,6 +4,8 @@
     @if(empty($repeatable)) <div class="col-sm-6"> @endif
         @if($field->type == 'text')
             {!! Form::text($field->name, null, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
+        @elseif($field->type == 'slugify')
+            {!! Form::text($field->name, null, ['class' => 'form-control slugify' ,'data-source' => $field->field, 'placeholder' => $field->placeholder]) !!}
         @elseif($field->type == 'password')
             {!! Form::password($field->name, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
         @elseif($field->type == 'textarea')
@@ -41,7 +43,7 @@
         @elseif($field->type == 'file')
             {!! Form::file($field->name, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
         @elseif($field->type == 'datepicker')
-            {!! Form::text($field->name, null, ['class' => 'form-control form-control-inline input-medium date-picker-default', 'placeholder' => $field->placeholder]) !!}
+            {!! Form::date('name', \Carbon\Carbon::now(), ['class' => 'form-control form-control-inline input-medium date-picker-default', 'placeholder' => $field->placeholder]) !!}
         @elseif($field->type == 'from_to_input')
             <div class="input-group input-large">
                 @foreach($field->data as $i => $from_to)
@@ -51,7 +53,7 @@
                     @elseif($from_to->type == 'password')
                         {!! Form::password($from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
                     @elseif($from_to->type == 'datepicker')
-                        {!! Form::text($from_to->name, null, ['class' => 'form-control date-picker-default', 'placeholder' => $from_to->placeholder]) !!}
+                        {!! Form::date($from_to->name, \Carbon\Carbon::now(), ['class' => 'form-control date-picker-default', 'placeholder' => $from_to->placeholder]) !!}
                     @endif
                 @endforeach
             </div>
@@ -97,16 +99,35 @@
 </div>
 @endforeach
 
+@if(empty($repeatable))
 {!! Form::submit('Save', ["class" => "btn btn-info"]) !!}
 
 <script src="/assets/ui/js/bootstrap-wysihtml5/wysihtml5-0.3.0.js" type="text/javascript"></script>
 <script src="/assets/ui/js/bootstrap-wysihtml5/bootstrap-wysihtml5.js" type="text/javascript"></script>
 
 <script type="text/javascript">
+    function slugify(text) {
+      return text.toString().toLowerCase().trim()
+        .replace(/\s+/g, '-')           // Replace spaces with -
+        .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+        .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+        .replace(/^-+/, '')             // Trim - from start of text
+        .replace(/-+$/, '');            // Trim - from end of text
+    }
     $(document).ready(function(){
         $('.wysihtml5').wysihtml5();
+
+        var name = '';
+        $('.slugify').each(function(i,e){
+            name = $(e).attr('data-source');
+            $('input[name="'+name+'"').on('keyup', function(elm){
+                $(e).val(slugify($(this).val()));
+            })
+        });
     });
 </script>
+@endif
+
 {{--
 The below is the example array of all possibilities.
 [
@@ -116,6 +137,13 @@ The below is the example array of all possibilities.
         'placeholder' => 'Some Placeholder',
         'type' => 'text',
         'help_block' => '',
+    ],[
+        'label' => 'Page URL',
+        'name' => 'slug',
+        'placeholder' => '',
+        'type' => 'slugify',
+        'field' => 'title',
+        'help_block' => 'This field is set automatically.',
     ],[
         'label' => 'Password',
         'name' => 'password',
