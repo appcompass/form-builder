@@ -129,6 +129,26 @@ class CpWebsitePagesController extends UiBaseController
                     'placeholder' => '',
                     'type' => 'layout_selector',
                     'help_block' => 'Select the page\'s layout.',
+                ],[
+                    'label' => 'Repeatable Input Fields',
+                    'name' => 'group_name_id',
+                    'type' => 'repeatable',
+                    'data' => [ // Same structure as the rest of this array.  below is example.
+                        [
+                            'label' => 'Description',
+                            'name' => 'description',
+                            'placeholder' => 'Page Description Block',
+                            'type' => 'textarea',
+                            'help_block' => 'The title of the page.',
+                        ],[
+                            'label' => 'A Managed Website',
+                            'name' => 'config[managed]',
+                            'placeholder' => '',
+                            'type' => 'checkbox',
+                            'help_block' => '',
+                        ]
+                    ],
+                    'help_block' => '',
                 ]
             ]
         ]

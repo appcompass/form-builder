@@ -1,19 +1,19 @@
 @foreach($fields as $field)
 <div class="form-group @if($field->type == 'repeatable') form-repeatable @endif ">
-    {!! Form::label($field->name, $field->label, ['class' => empty($repeatable) ? 'col-sm-3 control-label' : '']) !!}
+    {!! Form::label(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}]{$field->name}" : $field->name, $field->label, ['class' => empty($repeatable) ? 'col-sm-3 control-label' : '']) !!}
     @if(empty($repeatable)) <div class="col-sm-6"> @endif
         @if($field->type == 'text')
-            {!! Form::text($field->name, null, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
+            {!! Form::text(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}]{$field->name}" : $field->name, null, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
         @elseif($field->type == 'slugify')
-            {!! Form::text($field->name, null, ['class' => 'form-control slugify' ,'data-source' => $field->field, 'placeholder' => $field->placeholder]) !!}
+            {!! Form::text(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}]{$field->name}" : $field->name, null, ['class' => 'form-control slugify' ,'data-source' => $field->field, 'placeholder' => $field->placeholder]) !!}
         @elseif($field->type == 'password')
-            {!! Form::password($field->name, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
+            {!! Form::password(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}]{$field->name}" : $field->name, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
         @elseif($field->type == 'textarea')
-            {!! Form::textarea($field->name, null, ['class' => 'form-control', 'rows' => '6', 'placeholder' => $field->placeholder]) !!}
+            {!! Form::textarea(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}]{$field->name}" : $field->name, null, ['class' => 'form-control', 'rows' => '6', 'placeholder' => $field->placeholder]) !!}
         @elseif($field->type == 'wysiwyg')
-            {!! Form::textarea($field->name, null, ['class' => 'wysihtml5 form-control', 'rows' => '9', 'placeholder' => $field->placeholder]) !!}
+            {!! Form::textarea(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}]{$field->name}" : $field->name, null, ['class' => 'wysihtml5 form-control', 'rows' => '9', 'placeholder' => $field->placeholder]) !!}
         @elseif($field->type == 'selectlist')
-            {!! Form::select($field->name, $field->data, null, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
+            {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}]{$field->name}" : $field->name, $field->data, null, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
         @elseif($field->type == 'checkbox')
             @if(!empty($field->data))
                 @foreach($field->data as $checkbox)
@@ -27,7 +27,7 @@
             @else
                 <div class="checkbox">
                     <label>
-                        {!! Form::checkbox($field->name, 'true', ['class' => 'form-control']) !!}
+                        {!! Form::checkbox(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}]{$field->name}" : $field->name, 'true', ['class' => 'form-control']) !!}
                     </label>
                 </div>
             @endif
@@ -35,13 +35,13 @@
                 @foreach($field->data as $label => $value)
                 <div class="radio">
                     <label>
-                        {!! Form::radio($field->name, $value, ['class' => 'form-control']) !!}
+                        {!! Form::radio(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}]{$field->name}" : $field->name, $value, ['class' => 'form-control']) !!}
                        {{ $label }}
                     </label>
                 </div>
                 @endforeach
         @elseif($field->type == 'file')
-            {!! Form::file($field->name, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
+            {!! Form::file(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}]{$field->name}" : $field->name, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
         @elseif($field->type == 'datepicker')
             {!! Form::date('name', \Carbon\Carbon::now(), ['class' => 'form-control form-control-inline input-medium date-picker-default', 'placeholder' => $field->placeholder]) !!}
         @elseif($field->type == 'from_to_input')
@@ -68,29 +68,15 @@
                 @endforeach
             </div>
         @elseif($field->type == 'model_selectlist')
-            {!! Form::select($field->name, with(new $field->data)->lists($field->label, $field->value), null, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
+            {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}]{$field->name}" : $field->name, with(new $field->data)->lists($field->label, $field->value), null, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
         @elseif($field->type == 'layout_selector')
-            {!! Form::select($field->name, $meta->available_layouts) !!}
+            {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}]{$field->name}" : $field->name, $meta->available_layouts) !!}
         @elseif($field->type == 'repeatable')
-            <div class="panel">
-                <div class="panel-heading">
-                    Repeatable Item #1
-                    <span class="tools pull-right">
-                        <a href="javascript:;" class="fa fa-arrows no-link"></a>
-                        <a href="javascript:;" class="fa fa-chevron-down no-link"></a>
-                        <a href="javascript:;" class="fa fa-times text-danger no-link"></a>
-                    </span>
-                </div>
-                <div class="panel-body">
-                    @include('ui::partials.form_fields', ['fields' => $field->data, 'repeatable' => true])
-                </div>
-            </div>
-            <div class="text-right">
-                <button class="btn btn-sm btn-white form-repeatable-add">
-                    <i class="fa fa-plus"></i>
-                    Add Item
-                </button>
-            </div>
+            @if(isset($record))
+                @include('ui::partials.repeatable_block', ['prefix' => $field->name, 'records' => !empty($record->{$field->name}) ? $record->{$field->name}: [[]]])
+            @else
+                @include('ui::partials.repeatable_block', ['prefix' => $field->name, 'records' => [[]]])
+            @endif
         @endif
         @if ($field->help_block)
             <small class="help-block">{{ $field->help_block }}</small>
@@ -107,22 +93,61 @@
 
 <script type="text/javascript">
     function slugify(text) {
-      return text.toString().toLowerCase().trim()
+      return text.toString().toLowerCase()
         .replace(/\s+/g, '-')           // Replace spaces with -
         .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
         .replace(/\-\-+/g, '-')         // Replace multiple - with single -
         .replace(/^-+/, '')             // Trim - from start of text
         .replace(/-+$/, '');            // Trim - from end of text
     }
+    function increment_array(i, v){
+        return v.replace(/\[(\d+)\]/, function(match, num){
+            return '[' + (+ num + 1) + ']';
+        })
+    }
+
     $(document).ready(function(){
         $('.wysihtml5').wysihtml5();
 
+        // Slugify logic
         var name = '';
         $('.slugify').each(function(i,e){
             name = $(e).attr('data-source');
             $('input[name="'+name+'"').on('keyup', function(elm){
                 $(e).val(slugify($(this).val()));
             })
+        });
+
+        // Repeatable block logic
+        $('.form-repeatable-add').on('click', function(e){
+            e.preventDefault();
+            var container = $(this).parent().prev('.repeatable-container');
+            var cloned = container.clone(true);
+
+            cloned.find('input, textarea')
+                .val('')
+                .removeAttr('checked');
+
+            cloned.find('[name]')
+                .attr('id', increment_array)
+                .attr('name', increment_array);
+
+            cloned.find('[for]')
+                .attr('for', increment_array);
+
+            // cloned.find('[name]').each(function(i){
+            //     $(this).attr('name', increment_index($(this).attr('name')));
+            // });
+
+            cloned.insertAfter(container);
+        });
+
+        $('.panel-heading .fa-arrows').on('click', function(e){
+            // draggable
+        });
+
+        $('.panel-heading .fa-times').on('click', function(e){
+            $(this).parents('.repeatable-container').remove();
         });
     });
 </script>
