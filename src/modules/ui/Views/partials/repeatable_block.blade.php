@@ -1,7 +1,7 @@
 @foreach($records as $key => $val)
 <div class="panel repeatable-container">
     <div class="panel-heading">
-        <span class="heading-label">Repeatable Item #1</span>
+        <span class="heading-label">{{ $field->label }} Item #<span class="repeatable-number">{{ ($key+1) }}</span></span>
         <span class="pull-right">
             <a href="javascript:;" class="fa fa-arrows no-link"></a>
             <a href="javascript:;" class="fa fa-chevron-down no-link"></a>

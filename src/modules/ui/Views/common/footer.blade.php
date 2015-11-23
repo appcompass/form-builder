@@ -261,14 +261,19 @@
 
 			$(document).on('click', 'a[href]:not(.no-link)', function(e){
 				e.preventDefault();
-                var obj = {
-                    target: $(this).attr('data-target'),
-                    url: $(this).attr('href')
-                };
-                if ($(this).attr('href')) {
-                    router.navigate(obj.url);
-                    // loadSourceToTarget(obj);
-                    // window.history.pushState({"page":obj.url},"", '#'+obj.url);
+
+                var href = $(this).attr('href');
+
+                if (href != 'javascript:;') {
+                    var obj = {
+                        target: $(this).attr('data-target'),
+                        url: href
+                    };
+                    if ($(this).attr('href')) {
+                        router.navigate(obj.url);
+                        // loadSourceToTarget(obj);
+                        // window.history.pushState({"page":obj.url},"", '#'+obj.url);
+                    };
                 };
 			});
 

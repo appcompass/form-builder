@@ -1,19 +1,19 @@
 @foreach($fields as $field)
 <div class="form-group @if($field->type == 'repeatable') form-repeatable @endif ">
-    {!! Form::label(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}]{$field->name}" : $field->name, $field->label, ['class' => empty($repeatable) ? 'col-sm-3 control-label' : '']) !!}
+    {!! Form::label(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $field->label, ['class' => empty($repeatable) ? 'col-sm-3 control-label' : '']) !!}
     @if(empty($repeatable)) <div class="col-sm-6"> @endif
         @if($field->type == 'text')
-            {!! Form::text(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}]{$field->name}" : $field->name, null, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
+            {!! Form::text(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
         @elseif($field->type == 'slugify')
-            {!! Form::text(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}]{$field->name}" : $field->name, null, ['class' => 'form-control slugify' ,'data-source' => $field->field, 'placeholder' => $field->placeholder]) !!}
+            {!! Form::text(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, ['class' => 'form-control slugify' ,'data-source' => $field->field, 'placeholder' => $field->placeholder]) !!}
         @elseif($field->type == 'password')
-            {!! Form::password(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}]{$field->name}" : $field->name, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
+            {!! Form::password(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
         @elseif($field->type == 'textarea')
-            {!! Form::textarea(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}]{$field->name}" : $field->name, null, ['class' => 'form-control', 'rows' => '6', 'placeholder' => $field->placeholder]) !!}
+            {!! Form::textarea(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, ['class' => 'form-control', 'rows' => '6', 'placeholder' => $field->placeholder]) !!}
         @elseif($field->type == 'wysiwyg')
-            {!! Form::textarea(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}]{$field->name}" : $field->name, null, ['class' => 'wysihtml5 form-control', 'rows' => '9', 'placeholder' => $field->placeholder]) !!}
+            {!! Form::textarea(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, ['class' => 'wysihtml5 form-control', 'rows' => '9', 'placeholder' => $field->placeholder]) !!}
         @elseif($field->type == 'selectlist')
-            {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}]{$field->name}" : $field->name, $field->data, null, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
+            {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $field->data, null, ['class' => 'form-control']) !!}
         @elseif($field->type == 'checkbox')
             @if(!empty($field->data))
                 @foreach($field->data as $checkbox)
@@ -27,7 +27,7 @@
             @else
                 <div class="checkbox">
                     <label>
-                        {!! Form::checkbox(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}]{$field->name}" : $field->name, 'true', ['class' => 'form-control']) !!}
+                        {!! Form::checkbox(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, 'true', ['class' => 'form-control']) !!}
                     </label>
                 </div>
             @endif
@@ -35,13 +35,13 @@
                 @foreach($field->data as $label => $value)
                 <div class="radio">
                     <label>
-                        {!! Form::radio(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}]{$field->name}" : $field->name, $value, ['class' => 'form-control']) !!}
+                        {!! Form::radio(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $value, ['class' => 'form-control']) !!}
                        {{ $label }}
                     </label>
                 </div>
                 @endforeach
         @elseif($field->type == 'file')
-            {!! Form::file(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}]{$field->name}" : $field->name, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
+            {!! Form::file(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
         @elseif($field->type == 'datepicker')
             {!! Form::date('name', \Carbon\Carbon::now(), ['class' => 'form-control form-control-inline input-medium date-picker-default', 'placeholder' => $field->placeholder]) !!}
         @elseif($field->type == 'from_to_input')
@@ -62,15 +62,15 @@
                 @foreach($field->data as $i => $from_to)
                     @if($from_to->type == 'selectlist')
                         <div class="col-sm-6">
-                            {!! Form::select($from_to->name, $from_to->data, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
+                            {!! Form::select($from_to->name, $from_to->data, null, ['class' => 'form-control']) !!}
                         </div>
                     @endif
                 @endforeach
             </div>
         @elseif($field->type == 'model_selectlist')
-            {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}]{$field->name}" : $field->name, with(new $field->data)->lists($field->label, $field->value), null, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
+            {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, with(new $field->data)->lists($field->label, $field->value), null, ['class' => 'form-control']) !!}
         @elseif($field->type == 'layout_selector')
-            {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}]{$field->name}" : $field->name, $meta->available_layouts) !!}
+            {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $meta->available_layouts) !!}
         @elseif($field->type == 'repeatable')
             @if(isset($record))
                 @include('ui::partials.repeatable_block', ['prefix' => $field->name, 'records' => !empty($record->{$field->name}) ? $record->{$field->name}: [[]]])
@@ -100,10 +100,33 @@
         .replace(/^-+/, '')             // Trim - from start of text
         .replace(/-+$/, '');            // Trim - from end of text
     }
-    function increment_array(i, v){
-        return v.replace(/\[(\d+)\]/, function(match, num){
-            return '[' + (+ num + 1) + ']';
-        })
+
+    function incrementAttrArray(overide){
+        return function(i, v){
+            return v.replace(/\[(\d+)\]/, function(match, num){
+                return '[' + (typeof overide !== 'undefined' ? overide : + num + 1) + ']';
+            });
+        }
+    }
+
+    function reIndexRepeatables(elms){
+        elms.each(function(i,v){
+            fixPosition($(this), i);
+        });
+    }
+
+    function fixPosition(elm, overide) {
+        elm.find('.repeatable-number')
+            .text(function(i,v){
+                return typeof overide !== 'undefined' ? overide+1 : parseInt(v,10)+1;
+            });
+
+        elm.find('[name]')
+            .attr('id', incrementAttrArray(overide))
+            .attr('name', incrementAttrArray(overide));
+
+        elm.find('[for]')
+            .attr('for', incrementAttrArray(overide));
     }
 
     $(document).ready(function(){
@@ -128,12 +151,24 @@
                 .val('')
                 .removeAttr('checked');
 
-            cloned.find('[name]')
-                .attr('id', increment_array)
-                .attr('name', increment_array);
+            fixPosition(cloned);
 
-            cloned.find('[for]')
-                .attr('for', increment_array);
+
+            // cloned.find('.repeatable-number')
+            //     .text(function(i,v){
+            //         return parseInt(v,10)+1;
+            //     })
+
+            // cloned.find('input, textarea')
+            //     .val('')
+            //     .removeAttr('checked');
+
+            // cloned.find('[name]')
+            //     .attr('id', incrementAttrArray)
+            //     .attr('name', incrementAttrArray);
+
+            // cloned.find('[for]')
+            //     .attr('for', incrementAttrArray);
 
             // cloned.find('[name]').each(function(i){
             //     $(this).attr('name', increment_index($(this).attr('name')));
@@ -148,6 +183,7 @@
 
         $('.panel-heading .fa-times').on('click', function(e){
             $(this).parents('.repeatable-container').remove();
+            reIndexRepeatables($('.repeatable-container'));
         });
     });
 </script>
@@ -221,7 +257,6 @@ The below is the example array of all possibilities.
     ],[
         'label' => 'Status',
         'name' => 'status',
-        'placeholder' => 'Choose a Status',
         'type' => 'selectlist',
         'data' => [
             'published' => 'Published',
@@ -232,7 +267,6 @@ The below is the example array of all possibilities.
     ],[
         'label' => 'Category',
         'name' => 'category',
-        'placeholder' => 'Choose a Category',
         'type' => 'model_selectlist',
         'data' => BlogCategory::class,
         'label' => 'name',
