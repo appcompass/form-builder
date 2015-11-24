@@ -355,6 +355,27 @@ The below is the example array of all possibilities.
             ],
         ],
         'help_block' => '',
+    ],,[
+        'label' => 'From To Mixed',
+        'type' => 'from_to_mixed',
+        'name' => 'this_is_not_used',
+        'data' => [
+            [
+                'name' => 'from_name',
+                'placeholder' => '',
+                'type' => 'selectlist',
+                'data' => [
+                    'published' => 'Published',
+                    'draft' => 'Draft',
+                    'private' => 'Private',
+                ],
+            ],[
+                'name' => 'to_name',
+                'placeholder' => '',
+                'type' => 'datepicker', // or text, or password
+            ],
+        ],
+        'help_block' => '',
     ],[
         'label' => 'WYSIWYG Input Field',
         'name' => 'some_filed_name',
