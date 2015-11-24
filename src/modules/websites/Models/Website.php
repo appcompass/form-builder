@@ -61,7 +61,7 @@ class Website extends Model
   /**
    *
    */
-  protected $with = ['settings'];
+  protected $with = [];
 
   /**
    * Model's rules
