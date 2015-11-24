@@ -101,7 +101,8 @@ class CpWebsitePageSectionsController extends UiBaseController
                 'type' => null
             ]);
 
-        return redirect()->action('\P3in\Controllers\CpWebsitePagesController@show', [$website->id, $page->id]);
+        // return redirect()->action('\P3in\Controllers\CpWebsitePagesController@show', [$website->id, $page->id]);
+        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $page->id, 'section', $section_id, 'edit']));
 
     }
 
