@@ -64,7 +64,8 @@ class CpWebsitePagesController extends UiBaseController
                     'target' => '#main-content-out',
                 ],[
                     'route' => 'websites.pages.show',
-                    'target' => '#record-detail',
+                    'target' => '#main-content-out',
+                    // 'target' => '#record-detail',
                 ],
             ],
             'heading' => 'Page Informations',
@@ -228,8 +229,8 @@ class CpWebsitePagesController extends UiBaseController
             ->with('page', $page)
             ->with('meta', $this->meta)
             ->with('nav', $this->getCpSubNav())
-            ->with('sections', $this->getSections());
-            // ->with('left_panels', $this->getLeftPanels());
+            ->with('sections', $this->getSections())
+            ->with('left_panels', $this->getLeftPanels());
     }
 
     /**
@@ -273,8 +274,6 @@ class CpWebsitePagesController extends UiBaseController
         // REMEMBER! this->record holds the model instance
         $page = $this->record->load('sections');
 
-        $all_sections = Section::all();
-
         // returning
         $sections = [
             'page' => [],
@@ -285,7 +284,7 @@ class CpWebsitePagesController extends UiBaseController
 
             $current_nav = $sections['page'][$layout_part] = new Navmenu(['label' => 'Current Template']);
 
-            foreach ($page->sections()->where('fits', $layout_part)->get() as $section) {
+            foreach ($page->sections()->where('section', $layout_part)->get() as $section) {
 
                 $nav_item = $section->getNavigationItem([
                     'url' => 'section/'.$section->pivot->id.'/edit',
@@ -300,11 +299,11 @@ class CpWebsitePagesController extends UiBaseController
 
             $current_templates_nav = $sections['available'][$layout_part] = new Navmenu(['label' => ucfirst($layout_part).' Templates']);
 
-            foreach ($all_sections->where('fits', $layout_part) as $section) {
+            foreach (Section::where('fits', $layout_part)->get() as $section) {
 
                 $nav_item = $section->getNavigationItem([
                     'url' => '',
-                    'props' => []
+                    'props' => ['id' => $section->id]
                 ]);
 
                 $current_templates_nav->items->push($nav_item);
@@ -320,13 +319,13 @@ class CpWebsitePagesController extends UiBaseController
      *
      *
      */
-    // public function getLeftPanels($id = null)
-    // {
-    //     // REMEMBER! this->record holds the model instance
-    //     $page = $this->record;
+    public function getLeftPanels($id = null)
+    {
+        // REMEMBER! this->record holds the model instance
+        $page = $this->record;
 
-    //     // fetch default panels
-    //     $left_panels[] = parent::getLeftPanels() ?: null;
+        // fetch default panels
+        $left_panels[] = parent::getLeftPanels() ?: null;
 
     //     foreach(explode(':', $page->layout) as $layout_part) {
 
@@ -364,9 +363,9 @@ class CpWebsitePagesController extends UiBaseController
 
     //     }
 
-    //     return $left_panels;
+        return $left_panels;
 
-    // }
+    }
 
 
     /**

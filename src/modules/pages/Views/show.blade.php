@@ -1,135 +1,183 @@
-@extends('layouts/basic_admin_panel')
-{{-- @extends('ui::layouts/cms_internal_layout') --}}
+@extends('ui::layouts/cms_internal_layout')
 
-@section('header')
-    page editor
+@section('subnav')
+    @include('ui::partials/cms_subnav_panel', ['meta' => $meta, 'nav' => $nav])
 @stop
 
-@section('body')
-    <section class="panel">
-        <div class="panel-body">
-        @foreach($sections['page'] as $page_section)
-            <ol class="sortable" href="/websites/{{ $website->id }}/navigation">
-            @foreach($page_section->items as $item)
-                <li
-                    id="menuItem_{{ $item->id }}"
-                    data-id="menuItem_{{ $item->id }}"
-                    class="draggable"
-                >
-                    <i class="handle fa fa-arrows"> </i>
-                    <img src="https://placehold.it/120x120">
-                    <div>{{ $item->label }}</div>
-                </li>
-            @endforeach
-            </ol>
-        @endforeach
-        </div>
-    </section>
-
-{{-- Close panel opened in the master template --}}
-</div>
-</div>
-</div>
+@section('content')
 </section>
-
-@foreach($sections['available'] as $page_section)
-    <section class="panel">
-        <div class="panel-heading">{{ $page_section->label }}</div>
-        <div class="panel-body">
-            <ol class="inline-draggable">
-            @foreach($page_section->items as $item)
-                <li
-                    id="menuItem_{{ $item->name }}"
-                    data-id="menuItem_{{ $item->name }}"
-                    class="draggable"
-                >
-                    <i class="handle fa fa-arrows"> </i>
-                    <img src="https://placehold.it/120x120">
-                    <div>{{ $item->label }}</div>
-                </li>
-            @endforeach
-            </ol>
+    <div class="row">
+        <div class="col-lg-4">
+            <section class="panel">
+                <div class="panel-heading">
+                    Current {{ $page->title }} Template
+                </div>
+                <div class="panel-body">
+                @foreach($sections['page'] as $layout_part => $page_section)
+                <div class="col-lg-{{ 12 / intVal(count($sections['page'])) }}">
+                    <h3>{{ ucfirst($layout_part) }}</h3>
+                    <ol class="sortable" href="/websites/{{ $website->id }}/navigation" data-layout-part="{{ $layout_part }}">
+                    @foreach($page_section->items as $item)
+                        <li
+                            id="menuItem_{{ $item->id }}"
+                            data-section-id="{{ $item->id }}"
+                            class="item"
+                        >
+                            <i class="handle fa fa-arrows"> </i>
+                            <img src="https://placehold.it/120x120">
+                            <div>
+                                <a
+                                    href="#{{ $meta->base_url.'/'.$item->url }}"
+                                    class="no-link"
+                                    data-id="{{ $item->label }}"
+                                    data-click="{{ $meta->base_url.'/'.$item->url }}"
+                                    data-target="#content-edit"
+                                    style="display: inline"
+                                >
+                                    {{ $item->label }}
+                                </a>
+                            </div>
+                            <a
+                                data-id="{{$item->id}}"
+                                href="{{ $meta->base_url.'/section/'.$item->id }}"
+                                class="delete-icon"
+                            >
+                                <i class="fa fa-trash-o"> </i> Delete
+                            </a>
+                        </li>
+                    @endforeach
+                    </ol>
+                </div>
+                @endforeach
+                </div>
+            </section>
         </div>
-    </section>
-@endforeach
+        <div class="col-lg-8" id="content-edit"></div>
+    </div>
+
+
+    @foreach($sections['available'] as $layout_part => $page_section)
+        <section class="panel">
+            <div class="panel-heading">{{ $page_section->label }}</div>
+            <div class="panel-body">
+                <ol class="inline-draggable">
+                @foreach($page_section->items as $item)
+                    <li
+                        id="menuItem_{{ $item->name }}"
+                        data-section-id="{{ $item->props['id'] }}"
+                        class="draggable item"
+                    >
+                        <i class="handle fa fa-arrows"> </i>
+                        <img src="https://placehold.it/120x120">
+                        <div>{{ $item->label }}</div>
+                    </li>
+                @endforeach
+                </ol>
+            </div>
+        </section>
+    @endforeach
+
 @stop
 
-@section('footer.scripts')
+@section('scripts')
 
 <script>
 
-    function store(url, config, next) {
+$(document).ready(function() {
 
-        $.ajax({
-            type: config.method || 'get',
-            url: url,
-            data: config.data || null,
-            success: function(data) {
-              next(data);
-            },
-            error: function(data) {}
-        })
+    var config = {
+        deleteClass: '.delete-icon'
     }
 
+    $('.sortable').sortable({
+        items: ".item",
+        opacity: 0.8,
+        helper: "clone",
+        cursor: 'move',
+        placeholder: "placeholder",
+        // connectWith: '.sortable',
+        dropOnEmpty: true,
+        // revert: 'invalid',
+        //
+        isValid: function() {
 
-    $(document).ready(function(){
+            return true;
 
-        $('.just-ajax-save').on('submit', function(e) {
-            e.preventDefault();
+        },
+
+        update: function(event, ui) {
+            event.preventDefault();
+
+            var sortData = $('.sortable').sortable('serialize');
+            var url = '{{ $meta->base_url }}/section';
+
+            // $.ajax({
+            //     type: 'POST',
+            //     url: url,
+            //     data: sortData,
+            //     success: function(data) {
+            //         $('{{ $meta->data_target }}').html(data);
+            //     }
+            // })
+
+            return false;
+        },
+
+        receive: function(event, ui) {
+
+            var item = $(ui.item[0]);
+            var dest = $($(this)[0]);
 
             var data = {
-                label: $(this).find('[name="label"]').val()
+                layout_part: dest.attr('data-layout-part'),
+                section_id: item.attr('data-section-id')
             }
 
-            store($(this).attr('action'), {method: 'put', data: data}, function(data) { console.log(data) });
+            $.ajax({
+                url: '{{ $meta->base_url }}/section',
+                type: 'POST',
+                data: data,
+                success: function(data) {
+                    $('#record-detail').html(data);
+                },
+                complete: function(data) {},
+                error: function(error) {},
+            })
+        }
+    }).disableSelection();
+
+    $('.draggable').draggable({
+        connectToSortable: ".sortable",
+        helper: "clone",
+    });
+
+    $('.item').hover(function() {
+        $(this).find(config.deleteClass).stop(true, true).fadeIn();
+    }, function() {
+        $(this).find(config.deleteClass).stop(true, true).fadeOut();
+    })
+
+    $(config.deleteClass).on('click', function(event) {
+        event.preventDefault;
+
+        $.ajax({
+            url: $(this).attr('href'),
+            type: 'post',
+            data: {
+                _method: 'delete',
+                id: $(this).attr('data-id')
+            },
+
+            success: function(data) {
+                console.log(data);
+                $('{{ $meta->data_target }}').html(data);
+            }
 
         })
 
-        $('.sortable').nestedSortable({
-            handle: 'i',
-            items: 'li',
-            toleranceElement: '> div',
-            forcePlaceholderSize: true,
-            tolerance: 'pointer',
-            placeholder: 'placeholder',
-            isTree: true,
-
-            isAllowed: function(placeholder, placeholderParent, currentItem) {
-                var result = $(placeholderParent).attr('data-has-content');
-                if (result === undefined || result === '1' ) { // stupid php don't have time for this
-                    return true;
-                }
-            },
-
-            receive: function(event, ui) {
-
-                var newHierarchy = $(this).sortable('toHierarchy', {startDepthCount: 0})
-                var droppedItem = $(ui.item[0]);
-                var navmenu = droppedItem.parents().find('[data-navmenu]');
-
-                var data = {
-                    item_id: droppedItem.attr('data-id'),
-                    navmenu_name: navmenu.attr('data-navmenu'),
-                    hierarchy: JSON.stringify(newHierarchy)
-                }
-
-                store(navmenu.attr('href'), {method: 'post', data: data}, function(data) { $('#record-detail').html(data); } );
-            },
-
-            update: function(event, ui) {
-                // var sortData = $('.sortable').sortable('toHierarchy', {startDepthCount: 0});
-                var sortData = $(this).sortable('toHierarchy', {startDepthCount: 0});
-                // console.log(sortData);
-            }
-        }).disableSelection();
-
-        $('.draggable').draggable({
-          connectToSortable: '.sortable',
-          helper: 'clone',
-          handle: '.handle',
-          maxLevels: 3,
-        }).disableSelection();
-    });
+        return false;
+    })
+})
 
 </script>
 
@@ -139,9 +187,9 @@
   .sortable i, .draggable i { display: inline-block; }
   .sortable div, .draggable div { display: inline-block; }
 
-  .sortable, .draggable { max-width: 50%; }
+  .sortable, .draggable { max-width: 100%; }
   .sortable li img { display: none;}
-  ol, ul {list-style: none;}
+  ol, ul {list-style: none; padding: 0;}
   ol li { display: block; line-height: 20px; border: 1px solid #ddd; margin-bottom: 2px; border-radius: 4px;}
   li > ol { margin-top: 0px; }
   li div { padding: 5px 10px; }
@@ -157,6 +205,8 @@
   .inline-draggable li .handle { position: absolute; right: -5px; top: -5px; height: 20px; width: 20px; line-height: 20px; font-size: 8px; border-radius: 5px;}
   .inline-draggable li .handle:hover { background: #eee; cursor: pointer;}
   .inline-draggable li div { color: #fff; font-weight: bold; display: inline-height; text-align: center; line-height: 20px; 100%; width: 100%; position: absolute; bottom: 0;left: 0;right: 0; background: rgba(128, 128, 128, 0.2); }
+  .delete-icon {display: none; font-size: 9px; float: right; line-height: 34px; color: red; margin-right: 10px;}
+  .delete-icon:hover {}
 
 </style>
 

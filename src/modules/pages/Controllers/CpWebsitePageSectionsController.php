@@ -4,12 +4,13 @@ namespace P3in\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
+use DB;
 use Illuminate\Http\Request;
 use P3in\Controllers\UiBaseController;
-use P3in\Models\Section;
 use P3in\Models\Page;
+use P3in\Models\Section;
+use P3in\Models\Website;
 use Response;
-use DB;
 
 class CpWebsitePageSectionsController extends UiBaseController
 {
@@ -21,7 +22,7 @@ class CpWebsitePageSectionsController extends UiBaseController
                     'target' => '#main-content-out',
                 ],[
                     'route' => 'websites.pages.section.edit',
-                    'target' => '#record-detail',
+                    'target' => '#content-edit',
                 ],
             ],
         ],
@@ -61,7 +62,14 @@ class CpWebsitePageSectionsController extends UiBaseController
     public function store(Request $request, $website_id, $page_id)
     {
 
-        $page = Page::findOrFail($page_id);
+        $this->validate($request, [
+            'layout_part' => 'required',
+            'section_id' => 'required:numeric'
+        ]);
+
+        $website = Website::findOrFail($website_id);
+
+        $page = $website->pages()->findOrFail($page_id);
 
         if ($request->has('reorder')) {
 
@@ -78,12 +86,22 @@ class CpWebsitePageSectionsController extends UiBaseController
             ->where('page_id', '=', $page_id)
             ->max('order') ) + 1;
 
+        $section = Section::findOrFail($request->section_id);
+
+        if ($section->fits !== $request->layout_part) {
+
+            return $this->json([], false, 'Unable to complete the request, section has been dragged in the wrong spot.');
+
+        }
+
         $page->sections()
-            ->attach(Section::whereName($request->section_name)->first(), ['order' => $order]);
+            ->attach($section, [
+                'order' => $order,
+                'section' => $section->fits,
+                'type' => null
+            ]);
 
-        return redirect()->action('\P3in\Controllers\CpWebsitePagesController@show', [$page->website->id, $page]);
-
-        // return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $page->id]));
+        return redirect()->action('\P3in\Controllers\CpWebsitePagesController@show', [$website->id, $page->id]);
 
     }
 
@@ -114,8 +132,11 @@ class CpWebsitePageSectionsController extends UiBaseController
         $edit_view = 'sections/'.$section->edit_view;
 
         $this->setBaseUrl(['websites', $website_id, 'pages', $page_id, 'section', $section->pivot->id]);
+
         $meta = $this->meta;
+
         $record = json_decode($section->pivot->content);
+
         return view($edit_view, compact('meta', 'section', 'page', 'photos', 'record'));
     }
 
@@ -141,6 +162,7 @@ class CpWebsitePageSectionsController extends UiBaseController
 
         $result = DB::table('page_section')->where('id', $section_id)
             ->update(['content' => $content]);
+
         return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $page->id, 'section', $section_id, 'edit']));
     }
 
