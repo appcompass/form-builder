@@ -101,8 +101,9 @@ class CpWebsitePageSectionsController extends UiBaseController
                 'type' => null
             ]);
 
+        return redirect()->action('\P3in\Controllers\CpWebsitePagesController@show', [$page->website->id, $page->id]);
         // return redirect()->action('\P3in\Controllers\CpWebsitePagesController@show', [$website->id, $page->id]);
-        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $page->id, 'section', $section_id, 'edit']));
+        // return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $page->id, 'section', $request->section_id, 'edit']));
 
     }
 
@@ -138,6 +139,8 @@ class CpWebsitePageSectionsController extends UiBaseController
 
         $record = json_decode($section->pivot->content);
 
+        // return redirect()->action('\P3in\Controllers\CpWebsitePagesController@show', [$page->website->id, $page->id]);
+
         return view($edit_view, compact('meta', 'section', 'page', 'photos', 'record'));
     }
 
@@ -164,7 +167,10 @@ class CpWebsitePageSectionsController extends UiBaseController
         $result = DB::table('page_section')->where('id', $section_id)
             ->update(['content' => $content]);
 
-        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $page->id, 'section', $section_id, 'edit']));
+        dd("here");
+
+        return redirect()->action('\P3in\Controllers\CpWebsitePagesController@show', [$page->website->id, $page->id]);
+        // return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $page->id, 'section', $section_id, 'edit']));
     }
 
     /**

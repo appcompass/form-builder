@@ -138,7 +138,7 @@ $(document).ready(function() {
                 type: 'POST',
                 data: data,
                 success: function(data) {
-                    $('#record-detail').html(data);
+                    $('{{ $meta->data_target }}').html(data);
                 },
                 complete: function(data) {},
                 error: function(error) {},
