@@ -1,7 +1,7 @@
 @foreach($fields as $field)
 <div class="form-group @if($field->type == 'repeatable') form-repeatable @endif ">
-    {!! Form::label(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $field->label, ['class' => empty($repeatable) ? 'col-sm-3 control-label' : '']) !!}
-    @if(empty($repeatable)) <div class="col-sm-6"> @endif
+    {!! Form::label(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $field->label, ['class' => empty($repeatable) ? 'col-lg-3 control-label' : '']) !!}
+    @if(empty($repeatable)) <div class="col-lg-6"> @endif
         @if($field->type == 'text')
             {!! Form::text(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
         @elseif($field->type == 'slugify')
@@ -61,8 +61,30 @@
             <div class="row">
                 @foreach($field->data as $i => $from_to)
                     @if($from_to->type == 'selectlist')
-                        <div class="col-sm-6">
+                        <div class="col-lg-6">
                             {!! Form::select($from_to->name, $from_to->data, null, ['class' => 'form-control']) !!}
+                        </div>
+                    @endif
+                @endforeach
+            </div>
+        @elseif($field->type == 'from_to_mixed')
+            <div class="row">
+                @foreach($field->data as $i => $from_to)
+                    @if($from_to->type == 'selectlist')
+                        <div class="col-lg-6">
+                            {!! Form::select($from_to->name, $from_to->data, null, ['class' => 'form-control']) !!}
+                        </div>
+                    @elseif($field->type == 'text')
+                        <div class="col-lg-6">
+                            {!! Form::text($from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
+                        </div>
+                    @elseif($from_to->type == 'password')
+                        <div class="col-lg-6">
+                            {!! Form::password($from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
+                        </div>
+                    @elseif($from_to->type == 'datepicker')
+                        <div class="col-lg-6">
+                            {!! Form::date($from_to->name, \Carbon\Carbon::now(), ['class' => 'form-control date-picker-default', 'placeholder' => $from_to->placeholder]) !!}
                         </div>
                     @endif
                 @endforeach
