@@ -275,7 +275,7 @@ class CpWebsiteController extends UiBaseController
             'site_url' => 'required',
             'config.host' => 'required:ip',
             'config.username' => 'required',
-            'config.password' => 'required',
+            // 'config.password' => 'required',
             'config.root' => 'required',
             // 'config' => 'site_connection',
         ]);
@@ -286,9 +286,11 @@ class CpWebsiteController extends UiBaseController
 
             $website->update($request->all());
 
+            return $this->json($this->setBaseUrl(['websites', $id, 'edit']));
         }
 
-        return $this->json($this->setBaseUrl(['websites', $id, 'edit']));
+        return $this->json([], false, 'Unable to connect, please verify connection details.');
+
     }
 
 }

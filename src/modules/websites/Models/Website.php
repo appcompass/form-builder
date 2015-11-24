@@ -232,7 +232,7 @@ class Website extends Model
 
       if (!$this->testConnection((array) $this->config)) {
 
-        return false;
+        throw new \Exception('Unable to connect.');
 
       }
 
@@ -276,28 +276,9 @@ class Website extends Model
 
     Config::set('filesystems.disks.sftp', $connection_info);
 
-    try {
+    $disk = \Storage::disk('sftp');
 
-      $disk = \Storage::disk('sftp');
-
-      return $disk;
-
-    } catch (\RuntimeException $e) {
-
-        \Log::error($e->getMessage());
-        return false;
-
-    } catch (\ErrorException $e) {
-
-        \Log::error($e->getMessage());
-        return false;
-
-    } catch (\LogicException $e) {
-
-        \Log::error($e->getMessage());
-        return false;
-
-    }
+    return $disk;
 
   }
 
@@ -317,13 +298,32 @@ class Website extends Model
       ->getDriver()
       ->getAdapter();
 
-    $disk->connect();
+    try {
 
-    $result = $disk->isConnected();
+      $disk->connect();
 
-    $disk->disconnect();
+      $result = $disk->isConnected();
 
-    return $result;
+      $disk->disconnect();
+
+      return $result;
+
+    } catch (\RuntimeException $e) {
+
+        \Log::error($e->getMessage());
+        return false;
+
+    } catch (\ErrorException $e) {
+
+        \Log::error($e->getMessage());
+        return false;
+
+    } catch (\LogicException $e) {
+
+        \Log::error($e->getMessage());
+        return false;
+
+    }
 
   }
 

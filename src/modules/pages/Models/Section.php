@@ -31,7 +31,6 @@ class Section extends Model
 		'display_view',
 		'edit_view',
 		'config',
-		'multi',
 		'type'
 	];
 

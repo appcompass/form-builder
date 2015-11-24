@@ -158,13 +158,11 @@ class CpWebsitePagesController extends UiBaseController
      */
     public function index($website_id)
     {
-
         $this->records = Website::findOrFail($website_id)->pages;
 
         $this->meta->data_target = '#main-content-out';
 
         return $this->build('index', ['websites', $website_id, 'pages']);
-
     }
 
     /**
@@ -187,14 +185,9 @@ class CpWebsitePagesController extends UiBaseController
      */
     public function store(Request $request, $website_id)
     {
-        // $this->validate($request, []);
-
         $page = new Page($request->all());
 
-        // this slug will need to be converted to the full URL of the page on update
-        // of the nav menu item this page belongs to.  Also we don't have a / at the
-        // start since nginx doesn't bring it over.
-        $page->slug = $request->get('name');
+        $page->name = strtolower(str_replace(' ', '_', $page->title));
 
         $page->published_at = Carbon::now();
 
@@ -206,7 +199,6 @@ class CpWebsitePagesController extends UiBaseController
         $this->meta->data_target = '#main-content-out';
 
         return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $this->record->id]));
-        // return parent::build('show');
     }
 
     /**
@@ -259,9 +251,6 @@ class CpWebsitePagesController extends UiBaseController
      */
     public function update(Request $request, $website_id, $page_id)
     {
-        // $this->validate($request, []);
-
-
         $website = Website::findOrFail($website_id);
 
         $page = Page::ofWebsite($website)->findOrFail($page_id);
