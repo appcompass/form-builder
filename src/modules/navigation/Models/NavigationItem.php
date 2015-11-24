@@ -73,4 +73,12 @@ class NavigationItem extends Model
 	  return $this->morphTo();
 	}
 
+	/**
+	 *
+	 */
+	public function getNameAttribute()
+	{
+	  return snake_case($this->label);
+	}
+
 }

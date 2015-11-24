@@ -2,9 +2,6 @@
 
 @section('header')
 
-    {{--
-      TABS HEADER
-      --}}
       <header class="panel-heading tab-bg-dark-navy-blue ">
         <ul class="nav nav-tabs">
           @foreach ($navmenus as $navmenu)
@@ -20,78 +17,63 @@
 
 @section('body')
 
-        {{--
-        TABS CONTENT
-        --}}
-        <div class="tab-content">
-          @foreach($navmenus as $navmenu)
-          <div id="{{ $navmenu->name }}" class="tab-pane active">
-            <ol class="sortable" data-navmenu="{{ $navmenu->name }}" href="/websites/{{ $website->id }}/navigation">
-              @foreach($navmenu->items as $item)
-              @include('navigation::navmenu_section', ['item' => $item, 'navmenu' => $navmenu, 'website' => $website])
-              @endforeach
-          </ol>
-      </div>
-      @endforeach
+  <div class="tab-content">
+    @foreach($navmenus as $navmenu)
+    <div id="{{ $navmenu->name }}" class="tab-pane active">
+      <ol class="sortable" data-navmenu="{{ $navmenu->name }}" href="/websites/{{ $website->id }}/navigation">
+        @foreach($navmenu->items as $item)
+          @include('navigation::navmenu_section', ['item' => $item, 'navmenu' => $navmenu, 'website' => $website])
+        @endforeach
+      </ol>
+    </div>
+    @endforeach
   </div>
 
-</div>
-</div>
-</div>
-</section>
+  </div>
+  </div>
+  </div>
+  </section>
 
-{{--
-      PAGES
-      --}}
-      <section class="panel">
-        <div class="panel-heading">Pages</div>
-        <div class="panel-body">
-          <ol class="inline-draggable">
-            @foreach ($pages as $page)
-            <li
-            id="menuItem_{{ $page->navItem->id }}"
-            data-id="menuItem_{{ $page->navItem->id }}"
-            class="draggable"
-            >
-            <i class="handle fa fa-arrows"> </i>
-            <img src="https://placehold.it/120x120">
-            <div>{{ $page->title }}</div>
-        </li>
-        @endforeach
+  <section class="panel">
+    <div class="panel-heading">Pages</div>
+    <div class="panel-body">
+      <ol class="inline-draggable">
+        @foreach ($pages as $page)
+        <li
+        id="menuItem_{{ $page->navItem->id }}"
+        data-id="menuItem_{{ $page->navItem->id }}"
+        class="draggable"
+        >
+        <i class="handle fa fa-arrows"> </i>
+        <img src="https://placehold.it/120x120">
+        <div>{{ $page->title }}</div>
+      </li>
+      @endforeach
     </ol>
-</div>
-</div>
-</section>
+  </div>
+  </div>
+  </section>
 
-{{--
-      UTILS
-      --}}
-      <section class="panel">
-        <div class="panel-heading">Utilities</div>
-
-        <div class="panel-body">
-
-          <ol class="inline-draggable">
-
-            @foreach($utilities as $util)
-
-            <li
+  <section class="panel">
+    <div class="panel-heading">Utilities</div>
+    <div class="panel-body">
+      <ol class="inline-draggable">
+        @foreach($utilities as $util)
+          <li
             id="navitem_sub_nav"
             data-id="menuItem_{{ $util->navItem->id }}"
             href="/websites/{{ $website->id }}/navigation"
             class="draggable"
             data-has-content="{{ $util->navItem->has_content === true ?: 'false' }}"
-            >
+          >
             <i class="handle fa fa-arrows"> </i>
             <img src="https://placehold.it/120x120">
             <div>{{ $util->navItem->label }}</div>
-        </li>
-
+          </li>
         @endforeach
-    </ol>
-
-</div>
-</section>
+      </ol>
+    </div>
+  </section>
 
 @stop
 
