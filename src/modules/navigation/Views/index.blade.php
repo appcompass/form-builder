@@ -59,6 +59,7 @@
     <div class="panel-body">
       <ol class="inline-draggable">
         @foreach($utilities as $util)
+          <div>{{ $util->navItem->label }}</div>
           <li
             id="navitem_sub_nav"
             data-id="menuItem_{{ $util->navItem->id }}"
@@ -68,7 +69,6 @@
           >
             <i class="handle fa fa-arrows"> </i>
             <img src="https://placehold.it/120x120">
-            <div>{{ $util->navItem->label }}</div>
           </li>
         @endforeach
       </ol>
@@ -126,27 +126,23 @@
                 }
             },
 
-            receive: function(event, ui) {
-
-                var newHierarchy = $(this).sortable('toHierarchy', {startDepthCount: 0})
-                var droppedItem = $(ui.item[0]);
-                var navmenu = droppedItem.parents().find('[data-navmenu]');
-
-                var data = {
-                    item_id: droppedItem.attr('data-id'),
-                    navmenu_name: navmenu.attr('data-navmenu'),
-                    hierarchy: JSON.stringify(newHierarchy)
-                }
-
-                store(navmenu.attr('href'), {method: 'post', data: data}, function(data) { $('#record-detail').html(data); } );
-            },
-
-            update: function(event, ui) {
-                // var sortData = $('.sortable').sortable('toHierarchy', {startDepthCount: 0});
-                var sortData = $(this).sortable('toHierarchy', {startDepthCount: 0});
-                // console.log(sortData);
-            }
+            receive: updateNav,
+            update: updateNav,
         }).disableSelection();
+
+        function updateNav(event, ui) {
+          var newHierarchy = $(this).sortable('toHierarchy', {startDepthCount: 0})
+          var droppedItem = $(ui.item[0]);
+          var navmenu = droppedItem.parents().find('[data-navmenu]');
+
+          var data = {
+              item_id: droppedItem.attr('data-id'),
+              navmenu_name: navmenu.attr('data-navmenu'),
+              hierarchy: JSON.stringify(newHierarchy)
+          }
+
+          store(navmenu.attr('href'), {method: 'post', data: data}, function(data) { $('#record-detail').html(data); } );
+        }
 
         $('.draggable').draggable({
           connectToSortable: '.sortable',
@@ -168,12 +164,15 @@
   .sortable, .draggable { max-width: 50%; }
   .sortable li img { display: none;}
   ol, ul {list-style: none;}
-  ol li { display: block; line-height: 20px; border: 1px solid #ddd; margin-bottom: 2px; border-radius: 4px;}
+  ol li { display: block; line-height: 20px; border: 1px solid #fdfdfd; margin-bottom: 2px; border-radius: 4px;}
   li > ol { margin-top: 0px; }
   li div { padding: 5px 10px; }
   ol.sortable li.ui-draggable { max-width: 100%; }
   li .handle { background: #ddd; display: inline-block; line-height: 32px; width: 30px; text-align: center; }
   li .handle:hover {cursor: pointer; background: #eee;}
+
+  li input[type="text"] {border: 0;}
+  li button { background: #fff; border: 0;}
 
   .placeholder { border: 1px dashed #aaa; height: 30px; width: 100%; background: rgba(175, 238, 238, 0.1); }
   .helper { background: #ddd; width: 100%;}
