@@ -1,118 +1,163 @@
-@extends('ui::layouts/cms_internal_layout')
+@extends('layouts/basic_admin_panel')
+{{-- @extends('ui::layouts/cms_internal_layout') --}}
 
-@section('subnav')
-
-    @include('ui::partials/cms_subnav_panel', ['meta' => $meta, 'nav' => $nav])
-
+@section('header')
+    page editor
 @stop
 
-@section('left-panels')
-
-    @if(isset($left_panels))
-
-        @foreach(array_filter($left_panels) as $navmenu)
-
-            @include('ui::partials/cms_left_panels_sortable_draggable', ['meta' => $meta, 'navmenu' => $navmenu])
-
+@section('body')
+    <section class="panel">
+        <div class="panel-body">
+        @foreach($sections['page'] as $page_section)
+            <ol class="sortable" href="/websites/{{ $website->id }}/navigation">
+            @foreach($page_section->items as $item)
+                <li
+                    id="menuItem_{{ $item->id }}"
+                    data-id="menuItem_{{ $item->id }}"
+                    class="draggable"
+                >
+                    <i class="handle fa fa-arrows"> </i>
+                    <img src="https://placehold.it/120x120">
+                    <div>{{ $item->label }}</div>
+                </li>
+            @endforeach
+            </ol>
         @endforeach
+        </div>
+    </section>
 
-    @endif
+{{-- Close panel opened in the master template --}}
+</div>
+</div>
+</div>
+</section>
 
-    {{-- @include('alerts::alerts') --}}
-
+@foreach($sections['available'] as $page_section)
+    <section class="panel">
+        <div class="panel-heading">{{ $page_section->label }}</div>
+        <div class="panel-body">
+            <ol class="inline-draggable">
+            @foreach($page_section->items as $item)
+                <li
+                    id="menuItem_{{ $item->name }}"
+                    data-id="menuItem_{{ $item->name }}"
+                    class="draggable"
+                >
+                    <i class="handle fa fa-arrows"> </i>
+                    <img src="https://placehold.it/120x120">
+                    <div>{{ $item->label }}</div>
+                </li>
+            @endforeach
+            </ol>
+        </div>
+    </section>
+@endforeach
 @stop
 
-<style>
-    .sortable {min-height: 50px; }
-    .ui-sortable-placeholder {border: 1px dashed #aaa; height: 45px; width: 90%; background: rgb(253, 253, 253); }
-    .sortable {list-style-type: none; margin: 0; padding: 0; width: 90%; }
-    .sortable li {padding: 0.4em; height: 48px; }
-    .sortable li span {position: absolute; }
-    .delete-icon i {color: red;}
-</style>
+@section('footer.scripts')
 
 <script>
-    $(document).ready(function() {
 
-        var config = {
-            deleteClass: '.delete-icon'
-        }
+    function store(url, config, next) {
 
-        $('.sortable').sortable({
-            items: ".item",
-            opacity: 0.8,
-            helper: "clone",
-            cursor: 'move',
-            placeholder: "ui-sortable-placeholder",
-            connectWith: '.sortable',
-            dropOnEmpty: true,
-            // revert: 'invalid',
+        $.ajax({
+            type: config.method || 'get',
+            url: url,
+            data: config.data || null,
+            success: function(data) {
+              next(data);
+            },
+            error: function(data) {}
+        })
+    }
 
-            update: function(event, ui) {
-                event.preventDefault();
 
-                var sortData = $('.sortable').sortable('serialize');
-                var url = '{{ $meta->base_url }}/section';
+    $(document).ready(function(){
 
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: sortData,
-                    success: function(data) {
-                        $('{{ $meta->data_target }}').html(data);
-                    }
-                })
+        $('.just-ajax-save').on('submit', function(e) {
+            e.preventDefault();
 
-                return false;
+            var data = {
+                label: $(this).find('[name="label"]').val()
+            }
+
+            store($(this).attr('action'), {method: 'put', data: data}, function(data) { console.log(data) });
+
+        })
+
+        $('.sortable').nestedSortable({
+            handle: 'i',
+            items: 'li',
+            toleranceElement: '> div',
+            forcePlaceholderSize: true,
+            tolerance: 'pointer',
+            placeholder: 'placeholder',
+            isTree: true,
+
+            isAllowed: function(placeholder, placeholderParent, currentItem) {
+                var result = $(placeholderParent).attr('data-has-content');
+                if (result === undefined || result === '1' ) { // stupid php don't have time for this
+                    return true;
+                }
             },
 
             receive: function(event, ui) {
 
-                var sectionName = $(ui.item[0]).attr('data-id');
+                var newHierarchy = $(this).sortable('toHierarchy', {startDepthCount: 0})
+                var droppedItem = $(ui.item[0]);
+                var navmenu = droppedItem.parents().find('[data-navmenu]');
 
-                $.ajax({
-                    url: '{{ $meta->base_url }}/section',
-                    type: 'POST',
-                    data: {'section_name': sectionName},
-                    success: function(data) {
-                        $('{{ $meta->data_target }}').html(data);
-                    },
-                    complete: function(data) {},
-                    error: function(error) {},
-                })
+                var data = {
+                    item_id: droppedItem.attr('data-id'),
+                    navmenu_name: navmenu.attr('data-navmenu'),
+                    hierarchy: JSON.stringify(newHierarchy)
+                }
+
+                store(navmenu.attr('href'), {method: 'post', data: data}, function(data) { $('#record-detail').html(data); } );
+            },
+
+            update: function(event, ui) {
+                // var sortData = $('.sortable').sortable('toHierarchy', {startDepthCount: 0});
+                var sortData = $(this).sortable('toHierarchy', {startDepthCount: 0});
+                // console.log(sortData);
             }
         }).disableSelection();
 
         $('.draggable').draggable({
-            connectToSortable: ".sortable",
-            helper: "clone",
-        });
+          connectToSortable: '.sortable',
+          helper: 'clone',
+          handle: '.handle',
+          maxLevels: 3,
+        }).disableSelection();
+    });
 
-        $('.item').hover(function() {
-            $(this).find(config.deleteClass).fadeIn();
-        }, function() {
-            $(this).find(config.deleteClass).fadeOut();
-        })
-
-        $(config.deleteClass).on('click', function(event) {
-            event.preventDefault;
-
-            $.ajax({
-                url: $(this).attr('href'),
-                type: 'post',
-                data: {
-                    _method: 'delete',
-                    id: $(this).attr('data-id')
-                },
-
-                success: function(data) {
-                    console.log(data);
-                    $('{{ $meta->data_target }}').html(data);
-                }
-
-            })
-
-            return false;
-        })
-    })
 </script>
+
+<style>
+
+  .sortable { min-height: 50px; margin-bottom: 5rem;}
+  .sortable i, .draggable i { display: inline-block; }
+  .sortable div, .draggable div { display: inline-block; }
+
+  .sortable, .draggable { max-width: 50%; }
+  .sortable li img { display: none;}
+  ol, ul {list-style: none;}
+  ol li { display: block; line-height: 20px; border: 1px solid #ddd; margin-bottom: 2px; border-radius: 4px;}
+  li > ol { margin-top: 0px; }
+  li div { padding: 5px 10px; }
+  ol.sortable li.ui-draggable { max-width: 100%; }
+  li .handle { background: #ddd; display: inline-block; line-height: 32px; width: 30px; text-align: center; }
+  li .handle:hover {cursor: pointer; background: #eee;}
+
+  .placeholder { border: 1px dashed #aaa; height: 30px; width: 100%; background: rgba(175, 238, 238, 0.1); }
+  .helper { background: #ddd; width: 100%;}
+
+  .inline-draggable  {}
+  .inline-draggable li { min-height: 120px; position: relative; width: 120px !important; float: left; margin-right: 10px;}
+  .inline-draggable li .handle { position: absolute; right: -5px; top: -5px; height: 20px; width: 20px; line-height: 20px; font-size: 8px; border-radius: 5px;}
+  .inline-draggable li .handle:hover { background: #eee; cursor: pointer;}
+  .inline-draggable li div { color: #fff; font-weight: bold; display: inline-height; text-align: center; line-height: 20px; 100%; width: 100%; position: absolute; bottom: 0;left: 0;right: 0; background: rgba(128, 128, 128, 0.2); }
+
+</style>
+
+@stop
