@@ -61,12 +61,6 @@ class CpWebsitePageSectionsController extends UiBaseController
      */
     public function store(Request $request, $website_id, $page_id)
     {
-
-        $this->validate($request, [
-            'layout_part' => 'required',
-            'section_id' => 'required:numeric'
-        ]);
-
         $website = Website::findOrFail($website_id);
 
         $page = $website->pages()->findOrFail($page_id);
@@ -79,6 +73,8 @@ class CpWebsitePageSectionsController extends UiBaseController
                     ->update(['order' => $order]);
 
             }
+
+            return redirect()->action('\P3in\Controllers\CpWebsitePagesController@show', [$page->website->id, $page->id]);
 
         }
 

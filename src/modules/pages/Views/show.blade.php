@@ -6,7 +6,6 @@
 
 @section('content')
 </section>
-    <div class="row">
         <div class="col-lg-4">
             <section class="panel">
                 <div class="panel-heading">
@@ -19,7 +18,7 @@
                     <ol class="sortable" href="/websites/{{ $website->id }}/navigation" data-layout-part="{{ $layout_part }}">
                     @foreach($page_section->items as $item)
                         <li
-                            id="menuItem_{{ $item->id }}"
+                            id="reorder_{{ $item->id }}"
                             data-section-id="{{ $item->id }}"
                             class="item"
                         >
@@ -51,31 +50,30 @@
                 @endforeach
                 </div>
             </section>
+
+            @foreach($sections['available'] as $layout_part => $page_section)
+                <section class="panel">
+                    <div class="panel-heading">{{ $page_section->label }}</div>
+                    <div class="panel-body">
+                        <ol class="inline-draggable">
+                        @foreach($page_section->items as $item)
+                            <li
+                                id="menuItem_{{ $item->name }}"
+                                data-section-id="{{ $item->props['id'] }}"
+                                class="draggable item"
+                            >
+                                <i class="handle fa fa-arrows"> </i>
+                                <img src="https://placehold.it/120x120">
+                                <div>{{ $item->label }}</div>
+                            </li>
+                        @endforeach
+                        </ol>
+                    </div>
+                </section>
+            @endforeach
         </div>
-        <div class="col-lg-8" id="content-edit"></div>
-    </div>
 
-
-    @foreach($sections['available'] as $layout_part => $page_section)
-        <section class="panel">
-            <div class="panel-heading">{{ $page_section->label }}</div>
-            <div class="panel-body">
-                <ol class="inline-draggable">
-                @foreach($page_section->items as $item)
-                    <li
-                        id="menuItem_{{ $item->name }}"
-                        data-section-id="{{ $item->props['id'] }}"
-                        class="draggable item"
-                    >
-                        <i class="handle fa fa-arrows"> </i>
-                        <img src="https://placehold.it/120x120">
-                        <div>{{ $item->label }}</div>
-                    </li>
-                @endforeach
-                </ol>
-            </div>
-        </section>
-    @endforeach
+    <div class="col-lg-8" id="content-edit"></div>
 
 @stop
 
@@ -95,30 +93,21 @@ $(document).ready(function() {
         helper: "clone",
         cursor: 'move',
         placeholder: "placeholder",
-        // connectWith: '.sortable',
         dropOnEmpty: true,
-        // revert: 'invalid',
-        //
-        isValid: function() {
-
-            return true;
-
-        },
 
         update: function(event, ui) {
             event.preventDefault();
 
             var sortData = $('.sortable').sortable('serialize');
-            var url = '{{ $meta->base_url }}/section';
 
-            // $.ajax({
-            //     type: 'POST',
-            //     url: url,
-            //     data: sortData,
-            //     success: function(data) {
-            //         $('{{ $meta->data_target }}').html(data);
-            //     }
-            // })
+            $.ajax({
+                type: 'post',
+                url: '{{ $meta->base_url }}/section',
+                data: sortData,
+                success: function(data) {
+                    $('{{ $meta->data_target }}').html(data);
+                }
+            })
 
             return false;
         },
@@ -190,7 +179,7 @@ $(document).ready(function() {
   .sortable, .draggable { max-width: 100%; }
   .sortable li img { display: none;}
   ol, ul {list-style: none; padding: 0;}
-  ol li { display: block; line-height: 20px; border: 1px solid #ddd; margin-bottom: 2px; border-radius: 4px;}
+  ol li { display: block; line-height: 20px; border: 1px solid #ddd; margin-bottom: 1rem; border-radius: 4px;}
   li > ol { margin-top: 0px; }
   li div { padding: 5px 10px; }
   ol.sortable li.ui-draggable { max-width: 100%; }
