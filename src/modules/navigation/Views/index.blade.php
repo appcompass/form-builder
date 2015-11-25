@@ -1,29 +1,46 @@
 @extends('layouts/basic_admin_panel')
 
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Modal Tittle</h4>
+            </div>
+            <div class="modal-body">
+
+                Body goes here...
+
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+                <button class="btn btn-success" type="button">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section('header')
-
-      <header class="panel-heading tab-bg-dark-navy-blue ">
-        <ul class="nav nav-tabs">
-          @foreach ($navmenus as $navmenu)
-          <li class="active">
-            <a data-toggle="tab" class="no-link" href="#{{ $navmenu->name }}" aria-expanded="false">{{ str_replace('_', ' ', $navmenu->name) }}</a>
-        </li>
-        @endforeach
-
-        <li class="pull-right"><a class="btn">+ Add Navmenu</a></li>
+  <header class="panel-heading tab-bg-dark-navy-blue ">
+    <ul class="nav nav-tabs">
+    @foreach ($navmenus as $navmenu)
+      <li @if ($navmenu->id === $navmenus[0]->id) class="active" @endif>
+        <a data-toggle="tab" class="no-link" href="#{{ $navmenu->name }}">{{ str_replace('_', ' ', $navmenu->name) }}</a>
+      </li>
+    @endforeach
     </ul>
-</header>
+  </header>
 @stop
 
 @section('body')
-
   <div class="tab-content">
     @foreach($navmenus as $navmenu)
-    <div id="{{ $navmenu->name }}" class="tab-pane active">
+    <div id="{{ $navmenu->name }}" class="tab-pane @if ($navmenu->id === $navmenus[0]->id) active @endif">
       <ol class="sortable" data-navmenu="{{ $navmenu->name }}" href="/websites/{{ $website->id }}/navigation">
         @foreach($navmenu->items as $item)
           @include('navigation::navmenu_section', ['item' => $item, 'navmenu' => $navmenu, 'website' => $website])
         @endforeach
+        {{-- <a href="#!" class="btn btn-default btn-xs add_subnav pull-right" data-parent-nav=""><i class="fa fa-plus"> </i>Add subnav</a> --}}
       </ol>
     </div>
     @endforeach
@@ -40,13 +57,15 @@
       <ol class="inline-draggable">
         @foreach ($pages as $page)
         <li
-        id="menuItem_{{ $page->navItem->id }}"
-        data-id="menuItem_{{ $page->navItem->id }}"
-        class="draggable"
+          id="menuItem_{{ $page->navItem->id }}"
+          data-id="menuItem_{{ $page->navItem->id }}"
+          class="draggable"
         >
-        <i class="handle fa fa-arrows"> </i>
-        <img src="https://placehold.it/120x120">
-        <div>{{ $page->title }}</div>
+        <div>
+          <i class="handle fa fa-arrows"> </i>
+          <img src="https://placehold.it/120x120">
+          <footer>{{ $page->title }}</footer>
+        </div>
       </li>
       @endforeach
     </ol>
@@ -59,7 +78,6 @@
     <div class="panel-body">
       <ol class="inline-draggable">
         @foreach($utilities as $util)
-          <div>{{ $util->navItem->label }}</div>
           <li
             id="navitem_sub_nav"
             data-id="menuItem_{{ $util->navItem->id }}"
@@ -67,8 +85,13 @@
             class="draggable"
             data-has-content="{{ $util->navItem->has_content === true ?: 'false' }}"
           >
-            <i class="handle fa fa-arrows"> </i>
-            <img src="https://placehold.it/120x120">
+            <div>
+              <i class="handle fa fa-arrows"> </i>
+              <img src="https://placehold.it/120x120">
+              <footer>
+                {{ $util->navItem->label }}
+              </footer>
+            </div>
           </li>
         @endforeach
       </ol>
@@ -92,7 +115,9 @@
             success: function(data) {
               next(data);
             },
-            error: function(data) {}
+            error: function(message) {
+              openModal('error', message, true);
+            }
         })
     }
 
@@ -117,7 +142,8 @@
             forcePlaceholderSize: true,
             tolerance: 'pointer',
             placeholder: 'placeholder',
-            isTree: true,
+            cancel: '.noop',
+            // isTree: true,
 
             isAllowed: function(placeholder, placeholderParent, currentItem) {
                 var result = $(placeholderParent).attr('data-has-content');
@@ -126,14 +152,20 @@
                 }
             },
 
-            receive: updateNav,
+            // receive: updateNav,
             update: updateNav,
         }).disableSelection();
 
+        /**
+        * takes care of rebuilding the navmenu with the new items
+        *
+        */
         function updateNav(event, ui) {
+          event.preventDefault();
+
           var newHierarchy = $(this).sortable('toHierarchy', {startDepthCount: 0})
           var droppedItem = $(ui.item[0]);
-          var navmenu = droppedItem.parents().find('[data-navmenu]');
+          var navmenu = $($(this)[0]);//.attr('data-navmenu');
 
           var data = {
               item_id: droppedItem.attr('data-id'),
@@ -141,15 +173,35 @@
               hierarchy: JSON.stringify(newHierarchy)
           }
 
-          store(navmenu.attr('href'), {method: 'post', data: data}, function(data) { $('#record-detail').html(data); } );
+          return store(navmenu.attr('href'), {method: 'post', data: data}, function(data) { $('#record-detail').html(data); } );
         }
 
         $('.draggable').draggable({
           connectToSortable: '.sortable',
+          // helper: function() { return $('<div class="helper"></div>'); },
           helper: 'clone',
+          opacity: 0.2,
           handle: '.handle',
           maxLevels: 3,
         }).disableSelection();
+
+        $('.item').hover(function() {
+            $(this).find(config.deleteClass).stop(true, true).fadeIn();
+        }, function() {
+            $(this).find(config.deleteClass).stop(true, true).fadeOut();
+        })
+
+        $('.delete-icon').on('click', function(event) {
+            event.preventDefault();
+
+            store(
+              $(this).attr('href'),
+              {method: 'post', data: { _method: 'delete' } },
+              function(data) { $('#record-detail').html(data); }
+            );
+
+            return false;
+        })
     });
 
 </script>
@@ -157,31 +209,28 @@
 
 <style>
 
-  .sortable { min-height: 50px; margin-bottom: 5rem;}
-  .sortable i, .draggable i { display: inline-block; }
-  .sortable div, .draggable div { display: inline-block; }
+  ul, li { list-style: none; margin: 0; padding: 0;}
+  .sortable, .draggable { max-width: 50%;}
+  .sortable form { background: rgba(128, 128, 128, 0.4);}
+  .sortable li { margin-bottom: 10px; line-height: 30px; }
+  .sortable li div { margin-bottom: 10px;}
+  .sortable li ol { position: relative; }
+  .sortable li ol a.add_subnav { position: absolute; botton: 0; right: 0;}
+  .sortable li img { display: none; }
+  .sortable li button { float: right; }
+  .handle { float: left;  /*background: #ddd;*/  display: inline-block; line-height: 30px !important; width: 26px; margin-right: 10px; text-align: center; border-radius: 3px;}
+  .handle:hover { cursor: pointer; background: #eee; }
 
-  .sortable, .draggable { max-width: 50%; }
-  .sortable li img { display: none;}
-  ol, ul {list-style: none;}
-  ol li { display: block; line-height: 20px; border: 1px solid #fdfdfd; margin-bottom: 2px; border-radius: 4px;}
-  li > ol { margin-top: 0px; }
-  li div { padding: 5px 10px; }
-  ol.sortable li.ui-draggable { max-width: 100%; }
-  li .handle { background: #ddd; display: inline-block; line-height: 32px; width: 30px; text-align: center; }
-  li .handle:hover {cursor: pointer; background: #eee;}
+  li input[type="text"] { border: 0; background: transparent; }
+  li button { background: #fff; border: 0; }
 
-  li input[type="text"] {border: 0;}
-  li button { background: #fff; border: 0;}
+  .placeholder { border: 1px dashed #aaa; height: 30px; background: rgba(238, 238, 238, 0.1); width: 100%;}
+  .helper { background: rgba(238, 238, 238, 0.8); height: 30px; }
 
-  .placeholder { border: 1px dashed #aaa; height: 30px; width: 100%; background: rgba(175, 238, 238, 0.1); }
-  .helper { background: #ddd; width: 100%;}
-
-  .inline-draggable  {}
-  .inline-draggable li { min-height: 120px; position: relative; width: 120px !important; float: left; margin-right: 10px;}
-  .inline-draggable li .handle { position: absolute; right: -5px; top: -5px; height: 20px; width: 20px; line-height: 20px; font-size: 8px; border-radius: 5px;}
-  .inline-draggable li .handle:hover { background: #eee; cursor: pointer;}
-  .inline-draggable li div { color: #fff; font-weight: bold; display: inline-height; text-align: center; line-height: 20px; 100%; width: 100%; position: absolute; bottom: 0;left: 0;right: 0; background: rgba(128, 128, 128, 0.2); }
+  .inline-draggable  { height: 120px; }
+  .inline-draggable li { min-height: 120px; position: relative; width: 120px !important; float: left; margin: 20px;}
+  .inline-draggable li div .handle { position: absolute; right: -15px; top: -6px;}
+  .inline-draggable li div footer { color: #fff; padding: 5px 0; text-align: center; line-height: 20px; 100%; width: 100%; position: absolute; bottom: 0;left: 0;right: 0; background: rgba(128, 128, 128, 0.7); }
 
 </style>
 

@@ -32,7 +32,7 @@ class CreateNavmenusTable extends Migration
                 ->onDelete('cascade');
 
             $table->timestamps();
-            $table->unique(['parent_id', 'website_id']);
+            $table->unique(['name', 'website_id']);
         });
     }
 

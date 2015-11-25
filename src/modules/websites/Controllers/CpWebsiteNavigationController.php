@@ -75,7 +75,7 @@ class CpWebsiteNavigationController extends UiBaseController
 
   public function update(Request $request, $website_id, $navitem_id)
   {
-    NavigationItem::findOrFail($navitem_id)->update(['label' => $request->label]);
+    // NavigationItem::findOrFail($navitem_id)->update(['label' => $request->label]);
 
     return \Response::json(['success' => true]);
   }
@@ -128,7 +128,6 @@ class CpWebsiteNavigationController extends UiBaseController
         continue;
 
       }
-      // var_dump($content);
 
       $item = NavigationItem::findOrFail($content['id']);
 
@@ -144,11 +143,59 @@ class CpWebsiteNavigationController extends UiBaseController
 
       } else {
 
-        // echo "Adding Item: $item->id<br> to $navmenu->name \n";
+        try {
 
-        $navmenu->addItem($item);
+          $navmenu->addItem($item);
+
+        } catch (\Exception $e) {
+
+          // error here, flash?
+
+          return redirect()->action('\P3in\Controllers\CpWebsiteNavigationController@index', [$website->id])->with('message', 'unable to update shit.');
+
+        }
 
       }
+
+    }
+
+  }
+
+  /**
+   * Destroy
+   */
+  public function destroy(Request $request, $website_id, $item_id)
+  {
+
+    $navigation_item_navmenu = \DB::table('navigation_item_navmenu')
+      ->where('id', $item_id)
+      ->first();
+
+    $navigation_item = NavigationItem::findOrFail($navigation_item_navmenu->navigation_item_id);
+
+    // if that's a container we empty it
+    if ($navigation_item->has_content) {
+
+      $navigation_item->navigatable->clean(true)->delete();
+
+      // and delete it's navigation item
+      $result = $navigation_item->delete();
+
+    } else {
+
+      $result = \DB::table('navigation_item_navmenu')
+        ->where('id', $item_id)
+        ->delete();
+
+    }
+
+    if ($result) {
+
+      return redirect()->action('\P3in\Controllers\CpWebsiteNavigationController@index', [$website_id]);
+
+    } else {
+
+      return $this->json([], false, 'Unable to remove item.');
 
     }
 
@@ -173,6 +220,7 @@ class CpWebsiteNavigationController extends UiBaseController
         break;
 
       default:
+        // will never reach it
         dd($item);
 
     }
@@ -182,16 +230,6 @@ class CpWebsiteNavigationController extends UiBaseController
     $website->navmenus()->save($child_nav);
 
     return $child_nav;
-
-  }
-
-  /**
-   *
-   */
-  protected function cleanMenu(Navmenu $navmenu)
-  {
-
-
 
   }
 

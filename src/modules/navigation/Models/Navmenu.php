@@ -111,7 +111,7 @@ class Navmenu extends Model
     {
 
         return $this->belongsToMany('P3in\Models\NavigationItem')
-            ->withPivot('order')
+            ->withPivot('id', 'order')
             ->orderBy('pivot_order');
 
     }
@@ -119,7 +119,7 @@ class Navmenu extends Model
     /**
      *  Keep data consistent
      */
-    public function clean()
+    public function clean($delete = false)
     {
 
         foreach($this->children as $child) {
@@ -128,19 +128,17 @@ class Navmenu extends Model
 
             $this->removeChildren($child);
 
-            // $child->navItem()->delete();
+            if ($delete) {
 
-            // $child->delete();
+                $child->delete();
+
+            }
 
         }
 
         $this->items()->detach();
 
         $this->load('items');
-
-        // dd($this->items);
-
-        // $this->items = collect([]);
 
         return $this;
 
