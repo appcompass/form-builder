@@ -31,6 +31,7 @@
                                     data-id="{{ $item->label }}"
                                     data-click="{{ $meta->base_url.'/'.$item->url }}"
                                     data-target="#content-edit"
+                                    data-inject-area="#content-edit"
                                     style="display: inline"
                                 >
                                     {{ $item->label }}
