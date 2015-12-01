@@ -78,6 +78,7 @@ class Navmenu extends Model
     public function addChildren(Navmenu $navmenu, $order = null)
     {
       $this->children()->save($navmenu);
+
       return $this->addItem($navmenu, $order);
     }
 
@@ -87,11 +88,9 @@ class Navmenu extends Model
      */
     public function removeChildren(Navmenu $navmenu)
     {
-
       $navmenu->parent_id = null;
 
       return $navmenu->save();
-
     }
   /**
    *
@@ -159,21 +158,21 @@ class Navmenu extends Model
     {
         $prefix = $this->name.'_sub';
 
-        $latest_name = static::whereRaw("name ~ '^{$this->name}_sub(-[0-9]*)?$'")
+        $latest_name = static::whereRaw("name ~ '^{$this->name}_sub_([0-9]*)?$'")
             ->latest('id')
             ->pluck('name');
 
         if (is_null($latest_name)) {
 
-            return $prefix.'-1';
+            return $prefix.'_1';
 
         } else {
 
-            $parts = explode('-', $latest_name);
+            $parts = explode('_', $latest_name);
 
             $number = end($parts);
 
-            return $prefix.'-'.($number + 1);
+            return $prefix.'_'.($number + 1);
 
         }
     }
@@ -198,11 +197,7 @@ class Navmenu extends Model
 
         }
 
-        // echo "<br>\nAddItem would like to add $navItem->id<br>\n";
-
         if (! $this->items->contains($navItem)) {
-
-            // echo "AddItem is adding $navItem->id<br>\n";
 
             if (is_null($order)) {
 
@@ -233,7 +228,7 @@ class Navmenu extends Model
 
             if (is_null($label)) {
 
-                $label = ucfirst(str_replace('-', ' ', $name));
+                $label = ucfirst(str_replace('_', ' ', $name));
 
             }
 
@@ -274,12 +269,7 @@ class Navmenu extends Model
             "url" => '',
             "has_content" => true,
             "req_perms" => null,
-            "props" => [
-                "icon" => 'list',
-                "link" => [
-                    'href' => ''
-                ]
-            ]
+            "props" => []
         ], $overrides);
     }
 }

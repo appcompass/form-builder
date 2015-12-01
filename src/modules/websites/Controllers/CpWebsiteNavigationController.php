@@ -40,7 +40,7 @@ class CpWebsiteNavigationController extends UiBaseController
     ];
 
     /**
-     *
+     *  init
      */
     public function __construct()
     {
@@ -53,7 +53,7 @@ class CpWebsiteNavigationController extends UiBaseController
     }
 
   /**
-   *
+   *  Store
    */
   public function index($website_id)
   {
@@ -73,11 +73,95 @@ class CpWebsiteNavigationController extends UiBaseController
       ->with('utilities', $utilities);
   }
 
+  /**
+   *  Edit
+   */
+  public function edit($website_id, $navitem_id)
+  {
+    $website = Website::findOrFail($website_id)->load('navmenus', 'pages');
+
+    $navItem = NavigationItem::findOrFail($navitem_id);
+
+    return view('navigation::edit-navmenu')
+      ->with('navItem', $navItem)
+      ->with('website', $website);
+  }
+
+  /**
+   *  Create
+   */
+  public function create($website_id)
+  {
+
+    if (\Request::get('parent') === null) {
+
+      return abort(500, "Error!");
+
+    }
+
+    $website = Website::findOrFail($website_id)->load('navmenus', 'pages');
+
+    $parent = $website->navmenus()->where('name', '=', \Request::get('parent'))->firstOrFail();
+
+    return view('navigation::create-navmenu')
+      ->with('parent', $parent)
+      ->with('website', $website);
+  }
+
+  /**
+   * Update
+   */
   public function update(Request $request, $website_id, $navitem_id)
   {
-    // NavigationItem::findOrFail($navitem_id)->update(['label' => $request->label]);
+    $this->validate($request, [
+        'label' => 'required'
+        // 'parent' => 'required',
+    ]);
 
-    return \Response::json(['success' => true]);
+    $website = Website::findOrFail($website_id);
+
+    if (is_numeric($navitem_id)) {
+
+      $navItem = NavigationItem::findOrFail($navitem_id);
+
+      $navItem->label = $request->label;
+
+      $navItem->url = $request->url;
+
+      if ($navItem->save()) {
+
+        return $this->json($this->setBaseUrl(['websites', $website_id, 'navigation']));
+
+      } else {
+
+        return $this->json([], false, "Error updating this item.");
+
+      }
+
+
+    } else {
+
+      $parent = Navmenu::where('name', '=', $request->parent)->firstOrFail();
+
+      $navmenu_name = strtolower(str_replace(' ', '_', $request->label));
+
+      $navmenu = Navmenu::byName($navmenu_name, $request->label);
+
+      if (isset($request->url)) {
+
+        $navmenu->navItem(['url' => $request->url]);
+
+      }
+
+      $parent->addChildren($navmenu);
+
+      $website->navmenus()->save($navmenu);
+
+      return $this->json($this->setBaseUrl(['websites', $website_id, 'navigation']));
+    }
+
+
+
   }
 
 
@@ -111,53 +195,6 @@ class CpWebsiteNavigationController extends UiBaseController
     $this->parseHierarchy($navmenu, $hierarchy, $website);
 
     return $this->index($website_id);
-
-  }
-
-  /**
-   *
-   */
-  private function parseHierarchy(Navmenu $navmenu, $hierarchy, Website $website)
-  {
-
-    foreach($hierarchy as $index => $content) {
-
-
-      if (!isset($content['id'])) {
-
-        continue;
-
-      }
-
-      $item = NavigationItem::findOrFail($content['id']);
-
-      if ($item->has_content) {
-
-        $child_nav = $this->createSubNav($item, $navmenu, $website);
-
-        if (isset($content['children'])) {
-
-          $this->parseHierarchy($child_nav, $content['children'], $website);
-
-        }
-
-      } else {
-
-        try {
-
-          $navmenu->addItem($item);
-
-        } catch (\Exception $e) {
-
-          // error here, flash?
-
-          return redirect()->action('\P3in\Controllers\CpWebsiteNavigationController@index', [$website->id])->with('message', 'unable to update shit.');
-
-        }
-
-      }
-
-    }
 
   }
 
@@ -202,6 +239,51 @@ class CpWebsiteNavigationController extends UiBaseController
   }
 
   /**
+   *
+   */
+  private function parseHierarchy(Navmenu $navmenu, $hierarchy, Website $website)
+  {
+
+    foreach($hierarchy as $index => $content) {
+
+
+      if (!isset($content['id'])) {
+
+        continue;
+
+      }
+
+      $item = NavigationItem::findOrFail($content['id']);
+
+      if ($item->has_content) {
+
+        $child_nav = $this->createSubNav($item, $navmenu, $website);
+
+        if (isset($content['children'])) {
+
+          $this->parseHierarchy($child_nav, $content['children'], $website);
+
+        }
+
+      } else {
+
+        try {
+
+          $navmenu->addItem($item);
+
+        } catch (\Exception $e) {
+
+          return redirect()->action('\P3in\Controllers\CpWebsiteNavigationController@index', [$website->id])->with('message', 'unable to update navmenu.');
+
+        }
+
+      }
+
+    }
+
+  }
+
+  /**
    *  Attaches a subnav to a passed navmenu and links it to a website
    *
    */
@@ -211,8 +293,7 @@ class CpWebsiteNavigationController extends UiBaseController
     switch(get_class($item->navigatable)) {
 
       case 'P3in\Models\Section':
-        $last_name = $navmenu->getNextSubNav();
-        $child_nav = Navmenu::byName($last_name);
+        $child_nav = Navmenu::byName($navmenu->getNextSubNav());
         break;
 
       case 'P3in\Models\Navmenu':

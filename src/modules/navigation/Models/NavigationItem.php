@@ -78,7 +78,7 @@ class NavigationItem extends Model
 	 */
 	public function getNameAttribute()
 	{
-	  return snake_case($this->label);
+	  return strtolower(str_replace(' ', '_', $this->label));
 	}
 
 }

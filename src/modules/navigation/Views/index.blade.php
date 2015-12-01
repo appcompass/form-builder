@@ -1,25 +1,6 @@
 @extends('layouts/basic_admin_panel')
 
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h4 class="modal-title">Modal Tittle</h4>
-            </div>
-            <div class="modal-body">
-
-                Body goes here...
-
-            </div>
-            <div class="modal-footer">
-                <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
-                <button class="btn btn-success" type="button">Save changes</button>
-            </div>
-        </div>
-    </div>
-</div>
-
+{{-- TABS ON PANEL HEADER --}}
 @section('header')
   <header class="panel-heading tab-bg-dark-navy-blue ">
     <ul class="nav nav-tabs">
@@ -32,15 +13,35 @@
   </header>
 @stop
 
+{{-- NAVMENUS --}}
 @section('body')
   <div class="tab-content">
     @foreach($navmenus as $navmenu)
-    <div id="{{ $navmenu->name }}" class="tab-pane @if ($navmenu->id === $navmenus[0]->id) active @endif">
-      <ol class="sortable" data-navmenu="{{ $navmenu->name }}" href="/websites/{{ $website->id }}/navigation">
-        @foreach($navmenu->items as $item)
-          @include('navigation::navmenu_section', ['item' => $item, 'navmenu' => $navmenu, 'website' => $website])
-        @endforeach
-        {{-- <a href="#!" class="btn btn-default btn-xs add_subnav pull-right" data-parent-nav=""><i class="fa fa-plus"> </i>Add subnav</a> --}}
+    <div id="{{ $navmenu->name }}" class="tab-pane col-lg-8 col-lg-offset-2 col-md-12 @if ($navmenu->id === $navmenus[0]->id) active @endif">
+      <ol>
+        <li class="header">
+          <div>
+            {{ ucfirst(str_replace('_', ' ', $navmenu->name)) }}
+            <div class="tools pull-right">
+              <a
+                href="#modal-edit"
+                class="no-link btn btn-xs add-subnav"
+                title="Add subnav"
+                data-toggle="modal"
+                data-navmenu="{{ $navmenu->name }}"
+                data-inject-area="#modal-body"
+                data-click="/websites/{{ $website->id }}/navigation/create?parent={{ $navmenu->name }}"
+              >
+                <i class="fa fa-plus"> </i>
+              </a>
+            </div>
+          </div>
+          <ol class="sortable" data-navmenu="{{ $navmenu->name }}" href="/websites/{{ $website->id }}/navigation">
+          @foreach($navmenu->items as $item)
+            @include('navigation::navmenu_section', ['item' => $item, 'navmenu' => $navmenu, 'website' => $website])
+          @endforeach
+          </ol>
+        </li>
       </ol>
     </div>
     @endforeach
@@ -51,6 +52,7 @@
   </div>
   </section>
 
+{{-- ITEMS TO ADD --}}
   <section class="panel">
     <div class="panel-heading">Pages</div>
     <div class="panel-body">
@@ -73,6 +75,7 @@
   </div>
   </section>
 
+{{-- UTILS --}}
   <section class="panel">
     <div class="panel-heading">Utilities</div>
     <div class="panel-body">
@@ -121,19 +124,35 @@
         })
     }
 
+    /**
+    * takes care of rebuilding the navmenu with the new items
+    *
+    */
+    function updateNav(event, ui) {
+      event.preventDefault();
+
+      var newHierarchy = $(this).sortable('toHierarchy', {startDepthCount: 0})
+      var droppedItem = $(ui.item[0]);
+      var navmenu = $($(this)[0]);
+
+      var data = {
+          item_id: droppedItem.attr('data-id'),
+          navmenu_name: navmenu.attr('data-navmenu'),
+          hierarchy: JSON.stringify(newHierarchy)
+      }
+
+      return store(navmenu.attr('href'), {method: 'post', data: data}, function(data) { $('#record-detail').html(data); } );
+    }
 
     $(document).ready(function(){
 
-        $('.just-ajax-save').on('submit', function(e) {
-            e.preventDefault();
-
-            var data = {
-                label: $(this).find('[name="label"]').val()
-            }
-
-            store($(this).attr('action'), {method: 'put', data: data}, function(data) { console.log(data) });
-
-        })
+        // $('.just-ajax-save').on('submit', function(e) {
+        //     e.preventDefault();
+        //     var data = {
+        //         label: $(this).find('[name="label"]').val()
+        //     }
+        //     store($(this).attr('action'), {method: 'put', data: data}, function(data) { console.log(data) });
+        // })
 
         $('.sortable').nestedSortable({
             handle: 'i',
@@ -142,53 +161,35 @@
             forcePlaceholderSize: true,
             tolerance: 'pointer',
             placeholder: 'placeholder',
-            cancel: '.noop',
-            // isTree: true,
 
             isAllowed: function(placeholder, placeholderParent, currentItem) {
                 var result = $(placeholderParent).attr('data-has-content');
-                if (result === undefined || result === '1' ) { // stupid php don't have time for this
+                if (result === undefined || result === '1' ) {
                     return true;
                 }
             },
 
-            // receive: updateNav,
             update: updateNav,
         }).disableSelection();
 
-        /**
-        * takes care of rebuilding the navmenu with the new items
-        *
-        */
-        function updateNav(event, ui) {
-          event.preventDefault();
-
-          var newHierarchy = $(this).sortable('toHierarchy', {startDepthCount: 0})
-          var droppedItem = $(ui.item[0]);
-          var navmenu = $($(this)[0]);//.attr('data-navmenu');
-
-          var data = {
-              item_id: droppedItem.attr('data-id'),
-              navmenu_name: navmenu.attr('data-navmenu'),
-              hierarchy: JSON.stringify(newHierarchy)
-          }
-
-          return store(navmenu.attr('href'), {method: 'post', data: data}, function(data) { $('#record-detail').html(data); } );
-        }
-
         $('.draggable').draggable({
           connectToSortable: '.sortable',
-          // helper: function() { return $('<div class="helper"></div>'); },
           helper: 'clone',
           opacity: 0.2,
           handle: '.handle',
           maxLevels: 3,
         }).disableSelection();
 
-        $('.item').hover(function() {
-            $(this).find(config.deleteClass).stop(true, true).fadeIn();
-        }, function() {
-            $(this).find(config.deleteClass).stop(true, true).fadeOut();
+        $('.edit-subnav').on('click', function(event) {
+          event.preventDefault();
+
+        })
+
+        $('.add-subnav').on('click', function(event) {
+          event.preventDefault();
+
+          console.log($(this).attr('data-navmenu'));
+
         })
 
         $('.delete-icon').on('click', function(event) {
@@ -209,11 +210,13 @@
 
 <style>
 
-  ul, li { list-style: none; margin: 0; padding: 0;}
-  .sortable, .draggable { max-width: 50%;}
+  ul, li { list-style: none; margin: 0; padding: 0; min-height: 25px;}
+  .sortable, .draggable {min-height: 30px;}
   .sortable form { background: rgba(128, 128, 128, 0.4);}
-  .sortable li { margin-bottom: 10px; line-height: 30px; }
-  .sortable li div { margin-bottom: 10px;}
+  .sortable li { line-height: 30px; }
+  li div { line-height: 30px;}
+  li.header > div { background: rgba(128, 128, 128, 0.4); text-align: center; font-weight: bold;}
+  li.header > ol { padding: 0; }
   .sortable li ol { position: relative; }
   .sortable li ol a.add_subnav { position: absolute; botton: 0; right: 0;}
   .sortable li img { display: none; }
@@ -224,11 +227,11 @@
   li input[type="text"] { border: 0; background: transparent; }
   li button { background: #fff; border: 0; }
 
-  .placeholder { border: 1px dashed #aaa; height: 30px; background: rgba(238, 238, 238, 0.1); width: 100%;}
-  .helper { background: rgba(238, 238, 238, 0.8); height: 30px; }
+  .placeholder { border: 1px dashed #aaa; height: 25px; background: rgba(238, 238, 238, 0.1); width: 100%;}
+  .helper { background: rgba(238, 238, 238, 0.8); height: 25px; }
 
   .inline-draggable  { height: 120px; }
-  .inline-draggable li { min-height: 120px; position: relative; width: 120px !important; float: left; margin: 20px;}
+  .inline-draggable li { min-height: 120px; position: relative; width: 120px !important; float: left; margin: 10px;}
   .inline-draggable li div .handle { position: absolute; right: -15px; top: -6px;}
   .inline-draggable li div footer { color: #fff; padding: 5px 0; text-align: center; line-height: 20px; 100%; width: 100%; position: absolute; bottom: 0;left: 0;right: 0; background: rgba(128, 128, 128, 0.7); }
 

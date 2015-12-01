@@ -8,10 +8,39 @@
       {{ $item->label }}
       <div class="tools pull-right">
       @if($item->has_content)
-          <a class="no-link btn btn-xs" title="Edit menu options" data-toggle="modal" href="#myModal"> <i class="fa fa-cog" > </i> </a>
-          <a href="#!" title="Add subnav" class="no-link btn btn-xs"> <i class="fa fa-plus" > </i></a>
+
+          <a
+            href="#modal-edit"
+            class="no-link btn btn-xs edit-subnav"
+            title="Edit menu options"
+            data-toggle="modal"
+            data-navmenu="{{ $item->name }}"
+            data-inject-area="#modal-body"
+            data-click="/websites/{{ $website->id }}/navigation/{{ $item->id }}/edit"
+          >
+            <i class="fa fa-cog" > </i>
+          </a>
+
+          <a
+            href="#modal-edit"
+            class="no-link btn btn-xs add-subnav"
+            title="Add subnav"
+            data-toggle="modal"
+            data-navmenu="{{ $item->name }}"
+            data-inject-area="#modal-body"
+            data-click="/websites/{{ $website->id }}/navigation/create?parent={{ $item->name }}"
+          >
+            <i class="fa fa-plus"> </i>
+          </a>
+
       @endif
-        <a href="/websites/{{ $website->id }}/navigation/{{ $item->pivot->id }}" class="no-link delete-icon"> <i class="fa fa-trash-o"> </i> </a>
+        <a
+          href="/websites/{{ $website->id }}/navigation/{{ $item->pivot->id }}"
+          class="no-link delete-icon pull-right"
+        >
+          <i class="fa fa-trash-o"> </i>
+        </a>
+
       </div>
   </div>
 

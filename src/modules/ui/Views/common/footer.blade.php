@@ -44,6 +44,7 @@
 	@yield('scripts.footer')
 
 	<script type="text/javascript">
+
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -248,7 +249,7 @@
 				if ($(this).hasClass("fa-chevron-down")) {
 					$(this).removeClass("fa-chevron-down").addClass("fa-chevron-up");
 					el.slideUp(200);
-				} else {
+				} else if ($(this).hasClass("fa-chevron-up")) {
 					$(this).removeClass("fa-chevron-up").addClass("fa-chevron-down");
 					el.slideDown(200); }
 			});
@@ -258,6 +259,18 @@
 			});
 
 			loadData($(document));
+
+            $(document).on('click', '[data-click]', function(e) {
+                e.preventDefault();
+
+                var inject = $(this).attr('data-inject-area');
+                var url = $(this).attr('data-click');
+
+                $.get(url, function(data) {
+                    $(inject).html(data);
+                })
+
+            });
 
 			$(document).on('click', 'a[href]:not(.no-link)', function(e){
 				e.preventDefault();
