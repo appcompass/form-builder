@@ -13,12 +13,12 @@ use P3in\Models\Page;
 use P3in\Module;
 use P3in\Traits\NavigatableTrait;
 use P3in\Traits\SettingsTrait;
-use SSH;
+use BostonPads\Traits\HasGallery;
 
 class Website extends Model
 {
 
-	use SettingsTrait, NavigatableTrait;
+	use SettingsTrait, NavigatableTrait, HasGallery;
 
 	/**
 	 * The database table used by the model.
@@ -352,6 +352,14 @@ class Website extends Model
   public function getMachineName()
   {
     return strtolower(str_replace(' ', '_', $this->site_name));
+  }
+
+  /**
+   * as per hasGallery Trait
+   */
+  public function getGalleryName()
+  {
+    return $this->getMachineName();
   }
 
 	/**

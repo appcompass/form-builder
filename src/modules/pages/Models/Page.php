@@ -5,6 +5,8 @@ namespace P3in\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Config;
+use P3in\Models\PageSection;
+use P3in\Models\Section;
 use P3in\Models\Website;
 use P3in\Traits\NavigatableTrait as Navigatable;
 
@@ -67,6 +69,15 @@ class Page extends Model
 
 		return $rel;
 
+	}
+
+	/**
+	 *
+	 */
+	public function content()
+	{
+		// should probably split the template type and provide it divided? we'll see
+	 	return $this->hasMany(PageSection::class);
 	}
 
 	/**

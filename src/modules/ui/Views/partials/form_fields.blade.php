@@ -42,6 +42,12 @@
                 @endforeach
         @elseif($field->type == 'file')
             {!! Form::file(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
+            @if(isset($prefix) AND isset($index) AND isset($record->{$prefix}[$index]->{$field->name}))
+                <b>Image Id: {{ $record->{$prefix}[$index]->{$field->name} }}</b>
+            @elseif (!empty($record->{$field->name}))
+                {{-- {{ dd($record) }} --}}
+                <b>Image Id: {{ $record->{$field->name} }}</b>
+            @endif
         @elseif($field->type == 'datepicker')
             {!! Form::date('name', \Carbon\Carbon::now(), ['class' => 'form-control form-control-inline input-medium date-picker-default', 'placeholder' => $field->placeholder]) !!}
         @elseif($field->type == 'from_to_input')

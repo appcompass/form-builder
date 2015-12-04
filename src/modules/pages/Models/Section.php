@@ -4,8 +4,10 @@ namespace P3in\Models;
 
 use BostonPads\Models\Photo;
 use Illuminate\Database\Eloquent\Model;
+use P3in\Models\Page;
 use P3in\Models\Template;
 use P3in\Models\Website;
+use P3in\Pivots\PageSectionPivot;
 use P3in\Traits\NavigatableTrait;
 
 class Section extends Model
@@ -56,20 +58,10 @@ class Section extends Model
 	 */
 	public function render()
 	{
-
 		return [
 			'view' => '/sections'.$this->display_view,
 			'data' => json_decode($this->pivot->content),
 		];
-
-		// dd($this->display_view);
-
-		// return view('/sections/'.$this->display_view)->with('data', $this->pivot->content)
-		// 	->render();
-
-		// return view($this->display_view)->render();
-		// return view($this->display_view)->render();
-
 	}
 
 	/**

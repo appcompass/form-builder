@@ -4,13 +4,17 @@ namespace P3in\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
+use Auth;
+use BostonPads\Models\Photo;
 use DB;
 use Illuminate\Http\Request;
 use P3in\Controllers\UiBaseController;
 use P3in\Models\Page;
+use P3in\Models\PageSection;
 use P3in\Models\Section;
 use P3in\Models\Website;
 use Response;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class CpWebsitePageSectionsController extends UiBaseController
 {
@@ -145,21 +149,61 @@ class CpWebsitePageSectionsController extends UiBaseController
      */
     public function update(Request $request, $website_id, $page_id, $section_id)
     {
+        $section = PageSection::findOrFail($section_id);
 
-        if ($request->file) {
+        $content = $request->except(['_token', '_method']);
 
-        //     dd($request->file);
+        $existing_content = json_decode($section->content, true);
 
+        foreach($request->file() as $field_name => $file) {
+
+            if ($file instanceof UploadedFile) {
+
+                $photo = $section->addPhoto($file, Auth::user());
+
+                $content[$field_name] = $photo->path;
+
+            }
+
+            else if (is_array($file)) {
+
+                foreach($file as $idx => $single_file) {
+
+                    if (is_null($single_file['image'])) {
+
+                        // if not passed the image field comes back null, we don't want that
+                        $content[$field_name][$idx]['image'] = $existing_content[$field_name][$idx]['image'];
+
+                        continue;
+
+                    }
+
+                    $photo = $section->addPhoto($single_file['image'], Auth::user());
+
+                    $content[$field_name][$idx]['image'] = $photo->path;
+                }
+            }
         }
 
-        $page = Page::findOrFail($page_id);
-
-        $content = json_encode($request->except(['_token', '_method']));
+        $content = array_replace($existing_content, $content);
 
         $result = DB::table('page_section')->where('id', $section_id)
-            ->update(['content' => $content]);
+            ->update(['content' => json_encode($content)]);
 
-        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $page->id, 'section', $section_id, 'edit']));
+        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $page_id, 'section', $section_id, 'edit']));
+    }
+
+    /**
+     * @return P3in\Models\Photo
+     */
+    public function makePhoto(UploadedFile $file, PageSection $section)
+    {
+        return Photo::store($file, Auth::user(), [
+            'status' => Photo::STATUSES_ACTIVE
+        ]);
+
+
+        $content[$field_name][$idx]['image'] = $photo->id;
     }
 
     /**

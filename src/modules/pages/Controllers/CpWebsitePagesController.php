@@ -327,42 +327,6 @@ class CpWebsitePagesController extends UiBaseController
         // fetch default panels
         $left_panels[] = parent::getLeftPanels() ?: null;
 
-    //     foreach(explode(':', $page->layout) as $layout_part) {
-
-    //         $section_navmenu['target'] = new Navmenu(['label' => 'Available Sections']);
-
-    //         // add current page sections
-    //         foreach ($page->sections()->where('fits', $layout_part)->get() as $section) {
-
-    //             $nav_item = $section->getNavigationItem([
-    //                 'url' => 'section/'.$section->pivot->id.'/edit',
-    //                 'props' => []
-    //             ]);
-
-    //             $nav_item->id = $section->pivot->id;
-
-    //             $section_navmenu['target']->items->push($nav_item);
-
-    //         }
-
-    //         $section_navmenu['source'] = new Navmenu(['label' => 'Available Sections']);
-
-    //         // all the available sections
-    //         foreach(Section::draggable($layout_part)->get() as $section) {
-
-    //             $nav_item = $section->getNavigationItem([
-    //                 'url' => '',
-    //                 'props' => []
-    //             ]);
-
-    //             $section_navmenu['source']->items->push($nav_item);
-
-    //         }
-
-    //         $left_panels[] = $section_navmenu;
-
-    //     }
-
         return $left_panels;
 
     }
