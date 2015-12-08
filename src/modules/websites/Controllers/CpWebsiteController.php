@@ -40,15 +40,15 @@ class CpWebsiteController extends UiBaseController
             ],
         ],
         'show' => [
-            'data_targets' => [
-                [
-                    'route' => 'websites.show',
-                    'target' => '#main-content-out',
-                ],[
-                    'route' => 'websites.show',
-                    'target' => '#record-detail',
-                ],
-            ],
+            // 'data_targets' => [
+            //     [
+            //         'route' => 'websites.show',
+            //         'target' => '#main-content-out',
+            //     ],[
+            //         'route' => 'websites.show',
+            //         'target' => '#record-detail',
+            //     ],
+            // ],
             'sub_section_name' => 'Website Configuration',
             'data_targets' => [
                 [
@@ -71,7 +71,7 @@ class CpWebsiteController extends UiBaseController
                 ],
             ],
             'heading' => 'Connection Information',
-            'route' => 'websites.update'
+            'route' => 'websites.update',
         ],
         'create' => [
             'data_targets' => [

@@ -16,18 +16,20 @@
             {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $field->data, null, ['class' => 'form-control']) !!}
         @elseif($field->type == 'checkbox')
             @if(!empty($field->data))
-                @foreach($field->data as $checkbox)
                 <div class="checkbox">
-                    <label>
-                        {!! Form::checkbox($checkbox->name, 'true', ['class' => 'form-control']) !!}
-                       {{ $checkbox->label }}
-                    </label>
+                    @foreach($field->data as $checkbox)
+                        <div class="col-lg-3">
+                            <label>
+                                {!! Form::checkbox($checkbox->name, 'true', null, ['class' => '']) !!}
+                                {{ $checkbox->label }}
+                            </label>
+                        </div>
+                    @endforeach
                 </div>
-                @endforeach
             @else
                 <div class="checkbox">
                     <label>
-                        {!! Form::checkbox(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, 'true', ['class' => 'form-control']) !!}
+                        {!! Form::checkbox(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, 'true', null, ['class' => '']) !!}
                     </label>
                 </div>
             @endif
@@ -96,7 +98,18 @@
                 @endforeach
             </div>
         @elseif($field->type == 'model_selectlist')
-            {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, with(new $field->data)->lists($field->label, $field->value), null, ['class' => 'form-control']) !!}
+            {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, with(new $field->data)->lists($field->key, $field->value), null, ['class' => 'form-control', 'placeholder' => isset($field->placeholder) ? $field->placeholder : null]) !!}
+        @elseif($field->type == 'model_checkbox')
+            <div class="checkbox">
+                @foreach(with(new $field->data)->lists($field->key, $field->value) as $check_id => $check_label)
+                    <div class="col-lg-3">
+                        <label>
+                            {!! Form::checkbox($field->name.'[]', $check_id, !empty($record->{$field->name}) &&  in_array($check_id, $record->{$field->name}) ? true : null, ['class' => '']) !!}
+                            {{ $check_label }}
+                        </label>
+                    </div>
+                @endforeach
+            </div>
         @elseif($field->type == 'layout_selector')
             {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $meta->available_layouts) !!}
         @elseif($field->type == 'repeatable')
