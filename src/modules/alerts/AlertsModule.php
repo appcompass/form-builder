@@ -17,7 +17,7 @@ Class AlertsModule extends BaseModule
 
 	public function fire()
 	{
-		return "Frying from {$this->module_name}";
+		return "Firing from {$this->module_name}";
 	}
 
 

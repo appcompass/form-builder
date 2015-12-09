@@ -3,6 +3,7 @@
 namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use P3in\Models\User;
 use P3in\Traits\JsonPropScopesTrait as JsonPropScopes;
 
 class Alert extends Model
@@ -18,6 +19,14 @@ class Alert extends Model
 	protected $table = 'alerts';
 
 	/**
+	 * Casts array
+	 *
+	 */
+	protected $casts = [
+		'props' => 'object'
+	];
+
+	/**
 	 * The attributes that are mass assignable.
 	 *
 	 * @var array
@@ -25,7 +34,8 @@ class Alert extends Model
 	protected $fillable = [
 		'title',
 		'message',
-		'model',
+		'hash',
+		'req_perms',
 		'props'
 	];
 
@@ -34,15 +44,56 @@ class Alert extends Model
 	 *
 	 * @var array
 	 */
-	protected $hidden = [];
+	protected $hidden = ['id'];
 
 	/**
-	*	Get Json Decoded Prop Attribute
-	*
-	*
-	*/
-	public function getPropsAttribute()
+	 *
+	 *
+	 */
+	public function alertable()
 	{
-		return json_decode($this->attributes['props']);
+
+	  return $this->morphTo();
+
 	}
+
+	/**
+	 *
+	 *
+	 *
+	 */
+	public function scopeByHash($query, $hash)
+	{
+	  return $query->where('hash', '=', $hash);
+	}
+
+	/**
+	 *	Match Alert's permissions with user's
+	 *
+	 */
+	public function matchPerms(User $user = null)
+	{
+
+		if (is_null($this->req_perms)) {
+
+			return $this;
+
+		} else if (is_null($user)) {
+
+			return null;
+
+		} else  {
+
+			if ( $user->hasPermission($this->req_perms) ) {
+
+				return $this;
+
+			}
+
+		}
+
+		return false;
+	}
+
+
 }

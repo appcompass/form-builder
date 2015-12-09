@@ -14,10 +14,18 @@ class CreateAlertsTable extends Migration
     {
         Schema::create('alerts', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('level')->default('info');
             $table->string('title');
             $table->text('message');
-            $table->string('model');
+
+            $table->morphs('alertable');
             $table->json('props')->nullable();
+
+            $table->string('hash', 60);
+            $table->string('req_perms')->nullable(); // comma separated set of permissions
+
+            $table->index(['hash']);
+
             $table->timestamps();
         });
     }
