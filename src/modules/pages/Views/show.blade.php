@@ -27,7 +27,8 @@
                             <div>
                                 <a
                                     href="#{{ $meta->base_url.'/'.$item->url }}"
-                                    class="no-link"
+                                    class=""
+                                    data-action="modal-edit"
                                     data-id="{{ $item->label }}"
                                     data-click="{{ $meta->base_url.'/'.$item->url }}"
                                     data-target="#content-edit"

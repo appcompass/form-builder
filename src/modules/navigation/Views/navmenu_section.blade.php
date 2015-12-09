@@ -11,8 +11,9 @@
 
           <a
             href="#modal-edit"
-            class="no-link btn btn-xs edit-subnav"
+            class="btn btn-xs edit-subnav"
             title="Edit menu options"
+            data-action="modal-edit"
             data-toggle="modal"
             data-navmenu="{{ $item->name }}"
             data-inject-area="#modal-body"
@@ -23,8 +24,9 @@
 
           <a
             href="#modal-edit"
-            class="no-link btn btn-xs add-subnav"
+            class="btn btn-xs add-subnav"
             title="Add subnav"
+            data-action="modal-edit"
             data-toggle="modal"
             data-navmenu="{{ $item->name }}"
             data-inject-area="#modal-body"
@@ -36,7 +38,7 @@
       @endif
         <a
           href="/websites/{{ $website->id }}/navigation/{{ $item->pivot->id }}"
-          class="no-link delete-icon pull-right"
+          class="delete-icon pull-right"
         >
           <i class="fa fa-trash-o"> </i>
         </a>

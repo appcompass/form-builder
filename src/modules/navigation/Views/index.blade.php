@@ -25,8 +25,9 @@
             <div class="tools pull-right">
               <a
                 href="#modal-edit"
-                class="no-link btn btn-xs add-subnav"
+                class="btn btn-xs add-subnav"
                 title="Add subnav"
+                data-action="modal-edit"
                 data-toggle="modal"
                 data-navmenu="{{ $navmenu->name }}"
                 data-inject-area="#modal-body"

@@ -1,4 +1,4 @@
-@extends('modals.generic')
+@extends('ui::modals.generic')
 
 @yield('title', "Add Subnav")
 

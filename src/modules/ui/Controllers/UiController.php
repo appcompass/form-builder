@@ -87,4 +87,11 @@ class UiController extends UiBaseController {
 
         return response()->json($rtn);
     }
+
+    public function postDeleteModal(Request $request)
+    {
+        return view('ui::partials/delete-modal', [
+            'url' => $request->resource,
+        ]);
+    }
 }

@@ -261,35 +261,61 @@
 
 			loadData($(document));
 
-            $(document).on('click', '[data-click]', function(e) {
+            $(document).on('click', 'a[href]:not(.no-link)', function(e) {
                 e.preventDefault();
 
-                var inject = $(this).attr('data-inject-area');
+                var action = $(this).attr('data-action');
                 var url = $(this).attr('data-click');
+                var inject = $(this).attr('data-inject-area');
+                var href = $(this).attr('href');
 
-                $.get(url, function(data) {
-                    $(inject).html(data);
-                })
+                switch(action){
+                    case 'modal-delete':
+                        $.post(url, {
+                            resource: $(this).attr('data-delete')
+                        }, function(data) {
+                            $(inject).html(data);
+                        });
+                        break;
+                    case 'modal-edit':
+                        $.get(url, function(data) {
+                            $(inject).html(data);
+                        });
+                        break;
+                    default:
+                        if (href != 'javascript:;') {
+                            var obj = {
+                                target: $(this).attr('data-target'),
+                                url: href
+                            };
+                            if ($(this).attr('href')) {
+                                router.navigate(obj.url);
+                                // loadSourceToTarget(obj);
+                                // window.history.pushState({"page":obj.url},"", '#'+obj.url);
+                            };
+                        };
+                        break;
+                }
 
             });
 
-			$(document).on('click', 'a[href]:not(.no-link)', function(e){
-				e.preventDefault();
+			// $(document).on('click', 'a[href]:not(.no-link)', function(e){
+			// 	e.preventDefault();
 
-                var href = $(this).attr('href');
+   //              var href = $(this).attr('href');
 
-                if (href != 'javascript:;') {
-                    var obj = {
-                        target: $(this).attr('data-target'),
-                        url: href
-                    };
-                    if ($(this).attr('href')) {
-                        router.navigate(obj.url);
-                        // loadSourceToTarget(obj);
-                        // window.history.pushState({"page":obj.url},"", '#'+obj.url);
-                    };
-                };
-			});
+   //              if (href != 'javascript:;') {
+   //                  var obj = {
+   //                      target: $(this).attr('data-target'),
+   //                      url: href
+   //                  };
+   //                  if ($(this).attr('href')) {
+   //                      router.navigate(obj.url);
+   //                      // loadSourceToTarget(obj);
+   //                      // window.history.pushState({"page":obj.url},"", '#'+obj.url);
+   //                  };
+   //              };
+			// });
 
             $(document).on('click', '[data-bulk-update]', function(e){
                 e.preventDefault();
@@ -380,6 +406,9 @@
                         form.data('loading', false);
 
                         if (res.success) {
+                            if (form.hasClass('modal-form')) {
+                                $('#modal-edit').modal('hide');
+                            };
                             router.navigate(res.data);
                         }else{
                             openModal('error', res.message, true);

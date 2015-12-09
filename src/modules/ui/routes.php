@@ -16,4 +16,7 @@ Route::group([
     Route::get('/user-avatar/{size}', 'UiController@getUserAvatar');
     Route::get('/user-nav', 'UiController@getUserNav');
     Route::post('/request-meta', 'UiController@postRequestMeta');
+
+    Route::post('/delete-modal', 'UiController@postDeleteModal');
+
 });

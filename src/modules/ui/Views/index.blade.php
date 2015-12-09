@@ -34,6 +34,7 @@
                                             @foreach($row_data->data as $action)
                                                 @if ($action == 'edit')
                                                     <a
+                                                        data-action="link"
                                                         href="{{ $meta->base_url }}/{{ $record->id }}"
                                                         data-click="{{ $meta->base_url }}/{{ $record->id }}"
                                                         data-target="{{ $meta->data_target }}"
@@ -43,11 +44,13 @@
                                                     </a>
                                                 @elseif($action == 'delete')
                                                     <a
+                                                        data-action="modal-delete"
                                                         href="#modal-edit"
                                                         data-toggle="modal"
-                                                        data-click="{{ $meta->base_url }}/{{ $record->id }}"
+                                                        data-delete="{{ $meta->base_url }}/{{ $record->id }}"
+                                                        data-click="/delete-modal"
                                                         data-inject-area="#modal-body"
-                                                        class="no-link btn btn-danger"
+                                                        class="btn btn-danger"
                                                     >
                                                         Delete
                                                     </a>
