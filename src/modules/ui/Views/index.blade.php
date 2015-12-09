@@ -27,8 +27,33 @@
                             @foreach($records as $record)
                             <tr>
                                 @foreach($meta->index->table->rows as $row_key => $row_data)
-                                    @if ($row_data->type == 'link_by_id')
+                                    @if($row_data->type == 'link_by_id')
                                         <td><a href="{{ $meta->base_url }}/{{ $record->id }}" data-click="{{ $meta->base_url }}/{{ $record->id }}" data-target="{{ $meta->data_target }}">{{ $record->$row_key }}</a></td>
+                                    @elseif($row_data->type == 'action_buttons')
+                                        <td>
+                                            @foreach($row_data->data as $action)
+                                                @if ($action == 'edit')
+                                                    <a
+                                                        href="{{ $meta->base_url }}/{{ $record->id }}"
+                                                        data-click="{{ $meta->base_url }}/{{ $record->id }}"
+                                                        data-target="{{ $meta->data_target }}"
+                                                        class="btn btn-primary"
+                                                    >
+                                                        Edit
+                                                    </a>
+                                                @elseif($action == 'delete')
+                                                    <a
+                                                        href="#modal-edit"
+                                                        data-toggle="modal"
+                                                        data-click="{{ $meta->base_url }}/{{ $record->id }}"
+                                                        data-inject-area="#modal-body"
+                                                        class="no-link btn btn-danger"
+                                                    >
+                                                        Delete
+                                                    </a>
+                                                @endif
+                                            @endforeach
+                                        </td>
                                     @elseif($row_data->type == 'link_to_blank')
                                         <td><a href="{{ $record->$row_key }}" target="_blank">{{ $record->$row_key }}</a></td>
                                     @elseif($row_data->type == 'datetime')

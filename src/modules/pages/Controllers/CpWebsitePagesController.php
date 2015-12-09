@@ -35,6 +35,7 @@ class CpWebsitePagesController extends UiBaseController
                     'Slug',
                     'Created',
                     'Updated',
+                    'Actions',
                 ],
                 'rows' => [
                     'title' => [
@@ -53,6 +54,10 @@ class CpWebsitePagesController extends UiBaseController
                     ],
                     'updated_at' => [
                         'type' => 'datetime',
+                    ],
+                    'actions' => [
+                        'type' => 'action_buttons',
+                        'data' => ['edit', 'delete']
                     ],
                 ],
             ],

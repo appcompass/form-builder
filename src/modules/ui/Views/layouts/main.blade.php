@@ -83,7 +83,7 @@
 
               </div>
               <div class="modal-footer">
-                  <button class="btn btn-danger" type="button" data-dismiss="modal"> Ok</button>
+                  <button class="btn btn-primary" type="button" data-dismiss="modal"> Ok</button>
               </div>
           </div>
       </div>
