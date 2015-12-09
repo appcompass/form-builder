@@ -271,6 +271,31 @@ class CpWebsitePagesController extends UiBaseController
         return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $page_id]));
     }
 
+
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function destroy($website_id, $id)
+    {
+        $this->record = $this->getBase($website_id)->findOrFail($id);
+
+        $this->record->delete();
+
+        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages']));
+    }
+
+
+    private function getBase($website_id)
+    {
+        return Page::whereHas('website',function($q) use ($website_id) {
+            $q->where('id', $website_id);
+        });
+    }
+
     /**
      *
      */
@@ -334,17 +359,5 @@ class CpWebsitePagesController extends UiBaseController
 
         return $left_panels;
 
-    }
-
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }
