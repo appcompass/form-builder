@@ -1,6 +1,7 @@
 @if(empty($login))
 	<!--Core js-->
-	<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+	{{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script> --}}
 	<script src="/assets/ui/js/jquery.js"></script>
     <script src="/assets/ui/js/jquery-1.10.2.min.js"></script>
 	<script src="/assets/ui/bs3/js/bootstrap.min.js"></script>
@@ -35,7 +36,7 @@
 	<script src="/assets/ui/js/iCheck/jquery.icheck.min.js" ></script>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/0.12.16/vue.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.10/vue.js"></script>
 
     <script src="/assets/ui/js/jquery-ui/jquery-ui-1.10.1.custom.min.js"></script>
 
