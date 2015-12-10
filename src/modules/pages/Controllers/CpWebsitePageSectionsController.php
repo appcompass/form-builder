@@ -109,7 +109,7 @@ class CpWebsitePageSectionsController extends UiBaseController
 
         }
 
-        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $page_id, 'section', $section->id, 'edit']));
+        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $page_id, 'section', $this->record->id, 'edit']));
 
     }
 
@@ -198,8 +198,10 @@ class CpWebsitePageSectionsController extends UiBaseController
 
         $content = array_replace($existing_content, $content);
 
-        $result = DB::table('page_section')->where('id', $section_id)
-            ->update(['content' => json_encode($content)]);
+        $section->update(['content' => json_encode($content)]);
+
+        // $result = DB::table('page_section')->where('id', $section_id)
+            // ->update(['content' => json_encode($content)]);
 
         return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $page_id, 'section', $section_id]));
     }
