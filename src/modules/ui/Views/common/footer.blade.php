@@ -156,8 +156,7 @@
                     var item = $(ui.item[0]);
                     var dest = $($(this)[0]);
 
-                    var sortData = $('.sortable').sortable('serialize');
-                    var data = $.deparam(sortData);
+                    var data = {};
 
                     data['add'] = true;
                     data['layout_part'] = dest.attr(config.to_sort_target);
@@ -168,7 +167,7 @@
                         type: 'POST',
                         data: data,
                         success: function(data) {
-                            router.navigate(data.data);
+                            window.location.reload();
                         },
                         complete: function(data) {},
                         error: function(error) {},
@@ -177,18 +176,12 @@
                 update: function(event, ui) {
                     event.preventDefault();
                     if (!sender) {
-                        var sortData = $('.sortable').sortable('serialize');
+                        var sortData = $.deparam($('.sortable').sortable('serialize'));
 
                         var item = $(ui.item[0]).find('a[data-action="link"]');
 
                         if (item.attr('data-click')) {
-
-                            if (sortData) {
-                                sortData += '&';
-                            }
-
-                            sortData += 'redirect='+item.attr('data-click');
-
+                            sortData['redirect'] = item.attr('data-click');
                         };
 
                         $.ajax({

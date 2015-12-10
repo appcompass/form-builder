@@ -27,6 +27,10 @@ class PageSection extends Model
 
     public $timestamps = false;
 
+    protected $casts = [
+        'content' => 'object'
+    ];
+
     /**
      *
      */
