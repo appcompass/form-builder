@@ -68,11 +68,12 @@ class CpWebsitePageSectionsController extends UiBaseController
      */
     public function store(Request $request, $website_id, $page_id)
     {
-        $page = Page::whereHas('website', function($q) use ($website_id) {
-            $q->where('id', $website_id);
-        })->findOrFail($page_id);
+        $website = Website::findOrFail($website_id);
+
+        $page = $website->pages()->findOrFail($page_id);
 
         if ($request->has('add')) {
+
             $section = Section::findOrFail($request->section_id);
 
             if ($section->fits !== $request->layout_part) {
@@ -81,9 +82,16 @@ class CpWebsitePageSectionsController extends UiBaseController
 
             }
 
+            $order = intVal( DB::table('page_section')
+                ->where('page_id', '=', $page_id)
+                ->max('order') ) + 1;
+
             $this->record = new PageSection([
                 'section' => $section->fits,
-                'type' => null
+                'type' => null,
+                'order' => $order,
+                'type' => null,
+                'content' => json_encode([])
             ]);
 
             $this->record->page()->associate($page);
@@ -94,13 +102,14 @@ class CpWebsitePageSectionsController extends UiBaseController
         }
 
         if ($request->has('reorder')) {
+
             $sections = $this->getBase($website_id, $page_id)->get();
 
             $this->sort($sections, $request->reorder);
 
         }
 
-        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $page_id, 'section', $this->record->id, 'edit']));
+        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $page_id, 'section', $section->id, 'edit']));
 
     }
 
@@ -120,9 +129,13 @@ class CpWebsitePageSectionsController extends UiBaseController
      */
     public function edit($website_id, $page_id, $section_id)
     {
-        $page = Page::findOrFail($page_id)->load('sections.photos');
+        $website = Website::findOrFail($website_id);
 
-        $section = $this->getBase($website_id, $page_id)->findOrFail($section_id);
+        $page = $website->pages()
+            ->findOrFail($page_id)
+            ->load('sections.photos');
+
+        $section = PageSection::findOrFail($section_id);
 
         $photos = $section->photos;
 
@@ -134,7 +147,7 @@ class CpWebsitePageSectionsController extends UiBaseController
 
         $record = json_decode($section->content);
 
-        return view($edit_view, compact('meta', 'section', 'page', 'photos', 'record'));
+        return view($edit_view, compact('meta', 'website', 'section', 'page', 'photos', 'record'));
     }
 
     /**
@@ -146,7 +159,8 @@ class CpWebsitePageSectionsController extends UiBaseController
      */
     public function update(Request $request, $website_id, $page_id, $section_id)
     {
-        $section = $this->getBase($website_id, $page_id)->findOrFail($section_id);
+
+        $section = PageSection::findOrFail($section_id);
 
         $content = $request->except(['_token', '_method']);
 
@@ -187,7 +201,7 @@ class CpWebsitePageSectionsController extends UiBaseController
         $result = DB::table('page_section')->where('id', $section_id)
             ->update(['content' => json_encode($content)]);
 
-        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $page_id, 'section', $section_id, 'edit']));
+        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $page_id, 'section', $section_id]));
     }
 
     /**
@@ -205,6 +219,9 @@ class CpWebsitePageSectionsController extends UiBaseController
         return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $page_id]));
     }
 
+    /**
+     *
+     */
     private function getBase($website_id, $page_id)
     {
         return PageSection::whereHas('page',function($pq) use ($website_id, $page_id) {
