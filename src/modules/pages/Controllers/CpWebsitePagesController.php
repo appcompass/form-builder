@@ -69,8 +69,7 @@ class CpWebsitePagesController extends UiBaseController
                     'target' => '#main-content-out',
                 ],[
                     'route' => 'websites.pages.show',
-                    'target' => '#main-content-out',
-                    // 'target' => '#record-detail',
+                    'target' => '#record-detail',
                 ],
             ],
             'heading' => 'Page Informations',
@@ -82,8 +81,11 @@ class CpWebsitePagesController extends UiBaseController
                     'route' => 'websites.show',
                     'target' => '#main-content-out',
                 ],[
-                    'route' => 'websites.pages.edit',
+                    'route' => 'websites.pages.show',
                     'target' => '#record-detail',
+                ],[
+                    'route' => 'websites.pages.edit',
+                    'target' => '#content-edit',
                 ],
             ],
             'heading' => 'Page Informations',
@@ -116,7 +118,7 @@ class CpWebsitePagesController extends UiBaseController
                     'placeholder' => '',
                     'type' => 'slugify',
                     'field' => 'title',
-                    'help_block' => 'This field is set automatically.  But if you need to ovride it, do so AFTER you set the Title above.',
+                    'help_block' => 'This field is set automatically.  But if you need to override it, do so AFTER you set the Title above.',
                 ],[
                     'label' => 'Description',
                     'name' => 'description',
@@ -166,8 +168,6 @@ class CpWebsitePagesController extends UiBaseController
     {
         $this->records = Website::findOrFail($website_id)->pages;
 
-        $this->meta->data_target = '#main-content-out';
-
         return $this->build('index', ['websites', $website_id, 'pages']);
     }
 
@@ -202,8 +202,6 @@ class CpWebsitePagesController extends UiBaseController
 
         $this->record = $page;
 
-        $this->meta->data_target = '#main-content-out';
-
         return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $this->record->id]));
     }
 
@@ -219,19 +217,15 @@ class CpWebsitePagesController extends UiBaseController
 
         $website = Website::findOrFail($website_id);
 
-        $this->record = $page = $website->pages()
-            ->findOrFail($page_id)
-            ->load('sections');
+        $this->record = $this->getBase($website_id)->findOrFail($page_id)->load('sections');
 
         $this->setBaseUrl(['websites', $website_id, 'pages', $page_id]);
 
-        $this->meta->no_autoload = true;
-
-        $this->meta->data_target = '#main-content-out';
+        $this->meta->data_target = '#content-edit';
 
         return view('pages::show')
             ->with('website', $website)
-            ->with('page', $page)
+            ->with('page', $this->record)
             ->with('meta', $this->meta)
             ->with('nav', $this->getCpSubNav())
             ->with('sections', $this->getSections())
@@ -246,9 +240,9 @@ class CpWebsitePagesController extends UiBaseController
      */
     public function edit($website_id, $page_id)
     {
-        $website = Website::findOrFail($website_id);
+        $this->record = $this->getBase($website_id)->findOrFail($page_id);
 
-        $this->record = Page::ofWebsite($website)->findOrFail($page_id);
+        $this->meta->data_target = '#content-edit';
 
         return $this->build('edit', ['websites', $website_id, 'pages', $page_id]);
     }
@@ -262,15 +256,12 @@ class CpWebsitePagesController extends UiBaseController
      */
     public function update(Request $request, $website_id, $page_id)
     {
-        $website = Website::findOrFail($website_id);
-
-        $page = Page::ofWebsite($website)->findOrFail($page_id);
+        $page = $this->getBase($website_id)->findOrFail($page_id);
 
         $page->update($request->all());
 
         return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $page_id]));
     }
-
 
 
     /**

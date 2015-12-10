@@ -44,7 +44,7 @@ class PagesModuleDatabaseSeeder extends Seeder
 			    'icon' => 'globe',
 			    'link' => [
 			        'href' => '/websites/'.Website::admin()->id.'/pages',
-			        'data-target' => '#record-detail'
+			        'data-target' => '#content-edit'
 			    ]
 			]
 		]);

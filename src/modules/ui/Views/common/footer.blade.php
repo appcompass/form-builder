@@ -46,6 +46,15 @@
 
 	<script type="text/javascript">
 
+        // temp spot tille we include actual file.
+        // examples/source https://gist.github.com/cowboy/1025817#file-jquery-ba-deparam-min-js
+
+        // jQuery Deparam - v0.1.0 - 6/14/2011
+        // http://benalman.com/
+        // Copyright (c) 2011 Ben Alman; Licensed MIT, GPL
+        (function($){var a,b=decodeURIComponent,c=$.deparam=function(a,d){var e={};$.each(a.replace(/\+/g," ").split("&"),function(a,f){var g=f.split("="),h=b(g[0]);if(!!h){var i=b(g[1]||""),j=h.split("]["),k=j.length-1,l=0,m=e;j[0].indexOf("[")>=0&&/\]$/.test(j[k])?(j[k]=j[k].replace(/\]$/,""),j=j.shift().split("[").concat(j),k++):k=0,$.isFunction(d)?i=d(h,i):d&&(i=c.reviver(h,i));if(k)for(;l<=k;l++)h=j[l]!==""?j[l]:m.length,l<k?m=m[h]=m[h]||(isNaN(j[l+1])?{}:[]):m[h]=i;else $.isArray(e[h])?e[h].push(i):h in e?e[h]=[e[h],i]:e[h]=i}});return e};c.reviver=function(b,c){var d={"true":!0,"false":!1,"null":null,"undefined":a};return+c+""===c?+c:c in d?d[c]:c}})(jQuery)
+
+
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -81,7 +90,7 @@
 
             call.done(function(){
                 if (obj.next && obj.next.url) {
-                    loadSourceToTarget(obj.next, true);
+                    loadSourceToTarget(obj.next);
                 };
             })
         }
@@ -130,7 +139,77 @@
             $('#modal-alert').modal('show');
         }
 
+        function draggableSortableInit(config){
+            var router = new Simrou();
+            var sender = null;
+            $('.sortable').sortable({
+                items: ".item",
+                opacity: 0.8,
+                helper: "clone",
+                cursor: 'move',
+                placeholder: "placeholder",
+                dropOnEmpty: true,
+                receive: function(event, ui) {
+                    // this is set so that update is skipped.
+                    sender = ui.sender;
 
+                    var item = $(ui.item[0]);
+                    var dest = $($(this)[0]);
+
+                    var sortData = $('.sortable').sortable('serialize');
+                    var data = $.deparam(sortData);
+
+                    data['add'] = true;
+                    data['layout_part'] = dest.attr(config.to_sort_target);
+                    data['section_id'] = item.attr(config.to_sort_elm);
+
+                    $.ajax({
+                        url: config.resource,
+                        type: 'POST',
+                        data: data,
+                        success: function(data) {
+                            router.navigate(data.data);
+                        },
+                        complete: function(data) {},
+                        error: function(error) {},
+                    });
+                },
+                update: function(event, ui) {
+                    event.preventDefault();
+                    if (!sender) {
+                        var sortData = $('.sortable').sortable('serialize');
+
+                        var item = $(ui.item[0]).find('a[data-action="link"]');
+
+                        if (item.attr('data-click')) {
+
+                            if (sortData) {
+                                sortData += '&';
+                            }
+
+                            sortData += 'redirect='+item.attr('data-click');
+
+                        };
+
+                        $.ajax({
+                            type: 'post',
+                            url: config.resource,
+                            data: sortData,
+                            success: function(data) {
+                                router.navigate(data.data);
+                            }
+                        })
+                        sender = null;
+                    };
+                    return false;
+                }
+            }).disableSelection();
+
+            $('.draggable').draggable({
+                connectToSortable: ".sortable",
+                helper: "clone",
+            });
+        }
 
 		$(document).ready(function () {
             var alertModal = $('#modal-alert');
@@ -284,14 +363,8 @@
                         break;
                     default:
                         if (href != 'javascript:;') {
-                            var obj = {
-                                target: $(this).attr('data-target'),
-                                url: href
-                            };
                             if ($(this).attr('href')) {
-                                router.navigate(obj.url);
-                                // loadSourceToTarget(obj);
-                                // window.history.pushState({"page":obj.url},"", '#'+obj.url);
+                                router.navigate(href);
                             };
                         };
                         break;

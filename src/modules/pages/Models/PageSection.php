@@ -16,6 +16,17 @@ class PageSection extends Model
      */
     protected $table = 'page_section';
 
+    protected $fillable = [
+        'section_id',
+        'page_id',
+        'section',
+        'content',
+        'order',
+        'type',
+    ];
+
+    public $timestamps = false;
+
     /**
      *
      */
