@@ -8,12 +8,13 @@ use Illuminate\Support\Facades\Config;
 use P3in\Models\PageSection;
 use P3in\Models\Section;
 use P3in\Models\Website;
+use P3in\Traits\SettingsTrait;
 use P3in\Traits\NavigatableTrait as Navigatable;
 
 class Page extends Model
 {
 
-	use Navigatable;
+	use SettingsTrait, Navigatable;
 
 	/**
 	 * The database table used by the model.

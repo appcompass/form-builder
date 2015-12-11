@@ -126,8 +126,26 @@ class CpWebsitePagesController extends UiBaseController
                     'type' => 'textarea',
                     'help_block' => 'The title of the page.',
                 ],[
+                    'label' => 'Meta Title',
+                    'name' => 'settings[meta_title]',
+                    'placeholder' => 'Meta Title',
+                    'type' => 'text',
+                    'help_block' => 'The meta title of the blog entry.',
+                ],[
+                    'label' => 'Meta Description',
+                    'name' => 'settings[meta_description]',
+                    'placeholder' => 'Description Block',
+                    'type' => 'textarea',
+                    'help_block' => 'The title of the blog entry.',
+                ],[
+                    'label' => 'Meta Keywords',
+                    'name' => 'settings[meta_keywords]',
+                    'placeholder' => 'Meta Keywords',
+                    'type' => 'text',
+                    'help_block' => 'The meta keywords of the blog entry.',
+                ],[
                     'label' => 'Active',
-                    'name' => 'Published',
+                    'name' => 'active',
                     'placeholder' => '',
                     'type' => 'checkbox',
                     'help_block' => 'is the page published?',
@@ -217,7 +235,7 @@ class CpWebsitePagesController extends UiBaseController
 
         $website = Website::findOrFail($website_id);
 
-        $this->record = $this->getBase($website_id)->findOrFail($page_id)->load('sections');
+        $this->record = Page::ofWebsite($website)->findOrFail($page_id)->load('sections');
 
         $this->setBaseUrl(['websites', $website_id, 'pages', $page_id]);
 
@@ -240,7 +258,12 @@ class CpWebsitePagesController extends UiBaseController
      */
     public function edit($website_id, $page_id)
     {
-        $this->record = $this->getBase($website_id)->findOrFail($page_id);
+
+        $website = Website::findOrFail($website_id);
+
+        $this->record = Page::ofWebsite($website)->findOrFail($page_id);
+
+        $this->record->settings = $this->record->settings->data;
 
         $this->meta->data_target = '#content-edit';
 
@@ -256,11 +279,18 @@ class CpWebsitePagesController extends UiBaseController
      */
     public function update(Request $request, $website_id, $page_id)
     {
-        $page = $this->getBase($website_id)->findOrFail($page_id);
 
-        $page->update($request->all());
+        $website = Website::findOrFail($website_id);
 
-        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $page_id]));
+        $page = Page::ofWebsite($website)->findOrFail($page_id);
+
+        $page->update($request->except(['settings']));
+
+        if ($request->has('settings')) {
+            $page->settings($request->settings);
+        }
+
+        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $page_id, 'edit']));
     }
 
 
@@ -272,19 +302,14 @@ class CpWebsitePagesController extends UiBaseController
      */
     public function destroy($website_id, $id)
     {
-        $this->record = $this->getBase($website_id)->findOrFail($id);
+
+        $website = Website::findOrFail($website_id);
+
+        $this->record = Page::ofWebsite($website)->findOrFail($id);
 
         $this->record->delete();
 
         return $this->json($this->setBaseUrl(['websites', $website_id, 'pages']));
-    }
-
-
-    private function getBase($website_id)
-    {
-        return Page::whereHas('website',function($q) use ($website_id) {
-            $q->where('id', $website_id);
-        });
     }
 
     /**
