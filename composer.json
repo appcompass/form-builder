@@ -10,7 +10,7 @@
     "repositories": [
         {
             "type": "git",
-            "url": "git@bitbucket.org:p3in/modular.git"
+            "url": "git@github.com:plus3interactive/modular.git"
         }
     ],
     "require": {
