@@ -230,7 +230,8 @@
 </script>
 @endif
 
-{{--
+<?php
+/*
 The below is the example array of all possibilities.
 [
     [
@@ -423,4 +424,4 @@ The below is the example array of all possibilities.
         'help_block' => '',
     ]
 
-] --}}
+] */
