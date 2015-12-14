@@ -19,13 +19,6 @@
 @stop
 
 @section('content')
-    {{-- There can be default content here, or we can include instructions, render markdown maybe? --}}
-    <div class="panel">
-        <div class="panel-body">
-            <h3>Instructions</h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error, assumenda neque dolor cum ducimus adipisci velit voluptate quae perferendis! Dolorem rem eius facere deserunt iure saepe nihil aspernatur asperiores minima.</p>
-        </div>
-    </div>
 @stop
 
 
