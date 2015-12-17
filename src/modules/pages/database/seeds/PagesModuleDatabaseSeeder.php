@@ -31,7 +31,6 @@ class PagesModuleDatabaseSeeder extends Seeder
 		    'order' => 2,
 		    'published_at' => Carbon::now(),
 		    'active' => true,
-		    'parent' => null,
 		    'req_permission' => null,
 		    'website_id' => Website::admin()->id
 		]);

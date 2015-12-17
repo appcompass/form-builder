@@ -56,13 +56,13 @@ class Section extends Model
 	 *
 	 *
 	 */
-	public function render()
-	{
-		return [
-			'view' => '/sections'.$this->display_view,
-			'data' => json_decode($this->pivot->content),
-		];
-	}
+	// public function render()
+	// {
+	// 	return [
+	// 		'view' => '/sections'.$this->display_view,
+	// 		'data' => json_decode($this->pivot->content),
+	// 	];
+	// }
 
 	/**
 	 *
