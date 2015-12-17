@@ -3,14 +3,14 @@
                         {{ $meta->index->heading }}
                     </header>
                     <div class="panel-body">
-                            <div class="clearfix">
-                                <div class="btn-group">
-                                    <a id="editable-sample_new" class="btn btn-primary" href="#{{ $meta->base_url }}/create" data-click="{{ $meta->base_url }}/create" data-target="{{ $meta->data_target }}">
-                                        Add New <i class="fa fa-plus"></i>
-                                    </a>
-                                </div>
+                        <div class="clearfix">
+                            <div class="btn-group">
+                                <a id="editable-sample_new" class="btn btn-primary" href="#{{ $meta->base_url }}/create" data-click="{{ $meta->base_url }}/create" data-target="{{ $meta->data_target }}">
+                                    Add New <i class="fa fa-plus"></i>
+                                </a>
                             </div>
-                            <div class="space15"></div>
+                        </div>
+                        <div class="space15"></div>
                         <table class="table table-hover general-table dataTable" id="dynamic-table">
                             <thead>
                             <tr>
