@@ -44,12 +44,11 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 'slug' => 'edit',
                 'order' => 2,
                 'active' => true,
-                'parent' => null,
                 'req_permission' => null,
-                'website_id' => Website::admin()->id
+                "published_at" => Carbon::now(),
             ]);
 
-            $page->published_at = Carbon::now();
+            $page->website()->associate($website);
 
             $page->save();
 
@@ -66,12 +65,11 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 'slug' => 'settings',
                 'order' => 1,
                 'active' => true,
-                'parent' => null,
                 'req_permission' => null,
-                'website_id' => Website::admin()->id
+                "published_at" => Carbon::now(),
             ]);
 
-            $page->published_at = Carbon::now();
+            $page->website()->associate($website);
 
             $page->save();
 
@@ -87,12 +85,11 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 'slug' => 'pages',
                 'order' => 3,
                 'active' => true,
-                'parent' => null,
                 'req_permission' => null,
-                'website_id' => Website::admin()->id
+                "published_at" => Carbon::now(),
             ]);
 
-            $page->published_at = Carbon::now();
+            $page->website()->associate($website);
 
             $page->save();
 
@@ -108,12 +105,11 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 'slug' => 'navigation',
                 'order' => 4,
                 'active' => true,
-                'parent' => null,
                 'req_permission' => null,
-                'website_id' => Website::admin()->id
+                "published_at" => Carbon::now(),
             ]);
 
-            $page->published_at = Carbon::now();
+            $page->website()->associate($website);
 
             $page->save();
 
@@ -129,12 +125,11 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 'slug' => 'blog-entries',
                 'order' => 5,
                 'active' => true,
-                'parent' => null,
                 'req_permission' => null,
-                'website_id' => Website::admin()->id
+                "published_at" => Carbon::now(),
             ]);
 
-            $page->published_at = Carbon::now();
+            $page->website()->associate($website);
 
             $page->save();
 
@@ -150,12 +145,11 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 'slug' => 'blog-categories',
                 'order' => 6,
                 'active' => true,
-                'parent' => null,
                 'req_permission' => null,
-                'website_id' => Website::admin()->id
+                "published_at" => Carbon::now(),
             ]);
 
-            $page->published_at = Carbon::now();
+            $page->website()->associate($website);
 
             $page->save();
 
@@ -171,12 +165,11 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 'slug' => 'blog-tags',
                 'order' => 7,
                 'active' => true,
-                'parent' => null,
                 'req_permission' => null,
-                'website_id' => Website::admin()->id
+                "published_at" => Carbon::now(),
             ]);
 
-            $page->published_at = Carbon::now();
+            $page->website()->associate($website);
 
             $page->save();
 
@@ -192,12 +185,11 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 'slug' => 'blog-settings',
                 'order' => 8,
                 'active' => true,
-                'parent' => null,
                 'req_permission' => null,
-                'website_id' => Website::admin()->id
+                "published_at" => Carbon::now(),
             ]);
 
-            $page->published_at = Carbon::now();
+            $page->website()->associate($website);
 
             $page->save();
 

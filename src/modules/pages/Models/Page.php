@@ -37,7 +37,6 @@ class Page extends Model
 		'order',
 		'active',
 		'layout',
-		// 'website_id',
 		'req_permission',
 		'published_at'
 	];

@@ -22,10 +22,15 @@ class CreatePagesTable extends Migration
 			$table->boolean('active')->default(false);
 
 			$table->string('layout')->default(3)->nullable();
-
-			$table->integer('parent')->nullable();
+            $table->string('assembler_template')->nullable();
+            $table->integer('parent_id')->unsigned()->nullable();
 			$table->integer('website_id')->unsigned();
 			$table->string('req_permission')->nullable();
+
+            $table->foreign('parent_id')
+                ->references('id')
+                ->on('pages')
+                ->onDelete('cascade');
 
 			$table->foreign('website_id')
 					->references('id')
