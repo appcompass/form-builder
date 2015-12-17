@@ -5,15 +5,17 @@ namespace P3in\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use P3in\Models\PageSection;
 use P3in\Models\Section;
 use P3in\Models\Website;
 use P3in\Traits\NavigatableTrait as Navigatable;
+use P3in\Traits\SettingsTrait;
 
 class Page extends Model
 {
 
-	use Navigatable;
+	use SettingsTrait, Navigatable;
 
 	/**
 	 * The database table used by the model.
@@ -33,10 +35,9 @@ class Page extends Model
 		'description',
 		'slug',
 		'order',
-		'parent',
 		'active',
 		'layout',
-		'website_id',
+		// 'website_id',
 		'req_permission',
 		'published_at'
 	];
@@ -128,31 +129,38 @@ class Page extends Model
 
 		$views = [];
 
-    $website = Website::current();
+        $website = Website::current();
 
-    $globals = Section::whereIn('id',[$website->settings('header'), $website->settings('footer')])->get();
+        $globals = Section::whereIn('id',[$website->settings('header'), $website->settings('footer')])->get();
 
-    $views['files'] = [
-        'css_file' => $website->settings('css_file'),
-        'js_file' => $website->settings('js_file'),
-    ];
-
-    foreach ($globals as $global) {
-        $views[$global->type] = [
-            'view' => '/sections'.$global->display_view,
-            // 'data' => $global->pivot->content // TODO MUST LINK SECTION ON WEBSITE SETTINGS STORAGE
+        $views['files'] = [
+            'css_file' => $website->settings('css_file'),
+            'js_file' => $website->settings('js_file'),
         ];
-    }
 
-    foreach(explode(':', $this->layout) as $layout_part) {
+        foreach ($globals as $global) {
+            $views[$global->type] = [
+                'view' => '/sections'.$global->display_view,
+                // 'data' => $global->pivot->content // TODO MUST LINK SECTION ON WEBSITE SETTINGS STORAGE
+            ];
+        }
+        $pageSections = $this->content()->with('template')->get();
 
-			foreach($this->sections()->where('fits', $layout_part)->get() as $section) {
 
-				$views[$layout_part][] = $section->render();
+        // dd($pageSections);
+        foreach($pageSections as $pageSection) {
+            $views[$pageSection->section][] = $pageSection->render();
+        }
 
-			}
+       //  foreach(explode(':', $this->layout) as $layout_part) {
 
-    }
+    			// foreach($this->sections()->where('fits', $layout_part)->get() as $section) {
+
+    			// 	$views[$layout_part][] = $section->render();
+
+    			// }
+
+       //  }
 
 		return $views;
 
@@ -173,6 +181,19 @@ class Page extends Model
 
 	    });
 	}
+
+    public function scopeByUrl($query, $url)
+    {
+        $escaped_url = DB::connection()->getPdo()->quote($url);
+        $escaped_slug = DB::raw($escaped_url);
+
+        $query
+            ->select(
+                "*",
+                DB::raw("NULLIF(substring($escaped_url from slug), slug) AS dynamic_segment")
+            )
+            ->where($escaped_slug,'SIMILAR TO', DB::raw('slug'));
+    }
 
 	/**
 	 *

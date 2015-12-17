@@ -16,6 +16,21 @@ class PageSection extends Model
      */
     protected $table = 'page_section';
 
+    protected $fillable = [
+        'section_id',
+        'page_id',
+        'section',
+        'content',
+        'order',
+        'type',
+    ];
+
+    public $timestamps = false;
+
+    protected $casts = [
+        'content' => 'object'
+    ];
+
     /**
      *
      */
@@ -64,4 +79,13 @@ class PageSection extends Model
         return $this->photos()->save($photo);
 
     }
+
+    public function render()
+    {
+     return [
+         'view' => '/sections'.$this->template->display_view,
+         'data' => $this->content,
+     ];
+    }
+
 }

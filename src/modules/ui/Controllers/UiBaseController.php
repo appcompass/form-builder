@@ -191,7 +191,8 @@ class UiBaseController extends ModularBaseController {
             if ($class && $method) {
 
                 // lets get the meta data for this controller.
-                $metaData = with(new $class)->meta;
+                // $metaData = with(new $class)->meta;
+                $metaData = \App::make($class)->meta;
 
                 $rtn['message'] = 'The controller for this route needs target meta data.';
                 if (!empty($metaData->$method) && !empty($metaData->$method->data_targets)) {

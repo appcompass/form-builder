@@ -13,7 +13,7 @@ use P3in\Models\Page;
 use P3in\Module;
 use P3in\Traits\NavigatableTrait;
 use P3in\Traits\SettingsTrait;
-use BostonPads\Traits\HasGallery;
+use HasGallery;
 
 class Website extends Model
 {

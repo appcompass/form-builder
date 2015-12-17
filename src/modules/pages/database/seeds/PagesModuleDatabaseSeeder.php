@@ -31,7 +31,6 @@ class PagesModuleDatabaseSeeder extends Seeder
 		    'order' => 2,
 		    'published_at' => Carbon::now(),
 		    'active' => true,
-		    'parent' => null,
 		    'req_permission' => null,
 		    'website_id' => Website::admin()->id
 		]);
@@ -44,7 +43,7 @@ class PagesModuleDatabaseSeeder extends Seeder
 			    'icon' => 'globe',
 			    'link' => [
 			        'href' => '/websites/'.Website::admin()->id.'/pages',
-			        'data-target' => '#record-detail'
+			        'data-target' => '#content-edit'
 			    ]
 			]
 		]);
