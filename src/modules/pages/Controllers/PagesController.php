@@ -5,6 +5,7 @@ namespace P3in\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\Factory;
 use P3in\Models\Page;
 use P3in\Models\Section;
@@ -15,10 +16,7 @@ class PagesController extends Controller
 
     public function renderPage(Request $request, $url = '')
     {
-
-        $page = Page::where('slug', $url)->ofWebsite()->firstOrFail();
-
-        $template = 'layouts.master.'.str_replace(':', '_', $page->layout);
+        $page = Page::byUrl($url)->ofWebsite()->firstOrFail();
 
         $data = $page->render();
 
@@ -35,8 +33,7 @@ class PagesController extends Controller
             $data['navmenus'][$navmenu->name] = $navmenu;
 
         }
-
-        return view($template, $data);
+        return view('layouts.master.'.$page->assembler_template, $data);
 
     }
 }

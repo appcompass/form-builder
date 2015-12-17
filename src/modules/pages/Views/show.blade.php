@@ -7,7 +7,7 @@
         <div class="panel-body">
         @foreach($sections['page'] as $layout_part => $page_section)
         <div class="col-lg-{{ 12 / intVal(count($sections['page'])) }}">
-            <h3>{{ ucfirst($layout_part) }}</h3>
+            <h3>{{ ucwords(str_replace('_', ' ', $layout_part)) }}</h3>
             <ol class="sortable" href="/websites/{{ $website->id }}/navigation" data-layout-part="{{ $layout_part }}">
             @foreach($page_section->items as $item)
                 <li
