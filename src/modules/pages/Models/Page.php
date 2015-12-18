@@ -15,118 +15,118 @@ use P3in\Traits\SettingsTrait;
 class Page extends Model
 {
 
-	use SettingsTrait, Navigatable;
+    use SettingsTrait, Navigatable;
 
-	/**
-	 * The database table used by the model.
-	 *
-	 * @var string
-	 */
-	protected $table = 'pages';
+    /**
+     * The database table used by the model.
+     *
+     * @var string
+     */
+    protected $table = 'pages';
 
-	/**
-	 * The attributes that are mass assignable.
-	 *
-	 * @var array
-	 */
-	protected $fillable = [
-		'name',
-		'title',
-		'description',
-		'slug',
-		'order',
-		'active',
-		'layout',
-		'req_permission',
-		'published_at'
-	];
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name',
+        'title',
+        'description',
+        'slug',
+        'order',
+        'active',
+        'layout',
+        'req_permission',
+        'published_at'
+    ];
 
-	/**
-	*	Fields that needs to be treated as a date
-	*
-	*/
-	protected $dates = ['published_at'];
+    /**
+    *   Fields that needs to be treated as a date
+    *
+    */
+    protected $dates = ['published_at'];
 
-	/**
-	 *
-	 */
-	public function sections($type = null)
-	{
+    /**
+     *
+     */
+    public function sections($type = null)
+    {
 
-		$rel = $this->belongsToMany(Section::class)
-			->withPivot(['id', 'order', 'content', 'type'])
-			->orderBy('order', 'asc');
+        $rel = $this->belongsToMany(Section::class)
+            ->withPivot(['id', 'order', 'content', 'type'])
+            ->orderBy('order', 'asc');
 
-		if (!is_null($type)) {
+        if (!is_null($type)) {
 
-			$rel->wherePivot('type', $type);
+            $rel->wherePivot('type', $type);
 
-		} else {
+        } else {
 
-			$rel->wherePivot('type', null);
+            $rel->wherePivot('type', null);
 
-		}
+        }
 
-		return $rel;
+        return $rel;
 
-	}
+    }
 
-	/**
-	 *
-	 */
-	public function content()
-	{
-		// should probably split the template type and provide it divided? we'll see
-	 	return $this->hasMany(PageSection::class);
-	}
+    /**
+     *
+     */
+    public function content()
+    {
+        // should probably split the template type and provide it divided? we'll see
+        return $this->hasMany(PageSection::class);
+    }
 
-	/**
-	 *  Build a LinkClass out of this class
-	 */
-	public function makeLink($overrides = [])
-	{
-		return array_replace([
-		  "label" => $this->title,
-		  "url" => $this->slug,
-		  "req_perms" => null,
-		  "props" => [
-		      'icon' => 'list',
-		      "link" => [
-		          'href' => $this->slug,
-		          'data-target' => '#main-content-out'
-		      ],
-		  ]
-		], $overrides);
-	}
+    /**
+     *  Build a LinkClass out of this class
+     */
+    public function makeLink($overrides = [])
+    {
+        return array_replace([
+          "label" => $this->title,
+          "url" => $this->slug,
+          "req_perms" => null,
+          "props" => [
+              'icon' => 'list',
+              "link" => [
+                  'href' => $this->slug,
+                  'data-target' => '#main-content-out'
+              ],
+          ]
+        ], $overrides);
+    }
 
-	/**
-	 *	Get the website the page belongs to
-	 *
-	 */
-	public function website()
-	{
-		return $this->belongsTo(Website::class);
-	}
+    /**
+     *  Get the website the page belongs to
+     *
+     */
+    public function website()
+    {
+        return $this->belongsTo(Website::class);
+    }
 
-	/**
-	 *	Link the page to a website
-	 *
-	 */
-	public function linkToWebsite(Website $website)
-	{
-		return $this->website()
-			->associate($website)
-			->save();
-	}
+    /**
+     *  Link the page to a website
+     *
+     */
+    public function linkToWebsite(Website $website)
+    {
+        return $this->website()
+            ->associate($website)
+            ->save();
+    }
 
-	/**
-	 * Render the page
-	 *
-	 */
-	public function render()
-	{
+    /**
+     * Render the page
+     *
+     */
+    public function render()
+    {
 
-		$views = [];
+        $views = [];
 
         $website = Website::current();
 
@@ -153,33 +153,33 @@ class Page extends Model
 
        //  foreach(explode(':', $this->layout) as $layout_part) {
 
-    			// foreach($this->sections()->where('fits', $layout_part)->get() as $section) {
+                // foreach($this->sections()->where('fits', $layout_part)->get() as $section) {
 
-    			// 	$views[$layout_part][] = $section->render();
+                //  $views[$layout_part][] = $section->render();
 
-    			// }
+                // }
 
        //  }
 
-		return $views;
+        return $views;
 
-	}
+    }
 
-	/**
-	 * scopeOfWebsite
-	 * if $website is passed, then we look up that website's pages.
-	 * Otherwise we use the current website.
-	 */
-	public function scopeOfWebsite($query, Website $website = null)
-	{
-	    $website = $website ?: Website::current();
+    /**
+     * scopeOfWebsite
+     * if $website is passed, then we look up that website's pages.
+     * Otherwise we use the current website.
+     */
+    public function scopeOfWebsite($query, Website $website = null)
+    {
+        $website = $website ?: Website::current();
 
-	    return $query->whereHas('website',function($q) use ($website) {
+        return $query->whereHas('website',function($q) use ($website) {
 
-	        $q->where('id', $website->id);
+            $q->where('id', $website->id);
 
-	    });
-	}
+        });
+    }
 
     public function scopeByUrl($query, $url)
     {
@@ -194,62 +194,62 @@ class Page extends Model
             ->where($escaped_slug,'SIMILAR TO', DB::raw('slug'));
     }
 
-	/**
-	 *
-	 *
-	 *
-	 */
-	public function getFullUrlAttribute()
-	{
-		return 'https://'.$this->website->site_url.$this->slug;
-	}
+    /**
+     *
+     *
+     *
+     */
+    public function getFullUrlAttribute()
+    {
+        return 'https://'.$this->website->site_url.$this->slug;
+    }
 
-	/**
-	 *
-	 *
-	 */
-	public function byPath($path, User $user)
-	{
+    /**
+     *
+     *
+     */
+    public function byPath($path, User $user)
+    {
 
-		try {
+        try {
 
-			$page = Page::findOrFail($path);
+            $page = Page::findOrFail($path);
 
-			$this->checkPermissions($user);
+            $this->checkPermissions($user);
 
-		} catch (ModelNotFoundException $e ) {
+        } catch (ModelNotFoundException $e ) {
 
-			return false;
+            return false;
 
-		}
+        }
 
-	}
+    }
 
-	/**
-	 * Check if User has permissions
-	 *
-	 *
-	 */
-	public function checkPermissions(User $user = null)
-	{
+    /**
+     * Check if User has permissions
+     *
+     *
+     */
+    public function checkPermissions(User $user = null)
+    {
 
-		$this->req_permission = is_array($this->req_permission) ? $this->req_permission : explode(",", $this->req_permission);
+        $this->req_permission = is_array($this->req_permission) ? $this->req_permission : explode(",", $this->req_permission);
 
 
-		if (count($this->req_permission)) {
+        if (count($this->req_permission)) {
 
-			if (is_null($user)) {
+            if (is_null($user)) {
 
-				return false;
+                return false;
 
-			}
+            }
 
-			return $user->hasPermissions($this->req_permission);
+            return $user->hasPermissions($this->req_permission);
 
-		}
+        }
 
-		return true;
+        return true;
 
-	}
+    }
 
 }

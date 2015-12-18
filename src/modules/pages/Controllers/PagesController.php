@@ -20,6 +20,8 @@ class PagesController extends Controller
 
         $data = $page->render();
 
+        $data['dynamic_segment'] = $page->dynamic_segment;
+
         $data['website'] = Website::current();
 
         $data['navmenus'] = [];
@@ -27,7 +29,6 @@ class PagesController extends Controller
         $navmenus = Website::current()->navmenus()
             ->whereNull('parent_id')
             ->get();
-
         foreach ($navmenus as $navmenu) {
 
             $data['navmenus'][$navmenu->name] = $navmenu;
