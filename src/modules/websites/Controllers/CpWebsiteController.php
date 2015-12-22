@@ -112,6 +112,12 @@ class CpWebsiteController extends UiBaseController
                     'type' => 'text',
                     'help_block' => '',
                 ],[
+                    'label' => 'Default Recipients',
+                    'name' => 'config[default_recipients]',
+                    'placeholder' => 'Forms recipients',
+                    'type' => 'text',
+                    'help_block' => 'Default recipients of the forms submission of this website.',
+                ],[
                     'label' => 'A Managed Website',
                     'name' => 'config[managed]',
                     'placeholder' => '',

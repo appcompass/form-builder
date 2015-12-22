@@ -32,6 +32,9 @@
 	<script src="/assets/ui/js/flot-chart/jquery.flot.growraf.js"></script>
 	<script src="/assets/ui/js/jquery.customSelect.min.js" ></script>
 	<script src="/assets/ui/js/jquery.customSelect.min.js" ></script>
+    <!-- wysiwyg editor  -->
+    <script src="/assets/ui/js/bootstrap-wysihtml5/wysihtml5-0.3.0.js" type="text/javascript"></script>
+    <script src="/assets/ui/js/bootstrap-wysihtml5/bootstrap-wysihtml5.js" type="text/javascript"></script>
 	<!-- iCheck -->
 	<script src="/assets/ui/js/iCheck/jquery.icheck.min.js" ></script>
 
@@ -317,15 +320,15 @@
 				}
 			});
 
-			$(document).on('click', '.panel .tools .fa', function () {
-				var el = $(this).parents(".panel").children(".panel-body");
-				if ($(this).hasClass("fa-chevron-down")) {
-					$(this).removeClass("fa-chevron-down").addClass("fa-chevron-up");
-					el.slideUp(200);
-				} else if ($(this).hasClass("fa-chevron-up")) {
-					$(this).removeClass("fa-chevron-up").addClass("fa-chevron-down");
-					el.slideDown(200); }
-			});
+            $(document).on('click', '.panel .tools .fa', function () {
+                var el = $(this).parents(".panel").first().find('.panel-body');
+                if ($(this).hasClass("fa-chevron-down")) {
+                    $(this).removeClass("fa-chevron-down").addClass("fa-chevron-up");
+                    el.slideUp(200);
+                } else if ($(this).hasClass("fa-chevron-up")) {
+                    $(this).removeClass("fa-chevron-up").addClass("fa-chevron-down");
+                    el.slideDown(200); }
+            });
 
 			$(document).on('click', '.panel .tools .fa-times', function () {
 				$(this).parents(".panel").parent().remove();

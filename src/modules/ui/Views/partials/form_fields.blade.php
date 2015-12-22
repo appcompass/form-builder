@@ -129,9 +129,6 @@
 @if(empty($repeatable))
 {!! Form::submit('Save', ["class" => "btn btn-info"]) !!}
 
-<script src="/assets/ui/js/bootstrap-wysihtml5/wysihtml5-0.3.0.js" type="text/javascript"></script>
-<script src="/assets/ui/js/bootstrap-wysihtml5/bootstrap-wysihtml5.js" type="text/javascript"></script>
-
 <script type="text/javascript">
     function slugify(text) {
       return text.toString().toLowerCase()
