@@ -172,12 +172,12 @@ class CpWebsiteNavigationController extends UiBaseController
   {
 
     $this->validate($request, [
-        'item_id' => 'required',
+        // 'item_id' => 'required',
         'navmenu_name' => 'required',
         'hierarchy' => 'required'
     ]);
 
-    list($discard, $navitem_id) = explode('_', $request->item_id);
+    // list($discard, $navitem_id) = explode('_', $request->item_id);
 
     $website = Website::findOrFail($website_id);
 
@@ -186,13 +186,13 @@ class CpWebsiteNavigationController extends UiBaseController
       ->firstOrFail();
 
     // $navmenu = $navmenu->clean();
-    $navmenu->clean();
+    // $navmenu->clean();
 
     // clean up hierarchy coming from the ui
-    $hierarchy = $this->knotit(json_decode($request->hierarchy, true), $navitem_id);
+    // $hierarchy = $this->knotit(json_decode($request->hierarchy, true), $navitem_id);
 
     // parse the structure, building the navmenu
-    $this->parseHierarchy($navmenu, $hierarchy, $website);
+    $this->parseHierarchy($navmenu, json_decode($request->hierarchy, true), $website);
 
     return $this->index($website_id);
 
@@ -323,26 +323,26 @@ class CpWebsiteNavigationController extends UiBaseController
    *  with the correct one.
    *  returns at first match
    */
-  private function knotit(array $hierarchy, $item_id)
-  {
+  // private function knotit(array $hierarchy, $item_id)
+  // {
 
-    foreach ($hierarchy as $level => $content) {
+  //   foreach ($hierarchy as $level => $content) {
 
-      if (is_null($content)) {
+  //     if (is_null($content)) {
 
-        $hierarchy[$level] = ["id" => $item_id];
+  //       $hierarchy[$level] = ["id" => $item_id];
 
-        return $hierarchy;
+  //       return $hierarchy;
 
-      } else if (in_array('children', array_keys($content))) {
+  //     } else if (in_array('children', array_keys($content))) {
 
-        $hierarchy[$level]['children'] = $this->knotit($hierarchy[$level]['children'], $item_id);
+  //       $hierarchy[$level]['children'] = $this->knotit($hierarchy[$level]['children'], $item_id);
 
-      }
+  //     }
 
-    }
+  //   }
 
-    return $hierarchy;
-  }
+  //   return $hierarchy;
+  // }
 
 }
