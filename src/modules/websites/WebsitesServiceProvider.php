@@ -6,6 +6,7 @@ use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
+use P3in\Models\Website;
 
 Class WebsitesServiceProvider extends ServiceProvider {
 
