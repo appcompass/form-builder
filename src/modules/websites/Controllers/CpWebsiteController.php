@@ -248,7 +248,7 @@ class CpWebsiteController extends UiBaseController
 
         // $this->record->initRemote();
 
-        return $this->json($this->setBaseUrl(['websites', $id, 'edit']));
+        return $this->json($this->setBaseUrl(['websites', $this->record->id, 'edit']));
     }
 
     /**
