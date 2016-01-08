@@ -58,7 +58,7 @@
                                             @endforeach
                                         </td>
                                     @elseif($row_data->type == 'link_to_blank')
-                                        <td><a href="{{ $record->$row_key }}" target="_blank">{{ $record->$row_key }}</a></td>
+                                        <td><a href="{{ $record->$row_key }}" target="_blank" class="no-link">{{ $record->$row_key }}</a></td>
                                     @elseif($row_data->type == 'datetime')
                                         <td>{{ $record->$row_key }}</td>
                                     @elseif($row_data->type == 'image')
