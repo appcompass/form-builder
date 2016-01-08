@@ -83,12 +83,20 @@ class Navmenu extends Model
     }
 
     /**
-     *  Unlink a child nav
+     *  Unlink or delete a child nav
      *
      */
-    public function removeChildren(Navmenu $navmenu)
+    public function removeChildren(Navmenu $navmenu, $delete = false)
     {
-      $navmenu->parent_id = null;
+        if ($delete) {
+
+            $navmenu->delete();
+
+        } else {
+
+          $navmenu->parent_id = null;
+
+        }
 
       return $navmenu->save();
     }
@@ -123,7 +131,7 @@ class Navmenu extends Model
 
         foreach($this->children as $child) {
 
-            $child->clean();
+            $child->clean(true);
 
             $this->removeChildren($child);
 

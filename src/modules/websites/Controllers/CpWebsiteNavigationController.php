@@ -62,15 +62,30 @@ class CpWebsiteNavigationController extends UiBaseController
 
     $navmenus = $website->navmenus()->whereNull('parent_id')->get();
 
-    $pages = $website->pages;
+    $navitems = [];
+
+    // get navitem component out of all the website's pages
+    foreach ($website->pages as $page) {
+
+      $navitems[] = $page->navItem;
+
+    }
 
     $utilities = Section::byType('utils')->get();
+
+    $utils = [];
+
+    foreach ($utilities as $util) {
+
+      $utils[] = $util->navItem;
+
+    }
 
     return view('navigation::index')
       ->with('website', $website)
       ->with('navmenus', $navmenus)
-      ->with('pages', $pages)
-      ->with('utilities', $utilities);
+      ->with('utils', $utils)
+      ->with('items', $navitems);
   }
 
   /**
@@ -172,12 +187,9 @@ class CpWebsiteNavigationController extends UiBaseController
   {
 
     $this->validate($request, [
-        // 'item_id' => 'required',
         'navmenu_name' => 'required',
         'hierarchy' => 'required'
     ]);
-
-    // list($discard, $navitem_id) = explode('_', $request->item_id);
 
     $website = Website::findOrFail($website_id);
 
@@ -185,13 +197,9 @@ class CpWebsiteNavigationController extends UiBaseController
       ->where('name', '=', $request->navmenu_name)
       ->firstOrFail();
 
-    // $navmenu = $navmenu->clean();
-    // $navmenu->clean();
+    $navmenu = $navmenu->clean(true);
 
-    // clean up hierarchy coming from the ui
-    // $hierarchy = $this->knotit(json_decode($request->hierarchy, true), $navitem_id);
-
-    // parse the structure, building the navmenu
+    // parse the structure, recursively building the navmenu
     $this->parseHierarchy($navmenu, json_decode($request->hierarchy, true), $website);
 
     return $this->index($website_id);
@@ -246,24 +254,13 @@ class CpWebsiteNavigationController extends UiBaseController
 
     foreach($hierarchy as $index => $content) {
 
-
-      if (!isset($content['id'])) {
-
-        continue;
-
-      }
-
       $item = NavigationItem::findOrFail($content['id']);
 
-      if ($item->has_content) {
+      if (isset($content['children']) && count($content['children'])) {
 
         $child_nav = $this->createSubNav($item, $navmenu, $website);
 
-        if (isset($content['children'])) {
-
-          $this->parseHierarchy($child_nav, $content['children'], $website);
-
-        }
+        $this->parseHierarchy($child_nav, $content['children'], $website);
 
       } else {
 
@@ -300,9 +297,16 @@ class CpWebsiteNavigationController extends UiBaseController
         $child_nav = Navmenu::byName($item->navigatable->name);
         break;
 
+      case 'P3in\Models\Page':
+        $child_nav = Navmenu::byName($item->navigatable->title);
+        break;
+
+      case 'P3in\Models\NavigationItem':
+        $child_nav = Navmenu::byName($item->label);
+        break;
+
       default:
-        // will never reach it
-        dd($item);
+        $child_nav = Navmenu::byName($item->label);
 
     }
 
@@ -313,36 +317,5 @@ class CpWebsiteNavigationController extends UiBaseController
     return $child_nav;
 
   }
-
-  /**
-   *  FIX fixes a bug on droppable + sortable
-   *  the id of the newly dropped item doesn't show up
-   *  but it's being set to null instead
-   *
-   *  recursively looping through the hierarchy lets us replace that item
-   *  with the correct one.
-   *  returns at first match
-   */
-  // private function knotit(array $hierarchy, $item_id)
-  // {
-
-  //   foreach ($hierarchy as $level => $content) {
-
-  //     if (is_null($content)) {
-
-  //       $hierarchy[$level] = ["id" => $item_id];
-
-  //       return $hierarchy;
-
-  //     } else if (in_array('children', array_keys($content))) {
-
-  //       $hierarchy[$level]['children'] = $this->knotit($hierarchy[$level]['children'], $item_id);
-
-  //     }
-
-  //   }
-
-  //   return $hierarchy;
-  // }
 
 }
