@@ -29,7 +29,8 @@ class Navmenu extends Model
         'label',
         'req_permission',
         'parent_id',
-        'website_id'
+        'website_id',
+        'max_depth'
     ];
 
     protected $with = ['children.items', 'items'];

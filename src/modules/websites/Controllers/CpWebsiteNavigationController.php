@@ -202,7 +202,13 @@ class CpWebsiteNavigationController extends UiBaseController
     // parse the structure, recursively building the navmenu
     $this->parseHierarchy($navmenu, json_decode($request->hierarchy, true), $website);
 
-    return $this->index($website_id);
+    $navmenu = $website->navmenus()
+      ->where('name', '=', $request->navmenu_name)
+      ->firstOrFail();
+
+    return $navmenu;
+
+    // return $this->index($website_id);
 
   }
 
