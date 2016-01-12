@@ -89,19 +89,43 @@
         <pre>@{{ content | json }}</pre>
 
         {{-- Save / Cancel --}}
-        <div class="pull-right">
-            <a
-                class="btn btn-primary"
-                @click="serialize"
-            >Serialize</a>
-            <a
-                class="btn btn-danger"
-                @click="restore"
-            >Cancel</a>
-            <a
-                class="btn btn-success"
-                @click="store(content)"
-            >Save</a>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="pull-right clearfix row">
+                    <a
+                        class="btn btn-primary"
+                        @click="importVisible = !importVisible"
+                    >Import</a>
+                    <a
+                        class="btn btn-primary"
+                        @click="serialize"
+                    >Serialize</a>
+                    <a
+                        class="btn btn-danger"
+                        @click="restore"
+                    >Cancel</a>
+                    <a
+                        class="btn btn-success"
+                        @click="store(content)"
+                    >Save</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" v-if="importVisible">
+            <h5>Write or paste the Navigation Menu content</h5>
+            <div class="col-md-12">
+                <pre>
+                    <textarea
+                        class="form-control"
+                        cols="30"
+                        rows="10"
+                        v-model="importedContent"
+                        @change="importContent()"
+                    ></textarea>
+                </pre>
+            </div>
+
         </div>
     </div>
 </template>
@@ -118,7 +142,7 @@
                 <i class="fa fa-trash-o" @click="destroy"></i>
             </div>
             <img src="https://placehold.it/120x120" alt="">
-            <footer>@{{ navitem.pivot.label }} @{{ navitem.label }}</footer>
+            <footer>@{{ navitem.label }}</footer>
             <span class="row" v-if="showOptions" style="background: #ccc;">
                 <div class="col-md-10 col-offset-md-1">
                     <label for="" class="col-md-4">Url</label>
@@ -214,7 +238,9 @@
             return {
                 content: [],
                 hierarchy: undefined,
-                initialState: undefined
+                initialState: undefined,
+                importVisible: false,
+                importedContent: undefined
             }
         },
 
@@ -278,6 +304,10 @@
             },
             serialize: function() {
                 console.log(JSON.stringify(this.content));
+            },
+            importContent: function() {
+                this.content = this.importedContent;
+                this.importedContent = '';
             }
         },
 
