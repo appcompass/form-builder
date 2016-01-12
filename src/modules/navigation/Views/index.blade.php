@@ -29,9 +29,8 @@
             id="@{{ navmenu.name }}"
         >
             <p>@{{ navmenu.label }}</p>
-            {{-- Recursively inst. navmenu component --}}
             <Navmenu
-                :navmenu.sync="navmenu"
+                :navmenu="navmenu"
             ></Navmenu>
 
         </div>
@@ -51,6 +50,7 @@
                 v-for="item in items"
                 :navitem="item"
                 v-draggable
+                @dblclick="addItem(item)"
             ></Navitem>
         </ol>
     </div>
@@ -63,8 +63,9 @@
         <ol class="inline-draggable">
             <Navitem
                 v-for="item in utils"
-                :navitem="item"
+                :navitem.sync="item"
                 v-draggable
+                @dblclick="addItem(item)"
             ></Navitem>
         </ol>
     </div>
@@ -78,19 +79,11 @@
             class="sortable"
             href="/websites/{{ $website->id }}/navigation"
         >
-            {{-- <Navitem
-                v-for="item in navmenu.items"
-                :navitem.sync="item"
-                :children.sync="navmenu.children"
-                track-by="$index"
-                v-el:navitem
-            ></Navitem> --}}
             <Navitem
+                v-if="content.legth != ''"
                 v-for="item in content"
                 :navitem.sync="item"
-                :children.sync="item.children"
-            >
-            </Navitem>
+            />
         </ol>
 
         <pre>@{{ content | json }}</pre>
@@ -102,14 +95,12 @@
                 @click="serialize"
             >Serialize</a>
             <a
-                :disabled="hierarchy === undefined"
                 class="btn btn-danger"
                 @click="restore"
             >Cancel</a>
             <a
-                :disabled="hierarchy === undefined"
                 class="btn btn-success"
-                @click="store"
+                @click="store(content)"
             >Save</a>
         </div>
     </div>
@@ -122,10 +113,9 @@
         <div>
             <i class="handle fa fa-arrows"></i>
             <span class="title"><input type="text" v-model="navitem.label"></span>
-            {{-- <span class="title">@{{ navitem.label }}</span> --}}
             <div class="tools pull-right">
                 <i class="fa fa-cog"></i>
-                <i class="fa fa-trash-o"></i>
+                <i class="fa fa-trash-o" @click="destroy"></i>
             </div>
             <img src="https://placehold.it/120x120" alt="">
             <footer>@{{ navitem.label }}</footer>
@@ -136,7 +126,7 @@
         >
             <navitem
                 v-for="item in navitem.children"
-                :navitem="item"
+                :navitem.sync="item"
             ></navitem>
         </ol>
     </li>
@@ -148,7 +138,7 @@
 
 <script>
 
-    Vue.config.debug = true
+    // Vue.config.debug = true
 
     var content = {
         navmenus: {!! $navmenus->toJson() !!},
@@ -157,27 +147,36 @@
         content: []
     }
 
-    function getChildren(children, id) {
-        for (var i = 0; i < children.length; i++) {
-            if (children[i].id === id) {
-                return children[i].items;
-            }
-        }
-        return [];
-    }
-
-    function parseContent(navmenu) {
+    /**
+     *  Parses content of a navmenu
+     *
+     *  Example structure:
+     *  Navmenu
+     *
+     *
+     */
+    function parseContent(navmenu, parent) {
         var newContent = [];
-        // PARSE
+        parent = parent || null;
+
         navmenu.items.forEach(function(item) {
-            var newItem = {id: item.id, label: item.label, children: []};
-            if (item.has_content) {
-                getChildren(navmenu.children, item.navigatable_id).forEach(function(child) {
-                    newItem.children.push({id: child.id, label: child.label, children: []})
-                })
+
+            var children = mapFromArray(navmenu.children, 'id');
+            var newItem = {
+                id: item.id,
+                label: item.label,
+                url: item.url,
+                children: [],
+                parent: parent ? parent.id : null
+            };
+
+            if (children && children[item.navigatable_id] !== undefined) {
+                newItem.children = parseContent(children[item.navigatable_id], item);
             }
+
             newContent.push(newItem)
         });
+
         return newContent
     }
 
@@ -191,8 +190,10 @@
      */
     function mapFromArray(array, prop) {
         var map = {};
-        for (var i=0; i < array.length; i++) {
-            map[ array[i][prop] ] = array[i];
+        if (array !== undefined && array.length) {
+            for (var i=0; i < array.length; i++) {
+                map[ array[i][prop] ] = array[i];
+            }
         }
         return map;
     }
@@ -200,12 +201,15 @@
     var Navmenu = Vue.extend({
         template: '#navmenu',
         props: ['navmenu'],
+
         data: function() {
             return {
                 content: [],
                 hierarchy: undefined,
+                initialState: undefined
             }
         },
+
         ready: function() {
             this.resource = this.$resource("/websites/{{ $website->id }}/navigation/");
 
@@ -223,31 +227,63 @@
                 maxLevels: this.navmenu.max_depth || 2,
 
                 stop: function(e, ui) {
-                    vm.hierarchy = JSON.stringify($el.nestedSortable('toHierarchy', {attribute: 'data-id'}));
-                    vm.store();
+                    var hierarchy = $el.nestedSortable('toHierarchy', {attribute: 'data-id'});
+                    var item = $(ui.item);
+                    item.find('i').removeClass().addClass('fa fa-spinner fa-spin')
+                    vm.store(hierarchy, true, function() { item.parent('ol').children('.ui-draggable').remove(); });
                 }
+
             });
 
             vm.content = parseContent(vm.navmenu);
+            vm.initialState = parseContent(vm.navmenu);
 
         },
 
         methods: {
             restore: function() {
-                console.log("Nup.")
+                this.content = this.initialState;
             },
-            store: function() {
+            store: function(hierarchy, pretend, cb) {
+
+                pretend = pretend || false;
+                hierarchy = hierarchy || this.content;
+
                 this.resource.save({
                     navmenu_name: this.navmenu.name,
-                    hierarchy: this.hierarchy
+                    hierarchy: JSON.stringify(hierarchy),
+                    pretend: pretend
                 }).then(function(response) {
                     this.content = parseContent(response.data);
+
+                    if (!pretend) {
+                        this.initialState = this.content;
+                    }
+
+                    if (cb) {
+                        cb(response);
+                    }
+
+                }, function(error) {
+                    console.error(error)
                 });
             },
             serialize: function() {
-                console.log(this.hierarchy);
+                console.log(JSON.stringify(this.content));
             }
         },
+
+        events: {
+            'destroyNavitem': function(data) {
+                var $el = $(this.$el).children('ol').first();
+                var hierarchy = $el.nestedSortable('toHierarchy', {attribute: 'data-id'});
+                this.store(hierarchy, true)
+            },
+            'addElement': function(ele) {
+                console.log(ele)
+            }
+        },
+
         http: {
             root: '/root',
             headers: {
@@ -258,15 +294,14 @@
 
     var Navitem = Vue.extend({
         template: '#navitem',
-        props: ['navitem', 'children'],
-        computed: {
-            /* discovers element's children */
-            childItems: function() {
-                if (this.children) {
-                    return getChildren(this.children, this.navitem.navigatable_id);
-                }
-
-                return undefined;
+        props: ['navitem'],
+        methods: {
+            destroy: function() {
+                var parent = $(this.$el).remove();
+                this.$dispatch('destroyNavitem', {item: this.navitem})
+            },
+            addToBottom: function() {
+                this.$dispatch('addElement', this.navitem);
             }
         }
     })
@@ -290,7 +325,12 @@
 
     var NavSources = new Vue({
         el: '#sources-wrapper',
-        data: content
+        data: content,
+        methods: {
+            addItem: function(item) {
+                console.log(item)
+            }
+        }
     })
 
     var UtilsSources = new Vue({

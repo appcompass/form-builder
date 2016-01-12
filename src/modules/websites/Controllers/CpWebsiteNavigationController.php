@@ -128,87 +128,54 @@ class CpWebsiteNavigationController extends UiBaseController
    */
   public function update(Request $request, $website_id, $navitem_id)
   {
-    $this->validate($request, [
-        'label' => 'required'
-        // 'parent' => 'required',
-    ]);
+    // $this->validate($request, [
+    //     'label' => 'required'
+    //     // 'parent' => 'required',
+    // ]);
 
-    $website = Website::findOrFail($website_id);
+    // $website = Website::findOrFail($website_id);
 
-    if (is_numeric($navitem_id)) {
+    // if (is_numeric($navitem_id)) {
 
-      $navItem = NavigationItem::findOrFail($navitem_id);
+    //   $navItem = NavigationItem::findOrFail($navitem_id);
 
-      $navItem->label = $request->label;
+    //   $navItem->label = $request->label;
 
-      $navItem->url = $request->url;
+    //   $navItem->url = $request->url;
 
-      if ($navItem->save()) {
+    //   if ($navItem->save()) {
 
-        return $this->json($this->setBaseUrl(['websites', $website_id, 'navigation']));
+    //     return $this->json($this->setBaseUrl(['websites', $website_id, 'navigation']));
 
-      } else {
+    //   } else {
 
-        return $this->json([], false, "Error updating this item.");
+    //     return $this->json([], false, "Error updating this item.");
 
-      }
-
-
-    } else {
-
-      $parent = Navmenu::where('name', '=', $request->parent)->firstOrFail();
-
-      $navmenu_name = strtolower(str_replace(' ', '_', $request->label));
-
-      $navmenu = Navmenu::byName($navmenu_name, $request->label);
-
-      if (isset($request->url)) {
-
-        $navmenu->navItem(['url' => $request->url]);
-
-      }
-
-      $parent->addChildren($navmenu);
-
-      $website->navmenus()->save($navmenu);
-
-      return $this->json($this->setBaseUrl(['websites', $website_id, 'navigation']));
-    }
+    //   }
 
 
+    // } else {
 
-  }
+    //   $parent = Navmenu::where('name', '=', $request->parent)->firstOrFail();
+
+    //   $navmenu_name = strtolower(str_replace(' ', '_', $request->label));
+
+    //   $navmenu = Navmenu::byName($navmenu_name, $request->label);
+
+    //   if (isset($request->url)) {
+
+    //     $navmenu->navItem(['url' => $request->url]);
+
+    //   }
+
+    //   $parent->addChildren($navmenu);
+
+    //   $website->navmenus()->save($navmenu);
+
+    //   return $this->json($this->setBaseUrl(['websites', $website_id, 'navigation']));
+    // }
 
 
-  /**
-   *
-   */
-  public function store(Request $request, $website_id)
-  {
-
-    $this->validate($request, [
-        'navmenu_name' => 'required',
-        'hierarchy' => 'required'
-    ]);
-
-    $website = Website::findOrFail($website_id);
-
-    $navmenu = $website->navmenus()
-      ->where('name', '=', $request->navmenu_name)
-      ->firstOrFail();
-
-    $navmenu = $navmenu->clean(true);
-
-    // parse the structure, recursively building the navmenu
-    $this->parseHierarchy($navmenu, json_decode($request->hierarchy, true), $website);
-
-    $navmenu = $website->navmenus()
-      ->where('name', '=', $request->navmenu_name)
-      ->firstOrFail();
-
-    return $navmenu;
-
-    // return $this->index($website_id);
 
   }
 
@@ -255,8 +222,54 @@ class CpWebsiteNavigationController extends UiBaseController
   /**
    *
    */
-  private function parseHierarchy(Navmenu $navmenu, $hierarchy, Website $website)
+  public function store(Request $request, $website_id)
   {
+
+    $this->validate($request, [
+        'navmenu_name' => 'required',
+        'hierarchy' => 'required'
+    ]);
+
+    $website = Website::findOrFail($website_id);
+
+    if ($request->pretend) {
+
+      $navmenu = new Navmenu([
+        'name' => $request->navmenu_name,
+        'label' => $request->navmenu_name,
+      ]);
+
+      $this->parseHierarchy($navmenu, json_decode($request->hierarchy, true), $website, true);
+
+    } else {
+
+      $navmenu = $website->navmenus()
+        ->where('name', '=', $request->navmenu_name)
+        ->firstOrFail();
+
+      $navmenu = $navmenu->clean(true);
+
+      $this->parseHierarchy($navmenu, json_decode($request->hierarchy, true), $website);
+
+      $navmenu = $website->navmenus()
+        ->where('name', '=', $request->navmenu_name)
+        ->firstOrFail();
+
+    }
+
+    // dd($navmenu->toJson());
+
+    return $navmenu;
+
+  }
+
+  /**
+   *
+   */
+  private function parseHierarchy(Navmenu $navmenu, $hierarchy, Website $website, $pretend = false)
+  {
+
+    // dd($hierarchy);
 
     foreach($hierarchy as $index => $content) {
 
@@ -264,15 +277,48 @@ class CpWebsiteNavigationController extends UiBaseController
 
       if (isset($content['children']) && count($content['children'])) {
 
-        $child_nav = $this->createSubNav($item, $navmenu, $website);
+        if ($pretend) {
 
-        $this->parseHierarchy($child_nav, $content['children'], $website);
+          $child_nav = Navmenu::byName($item->label);
+
+          $child_nav->clean(true);
+
+          $navmenu->children->push($child_nav);
+
+          $navitem = $child_nav->navItem([
+            'has_content' => true,
+            'label' => isset($content['label']) ?: $child_nav->name
+          ])->first();
+
+          $navmenu->items->push($navitem);
+
+        } else {
+
+          $child_nav = Navmenu::byName($item->label);
+
+          $navmenu->addChildren($child_nav, null, ['has_content' => true, 'label' => $content['label']]);
+
+          $website->navmenus()->save($child_nav);
+
+          // $child_nav = $this->createSubNav($item, $navmenu, $website);
+
+        }
+
+        $this->parseHierarchy($child_nav, $content['children'], $website, $pretend);
 
       } else {
 
         try {
 
-          $navmenu->addItem($item);
+          if ($pretend) {
+
+            $navmenu->items->push($item);
+
+          } else {
+
+            $navmenu->addItem($item);
+
+          }
 
         } catch (\Exception $e) {
 

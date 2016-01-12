@@ -76,11 +76,11 @@ class Navmenu extends Model
      *  Add a child nav
      *
      */
-    public function addChildren(Navmenu $navmenu, $order = null)
+    public function addChildren(Navmenu $navmenu, $order = null, $overrides)
     {
       $this->children()->save($navmenu);
 
-      return $this->addItem($navmenu, $order);
+      return $this->addItem($navmenu, $order, $overrides);
     }
 
     /**
@@ -276,7 +276,7 @@ class Navmenu extends Model
         return array_replace([
             "label" => $this->label,
             "url" => '',
-            "has_content" => true,
+            "has_content" => false,
             "req_perms" => null,
             "props" => []
         ], $overrides);
