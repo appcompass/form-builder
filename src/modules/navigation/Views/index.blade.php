@@ -50,7 +50,6 @@
                 v-for="item in items"
                 :navitem="item"
                 v-draggable
-                @dblclick="addItem(item)"
             ></Navitem>
         </ol>
     </div>
@@ -65,7 +64,6 @@
                 v-for="item in utils"
                 :navitem.sync="item"
                 v-draggable
-                @dblclick="addItem(item)"
             ></Navitem>
         </ol>
     </div>
@@ -86,7 +84,9 @@
             />
         </ol>
 
-        <pre>@{{ content | json }}</pre>
+        <a class="btn btn-primary" @click="jsonVisible = !jsonVisible">Toggle JSON Dump</a>
+
+        <pre v-if="jsonVisible">@{{ content | json }}</pre>
 
         {{-- Save / Cancel --}}
         <div class="row">
@@ -133,9 +133,10 @@
 <template id="navitem">
     <li
         data-id="navitem_@{{ navitem.id }}"
+        stlye="font-weight: bold"
     >
         <div>
-            <i class="handle fa fa-arrows"></i>
+            <i class="handle fa fa-arrows" ></i>
             <span class="title"><input type="text" v-model="navitem.label"></span>
             <div class="tools pull-right">
                 <i class="fa fa-cog" @click="showOptions = !showOptions"></i>
@@ -240,6 +241,7 @@
                 hierarchy: undefined,
                 initialState: undefined,
                 importVisible: false,
+                jsonVisible: false,
                 importedContent: undefined
             }
         },
@@ -278,6 +280,13 @@
             restore: function() {
                 this.content = this.initialState;
             },
+            serialize: function() {
+                console.log(JSON.stringify(this.content));
+            },
+            importContent: function() {
+                this.content = this.importedContent;
+                this.importedContent = '';
+            },
             store: function(hierarchy, pretend, cb) {
 
                 pretend = pretend || false;
@@ -301,24 +310,14 @@
                 }, function(error) {
                     console.error(error)
                 });
-            },
-            serialize: function() {
-                console.log(JSON.stringify(this.content));
-            },
-            importContent: function() {
-                this.content = this.importedContent;
-                this.importedContent = '';
             }
         },
 
         events: {
-            'destroyNavitem': function(data) {
+            destroyNavitem: function(data) {
                 var $el = $(this.$el).children('ol').first();
                 var hierarchy = $el.nestedSortable('toHierarchy', {attribute: 'data-id'});
                 this.store(hierarchy, true)
-            },
-            'addElement': function(ele) {
-                console.log(ele)
             }
         },
 
@@ -342,9 +341,6 @@
             destroy: function() {
                 var parent = $(this.$el).remove();
                 this.$dispatch('destroyNavitem', {item: this.navitem})
-            },
-            addToBottom: function() {
-                this.$dispatch('addElement', this.navitem);
             }
         }
     })
@@ -368,12 +364,7 @@
 
     var NavSources = new Vue({
         el: '#sources-wrapper',
-        data: content,
-        methods: {
-            addItem: function(item) {
-                console.log(item)
-            }
-        }
+        data: content
     })
 
     var UtilsSources = new Vue({
