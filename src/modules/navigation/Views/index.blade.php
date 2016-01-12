@@ -114,11 +114,26 @@
             <i class="handle fa fa-arrows"></i>
             <span class="title"><input type="text" v-model="navitem.label"></span>
             <div class="tools pull-right">
-                <i class="fa fa-cog"></i>
+                <i class="fa fa-cog" @click="showOptions = !showOptions"></i>
                 <i class="fa fa-trash-o" @click="destroy"></i>
             </div>
             <img src="https://placehold.it/120x120" alt="">
-            <footer>@{{ navitem.label }}</footer>
+            <footer>@{{ navitem.pivot.label }} @{{ navitem.label }}</footer>
+            <span class="row" v-if="showOptions" style="background: #ccc;">
+                <div class="col-md-10 col-offset-md-1">
+                    <label for="" class="col-md-4">Url</label>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control" v-model="navitem.url">
+                    </div>
+                </div>
+
+                <div class="col-md-10 col-offset-md-1">
+                    <label for="" class="col-md-4">New Tab</label>
+                    <div class="col-md-8">
+                        <input type="checkbox" v-model="navitem.new_tab">
+                    </div>
+                </div>
+            </span>
         </div>
 
         <ol
@@ -150,10 +165,6 @@
     /**
      *  Parses content of a navmenu
      *
-     *  Example structure:
-     *  Navmenu
-     *
-     *
      */
     function parseContent(navmenu, parent) {
         var newContent = [];
@@ -162,10 +173,13 @@
         navmenu.items.forEach(function(item) {
 
             var children = mapFromArray(navmenu.children, 'id');
+            console.log(item);
             var newItem = {
                 id: item.id,
-                label: item.label,
-                url: item.url,
+                // label: item.label,
+                label: item.pivot.label || item.label,
+                url: item.pivot.url || item.url,
+                new_tab: item.pivot.new_tab || item.new_tab,
                 children: [],
                 parent: parent ? parent.id : null
             };
@@ -182,18 +196,12 @@
 
     /**
      * Creates a map out of an array be choosing what property to key by
-     * @param {object[]} array Array that will be converted into a map
-     * @param {string} prop Name of property to key by
-     * @return {object} The mapped array. Example:
-     *     mapFromArray([{a:1,b:2}, {a:3,b:4}], 'a')
-     *     returns {1: {a:1,b:2}, 3: {a:3,b:4}}
+     *
      */
     function mapFromArray(array, prop) {
         var map = {};
-        if (array !== undefined && array.length) {
-            for (var i=0; i < array.length; i++) {
-                map[ array[i][prop] ] = array[i];
-            }
+        for (var i=0; i < array.length; i++) {
+            map[ array[i][prop] ] = array[i];
         }
         return map;
     }
@@ -295,6 +303,11 @@
     var Navitem = Vue.extend({
         template: '#navitem',
         props: ['navitem'],
+        data: function() {
+            return {
+                showOptions: false
+            }
+        },
         methods: {
             destroy: function() {
                 var parent = $(this.$el).remove();

@@ -126,98 +126,12 @@ class CpWebsiteNavigationController extends UiBaseController
   /**
    * Update
    */
-  public function update(Request $request, $website_id, $navitem_id)
-  {
-    // $this->validate($request, [
-    //     'label' => 'required'
-    //     // 'parent' => 'required',
-    // ]);
-
-    // $website = Website::findOrFail($website_id);
-
-    // if (is_numeric($navitem_id)) {
-
-    //   $navItem = NavigationItem::findOrFail($navitem_id);
-
-    //   $navItem->label = $request->label;
-
-    //   $navItem->url = $request->url;
-
-    //   if ($navItem->save()) {
-
-    //     return $this->json($this->setBaseUrl(['websites', $website_id, 'navigation']));
-
-    //   } else {
-
-    //     return $this->json([], false, "Error updating this item.");
-
-    //   }
-
-
-    // } else {
-
-    //   $parent = Navmenu::where('name', '=', $request->parent)->firstOrFail();
-
-    //   $navmenu_name = strtolower(str_replace(' ', '_', $request->label));
-
-    //   $navmenu = Navmenu::byName($navmenu_name, $request->label);
-
-    //   if (isset($request->url)) {
-
-    //     $navmenu->navItem(['url' => $request->url]);
-
-    //   }
-
-    //   $parent->addChildren($navmenu);
-
-    //   $website->navmenus()->save($navmenu);
-
-    //   return $this->json($this->setBaseUrl(['websites', $website_id, 'navigation']));
-    // }
-
-
-
-  }
+  public function update(Request $request, $website_id, $navitem_id) {}
 
   /**
    * Destroy
    */
-  public function destroy(Request $request, $website_id, $item_id)
-  {
-
-    $navigation_item_navmenu = \DB::table('navigation_item_navmenu')
-      ->where('id', $item_id)
-      ->first();
-
-    $navigation_item = NavigationItem::findOrFail($navigation_item_navmenu->navigation_item_id);
-
-    // if that's a container we empty it
-    if ($navigation_item->has_content) {
-
-      $navigation_item->navigatable->clean(true)->delete();
-
-      // and delete it's navigation item
-      $result = $navigation_item->delete();
-
-    } else {
-
-      $result = \DB::table('navigation_item_navmenu')
-        ->where('id', $item_id)
-        ->delete();
-
-    }
-
-    if ($result) {
-
-      return redirect()->action('\P3in\Controllers\CpWebsiteNavigationController@index', [$website_id]);
-
-    } else {
-
-      return $this->json([], false, 'Unable to remove item.');
-
-    }
-
-  }
+  public function destroy(Request $request, $website_id, $item_id) {}
 
   /**
    *
@@ -232,32 +146,19 @@ class CpWebsiteNavigationController extends UiBaseController
 
     $website = Website::findOrFail($website_id);
 
-    if ($request->pretend) {
+    $navmenu = $website->navmenus()
+      ->where('name', '=', $request->navmenu_name)
+      ->firstOrFail();
 
-      $navmenu = new Navmenu([
-        'name' => $request->navmenu_name,
-        'label' => $request->navmenu_name,
-      ]);
+    $navmenu = $navmenu->clean(true);
 
-      $this->parseHierarchy($navmenu, json_decode($request->hierarchy, true), $website, true);
+    $this->parseHierarchy($navmenu, json_decode($request->hierarchy, true), $website, $request->pretend);
 
-    } else {
+    if (!$request->pretend) {
 
-      $navmenu = $website->navmenus()
-        ->where('name', '=', $request->navmenu_name)
-        ->firstOrFail();
-
-      $navmenu = $navmenu->clean(true);
-
-      $this->parseHierarchy($navmenu, json_decode($request->hierarchy, true), $website);
-
-      $navmenu = $website->navmenus()
-        ->where('name', '=', $request->navmenu_name)
-        ->firstOrFail();
+      $navmenu = $navmenu->fresh();
 
     }
-
-    // dd($navmenu->toJson());
 
     return $navmenu;
 
@@ -269,104 +170,41 @@ class CpWebsiteNavigationController extends UiBaseController
   private function parseHierarchy(Navmenu $navmenu, $hierarchy, Website $website, $pretend = false)
   {
 
-    // dd($hierarchy);
-
     foreach($hierarchy as $index => $content) {
 
       $item = NavigationItem::findOrFail($content['id']);
 
+      $overrides = [
+        'label' => isset($content['label']) ? $content['label'] : $item->label,
+        'url' => isset($content['url']) ? $content['url'] : $item->url,
+        'new_tab' => isset($content['new_tab']) ? $content['new_tab'] : false
+      ];
+
+      $item->fill(array_replace($item->toArray(), $overrides));
+
       if (isset($content['children']) && count($content['children'])) {
 
-        if ($pretend) {
+          $child_nav = Navmenu::byName($item->label, $pretend);
 
-          $child_nav = Navmenu::byName($item->label);
+          $overrides['has_content'] = true;
 
-          $child_nav->clean(true);
+          $navmenu->addChildren($child_nav, null, $overrides, $pretend);
 
-          $navmenu->children->push($child_nav);
+          if (!$pretend) {
 
-          $navitem = $child_nav->navItem([
-            'has_content' => true,
-            'label' => isset($content['label']) ?: $child_nav->name
-          ])->first();
-
-          $navmenu->items->push($navitem);
-
-        } else {
-
-          $child_nav = Navmenu::byName($item->label);
-
-          $navmenu->addChildren($child_nav, null, ['has_content' => true, 'label' => $content['label']]);
-
-          $website->navmenus()->save($child_nav);
-
-          // $child_nav = $this->createSubNav($item, $navmenu, $website);
-
-        }
-
-        $this->parseHierarchy($child_nav, $content['children'], $website, $pretend);
-
-      } else {
-
-        try {
-
-          if ($pretend) {
-
-            $navmenu->items->push($item);
-
-          } else {
-
-            $navmenu->addItem($item);
+            $website->navmenus()->save($child_nav);
 
           }
 
-        } catch (\Exception $e) {
+          $this->parseHierarchy($child_nav, $content['children'], $website, $pretend);
 
-          return redirect()->action('\P3in\Controllers\CpWebsiteNavigationController@index', [$website->id])->with('message', 'unable to update navmenu.');
+      } else {
 
-        }
+          $navmenu->addItem($item, null, $overrides, $pretend);
 
       }
 
     }
-
-  }
-
-  /**
-   *  Attaches a subnav to a passed navmenu and links it to a website
-   *
-   */
-  private function createSubNav(NavigationItem $item, Navmenu $navmenu, Website $website)
-  {
-
-    switch(get_class($item->navigatable)) {
-
-      case 'P3in\Models\Section':
-        $child_nav = Navmenu::byName($navmenu->getNextSubNav());
-        break;
-
-      case 'P3in\Models\Navmenu':
-        $child_nav = Navmenu::byName($item->navigatable->name);
-        break;
-
-      case 'P3in\Models\Page':
-        $child_nav = Navmenu::byName($item->navigatable->title);
-        break;
-
-      case 'P3in\Models\NavigationItem':
-        $child_nav = Navmenu::byName($item->label);
-        break;
-
-      default:
-        $child_nav = Navmenu::byName($item->label);
-
-    }
-
-    $navmenu->addChildren($child_nav);
-
-    $website->navmenus()->save($child_nav);
-
-    return $child_nav;
 
   }
 
