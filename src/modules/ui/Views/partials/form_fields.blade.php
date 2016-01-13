@@ -110,6 +110,19 @@
                     </div>
                 @endforeach
             </div>
+        @elseif($field->type == 'filtered_selectlist')
+            {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $meta->{$field->data}, null, ['class' => 'form-control', 'placeholder' => isset($field->placeholder) ? $field->placeholder : null]) !!}
+        @elseif($field->type == 'filtered_checkbox')
+            <div class="checkbox">
+                @foreach($meta->{$field->data} as $check_id => $check_label)
+                    <div class="col-lg-3">
+                        <label>
+                            {!! Form::checkbox($field->name.'[]', $check_id, !empty($record->{$field->name}) &&  in_array($check_id, $record->{$field->name}) ? true : null, ['class' => '']) !!}
+                            {{ $check_label }}
+                        </label>
+                    </div>
+                @endforeach
+            </div>
         @elseif($field->type == 'layout_selector')
             {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $meta->available_layouts) !!}
         @elseif($field->type == 'repeatable')
