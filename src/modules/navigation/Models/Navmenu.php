@@ -30,7 +30,8 @@ class Navmenu extends Model
         'req_permission',
         'parent_id',
         'website_id',
-        'max_depth'
+        'max_depth',
+        'temp'
     ];
 
     protected $with = ['children.items', 'items'];
@@ -207,7 +208,7 @@ class Navmenu extends Model
 
         if (method_exists($navItem, 'navItem')) {
 
-            return $this->addItem($navItem->navItem($overrides)->get()->first(), $order, $overrides, $pretend);
+            return $this->addItem($navItem->navItem($overrides, $pretend)->first(), $order, $overrides, $pretend);
 
         }
 
@@ -235,7 +236,14 @@ class Navmenu extends Model
 
             } else {
 
-                $this->items()->attach($navItem, ['order' => $order, 'label' => $overrides['label']] );
+                $navItem->save();
+
+                $this->items()->attach($navItem, [
+                    'order' => $order,
+                    'label' => isset($overrides['label']) ? $overrides['label'] : $navItem['label'],
+                    'url' => isset($overrides['url']) ? $overrides['url'] : $navItem['url'],
+                    'new_tab' => isset($overrides['new_tab']) ? $overrides['new_tab'] : $navItem['new_tab']
+                ]);
 
             }
 

@@ -198,13 +198,14 @@
         navmenu.items.forEach(function(item) {
 
             var children = mapFromArray(navmenu.children, 'id');
-            console.log(item);
             var newItem = {
                 id: item.id,
-                // label: item.label,
-                label: item.pivot.label || item.label,
-                url: item.pivot.url || item.url,
-                new_tab: item.pivot.new_tab || item.new_tab,
+                label: item.label,
+                // label: item.pivot.label || item.label,
+                // url: item.pivot.url || item.url,
+                url: item.url,
+                // new_tab: item.pivot.new_tab || item.new_tab,
+                new_tab: item.new_tab,
                 children: [],
                 parent: parent ? parent.id : null
             };
@@ -225,8 +226,10 @@
      */
     function mapFromArray(array, prop) {
         var map = {};
-        for (var i=0; i < array.length; i++) {
-            map[ array[i][prop] ] = array[i];
+        if (array && array.length) {
+            for (var i=0; i < array.length; i++) {
+                map[ array[i][prop] ] = array[i];
+            }
         }
         return map;
     }

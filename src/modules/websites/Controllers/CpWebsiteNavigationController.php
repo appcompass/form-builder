@@ -150,11 +150,17 @@ class CpWebsiteNavigationController extends UiBaseController
       ->where('name', '=', $request->navmenu_name)
       ->firstOrFail();
 
-    $navmenu = $navmenu->clean(true);
+    if ($request->pretend) {
 
-    $this->parseHierarchy($navmenu, json_decode($request->hierarchy, true), $website, $request->pretend);
+      $navmenu = new Navmenu($navmenu->toArray());
 
-    if (!$request->pretend) {
+      $this->parsePretend($navmenu, json_decode($request->hierarchy, true));
+
+    } else {
+
+      $navmenu = $navmenu->clean(true);
+
+      $this->parseHierarchy($navmenu, json_decode($request->hierarchy, true), $website);
 
       $navmenu = $navmenu->fresh();
 
@@ -165,9 +171,46 @@ class CpWebsiteNavigationController extends UiBaseController
   }
 
   /**
+   *  parsePretend
+   */
+  private function parsePretend(Navmenu $navmenu, array $hierarchy)
+  {
+
+    foreach($hierarchy as $index => $content) {
+
+      $item = NavigationItem::findOrFail($content['id']);
+
+      if (isset($content['children']) && count($content['children'])) {
+
+        $original_item = $item;
+
+        $child_nav = new Navmenu([
+          'label' => $item['label']
+        ]);
+
+        $child_nav->id = $item->id;
+
+        $navmenu->children->push($child_nav);
+
+        $item = $child_nav->getNavigationItem(['has_content' => true]);
+
+        $item->navigatable_id = $original_item->id;
+        $item->id = $original_item->id;
+
+        $this->parsePretend($child_nav, $content['children']);
+
+      }
+
+      $navmenu->items->push($item);
+
+    }
+
+  }
+
+  /**
    *
    */
-  private function parseHierarchy(Navmenu $navmenu, $hierarchy, Website $website, $pretend = false)
+  private function parseHierarchy(Navmenu $navmenu, array $hierarchy, Website $website)
   {
 
     foreach($hierarchy as $index => $content) {
@@ -184,23 +227,17 @@ class CpWebsiteNavigationController extends UiBaseController
 
       if (isset($content['children']) && count($content['children'])) {
 
-          $child_nav = Navmenu::byName($item->label, $pretend);
+          $child_nav = Navmenu::byName($item->label);
 
-          $overrides['has_content'] = true;
+          $navmenu->addChildren($child_nav, null, $overrides);
 
-          $navmenu->addChildren($child_nav, null, $overrides, $pretend);
+          $website->navmenus()->save($child_nav);
 
-          if (!$pretend) {
-
-            $website->navmenus()->save($child_nav);
-
-          }
-
-          $this->parseHierarchy($child_nav, $content['children'], $website, $pretend);
+          $this->parseHierarchy($child_nav, $content['children'], $website);
 
       } else {
 
-          $navmenu->addItem($item, null, $overrides, $pretend);
+          $navmenu->addItem($item, null, $overrides);
 
       }
 
