@@ -20,8 +20,7 @@ class PagesController extends Controller
 
         $data = $page->render();
 
-        $data['dynamic_segment'] = $page->dynamic_segment;
-
+        $data['page'] = $page;
         $data['website'] = Website::current();
 
         $data['navmenus'] = [];
@@ -34,6 +33,7 @@ class PagesController extends Controller
             $data['navmenus'][$navmenu->name] = $navmenu;
 
         }
+        // dd($data);
         return view('layouts.master.'.$page->assembler_template, $data);
 
     }

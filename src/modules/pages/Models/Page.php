@@ -201,7 +201,14 @@ class Page extends Model
      */
     public function getFullUrlAttribute()
     {
-        return 'https://'.$this->website->site_url.$this->slug;
+        $slug = $this->dynamic_segment ? str_replace('([a-z0-9-]+)', $this->dynamic_segment, $this->slug) : $this->slug;
+        return rtrim($this->website->site_url,'/').'/'.trim($slug,'/');
+    }
+
+    public function getUrlAttribute()
+    {
+        $slug = $this->dynamic_segment ? str_replace('([a-z0-9-]+)', $this->dynamic_segment, $this->slug) : $this->slug;
+        return '/'.trim($slug,'/');
     }
 
     /**
