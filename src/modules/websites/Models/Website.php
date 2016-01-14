@@ -2,8 +2,10 @@
 
 namespace P3in\Models;
 
+use App\Events\WebsiteCreated;
 use Auth;
 use Carbon\Carbon;
+use HasGallery;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -13,7 +15,8 @@ use P3in\Models\Page;
 use P3in\Module;
 use P3in\Traits\NavigatableTrait;
 use P3in\Traits\SettingsTrait;
-use HasGallery;
+use Photo;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class Website extends Model
 {
@@ -64,10 +67,33 @@ class Website extends Model
   protected $with = [];
 
   /**
+   *
+   */
+  // static public function boot()
+  // {
+
+  //   parent::boot();
+
+  //   // event(new WebsiteCreated($this));  <--- THIS WORKS
+  // }
+
+  /*
+   *
+   */
+  // static public function created(Website $website)
+  // {
+
+  //   Log::info("Website: $website->site_name created.");
+
+  //   // event(new WebsiteCreated);
+
+  // }
+
+  /**
    * Model's rules
    */
   public static $rules = [
-    'site_name' => 'required|max:255', //|unique:websites // we need to do a unique if not self appproach.
+    'site_name' => 'required|max:255',
     'site_url' => 'required',
     'config.host' => 'required:ip',
     'config.username' => 'required',
@@ -126,9 +152,7 @@ class Website extends Model
    */
   public static function setCurrent(Website $website)
   {
-
     return static::$current = $website;
-
   }
 
   /**
@@ -136,9 +160,7 @@ class Website extends Model
    */
   public static function getCurrent()
   {
-
     return static::$current;
-
   }
 
   /**
@@ -146,19 +168,7 @@ class Website extends Model
    */
   public static function current(Request $request = null)
   {
-
     return static::$current;
-
-    // if (!Config::get('current_site_record') && !is_null($request) && $request->header('site-name')) {
-
-    //     $website = Website::where('site_name', '=', $request->header('site-name'))->firstOrFail();
-
-    //     Config::set('current_site_record', $website);
-
-    // }
-
-    // return Config::get('current_site_record');
-
   }
 
 	/**
@@ -190,38 +200,18 @@ class Website extends Model
 	}
 
   /**
-   *
-   */
-  private function connectionConfig($config)
+    * Store an image as the website logo
+    * TODO: stub
+    */
+  public function addLogo(UploadedFile $file)
   {
 
-    // // set the remote site's ssh connection config.
-    // config(['remote.connections.production' => [
-    //     'host'      => $config->ssh_host,
-    //     'username'  => $config->ssh_username,
-    //     'key'       => $config->ssh_key,
-    //     'keyphrase' => $config->ssh_keyphrase,
-    // ]]);
+    $photo = Photo::store($file, Auth::user());
 
-  }
+    $this->photos()->delete();
 
-  /**
-   *
-   */
-  public function initRemote()
-  {
-      // $this->connectionConfig($this->config);
-      // $data = $this->config->server;
-      // $data->document_root = $this->config->ssh_root;
-      // $data->site_name = $this->site_name;
+    return $this->photos()->save($photo);
 
-      // $nginx_config = (string) view('websites::server.nginx_main', ['data' => $data]);
-
-      // SSH::putString($this->config->ssh_root.'/../nginx.conf', $nginx_config);
-
-      // SSH::run("sudo service nginx restart &", function($line) {
-      //     var_dump($line);
-      // });
   }
 
   /**
@@ -230,39 +220,41 @@ class Website extends Model
   public function deploy()
   {
 
-      if (!$this->testConnection((array) $this->config)) {
+    // Folder creation // NGINX handling moved into script + artisan command
 
-        throw new \Exception('Unable to connect.');
+    if (!$this->testConnection((array) $this->config)) {
 
-      }
+      throw new \Exception('Unable to connect.');
 
-      $ver = Carbon::now()->timestamp;
+    }
 
-      $saved_css_file = '/'.$ver.'-style.css';
+    $ver = Carbon::now()->timestamp;
 
-      $css = $this->buildCss();
+    $saved_css_file = '/'.$ver.'-style.css';
 
-      try {
+    $css = $this->buildCss();
 
-        if (!$this->getDiskInstance()->put($saved_css_file, $css) ) {
+    try {
 
-          \Log::error('Unable to write file on the remote server: '.$this->config->host);
+      if (!$this->getDiskInstance()->put($saved_css_file, $css) ) {
 
-          return false;
-
-        }
-
-        $this->settings('css_file', $saved_css_file);
-
-        return true;
-
-      } catch (\RuntimeException $e) {
-
-        \Log::error($e->getMessage());
+        \Log::error('Unable to write file on the remote server: '.$this->config->host);
 
         return false;
 
       }
+
+      $this->settings('css_file', $saved_css_file);
+
+      return true;
+
+    } catch (\RuntimeException $e) {
+
+      \Log::error($e->getMessage());
+
+      return false;
+
+    }
 
   }
 
@@ -283,8 +275,9 @@ class Website extends Model
   }
 
   /**
-   *  Test connection to website
-   */
+    *  Test connection to website
+    *  TODO check folder as well
+    */
   public static function testConnection(array $overrides = [])
   {
 
