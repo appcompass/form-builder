@@ -2,107 +2,175 @@
 
 {{-- TABS ON PANEL HEADER --}}
 @section('header')
-  <header class="panel-heading tab-bg-dark-navy-blue ">
-    <ul class="nav nav-tabs">
-    @foreach ($navmenus as $navmenu)
-      <li @if ($navmenu->id === $navmenus[0]->id) class="active" @endif>
-        <a data-toggle="tab" class="no-link" href="#{{ $navmenu->name }}">{{ str_replace('_', ' ', $navmenu->name) }}</a>
-      </li>
-    @endforeach
-    </ul>
-  </header>
+    <header class="panel-heading tab-bg-dark-navy-blue ">
+        <ul class="nav nav-tabs">
+
+        @foreach ($navmenus as $navmenu)
+            <li @if ($navmenu->id === $navmenus[0]->id) class="active" @endif>
+                <a data-toggle="tab" class="no-link" href="#{{ $navmenu->name }}">{{ str_replace('_', ' ', $navmenu->name) }}</a>
+            </li>
+        @endforeach
+
+        </ul>
+    </header>
 @stop
 
 {{-- NAVMENUS --}}
 @section('body')
-  <div class="tab-content">
-    @foreach($navmenus as $navmenu)
-    <div id="{{ $navmenu->name }}" class="tab-pane col-lg-8 col-lg-offset-2 col-md-12 @if ($navmenu->id === $navmenus[0]->id) active @endif">
-      <ol>
-        <li class="header">
-          <div>
-            {{ ucfirst(str_replace('_', ' ', $navmenu->name)) }}
-            <div class="tools pull-right">
-              <a
-                href="#modal-edit"
-                class="btn btn-xs add-subnav"
-                title="Add subnav"
-                data-action="modal-edit"
-                data-toggle="modal"
-                data-navmenu="{{ $navmenu->name }}"
-                data-inject-area="#modal-body"
-                data-click="/websites/{{ $website->id }}/navigation/create?parent={{ $navmenu->name }}"
-              >
-                <i class="fa fa-plus"> </i>
-              </a>
-            </div>
-          </div>
-          <ol class="sortable" data-navmenu="{{ $navmenu->name }}" href="/websites/{{ $website->id }}/navigation">
-          @foreach($navmenu->items as $item)
-            @include('navigation::navmenu_section', ['item' => $item, 'navmenu' => $navmenu, 'website' => $website])
-          @endforeach
-          </ol>
-        </li>
-      </ol>
+
+    {{-- Navmanager --}}
+    <div class="tab-content" id="navmanager">
+
+        {{-- Tab Panel --}}
+        <div
+            v-for="navmenu in navmenus"
+            class="tab-pane col-lg-8 col-lg-offset-2 col-md-12"
+            v-bind:class="{'active': $index == 0 }"
+            id="@{{ navmenu.name }}"
+        >
+            <p>@{{ navmenu.label }}</p>
+            <Navmenu
+                :navmenu="navmenu"
+            ></Navmenu>
+
+        </div>
     </div>
-    @endforeach
-  </div>
 
-  </div>
-  </div>
-  </div>
-  </section>
+{{-- closing panel opened in parent template --}}
+</div>
+</div>
+</section>
 
-{{-- ITEMS TO ADD --}}
-  <section class="panel">
+{{-- DRAGGABLE ITEMS --}}
+<section class="panel" id="sources-wrapper">
     <div class="panel-heading">Pages</div>
     <div class="panel-body">
-      <ol class="inline-draggable">
-        @foreach ($pages as $page)
-        <li
-          id="menuItem_{{ $page->navItem->id }}"
-          data-id="menuItem_{{ $page->navItem->id }}"
-          class="draggable"
-        >
-        <div>
-          <i class="handle fa fa-arrows"> </i>
-          <img src="https://placehold.it/120x120">
-          <footer>{{ $page->title }}</footer>
-        </div>
-      </li>
-      @endforeach
-    </ol>
-  </div>
-  </div>
-  </section>
-
-{{-- UTILS --}}
-  <section class="panel">
-    <div class="panel-heading">Utilities</div>
-    <div class="panel-body">
-      <ol class="inline-draggable">
-        @foreach($utilities as $util)
-          <li
-            id="navitem_sub_nav"
-            data-id="menuItem_{{ $util->navItem->id }}"
-            href="/websites/{{ $website->id }}/navigation"
-            class="draggable"
-            data-has-content="{{ $util->navItem->has_content === true ?: 'false' }}"
-          >
-            <div>
-              <i class="handle fa fa-arrows"> </i>
-              <img src="https://placehold.it/120x120">
-              <footer>
-                {{ $util->navItem->label }}
-              </footer>
-            </div>
-          </li>
-        @endforeach
-      </ol>
+        <ol class="inline-draggable">
+            <Navitem
+                v-for="item in items"
+                :navitem="item"
+                v-draggable
+            ></Navitem>
+        </ol>
     </div>
-  </section>
+</section>
+
+{{-- DRAGGABLE ITEMS - UTILS --}}
+<section class="panel" id="utils-wrapper">
+    <div class="panel-heading">UTILS</div>
+    <div class="panel-body">
+        <ol class="inline-draggable">
+            <Navitem
+                v-for="item in utils"
+                :navitem.sync="item"
+                v-draggable
+            ></Navitem>
+        </ol>
+    </div>
+</section>
 
 @stop
+
+<template id="navmenu">
+    <div>
+        <ol
+            class="sortable"
+            href="/websites/{{ $website->id }}/navigation"
+        >
+            <Navitem
+                v-if="content.legth != ''"
+                v-for="item in content"
+                :navitem.sync="item"
+            />
+        </ol>
+
+        <a class="btn btn-primary" @click="jsonVisible = !jsonVisible">Toggle JSON Dump</a>
+
+        <pre v-if="jsonVisible">@{{ content | json }}</pre>
+
+        {{-- Save / Cancel --}}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="pull-right clearfix row">
+                    <a
+                        class="btn btn-primary"
+                        @click="importVisible = !importVisible"
+                    >Import</a>
+                    <a
+                        class="btn btn-primary"
+                        @click="serialize"
+                    >Serialize</a>
+                    <a
+                        class="btn btn-danger"
+                        @click="restore"
+                    >Cancel</a>
+                    <a
+                        class="btn btn-success"
+                        @click="store(content)"
+                    >Save</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" v-if="importVisible">
+            <h5>Write or paste the Navigation Menu content</h5>
+            <div class="col-md-12">
+                <pre>
+                    <textarea
+                        class="form-control"
+                        cols="30"
+                        rows="10"
+                        v-model="importedContent"
+                        @change="importContent()"
+                    ></textarea>
+                </pre>
+            </div>
+
+        </div>
+    </div>
+</template>
+
+<template id="navitem">
+    <li
+        data-id="navitem_@{{ navitem.id }}"
+        stlye="font-weight: bold"
+    >
+        <div>
+            <i class="handle fa fa-arrows" ></i>
+            <span class="title"><input type="text" v-model="navitem.label"></span>
+            <div class="tools pull-right">
+                <i class="fa fa-cog" @click="showOptions = !showOptions"></i>
+                <i class="fa fa-trash-o" @click="destroy"></i>
+            </div>
+            <img src="https://placehold.it/120x120" alt="">
+            <footer>@{{ navitem.label }}</footer>
+            <span class="row" v-if="showOptions" style="background: #ccc;">
+                <div class="col-md-10 col-offset-md-1">
+                    <label for="" class="col-md-4">Url</label>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control" v-model="navitem.url">
+                    </div>
+                </div>
+
+                <div class="col-md-10 col-offset-md-1">
+                    <label for="" class="col-md-4">New Tab</label>
+                    <div class="col-md-8">
+                        <input type="checkbox" v-model="navitem.new_tab">
+                    </div>
+                </div>
+            </span>
+        </div>
+
+        <ol
+            v-if="navitem.children != ''"
+        >
+            <navitem
+                v-for="item in navitem.children"
+                :navitem.sync="item"
+            ></navitem>
+        </ol>
+    </li>
+</template>
 
 @section('footer.scripts')
 
@@ -110,100 +178,209 @@
 
 <script>
 
-    function store(url, config, next) {
+    // Vue.config.debug = true
 
-        $.ajax({
-            type: config.method || 'get',
-            url: url,
-            data: config.data || null,
-            success: function(data) {
-              next(data);
-            },
-            error: function(message) {
-              openModal('error', message, true);
-            }
-        })
+    var content = {
+        navmenus: {!! $navmenus->toJson() !!},
+        items: {!! json_encode($items) !!},
+        utils: {!! json_encode($utils) !!},
+        content: []
     }
 
     /**
-    * takes care of rebuilding the navmenu with the new items
-    *
-    */
-    function updateNav(event, ui) {
-      event.preventDefault();
+     *  Parses content of a navmenu
+     *
+     */
+    function parseContent(navmenu, parent) {
+        var newContent = [];
+        parent = parent || null;
 
-      var newHierarchy = $(this).sortable('toHierarchy', {startDepthCount: 0})
-      var droppedItem = $(ui.item[0]);
-      var navmenu = $($(this)[0]);
+        navmenu.items.forEach(function(item) {
 
-      var data = {
-          item_id: droppedItem.attr('data-id'),
-          navmenu_name: navmenu.attr('data-navmenu'),
-          hierarchy: JSON.stringify(newHierarchy)
-      }
+            var children = mapFromArray(navmenu.children, 'id');
+            var newItem = {
+                id: item.id,
+                label: item.label,
+                // label: item.pivot.label || item.label,
+                // url: item.pivot.url || item.url,
+                url: item.url,
+                // new_tab: item.pivot.new_tab || item.new_tab,
+                new_tab: item.new_tab,
+                children: [],
+                parent: parent ? parent.id : null
+            };
 
-      return store(navmenu.attr('href'), {method: 'post', data: data}, function(data) { $('#record-detail').html(data); } );
+            if (children && children[item.navigatable_id] !== undefined) {
+                newItem.children = parseContent(children[item.navigatable_id], item);
+            }
+
+            newContent.push(newItem)
+        });
+
+        return newContent
     }
 
-    $(document).ready(function(){
+    /**
+     * Creates a map out of an array be choosing what property to key by
+     *
+     */
+    function mapFromArray(array, prop) {
+        var map = {};
+        if (array && array.length) {
+            for (var i=0; i < array.length; i++) {
+                map[ array[i][prop] ] = array[i];
+            }
+        }
+        return map;
+    }
 
-        // $('.just-ajax-save').on('submit', function(e) {
-        //     e.preventDefault();
-        //     var data = {
-        //         label: $(this).find('[name="label"]').val()
-        //     }
-        //     store($(this).attr('action'), {method: 'put', data: data}, function(data) { console.log(data) });
-        // })
+    var Navmenu = Vue.extend({
+        template: '#navmenu',
+        props: ['navmenu'],
 
-        $('.sortable').nestedSortable({
-            handle: 'i',
-            items: 'li',
-            toleranceElement: '> div',
-            forcePlaceholderSize: true,
-            tolerance: 'pointer',
-            placeholder: 'placeholder',
+        data: function() {
+            return {
+                content: [],
+                hierarchy: undefined,
+                initialState: undefined,
+                importVisible: false,
+                jsonVisible: false,
+                importedContent: undefined
+            }
+        },
 
-            isAllowed: function(placeholder, placeholderParent, currentItem) {
-                var result = $(placeholderParent).attr('data-has-content');
-                if (result === undefined || result === '1' ) {
-                    return true;
+        ready: function() {
+            this.resource = this.$resource("/websites/{{ $website->id }}/navigation/");
+
+            var $el = $(this.$el).children('ol').first();
+            var vm = this;
+            var received = false;
+
+            // LINK SORTABLE
+            $el.nestedSortable({
+                handle: '.handle',
+                items: 'li',
+                helper: 'original',
+                toleranceElement: '> div',
+                placeholder: 'placeholder',
+                maxLevels: this.navmenu.max_depth || 2,
+
+                stop: function(e, ui) {
+                    var hierarchy = $el.nestedSortable('toHierarchy', {attribute: 'data-id'});
+                    var item = $(ui.item);
+                    item.find('i').removeClass().addClass('fa fa-spinner fa-spin')
+                    vm.store(hierarchy, true, function() { item.parent('ol').children('.ui-draggable').remove(); });
                 }
+
+            });
+
+            vm.content = parseContent(vm.navmenu);
+            vm.initialState = parseContent(vm.navmenu);
+
+        },
+
+        methods: {
+            restore: function() {
+                this.content = this.initialState;
             },
+            serialize: function() {
+                console.log(JSON.stringify(this.content));
+            },
+            importContent: function() {
+                this.content = this.importedContent;
+                this.importedContent = '';
+            },
+            store: function(hierarchy, pretend, cb) {
 
-            update: updateNav,
-        }).disableSelection();
+                pretend = pretend || false;
+                hierarchy = hierarchy || this.content;
 
-        $('.draggable').draggable({
-          connectToSortable: '.sortable',
-          helper: 'clone',
-          opacity: 0.2,
-          handle: '.handle',
-          maxLevels: 3,
-        }).disableSelection();
+                this.resource.save({
+                    navmenu_name: this.navmenu.name,
+                    hierarchy: JSON.stringify(hierarchy),
+                    pretend: pretend
+                }).then(function(response) {
+                    this.content = parseContent(response.data);
 
-        $('.edit-subnav').on('click', function(event) {
-          event.preventDefault();
+                    if (!pretend) {
+                        this.initialState = this.content;
+                    }
 
-        })
+                    if (cb) {
+                        cb(response);
+                    }
 
-        $('.add-subnav').on('click', function(event) {
-          event.preventDefault();
+                }, function(error) {
+                    console.error(error)
+                });
+            }
+        },
 
-          console.log($(this).attr('data-navmenu'));
+        events: {
+            destroyNavitem: function(data) {
+                var $el = $(this.$el).children('ol').first();
+                var hierarchy = $el.nestedSortable('toHierarchy', {attribute: 'data-id'});
+                this.store(hierarchy, true)
+            }
+        },
 
-        })
+        http: {
+            root: '/root',
+            headers: {
+               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        }
+    })
 
-        $('.delete-icon').on('click', function(event) {
-            event.preventDefault();
+    var Navitem = Vue.extend({
+        template: '#navitem',
+        props: ['navitem'],
+        data: function() {
+            return {
+                showOptions: false
+            }
+        },
+        methods: {
+            destroy: function() {
+                var parent = $(this.$el).remove();
+                this.$dispatch('destroyNavitem', {item: this.navitem})
+            }
+        }
+    })
 
-            store(
-              $(this).attr('href'),
-              {method: 'post', data: { _method: 'delete' } },
-              function(data) { $('#record-detail').html(data); }
-            );
+    Vue.component('Navitem', Navitem);
+    Vue.component('Navmenu', Navmenu);
 
-            return false;
-        })
+    Vue.directive('draggable', {
+        bind: function() {
+            var vm = this.vm;
+            var $el = $(this.el);
+
+            $el.draggable({
+                connectToSortable: '.sortable',
+                helper: 'clone',
+                opacity: 0.2,
+                handle: '.handle',
+            });
+        }
+    });
+
+    var NavSources = new Vue({
+        el: '#sources-wrapper',
+        data: content
+    })
+
+    var UtilsSources = new Vue({
+        el: '#utils-wrapper',
+        data: content
+    })
+
+    var NavManager = new Vue({
+        el: "#navmanager",
+        data: content,
+        ready: function() {
+            this.items = mapFromArray(content.items, 'id');
+        }
     });
 
 </script>
@@ -211,30 +388,33 @@
 
 <style>
 
-  ul, li { list-style: none; margin: 0; padding: 0; min-height: 25px;}
-  .sortable, .draggable {min-height: 30px;}
-  .sortable form { background: rgba(128, 128, 128, 0.4);}
-  .sortable li { line-height: 30px; }
-  li div { line-height: 30px;}
-  li.header > div { background: rgba(128, 128, 128, 0.4); text-align: center; font-weight: bold;}
-  li.header > ol { padding: 0; }
-  .sortable li ol { position: relative; }
-  .sortable li ol a.add_subnav { position: absolute; botton: 0; right: 0;}
-  .sortable li img { display: none; }
-  .sortable li button { float: right; }
-  .handle { float: left;  /*background: #ddd;*/  display: inline-block; line-height: 30px !important; width: 26px; margin-right: 10px; text-align: center; border-radius: 3px;}
-  .handle:hover { cursor: pointer; background: #eee; }
+    ul, li { list-style: none; margin: 0; padding: 0; min-height: 25px;}
+    .sortable, .draggable {min-height: 30px;}
+    .sortable form { background: rgba(128, 128, 128, 0.4);}
+    .sortable li { line-height: 30px; }
+    li div { line-height: 30px;}
+    li footer { display: none;}
+    li.header > div { background: rgba(128, 128, 128, 0.4); text-align: center; font-weight: bold;}
+    li.header > ol { padding: 0; }
+    .sortable li ol { position: relative; }
+    .sortable li ol a.add_subnav { position: absolute; botton: 0; right: 0;}
+    .sortable li img { display: none; }
+    .sortable li button { float: right; }
+    .handle { float: left;  /*background: #ddd;*/  display: inline-block; line-height: 30px !important; width: 26px; margin-right: 10px; text-align: center; border-radius: 3px;}
+    .handle:hover { cursor: pointer; background: #eee; }
 
-  li input[type="text"] { border: 0; background: transparent; }
-  li button { background: #fff; border: 0; }
+    li input[type="text"] { border: 0; background: transparent; min-width: 25rem; border-bottom: 1px solid transparent; }
+    li input[type="text"]:focus { border-bottom: 1px solid #666; background: transparent; }
+    li button { background: #fff; border: 0; }
 
-  .placeholder { border: 1px dashed #aaa; height: 25px; background: rgba(238, 238, 238, 0.1); width: 100%;}
-  .helper { background: rgba(238, 238, 238, 0.8); height: 25px; }
+    .placeholder { border: 1px dashed #aaa; height: 25px; background: rgba(238, 238, 238, 0.1); width: 100%;}
+    .helper { background: rgba(238, 238, 238, 0.8); height: 25px; }
 
-  .inline-draggable  { height: 120px; }
-  .inline-draggable li { min-height: 120px; position: relative; width: 120px !important; float: left; margin: 10px;}
-  .inline-draggable li div .handle { position: absolute; right: -15px; top: -6px;}
-  .inline-draggable li div footer { color: #fff; padding: 5px 0; text-align: center; line-height: 20px; 100%; width: 100%; position: absolute; bottom: 0;left: 0;right: 0; background: rgba(128, 128, 128, 0.7); }
+    .inline-draggable  { height: 120px; }
+    .inline-draggable li { min-height: 120px; position: relative; width: 120px !important; float: left; margin: 10px;}
+    .inline-draggable li div .handle { position: absolute; right: -15px; top: -6px;}
+    .inline-draggable .tools, .inline-draggable .title {display: none;}
+    .inline-draggable li div footer { display: block; color: #fff; padding: 5px 0; text-align: center; line-height: 20px; 100%; width: 100%; position: absolute; bottom: 0;left: 0;right: 0; background: rgba(128, 128, 128, 0.7); }
 
 </style>
 

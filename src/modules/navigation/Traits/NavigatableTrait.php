@@ -25,7 +25,7 @@ trait NavigatableTrait
    *
    *
    */
-  public function navItem($overrides = [])
+  public function navItem($overrides = [], $pretend = false)
   {
 
     if (str_is('*Module', get_class($this))) {
@@ -48,7 +48,15 @@ trait NavigatableTrait
 
     if (!$rel->get()->count() || count($overrides)) {
 
-        $rel->save($this->makeNavigationItem($overrides));
+        if ($pretend) {
+
+          return $this->getNavigationItem($overrides);
+
+        } else {
+
+          $rel->save($this->makeNavigationItem($overrides));
+
+        }
 
     }
 
