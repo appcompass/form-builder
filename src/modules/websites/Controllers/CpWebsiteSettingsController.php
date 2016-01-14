@@ -194,7 +194,7 @@ class CpWebsiteSettingsController extends UiBaseController
      */
     public function index($website_id)
     {
-        $website = Website::findOrFail($website_id);
+        $website = Website::managedById($website_id);
 
         return view('websites::settings/index', compact('website'))
             ->with('settings', $website->settings->data)
@@ -207,7 +207,7 @@ class CpWebsiteSettingsController extends UiBaseController
      */
     public function create($website_id)
     {
-        $parent = Website::findOrFail($website_id);
+        $parent = Website::managedById($website_id);
         return view('websites::settings/create', compact('parent'));
     }
 
@@ -217,7 +217,7 @@ class CpWebsiteSettingsController extends UiBaseController
     public function store(Request $request, $website_id)
     {
 
-        $website = Website::findOrFail($website_id);
+        $website = Website::managedById($website_id);
 
         $data = $request->except(['_token', '_method']);
 
@@ -245,7 +245,7 @@ class CpWebsiteSettingsController extends UiBaseController
      */
     public function update(Request $request, $website_id)
     {
-        // $website = Website::findOrFail($website_id);
+        // $website = Website::managedById($website_id);
     }
 
     /**
@@ -254,7 +254,7 @@ class CpWebsiteSettingsController extends UiBaseController
     public function show($website_id, $id)
     {
 
-        $parent = Website::findOrFail($website_id);
+        $parent = Website::managedById($website_id);
         $records = $parent->settings(); //id ?
 
         return view('websites::settings/show', compact('parent', 'records'));

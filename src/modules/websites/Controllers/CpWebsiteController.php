@@ -222,7 +222,7 @@ class CpWebsiteController extends UiBaseController
      */
     public function index()
     {
-        $this->records = Website::all();
+        $this->records = Website::managed()->get();
 
         return $this->build('index', ['websites']);
     }
@@ -256,7 +256,7 @@ class CpWebsiteController extends UiBaseController
      */
     public function show($id)
     {
-        $this->record = Website::findOrFail($id);
+        $this->record = Website::managedById($id);
 
         return $this->build('show', ['websites', $id]);
     }
@@ -266,7 +266,7 @@ class CpWebsiteController extends UiBaseController
      */
     public function edit($id)
     {
-        $this->record = Website::findOrFail($id);
+        $this->record = Website::managedById($id);
         return $this->build('edit', ['websites', $id]);
     }
 
@@ -286,7 +286,7 @@ class CpWebsiteController extends UiBaseController
             // 'config' => 'site_connection',
         ]);
 
-        $website = $this->record = Website::findOrFail($id);
+        $website = $this->record = Website::managedById($id);
 
         if ($website->testConnection($request->config)) {
 

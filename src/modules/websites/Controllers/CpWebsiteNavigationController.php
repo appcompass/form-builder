@@ -58,7 +58,7 @@ class CpWebsiteNavigationController extends UiBaseController
   public function index($website_id)
   {
 
-    $website = Website::findOrFail($website_id)->load('navmenus', 'pages');
+    $website = Website::managedById($website_id)->load('navmenus', 'pages');
 
     $navmenus = $website->navmenus()->whereNull('parent_id')->get();
 
@@ -93,7 +93,7 @@ class CpWebsiteNavigationController extends UiBaseController
    */
   public function edit($website_id, $navitem_id)
   {
-    $website = Website::findOrFail($website_id)->load('navmenus', 'pages');
+    $website = Website::managedById($website_id)->load('navmenus', 'pages');
 
     $navItem = NavigationItem::findOrFail($navitem_id);
 
@@ -114,7 +114,7 @@ class CpWebsiteNavigationController extends UiBaseController
 
     }
 
-    $website = Website::findOrFail($website_id)->load('navmenus', 'pages');
+    $website = Website::managedById($website_id)->load('navmenus', 'pages');
 
     $parent = $website->navmenus()->where('name', '=', \Request::get('parent'))->firstOrFail();
 
@@ -144,7 +144,7 @@ class CpWebsiteNavigationController extends UiBaseController
         'hierarchy' => 'required'
     ]);
 
-    $website = Website::findOrFail($website_id);
+    $website = Website::managedById($website_id);
 
     $navmenu = $website->navmenus()
       ->where('name', '=', $request->navmenu_name)

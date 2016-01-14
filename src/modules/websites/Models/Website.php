@@ -18,55 +18,55 @@ use HasGallery;
 class Website extends Model
 {
 
-	use SettingsTrait, NavigatableTrait, HasGallery;
+    use SettingsTrait, NavigatableTrait, HasGallery;
 
-	/**
-	 * The database table used by the model.
-	 *
-	 * @var string
-	 */
-	protected $table = 'websites';
+    /**
+     * The database table used by the model.
+     *
+     * @var string
+     */
+    protected $table = 'websites';
 
-	/**
-	 * The attributes that are mass assignable.
-	 *
-	 * @var array
-	 */
-	protected $fillable = [
-		'site_name',
-		'site_url',
-		'config',
-	];
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'site_name',
+        'site_url',
+        'config',
+    ];
 
-	/**
-	 * The attributes that should be casted to native types.
-	 *
-	 * @var array
-	 */
-	protected $casts = [
-		'config' => 'object',
-	];
+    /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'config' => 'object',
+    ];
 
-	/**
-	* Fields that needs to be treated as a date
-	*
-	*/
-	protected $dates = ['published_at'];
+    /**
+    * Fields that needs to be treated as a date
+    *
+    */
+    protected $dates = ['published_at'];
 
-  /**
-   *
-   */
-  public static $current = null;
+    /**
+     *
+     */
+    public static $current = null;
 
-  /**
-   *
-   */
-  protected $with = [];
+    /**
+     *
+     */
+    protected $with = [];
 
-  /**
-   * Model's rules
-   */
-  public static $rules = [
+    /**
+     * Model's rules
+     */
+    public static $rules = [
     'site_name' => 'required|max:255', //|unique:websites // we need to do a unique if not self appproach.
     'site_url' => 'required',
     'config.host' => 'required:ip',
@@ -74,80 +74,80 @@ class Website extends Model
     'config.password' => 'required',
     'config.root' => 'required',
     'config' => 'site_connection',
-  ];
+    ];
 
-	/**
-	 * Get all the pages linked to this website
-	 *
-	 */
-	public function pages()
-	{
-		return $this->hasMany(Page::class);
-	}
+    /**
+     * Get all the pages linked to this website
+     *
+     */
+    public function pages()
+    {
+        return $this->hasMany(Page::class);
+    }
 
-	/**
-	 *
-	 *
-	 */
-	public function navmenus()
-	{
-		return $this->hasMany(Navmenu::class);
-	}
+    /**
+     *
+     *
+     */
+    public function navmenus()
+    {
+        return $this->hasMany(Navmenu::class);
+    }
 
-	/**
-	 *
-	 *
-	 */
-	public function scopeByName($query, $name)
-	{
-		return $query->where('site_name', '=', $name);
-	}
+    /**
+     *
+     *
+     */
+    public function scopeByName($query, $name)
+    {
+        return $query->where('site_name', '=', $name);
+    }
 
-  /**
-   *  Link a page
-   *
-   */
-  public function addPage(Page $page)
-  {
+    /**
+     *  Link a page
+     *
+     */
+    public function addPage(Page $page)
+    {
     $this->pages()->save($page);
-  }
+    }
 
-	/**
-	 *
-	 *
-	 */
-	public function addItem(Page $page)
-	{
-		$this->pages()->save($page);
-	}
+    /**
+     *
+     *
+     */
+    public function addItem(Page $page)
+    {
+        $this->pages()->save($page);
+    }
 
-  /**
-   *
-   */
-  public static function setCurrent(Website $website)
-  {
+    /**
+     *
+     */
+    public static function setCurrent(Website $website)
+    {
 
-    return static::$current = $website;
+        return static::$current = $website;
 
-  }
+    }
 
-  /**
-   *
-   */
-  public static function getCurrent()
-  {
+    /**
+     *
+     */
+    public static function getCurrent()
+    {
 
-    return static::$current;
+        return static::$current;
 
-  }
+    }
 
-  /**
-   *
-   */
-  public static function current(Request $request = null)
-  {
+    /**
+     *
+     */
+    public static function current(Request $request = null)
+    {
 
-    return static::$current;
+        return static::$current;
 
     // if (!Config::get('current_site_record') && !is_null($request) && $request->header('site-name')) {
 
@@ -159,41 +159,54 @@ class Website extends Model
 
     // return Config::get('current_site_record');
 
-  }
+    }
 
-	/**
-	 *
-	 *
-	 */
-	public function scopeAdmin($query)
-	{
-	  return $query->where('site_name', '=', env('ADMIN_WEBSITE_NAME', 'CMS Admin CP'))->firstOrFail();
-	}
+    /**
+     *
+     *
+     */
+    public function scopeAdmin($query)
+    {
+        return $query->where('site_name', '=', env('ADMIN_WEBSITE_NAME', 'CMS Admin CP'))->firstOrFail();
+    }
 
-	/**
-	 *
-	 *	@param bool $pages retunrns a link to website's pages index
-	 */
-	public function makeLink($overrides = [])
-	{
-	    return array_replace([
-	        "label" => $this->site_name,
-	        "url" => '/websites/'.$this->id.'/pages',
-	        "props" => [
-	        	"icon" => 'globe',
-	        	"link" => [
-	        		'href' => '/websites/'.$this->id,
-	        		'data-target' => '#main-content-out'
-	        	]
-	        ]
-	    ], $overrides);
-	}
+    /**
+     *
+     *
+     */
+    public function scopeManaged($query)
+    {
+        return $query->where('site_name', '!=', env('ADMIN_WEBSITE_NAME', 'CMS Admin CP'));
+    }
 
-  /**
-   *
-   */
-  private function connectionConfig($config)
-  {
+    public function scopeManagedById($query, $id)
+    {
+        return $query->managed()->findOrFail($id);
+    }
+    /**
+     *
+     *  @param bool $pages retunrns a link to website's pages index
+     */
+    public function makeLink($overrides = [])
+    {
+        return array_replace([
+            "label" => $this->site_name,
+            "url" => '/websites/'.$this->id.'/pages',
+            "props" => [
+                "icon" => 'globe',
+                "link" => [
+                    'href' => '/websites/'.$this->id,
+                    'data-target' => '#main-content-out'
+                ]
+            ]
+        ], $overrides);
+    }
+
+    /**
+     *
+     */
+    private function connectionConfig($config)
+    {
 
     // // set the remote site's ssh connection config.
     // config(['remote.connections.production' => [
@@ -203,190 +216,190 @@ class Website extends Model
     //     'keyphrase' => $config->ssh_keyphrase,
     // ]]);
 
-  }
+    }
 
-  /**
-   *
-   */
-  public function initRemote()
-  {
-      // $this->connectionConfig($this->config);
-      // $data = $this->config->server;
-      // $data->document_root = $this->config->ssh_root;
-      // $data->site_name = $this->site_name;
+    /**
+     *
+     */
+    public function initRemote()
+    {
+        // $this->connectionConfig($this->config);
+        // $data = $this->config->server;
+        // $data->document_root = $this->config->ssh_root;
+        // $data->site_name = $this->site_name;
 
-      // $nginx_config = (string) view('websites::server.nginx_main', ['data' => $data]);
+        // $nginx_config = (string) view('websites::server.nginx_main', ['data' => $data]);
 
-      // SSH::putString($this->config->ssh_root.'/../nginx.conf', $nginx_config);
+        // SSH::putString($this->config->ssh_root.'/../nginx.conf', $nginx_config);
 
-      // SSH::run("sudo service nginx restart &", function($line) {
-      //     var_dump($line);
-      // });
-  }
+        // SSH::run("sudo service nginx restart &", function($line) {
+        //     var_dump($line);
+        // });
+    }
 
-  /**
-   *
-   */
-  public function deploy()
-  {
+    /**
+     *
+     */
+    public function deploy()
+    {
 
-      if (!$this->testConnection((array) $this->config)) {
+        if (!$this->testConnection((array) $this->config)) {
 
-        throw new \Exception('Unable to connect.');
-
-      }
-
-      $ver = Carbon::now()->timestamp;
-
-      $saved_css_file = '/'.$ver.'-style.css';
-
-      $css = $this->buildCss();
-
-      try {
-
-        if (!$this->getDiskInstance()->put($saved_css_file, $css) ) {
-
-          \Log::error('Unable to write file on the remote server: '.$this->config->host);
-
-          return false;
+            throw new \Exception('Unable to connect.');
 
         }
 
-        $this->settings('css_file', $saved_css_file);
+        $ver = Carbon::now()->timestamp;
 
-        return true;
+        $saved_css_file = '/'.$ver.'-style.css';
 
-      } catch (\RuntimeException $e) {
+        $css = $this->buildCss();
 
-        \Log::error($e->getMessage());
+        try {
 
-        return false;
+            if (!$this->getDiskInstance()->put($saved_css_file, $css) ) {
 
-      }
+            \Log::error('Unable to write file on the remote server: '.$this->config->host);
 
-  }
+            return false;
 
-  /**
-   *
-   */
-  public function getDiskInstance()
-  {
+            }
 
-    $connection_info = array_replace(Config::get('filesystems.disks.sftp'), (array) $this->config);
+            $this->settings('css_file', $saved_css_file);
 
-    Config::set('filesystems.disks.sftp', $connection_info);
+            return true;
 
-    $disk = \Storage::disk('sftp');
+        } catch (\RuntimeException $e) {
 
-    return $disk;
+            \Log::error($e->getMessage());
 
-  }
+            return false;
 
-  /**
-   *  Test connection to website
-   */
-  public static function testConnection(array $overrides = [])
-  {
-
-    $instance = new static;
-
-    $instance->config = $overrides;
-
-    $connection_details = array_replace((array) config('filesystems.disks.sftp'), $overrides);
-
-    $disk = $instance->getDiskInstance()
-      ->getDriver()
-      ->getAdapter();
-
-    try {
-
-      $disk->connect();
-
-      $result = $disk->isConnected();
-
-      $disk->disconnect();
-
-      return $result;
-
-    } catch (\RuntimeException $e) {
-
-        \Log::error($e->getMessage());
-        return false;
-
-    } catch (\ErrorException $e) {
-
-        \Log::error($e->getMessage());
-        return false;
-
-    } catch (\LogicException $e) {
-
-        \Log::error($e->getMessage());
-        return false;
+        }
 
     }
 
-  }
+    /**
+     *
+     */
+    public function getDiskInstance()
+    {
 
-  /**
-   *
-   */
-  public function buildCss()
-  {
+        $connection_info = array_replace(Config::get('filesystems.disks.sftp'), (array) $this->config);
 
-    $parser = new Less_Parser(config('less'));
+        Config::set('filesystems.disks.sftp', $connection_info);
 
-    $parser->parseFile(config('less.less_path'));
+        $disk = \Storage::disk('sftp');
 
-    $parser->ModifyVars([
-        'color-theme-primary'=> $this->settings('color_primary'),
-        'color-theme-secondary' => $this->settings('color_secondary'),
-    ]);
+        return $disk;
 
-    return $parser->getCss();
+    }
 
-  }
+    /**
+    *  Test connection to website
+    */
+    public static function testConnection(array $overrides = [])
+    {
 
-  /**
-   *
-   */
-  public function getMachineName()
-  {
-    return strtolower(str_replace(' ', '_', $this->site_name));
-  }
+        $instance = new static;
 
-  /**
-   * as per hasGallery Trait
-   */
-  public function getGalleryName()
-  {
-    return $this->getMachineName();
-  }
+        $instance->config = $overrides;
 
-	/**
-	*
-	* Website::first()->render()
-	*
-	*
-	*/
-	public function renderPage($page_path)
-	{
+        $connection_details = array_replace((array) config('filesystems.disks.sftp'), $overrides);
 
-		try {
+        $disk = $instance->getDiskInstance()
+            ->getDriver()
+            ->getAdapter();
 
-			$page = $this->pages()
-				->where('slug', $page_path)
-				->firstOrFail();
+        try {
 
-  		if ($page->checkPermissions(Auth::user())) {
-        return $page;
-      }
+            $disk->connect();
 
-		} catch (ModelNotFoundException $e ) {
+            $result = $disk->isConnected();
 
-      return false;
+            $disk->disconnect();
 
-		}
+            return $result;
 
-		return false;
-	}
+        } catch (\RuntimeException $e) {
+
+            \Log::error($e->getMessage());
+            return false;
+
+        } catch (\ErrorException $e) {
+
+            \Log::error($e->getMessage());
+            return false;
+
+        } catch (\LogicException $e) {
+
+            \Log::error($e->getMessage());
+            return false;
+
+        }
+
+    }
+
+    /**
+     *
+     */
+    public function buildCss()
+    {
+
+        $parser = new Less_Parser(config('less'));
+
+        $parser->parseFile(config('less.less_path'));
+
+        $parser->ModifyVars([
+            'color-theme-primary'=> $this->settings('color_primary'),
+            'color-theme-secondary' => $this->settings('color_secondary'),
+        ]);
+
+        return $parser->getCss();
+
+    }
+
+    /**
+     *
+     */
+    public function getMachineName()
+    {
+        return strtolower(str_replace(' ', '_', $this->site_name));
+    }
+
+    /**
+     * as per hasGallery Trait
+     */
+    public function getGalleryName()
+    {
+        return $this->getMachineName();
+    }
+
+    /**
+    *
+    * Website::first()->render()
+    *
+    *
+    */
+    public function renderPage($page_path)
+    {
+
+        try {
+
+            $page = $this->pages()
+                ->where('slug', $page_path)
+                ->firstOrFail();
+
+        if ($page->checkPermissions(Auth::user())) {
+            return $page;
+        }
+
+        } catch (ModelNotFoundException $e ) {
+
+            return false;
+
+        }
+
+            return false;
+    }
 }

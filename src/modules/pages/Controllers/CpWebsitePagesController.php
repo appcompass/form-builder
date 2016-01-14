@@ -184,7 +184,7 @@ class CpWebsitePagesController extends UiBaseController
      */
     public function index($website_id)
     {
-        $this->records = Website::findOrFail($website_id)->pages;
+        $this->records = Website::managedById($website_id)->pages;
 
         return $this->build('index', ['websites', $website_id, 'pages']);
     }
@@ -215,7 +215,7 @@ class CpWebsitePagesController extends UiBaseController
 
         $page->published_at = Carbon::now();
 
-        Website::findOrFail($website_id)->pages()
+        Website::managedById($website_id)->pages()
             ->save($page);
 
         $this->record = $page;
@@ -233,7 +233,7 @@ class CpWebsitePagesController extends UiBaseController
     public function show($website_id, $page_id)
     {
 
-        $website = Website::findOrFail($website_id);
+        $website = Website::managedById($website_id);
 
         $this->record = Page::ofWebsite($website)->findOrFail($page_id)->load('sections');
 
@@ -259,7 +259,7 @@ class CpWebsitePagesController extends UiBaseController
     public function edit($website_id, $page_id)
     {
 
-        $website = Website::findOrFail($website_id);
+        $website = Website::managedById($website_id);
 
         $this->record = Page::ofWebsite($website)->findOrFail($page_id);
 
@@ -280,7 +280,7 @@ class CpWebsitePagesController extends UiBaseController
     public function update(Request $request, $website_id, $page_id)
     {
 
-        $website = Website::findOrFail($website_id);
+        $website = Website::managedById($website_id);
 
         $page = Page::ofWebsite($website)->findOrFail($page_id);
 
@@ -303,7 +303,7 @@ class CpWebsitePagesController extends UiBaseController
     public function destroy($website_id, $id)
     {
 
-        $website = Website::findOrFail($website_id);
+        $website = Website::managedById($website_id);
 
         $this->record = Page::ofWebsite($website)->findOrFail($id);
 

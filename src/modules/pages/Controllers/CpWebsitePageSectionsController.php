@@ -71,7 +71,7 @@ class CpWebsitePageSectionsController extends UiBaseController
      */
     public function store(Request $request, $website_id, $page_id)
     {
-        $website = Website::findOrFail($website_id);
+        $website = Website::managedById($website_id);
 
         $page = Page::ofWebsite($website)->findOrFail($page_id);
 
@@ -138,7 +138,7 @@ class CpWebsitePageSectionsController extends UiBaseController
     public function edit($website_id, $page_id, $section_id)
     {
 
-        $website = Website::findOrFail($website_id);
+        $website = Website::managedById($website_id);
 
         $page = Page::ofWebsite($website)
             ->findOrFail($page_id)
@@ -171,7 +171,7 @@ class CpWebsitePageSectionsController extends UiBaseController
     public function update(Request $request, $website_id, $page_id, $section_id)
     {
 
-        $website = Website::findOrFail($website_id);
+        $website = Website::managedById($website_id);
 
         $page = Page::ofWebsite($website)
             ->findOrFail($page_id);
@@ -227,7 +227,7 @@ class CpWebsitePageSectionsController extends UiBaseController
      */
     public function destroy(Request $request, $website_id, $page_id, $section_id)
     {
-        $website = Website::findOrFail($website_id);
+        $website = Website::managedById($website_id);
 
         $page = Page::ofWebsite($website)
             ->findOrFail($page_id);
