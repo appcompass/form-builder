@@ -221,6 +221,12 @@ class CpWebsiteSettingsController extends UiBaseController
 
             $website->deploy();
 
+            if ($request->hasFile('logo')) {
+
+                $website->addLogo($request->file('logo'));
+
+            }
+
             return $this->json($this->setBaseUrl(['websites', $website_id, 'pages']));
 
         } catch (\RuntimeException $e) {

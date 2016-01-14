@@ -15,6 +15,7 @@ use P3in\Models\Page;
 use P3in\Module;
 use P3in\Traits\NavigatableTrait;
 use P3in\Traits\SettingsTrait;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class Website extends Model
 {
@@ -93,6 +94,11 @@ class Website extends Model
     public function navmenus()
     {
         return $this->hasMany(Navmenu::class);
+    }
+
+    public function logo()
+    {
+        return $this->morphOne(Photo::class, 'photoable');
     }
 
     /**
@@ -332,9 +338,9 @@ class Website extends Model
     {
         $photo = Photo::store($file, Auth::user());
 
-        $this->photos()->delete();
+        $this->logo()->delete();
 
-        return $this->photos()->save($photo);
+        return $this->logo()->save($photo);
     }
 
 

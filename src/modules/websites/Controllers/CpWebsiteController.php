@@ -285,7 +285,7 @@ class CpWebsiteController extends UiBaseController
         $data = $request->except(['_method','_token']);
 
         if (!$data['config']['privateKey']) {
-            $data['config']['password'] = $data['config']['password'] ? $data['config']['password'] : $website->config->password;
+            $data['config']['password'] = $data['config']['password'] ?: $website->config->password;
         }
 
         if ($website->testConnection($data['config'])) {
