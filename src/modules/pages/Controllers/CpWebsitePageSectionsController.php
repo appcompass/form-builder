@@ -227,7 +227,6 @@ class CpWebsitePageSectionsController extends UiBaseController
      */
     public function destroy(Request $request, $website_id, $page_id, $section_id)
     {
-        dd("here");
         $website = Website::findOrFail($website_id);
 
         $page = Page::ofWebsite($website)
