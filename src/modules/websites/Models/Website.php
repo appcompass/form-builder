@@ -3,7 +3,9 @@
 namespace P3in\Models;
 
 use Auth;
+use BostonPads\Models\Photo;
 use Carbon\Carbon;
+use HasGallery;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -13,7 +15,6 @@ use P3in\Models\Page;
 use P3in\Module;
 use P3in\Traits\NavigatableTrait;
 use P3in\Traits\SettingsTrait;
-use HasGallery;
 
 class Website extends Model
 {
@@ -109,12 +110,12 @@ class Website extends Model
      */
     public function addPage(Page $page)
     {
-    $this->pages()->save($page);
+        $this->pages()->save($page);
     }
 
     /**
-     *
-     *
+     *  addItem ?
+     *  TODO Remove
      */
     public function addItem(Page $page)
     {
@@ -126,53 +127,52 @@ class Website extends Model
      */
     public static function setCurrent(Website $website)
     {
-
         return static::$current = $website;
-
     }
 
     /**
-     *
+     *  getCurrent
      */
     public static function getCurrent()
     {
-
         return static::$current;
-
     }
 
     /**
-     *
+     *  current website
      */
     public static function current(Request $request = null)
     {
-
         return static::$current;
-
     }
 
     /**
-     *
-     *
-     */
+      * return admin
+      *
+      */
     public function scopeAdmin($query)
     {
         return $query->where('site_name', '=', env('ADMIN_WEBSITE_NAME', 'CMS Admin CP'))->firstOrFail();
     }
 
     /**
-     *
-     *
-     */
+      * return all but admin
+      *
+      */
     public function scopeManaged($query)
     {
         return $query->where('site_name', '!=', env('ADMIN_WEBSITE_NAME', 'CMS Admin CP'));
     }
 
+    /**
+      *
+      *
+      */
     public function scopeManagedById($query, $id)
     {
         return $query->managed()->findOrFail($id);
     }
+
     /**
      *
      *  @param bool $pages retunrns a link to website's pages index
@@ -212,11 +212,13 @@ class Website extends Model
 
         try {
 
-            if (!$this->getDiskInstance()->put($saved_css_file, $css) ) {
+            $disk = $this->getDiskInstance();
 
-            \Log::error('Unable to write file on the remote server: '.$this->config->host);
+            if (!$disk->put($saved_css_file, $css) ) {
 
-            return false;
+                \Log::error('Unable to write file on the remote server: '.$this->config->host);
+
+                return false;
 
             }
 
@@ -321,6 +323,20 @@ class Website extends Model
     {
         return strtolower(str_replace(' ', '_', $this->site_name));
     }
+
+    /*
+    * Store an image as the website logo
+    * TODO: stub
+    */
+    public function addLogo(UploadedFile $file)
+    {
+        $photo = Photo::store($file, Auth::user());
+
+        $this->photos()->delete();
+
+        return $this->photos()->save($photo);
+    }
+
 
     /**
      * as per hasGallery Trait
