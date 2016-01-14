@@ -7,7 +7,7 @@
     <i class="handle fa fa-arrows"> </i>
       {{ $item->label }}
       <div class="tools pull-right">
-      @if($item->has_content)
+      {{-- @if($item->has_content) --}}
 
           <a
             href="#modal-edit"
@@ -16,7 +16,7 @@
             data-action="modal-edit"
             data-toggle="modal"
             data-navmenu="{{ $item->name }}"
-            data-inject-area="#modal-body"
+            <?php /* data-inject-area="#modal-body" */ ?>
             data-click="/websites/{{ $website->id }}/navigation/{{ $item->id }}/edit"
           >
             <i class="fa fa-cog" > </i>
@@ -35,7 +35,7 @@
             <i class="fa fa-plus"> </i>
           </a>
 
-      @endif
+      {{-- @endif --}}
         <a
           href="/websites/{{ $website->id }}/navigation/{{ $item->pivot->id }}"
           class="delete-icon pull-right"
