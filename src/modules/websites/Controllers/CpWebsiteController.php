@@ -118,12 +118,6 @@ class CpWebsiteController extends UiBaseController
                     'type' => 'text',
                     'help_block' => 'Default recipients of the forms submission of this website.',
                 ],[
-                    'label' => 'A Managed Website',
-                    'name' => 'config[managed]',
-                    'placeholder' => '',
-                    'type' => 'checkbox',
-                    'help_block' => '',
-                ],[
                     'label' => 'SSH Host',
                     'name' => 'config[host]',
                     'placeholder' => '127.0.0.1',
@@ -288,9 +282,15 @@ class CpWebsiteController extends UiBaseController
 
         $website = $this->record = Website::managedById($id);
 
-        if ($website->testConnection($request->config)) {
+        $data = $request->except(['_method','_token']);
 
-            $website->update($request->all());
+        if (!$data['config']['privateKey']) {
+            $data['config']['password'] = $data['config']['password'] ? $data['config']['password'] : $website->config->password;
+        }
+
+        if ($website->testConnection($data['config'])) {
+
+            $website->update($data);
 
             return $this->json($this->setBaseUrl(['websites', $id, 'edit']));
         }

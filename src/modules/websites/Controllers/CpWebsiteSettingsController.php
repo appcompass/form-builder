@@ -91,12 +91,6 @@ class CpWebsiteSettingsController extends UiBaseController
                     'type' => 'text',
                     'help_block' => '',
                 ],[
-                    'label' => 'A Managed Website',
-                    'name' => 'config[managed]',
-                    'placeholder' => '',
-                    'type' => 'checkbox',
-                    'help_block' => '',
-                ],[
                     'label' => 'SSH Host',
                     'name' => 'config[ssh_host]',
                     'placeholder' => '127.0.0.1',
