@@ -21,6 +21,7 @@ class PagesController extends Controller
         $data = $page->render();
 
         $data['page'] = $page;
+        $data['settings'] = $page->settings->data;
         $data['website'] = Website::current();
 
         $data['navmenus'] = [];

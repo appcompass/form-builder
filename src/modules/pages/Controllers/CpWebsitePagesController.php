@@ -126,23 +126,17 @@ class CpWebsitePagesController extends UiBaseController
                     'type' => 'textarea',
                     'help_block' => 'The title of the page.',
                 ],[
-                    'label' => 'Meta Title',
-                    'name' => 'settings[meta_title]',
-                    'placeholder' => 'Meta Title',
-                    'type' => 'text',
-                    'help_block' => 'The meta title of the blog entry.',
-                ],[
                     'label' => 'Meta Description',
-                    'name' => 'settings[meta_description]',
+                    'name' => 'settings[meta_data][description]',
                     'placeholder' => 'Description Block',
                     'type' => 'textarea',
-                    'help_block' => 'The title of the blog entry.',
+                    'help_block' => 'The title of the page.',
                 ],[
                     'label' => 'Meta Keywords',
-                    'name' => 'settings[meta_keywords]',
+                    'name' => 'settings[meta_data][keywords]',
                     'placeholder' => 'Meta Keywords',
                     'type' => 'text',
-                    'help_block' => 'The meta keywords of the blog entry.',
+                    'help_block' => 'The meta keywords of the page.',
                 ],[
                     'label' => 'Active',
                     'name' => 'active',
