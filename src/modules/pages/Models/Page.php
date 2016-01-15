@@ -39,7 +39,6 @@ class Page extends Model
         'layout',
         'req_permission',
         'published_at',
-        'assembler_template'
     ];
 
     /**

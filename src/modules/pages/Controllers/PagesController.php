@@ -48,7 +48,7 @@ class PagesController extends Controller
 
         $data['navmenus'] = json_decode(json_encode($data['navmenus']));
 
-        return view('layouts.master.'.$page->assembler_template, $data);
+        return view('layouts.master.'.str_replace(':', '_', $page->layout), $data);
 
     }
 }

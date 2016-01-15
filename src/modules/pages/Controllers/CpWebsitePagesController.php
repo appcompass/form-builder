@@ -205,7 +205,7 @@ class CpWebsitePagesController extends UiBaseController
     {
         $page = new Page($request->all());
 
-        $page->name = strtolower(str_replace(' ', '_', $page->title));
+        $page->name = strtolower(str_replace(' ', '_', trim($page->title)));
 
         $page->published_at = Carbon::now();
 
