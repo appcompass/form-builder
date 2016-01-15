@@ -29,12 +29,25 @@ class PagesController extends Controller
         $navmenus = Website::current()->navmenus()
             ->whereNull('parent_id')
             ->get();
-        foreach ($navmenus as $navmenu) {
 
-            $data['navmenus'][$navmenu->name] = $navmenu;
+        foreach ($navmenus as $navmenu) {
+            $navmenu->load('items');
+
+            $data['navmenus'][$navmenu->name] = $navmenu->toArray();
+
+            $data['navmenus'][$navmenu->name]['children'] = [];
+
+            foreach($navmenu->children as $child) {
+
+                $data['navmenus'][$navmenu->name]['children'][$child->id] = $child;
+
+            }
+
 
         }
-        // dd($data);
+
+        $data['navmenus'] = json_decode(json_encode($data['navmenus']));
+
         return view('layouts.master.'.$page->assembler_template, $data);
 
     }

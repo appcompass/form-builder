@@ -38,7 +38,8 @@ class Page extends Model
         'active',
         'layout',
         'req_permission',
-        'published_at'
+        'published_at',
+        'assembler_template'
     ];
 
     /**

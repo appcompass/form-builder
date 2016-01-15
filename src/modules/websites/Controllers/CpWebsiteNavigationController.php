@@ -195,6 +195,7 @@ class CpWebsiteNavigationController extends UiBaseController
         $item = $child_nav->getNavigationItem(['has_content' => true]);
 
         $item->navigatable_id = $original_item->id;
+
         $item->id = $original_item->id;
 
         $this->parsePretend($child_nav, $content['children']);
@@ -226,6 +227,8 @@ class CpWebsiteNavigationController extends UiBaseController
       $item->fill(array_replace($item->toArray(), $overrides));
 
       if (isset($content['children']) && count($content['children'])) {
+
+          $overrides['has_content'] = true;
 
           $child_nav = Navmenu::byName($item->label);
 
