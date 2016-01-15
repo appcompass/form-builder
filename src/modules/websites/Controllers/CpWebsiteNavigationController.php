@@ -180,6 +180,12 @@ class CpWebsiteNavigationController extends UiBaseController
 
       $item = NavigationItem::findOrFail($content['id']);
 
+      if ($item->name === 'empty') {
+
+        $item->children = [];
+
+      }
+
       if (isset($content['children']) && count($content['children'])) {
 
         $original_item = $item;
@@ -226,7 +232,7 @@ class CpWebsiteNavigationController extends UiBaseController
 
       $item->fill(array_replace($item->toArray(), $overrides));
 
-      if (isset($content['children']) && count($content['children'])) {
+      if ( (isset($content['children']) && count($content['children'])) || $item->name === 'empty') {
 
           $overrides['has_content'] = true;
 
