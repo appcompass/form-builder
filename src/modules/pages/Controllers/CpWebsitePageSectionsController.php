@@ -196,7 +196,7 @@ class CpWebsitePageSectionsController extends UiBaseController
 
                 foreach($file as $idx => $single_file) {
 
-                    if (is_null($single_file['image'])) {
+                    if (empty($single_file['image'])) {
 
                         // if not passed the image field comes back null, we don't want that
                         $content[$field_name][$idx]['image'] = $existing_content[$field_name][$idx]['image'];
@@ -250,19 +250,6 @@ class CpWebsitePageSectionsController extends UiBaseController
                 $sq->where('id', $website_id);
             });
         });
-    }
-
-    /**
-     * @return P3in\Models\Photo
-     */
-    public function makePhoto(UploadedFile $file, PageSection $section)
-    {
-        return Photo::store($file, Auth::user(), [
-            'status' => Photo::STATUSES_ACTIVE
-        ]);
-
-
-        $content[$field_name][$idx]['image'] = $photo->id;
     }
 
 }

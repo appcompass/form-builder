@@ -77,7 +77,7 @@ class Page extends Model
     public function content()
     {
         // should probably split the template type and provide it divided? we'll see
-        return $this->hasMany(PageSection::class);
+        return $this->hasMany(PageSection::class)->orderBy('order', 'asc');
     }
 
     /**

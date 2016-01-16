@@ -336,7 +336,9 @@ class Website extends Model
     */
     public function addLogo(UploadedFile $file)
     {
-        $photo = Photo::store($file, Auth::user());
+        Config::set('filesystems.disks.'.config('app.default_storage').'.root', $this->config->root);
+
+        $photo = Photo::store($file, Auth::user(), [], 'images/');
 
         $this->logo()->delete();
 

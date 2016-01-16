@@ -5,6 +5,7 @@ namespace P3in\Models;
 use BostonPads\Models\Photo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Support\Facades\Config;
 use P3in\Models\Page;
 use P3in\Models\Section;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -68,9 +69,11 @@ class PageSection extends Model
      */
     public function addPhoto(UploadedFile $file, User $user)
     {
+        Config::set('filesystems.disks.'.config('app.default_storage').'.root', $this->website->config->root);
+
         $photo = Photo::store($file, $user, [
             'status' => Photo::STATUSES_ACTIVE
-        ]);
+        ], 'images/');
 
         $this->website
             ->gallery
