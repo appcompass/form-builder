@@ -115,7 +115,6 @@ class UiBaseController extends ModularBaseController {
         $navmenu_name = 'cp_'.$this->module_name.'_subnav';
 
         $navmenu = Navmenu::byName($navmenu_name);
-
         return $navmenu;
 
     }
