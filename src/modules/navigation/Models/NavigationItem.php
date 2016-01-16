@@ -81,5 +81,13 @@ class NavigationItem extends Model
       return strtolower(str_replace(' ', '_', $this->label));
     }
 
+    /**
+     *
+     */
+    public function getUrlAttribute()
+    {
+        $url = strpos($this->attributes['url'], '([a-z0-9-]+)') ? str_replace('([a-z0-9-]+)', '', $this->attributes['url']) : $this->attributes['url'];
+        return '/'.trim($url,'/');
+    }
 
 }

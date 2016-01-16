@@ -2,10 +2,11 @@
 
 namespace P3in\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use P3in\Traits\NavigatableTrait;
-use Exception;
 use DB;
+use Exception;
+use Illuminate\Database\Eloquent\Model;
+use P3in\Models\NavigationItem;
+use P3in\Traits\NavigatableTrait;
 
 class Navmenu extends Model
 {
@@ -118,10 +119,10 @@ class Navmenu extends Model
    *
    *
    */
-  public function item()
-  {
-    return $this->item();
-  }
+    public function item()
+    {
+        return $this->item();
+    }
 
     /**
      *  Link items to Navigation Items
@@ -130,7 +131,7 @@ class Navmenu extends Model
     public function items()
     {
 
-        return $this->belongsToMany('P3in\Models\NavigationItem')
+        return $this->belongsToMany(NavigationItem::class)
             ->withPivot('id', 'order', 'label', 'url', 'new_tab')
             ->orderBy('pivot_order');
 
