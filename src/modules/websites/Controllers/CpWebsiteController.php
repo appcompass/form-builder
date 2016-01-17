@@ -70,7 +70,7 @@ class CpWebsiteController extends UiBaseController
                     'target' => '#record-detail',
                 ],
             ],
-            'heading' => 'Connection Information',
+            'heading' => 'Website Setup',
             'route' => 'websites.update',
         ],
         'create' => [
@@ -88,6 +88,11 @@ class CpWebsiteController extends UiBaseController
         'form' => [
             'fields' => [
                 [
+                    'type' => 'fieldset_break',
+                    'window_title' => 'Basic Info',
+                    'window_header' => '',
+                    'window_sub_header' => '',
+                ],[
                     'label' => 'Name',
                     'name' => 'site_name',
                     'placeholder' => 'Website.com',
@@ -100,23 +105,10 @@ class CpWebsiteController extends UiBaseController
                     'type' => 'text',
                     'help_block' => '',
                 ],[
-                    'label' => 'From Email Address',
-                    'name' => 'config[from_email]',
-                    'placeholder' => 'website@website.com',
-                    'type' => 'text',
-                    'help_block' => '',
-                ],[
-                    'label' => 'From Email Name',
-                    'name' => 'config[from_name]',
-                    'placeholder' => 'Website Name',
-                    'type' => 'text',
-                    'help_block' => '',
-                ],[
-                    'label' => 'Default Recipients',
-                    'name' => 'config[default_recipients]',
-                    'placeholder' => 'Forms recipients',
-                    'type' => 'text',
-                    'help_block' => 'Default recipients of the forms submission of this website.',
+                    'type' => 'fieldset_break',
+                    'window_title' => 'Server Connection',
+                    'window_header' => 'Server Connection',
+                    'window_sub_header' => 'Server Connection information',
                 ],[
                     'label' => 'SSH Host',
                     'name' => 'config[host]',

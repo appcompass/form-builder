@@ -57,8 +57,11 @@ class CpWebsiteSettingsController extends UiBaseController
             ],
         ],
         'edit' => [
-            'heading' => 'Connection Information',
-            'route' => 'websites.update'
+            'heading' => 'Website Settings',
+            'route' => 'websites.update',
+            'description_title' => '',
+            'description_text' => 'Use the below form to edit the website settings.',
+            'dissallow_create_new' => true,
         ],
         'create' => [
             'heading' => 'Create New Site',
@@ -67,107 +70,110 @@ class CpWebsiteSettingsController extends UiBaseController
         'form' => [
             'fields' => [
                 [
-                    'label' => 'Name',
-                    'name' => 'site_name',
-                    'placeholder' => 'Website.com',
+                    'type' => 'fieldset_break',
+                    'window_title' => 'Website Theme',
+                    'window_header' => '',
+                    'window_sub_header' => '',
+                ],[
+                    'label' => 'Website Logo',
+                    'name' => 'logo',
+                    'placeholder' => '',
+                    'type' => 'file',
+                    'help_block' => '',
+                ],[
+                    'label' => 'Primary Color',
+                    'name' => 'color_primary',
+                    'placeholder' => '#ffffff',
                     'type' => 'text',
                     'help_block' => '',
                 ],[
-                    'label' => 'URL',
-                    'name' => 'site_url',
-                    'placeholder' => 'https://www.website.com',
+                    'label' => 'Secondary Color',
+                    'name' => 'color_secondary',
+                    'placeholder' => '#ffffff',
                     'type' => 'text',
                     'help_block' => '',
+                ],[
+                    'label' => 'Website Header',
+                    'name' => 'header',
+                    'type' => 'filtered_selectlist',
+                    'data' => 'header_list',
+                    'help_block' => 'Select the header style for this website.',
+                ],[
+                    'label' => 'Website Footer',
+                    'name' => 'footer',
+                    'type' => 'filtered_selectlist',
+                    'data' => 'footer_list',
+                    'help_block' => 'Select the footer style for this website.',
+                ],[
+                    'type' => 'fieldset_break',
+                    'window_title' => 'Website Default Header/Meta Data',
+                    'window_header' => '',
+                    'window_sub_header' => '',
+                ],[
+                    'label' => 'Default title',
+                    'name' => 'default_title',
+                    'placeholder' => '',
+                    'type' => 'text',
+                    'help_block' => '',
+                ],[
+                    'label' => 'Default Description',
+                    'name' => 'default_description',
+                    'placeholder' => '',
+                    'type' => 'text',
+                    'help_block' => '',
+                ],[
+                    'label' => 'Default Keywords',
+                    'name' => 'default_keywords',
+                    'placeholder' => '',
+                    'type' => 'text',
+                    'help_block' => '',
+                ],[
+                    'label' => 'Custom Header HTML',
+                    'name' => 'custom_html_header',
+                    'placeholder' => '',
+                    'type' => 'textarea',
+                    'help_block' => '',
+                ],[
+                    'label' => 'robots.txt Content',
+                    'name' => 'robots_txt',
+                    'placeholder' => '',
+                    'type' => 'textarea',
+                    'help_block' => '',
+                ],[
+                    'type' => 'fieldset_break',
+                    'window_title' => 'Website Forms Settings',
+                    'window_header' => '',
+                    'window_sub_header' => '',
                 ],[
                     'label' => 'From Email Address',
-                    'name' => 'config[from_email]',
+                    'name' => 'from_email',
                     'placeholder' => 'website@website.com',
                     'type' => 'text',
                     'help_block' => '',
                 ],[
                     'label' => 'From Email Name',
-                    'name' => 'config[from_name]',
+                    'name' => 'from_name',
                     'placeholder' => 'Website Name',
                     'type' => 'text',
                     'help_block' => '',
                 ],[
-                    'label' => 'SSH Host',
-                    'name' => 'config[ssh_host]',
-                    'placeholder' => '127.0.0.1',
+                    'label' => 'To Email Address',
+                    'name' => 'to_email',
+                    'placeholder' => 'catchall@website.com',
                     'type' => 'text',
-                    'help_block' => '',
+                    'help_block' => 'This is the default email to address where if a form doesn\'t have a recipient specified, this address will be used.',
                 ],[
-                    'label' => 'SSH Username',
-                    'name' => 'config[ssh_username]',
-                    'placeholder' => 'username',
-                    'type' => 'text',
-                    'help_block' => '',
-                ],[
-                    'label' => 'Path to SSH Secret Key',
-                    'name' => 'config[ssh_key]',
-                    'placeholder' => '/home/webmanageruser/.ssh/id_rsa',
-                    'type' => 'text',
-                    'help_block' => 'Must use either SSH Key or SSH Password above (key is preferable).',
-                ],[
-                    'label' => 'SSH Key Phrase',
-                    'name' => 'config[ssh_keyphrase]',
-                    'placeholder' => 'idrsa_key_passphrase',
-                    'type' => 'text',
-                    'help_block' => '',
-                ],[
-                    'label' => 'Website Document Root',
-                    'name' => 'config[ssh_root]',
-                    'placeholder' => '/path/to/document/root',
-                    'type' => 'text',
-                    'help_block' => '',
-                /*
-                ],[
-                    'label' => 'Nginx Server Name',
-                    'name' => 'config[server][server_name]',
-                    'placeholder' => 'www.sitename.com',
-                    'type' => 'text',
-                    'help_block' => '',
-                ],[
-                    'label' => 'Nginx Server Error Log Path',
-                    'name' => 'config[server][error_log_path]',
-                    'placeholder' => '/var/logs/www-sitename-com.log',
-                    'type' => 'text',
-                    'help_block' => '',
-                ],[
-                    'label' => 'Strict SSL Params',
-                    'name' => 'config[server][server_ssl][strict]',
+                    'label' => 'reCAPTCHA Site Key',
+                    'name' => 'recaptcha_site_key',
                     'placeholder' => '',
-                    'type' => 'radio',
-                    'data' => [
-                        'Yes' => 1,
-                        'No' => 0,
-                    ],
-                    'help_block' => '',
-                ],[
-                    'label' => 'Nginx Server SSL Cert Path',
-                    'name' => 'config[server][server_ssl][cert_path]',
-                    'placeholder' => '/path/to/cert',
                     'type' => 'text',
-                    'help_block' => '',
+                    'help_block' => 'Use this in the HTML code your site serves to users.',
                 ],[
-                    'label' => 'Nginx Server SSL Cert Key Path',
-                    'name' => 'config[server][server_ssl][cert_key_path]',
-                    'placeholder' => '/path/to/cert.key',
+                    'label' => 'reCAPTCHA Secret Key',
+                    'name' => 'recaptcha_secret_key',
+                    'placeholder' => '',
                     'type' => 'text',
-                    'help_block' => '',
-                ],[
-                    'label' => 'SSL dhparam.pem Path',
-                    'name' => 'config[server][server_ssl][ssl_dhparam]',
-                    'placeholder' => '/path/to/dhparam.pem',
-                    'type' => 'text',
-                    'help_block' => '',
-                ],[
-                    'label' => 'Nginx Server Reverse Proxy URL',
-                    'name' => 'config[server][proxy_url]',
-                    'placeholder' => 'https://127.0.0.1:4433',
-                    'type' => 'text',
-                    'help_block' => '',
-                */
+                    'help_block' => 'Use this for communication between your site and Google. Be sure to keep it a secret.',
                 ],
             ],
         ],
@@ -188,12 +194,25 @@ class CpWebsiteSettingsController extends UiBaseController
      */
     public function index($website_id)
     {
-        $website = Website::managedById($website_id);
 
-        return view('websites::settings/index', compact('website'))
-            ->with('settings', $website->settings->data)
-            ->with('headers', Section::headers()->get()->lists('name', 'id'))
-            ->with('footers', Section::footers()->get()->lists('name', 'id'));
+        // $website = Website::managedById($website_id);
+
+        // return view('websites::settings/index', compact('website'))
+        //     ->with('settings', $website->settings->data)
+        //     ->with('headers', Section::headers()->get()->lists('name', 'id'))
+        //     ->with('footers', Section::footers()->get()->lists('name', 'id'));
+
+
+        $website = Website::managedById($website_id);
+        $this->record = $website->settings->data;
+
+        if (isset($this->record->logo) && !is_string($this->record->logo)) {
+            $this->record->logo = '';
+        }
+        $this->meta->header_list = Section::headers()->get()->lists('name', 'id');
+        $this->meta->footer_list = Section::footers()->get()->lists('name', 'id');
+
+        return $this->build('edit', ['websites', $website_id, 'settings', $website->settings->id]);
     }
 
     /**
@@ -215,19 +234,16 @@ class CpWebsiteSettingsController extends UiBaseController
 
         $data = $request->except(['_token', '_method']);
 
+        if ($request->hasFile('logo')) {
+            $logo = $website->addLogo($request->file('logo'));
+            $data['logo'] = $logo->path;
+        }
+
         $records = $website->settings($data);
 
         try {
 
             $website->deploy();
-
-            if ($request->hasFile('logo')) {
-
-                $website->addLogo($request->file('logo'));
-
-            }
-
-            return $this->json($this->setBaseUrl(['websites', $website_id, 'pages']));
 
         } catch (\RuntimeException $e) {
 
@@ -237,6 +253,8 @@ class CpWebsiteSettingsController extends UiBaseController
 
         }
 
+        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages']));
+
     }
 
     /**
@@ -245,6 +263,7 @@ class CpWebsiteSettingsController extends UiBaseController
      */
     public function update(Request $request, $website_id)
     {
+        return $this->store($request, $website_id);
         // $website = Website::managedById($website_id);
     }
 
