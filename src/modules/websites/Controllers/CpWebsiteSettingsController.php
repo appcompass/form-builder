@@ -209,8 +209,8 @@ class CpWebsiteSettingsController extends UiBaseController
         if (isset($this->record->logo) && !is_string($this->record->logo)) {
             $this->record->logo = '';
         }
-        $this->meta->header_list = Section::headers()->get()->lists('name', 'id');
-        $this->meta->footer_list = Section::footers()->get()->lists('name', 'id');
+        $this->meta->header_list = Section::headers()->orderBy('name')->get()->lists('name', 'id');
+        $this->meta->footer_list = Section::footers()->orderBy('name')->get()->lists('name', 'id');
 
         return $this->build('edit', ['websites', $website_id, 'settings', $website->settings->id]);
     }
