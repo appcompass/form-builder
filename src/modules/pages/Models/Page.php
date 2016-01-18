@@ -209,7 +209,7 @@ class Page extends Model
                 SELECT *
                 FROM pages_tree) as p2"), function($join){
             $join->on('p2.id', '=', 'pages.id');
-        });
+        })->whereNotNull('level');
 
         return $query;
     }
