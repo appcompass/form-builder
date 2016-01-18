@@ -1,9 +1,10 @@
 <?php
 
 Route::group([
-  // 'prefix' => '/',
   'namespace' => 'P3in\Controllers'
 ], function() {
+
+    Route::post('render-page/form-submissions', 'PagesController@submitForm');
 
     Route::any('render-page/{path?}', 'PagesController@renderPage')->where('path', '(.*)');
 
