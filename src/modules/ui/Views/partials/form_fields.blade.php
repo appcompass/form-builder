@@ -69,7 +69,7 @@
                         <b>Image Path: {{ $record->{$field->name} }}</b>
                     @endif
                 @elseif($field->type == 'datepicker')
-                    {!! Form::date('name', \Carbon\Carbon::now(), ['class' => 'form-control form-control-inline input-medium date-picker-default', 'placeholder' => $field->placeholder]) !!}
+                    {!! Form::date('name', null, ['class' => 'form-control form-control-inline input-medium date-picker-default', 'placeholder' => $field->placeholder]) !!}
                 @elseif($field->type == 'from_to_input')
                     <div class="input-group input-large">
                         @foreach($field->data as $i => $from_to)
@@ -79,7 +79,7 @@
                             @elseif($from_to->type == 'password')
                                 {!! Form::password($from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
                             @elseif($from_to->type == 'datepicker')
-                                {!! Form::date($from_to->name, \Carbon\Carbon::now(), ['class' => 'form-control date-picker-default', 'placeholder' => $from_to->placeholder]) !!}
+                                {!! Form::date($from_to->name, null, ['class' => 'form-control date-picker-default', 'placeholder' => $from_to->placeholder]) !!}
                             @endif
                         @endforeach
                     </div>
@@ -110,7 +110,7 @@
                                 </div>
                             @elseif($from_to->type == 'datepicker')
                                 <div class="col-lg-6">
-                                    {!! Form::date($from_to->name, \Carbon\Carbon::now(), ['class' => 'form-control date-picker-default', 'placeholder' => $from_to->placeholder]) !!}
+                                    {!! Form::date($from_to->name, null, ['class' => 'form-control date-picker-default', 'placeholder' => $from_to->placeholder]) !!}
                                 </div>
                             @endif
                         @endforeach

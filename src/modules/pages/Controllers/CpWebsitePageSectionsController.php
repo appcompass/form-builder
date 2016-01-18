@@ -106,7 +106,6 @@ class CpWebsitePageSectionsController extends UiBaseController
         if ($request->has('reorder')) {
 
             $sections = $page->content()->get();
-
             $this->sort($sections, $request->reorder);
 
             $redirect = $request->redirect;
@@ -190,9 +189,7 @@ class CpWebsitePageSectionsController extends UiBaseController
 
                 $content[$field_name] = $photo->path;
 
-            }
-
-            else if (is_array($file)) {
+            }elseif (is_array($file)) {
 
                 foreach($file as $idx => $single_file) {
 
@@ -211,7 +208,6 @@ class CpWebsitePageSectionsController extends UiBaseController
                 }
             }
         }
-
         $section->content = array_replace($existing_content, $content);
 
         $section->save();

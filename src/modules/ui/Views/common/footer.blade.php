@@ -180,7 +180,7 @@
                 update: function(event, ui) {
                     event.preventDefault();
                     if (!sender) {
-                        var sortData = $.deparam($('.sortable').sortable('serialize'));
+                        var sortData = $.deparam($(this).sortable('serialize'));
 
                         var item = $(ui.item[0]).find('a[data-action="link"]');
 
