@@ -166,6 +166,54 @@ class Page extends Model
     }
 
     /**
+     * breadcrumb rendering function
+     *
+     * @return array
+     * @author Jubair Saidi
+     **/
+    public function breadcrumbs($end = null)
+    {
+        $rtn = $this->withParents()->orderBy('level', 'desc')->get();
+        if ($end) {
+            $end->current = true;
+            $rtn->add($end);
+        }
+
+        // $rtn->each(function($rec){
+        //     $rec->current = true;
+        // });
+
+        return $rtn;
+    }
+
+    /**
+     * scope for fetching a page and it's parents
+     *
+     * @return QueryBuilder
+     * @author
+     **/
+    public function scopeWithParents($query)
+    {
+        $page_id = !empty($this->id) ? $this->id : $page_id;
+
+        $escaped_page_id = DB::connection()->getPdo()->quote($page_id);
+        $p_id = DB::raw($escaped_page_id);
+
+        $query->select("pages.*", "p2.level")->join(DB::raw("(WITH RECURSIVE pages_tree AS (SELECT id, parent_id, 1 AS level
+                    FROM pages
+                    WHERE id = $p_id
+                    UNION ALL
+                    SELECT c.id, c.parent_id, p.level + 1
+                    FROM pages c
+                    JOIN pages_tree p ON c.id = p.parent_id)
+                SELECT *
+                FROM pages_tree) as p2"), function($join){
+            $join->on('p2.id', '=', 'pages.id');
+        });
+
+        return $query;
+    }
+    /**
      * scopeOfWebsite
      * if $website is passed, then we look up that website's pages.
      * Otherwise we use the current website.
