@@ -62,17 +62,17 @@ class PagesController extends Controller
 
         $to = $request->get('to') ?: $website->config->default_recipients;
 
-        $data = $request->except(['_token', 'to', 'heading', 'subheading', 'text', 'style']);
+        $data = $request->except(['_token', 'to', 'heading', 'subheading', 'text', 'style', 'form_name', 'file']);
 
-        Mail::send('mail.form-submission', ['website' => $website, 'data' => $data], function($message) use($from, $to, $request) {
+        Mail::send('mail.form-submission', ['website' => $website, 'data' => $data, 'name' => $request->get('form_name')], function($message) use($from, $to, $request, $website) {
             $message->from($from)
                 ->to($to)
-                ->subject('Form submission');
+                ->subject('Form: '.$website->site_name);
 
                 foreach($request->file() as $field_name => $file) {
 
                     $message->attach($file->getRealPath(), [
-                        'as' => $file->getClientOriginalExtension(),
+                        'as' => $file->getClientOriginalName(),
                         'mime' => $file->getMimeType()
                     ]);
 
