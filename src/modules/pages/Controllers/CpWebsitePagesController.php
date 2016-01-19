@@ -214,7 +214,7 @@ class CpWebsitePagesController extends UiBaseController
 
         $this->record = $page;
 
-        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $this->record->id]));
+        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $this->record->id, 'edit']));
     }
 
     /**
