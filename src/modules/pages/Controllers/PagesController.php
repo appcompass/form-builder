@@ -21,34 +21,6 @@ class PagesController extends Controller
 
         $data = $page->render();
 
-        $data['page'] = $page;
-        $data['settings'] = $page->settings->data;
-        $data['website'] = Website::current();
-
-        $data['navmenus'] = [];
-
-        $navmenus = Website::current()->navmenus()
-            ->whereNull('parent_id')
-            ->get();
-
-        foreach ($navmenus as $navmenu) {
-            $navmenu->load('items');
-
-            $data['navmenus'][$navmenu->name] = $navmenu->toArray();
-
-            $data['navmenus'][$navmenu->name]['children'] = [];
-
-            foreach($navmenu->children as $child) {
-
-                $data['navmenus'][$navmenu->name]['children'][$child->id] = $child;
-
-            }
-
-
-        }
-
-        $data['navmenus'] = json_decode(json_encode($data['navmenus']));
-
         return view('layouts.master.'.str_replace(':', '_', $page->layout), $data);
 
     }

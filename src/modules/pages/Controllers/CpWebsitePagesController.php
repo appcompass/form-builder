@@ -126,6 +126,12 @@ class CpWebsitePagesController extends UiBaseController
                     'type' => 'textarea',
                     'help_block' => 'The title of the page.',
                 ],[
+                    'label' => 'Meta Title',
+                    'name' => 'settings[meta_data][title]',
+                    'placeholder' => 'Page Meta Title',
+                    'type' => 'text',
+                    'help_block' => 'Leave this blank if you wish to use the Page Title above as the title.',
+                ],[
                     'label' => 'Meta Description',
                     'name' => 'settings[meta_data][description]',
                     'placeholder' => 'Description Block',
@@ -163,10 +169,13 @@ class CpWebsitePagesController extends UiBaseController
 
         $this->setControllerDefaults();
 
+        // $sections = Section::whereNotIn('fits', ['*', 'utils'])->groupBy('fits')->lists('fits');
+
         $this->meta->available_layouts = [
             'full' => 'Full Width',
             'aside:main' => 'Left Sidenav',
-            'main:aside' => 'Right Sidenav'
+            'main:aside' => 'Right Sidenav',
+            'list_listings' => 'Listings Page',
         ];
 
     }
@@ -212,9 +221,13 @@ class CpWebsitePagesController extends UiBaseController
         Website::managedById($website_id)->pages()
             ->save($page);
 
+        if ($request->has('settings')) {
+            $page->settings($request->settings);
+        }
+
         $this->record = $page;
 
-        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $this->record->id]));
+        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $this->record->id, 'edit']));
     }
 
     /**
