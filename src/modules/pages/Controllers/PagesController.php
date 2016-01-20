@@ -30,16 +30,16 @@ class PagesController extends Controller
 
         $website = Website::current();
 
-        $from = $website->config->from_email ?: 'info@bostonpads.com';
+        $from = $website->settings('from_email') ?: 'info@bostonpads.com';
 
-        $to = $request->get('to') ?: $website->config->default_recipients;
+        $to = $request->has('form_id') ? base64_decode($request->get('form_id')) : $website->settings('to_email');
 
-        $data = $request->except(['_token', 'to', 'heading', 'subheading', 'text', 'style', 'form_name', 'file']);
+        $data = $request->except(['_token', 'form_id', 'heading', 'subheading', 'text', 'style', 'form_name', 'file', 'g-recaptcha-response']);
 
         Mail::send('mail.form-submission', ['website' => $website, 'data' => $data, 'name' => $request->get('form_name')], function($message) use($from, $to, $request, $website) {
             $message->from($from)
                 ->to($to)
-                ->subject('Form: '.$website->site_name);
+                ->subject($request->get('form_name').' Submission');
 
                 foreach($request->file() as $field_name => $file) {
 
