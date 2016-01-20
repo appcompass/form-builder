@@ -123,7 +123,7 @@ class Page extends Model
      * Render the page
      *
      */
-    public function render()
+    public function render($code = 200)
     {
 
         $views = [];
@@ -131,6 +131,14 @@ class Page extends Model
         $website = Website::current();
 
         $globals = Section::whereIn('id',[$website->settings('header'), $website->settings('footer')])->get();
+
+        $this->load('settings');
+
+        $views['website'] = $website;
+        $views['page'] = $this;
+        $view['breadcrumbs'] = $this->breadcrumbs();
+
+        $views['settings'] = $this->settings->data;
 
         $views['files'] = [
             'css_file' => $website->settings('css_file'),
@@ -143,23 +151,40 @@ class Page extends Model
                 // 'data' => $global->pivot->content // TODO MUST LINK SECTION ON WEBSITE SETTINGS STORAGE
             ];
         }
-        $pageSections = $this->content()->with('template')->get();
+        if ($code == 200) {
+            $pageSections = $this->content()->with('template')->get();
 
 
-        // dd($pageSections);
-        foreach($pageSections as $pageSection) {
-            $views[$pageSection->section][] = $pageSection->render();
+            // dd($pageSections);
+            foreach($pageSections as $pageSection) {
+                $views[$pageSection->section][] = $pageSection->render();
+            }
         }
 
-       //  foreach(explode(':', $this->layout) as $layout_part) {
+        $views['navmenus'] = [];
 
-                // foreach($this->sections()->where('fits', $layout_part)->get() as $section) {
+        $navmenus = $website->navmenus()
+            ->whereNull('parent_id')
+            ->get();
 
-                //  $views[$layout_part][] = $section->render();
+        foreach ($navmenus as $navmenu) {
+            $navmenu->load('items');
 
-                // }
+            $views['navmenus'][$navmenu->name] = $navmenu->toArray();
 
-       //  }
+            $views['navmenus'][$navmenu->name]['children'] = [];
+
+            foreach($navmenu->children as $child) {
+
+                $views['navmenus'][$navmenu->name]['children'][$child->id] = $child;
+
+            }
+
+
+        }
+
+        $views['navmenus'] = json_decode(json_encode($views['navmenus']));
+
 
         return $views;
 
