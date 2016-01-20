@@ -198,14 +198,12 @@
         navmenu.items.forEach(function(item) {
 
             var children = mapFromArray(navmenu.children, 'id');
+
             var newItem = {
                 id: item.id,
-                label: item.label,
-                // label: item.pivot.label || item.label,
-                // url: item.pivot.url || item.url,
-                url: item.url,
-                // new_tab: item.pivot.new_tab || item.new_tab,
-                new_tab: item.new_tab,
+                label: item.pivot ? item.pivot.label : item.label,
+                url: item.pivot ? item.pivot.url : item.url,
+                new_tab: item.pivot ? item.pivot.new_tab : item.new_tab,
                 children: [],
                 parent: parent ? parent.id : null
             };

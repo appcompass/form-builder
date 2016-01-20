@@ -237,7 +237,7 @@ class Navmenu extends Model
 
             } else {
 
-                $navItem->save();
+                // $navItem->save();
 
                 $this->items()->attach($navItem, [
                     'order' => $order,
