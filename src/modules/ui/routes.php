@@ -19,4 +19,6 @@ Route::group([
 
     Route::post('/delete-modal', 'UiController@postDeleteModal');
 
+    Route::post('/clone-resource', 'UiController@postCloneResource');
+
 });

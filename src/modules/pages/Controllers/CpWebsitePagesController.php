@@ -57,7 +57,7 @@ class CpWebsitePagesController extends UiBaseController
                     ],
                     'actions' => [
                         'type' => 'action_buttons',
-                        'data' => ['edit', 'delete']
+                        'data' => ['edit', 'clone', 'delete']
                     ],
                 ],
             ],

@@ -346,6 +346,22 @@
                 var href = $(this).attr('href');
 
                 switch(action){
+                    case 'clone':
+
+                        $.post(url, {
+                            obj_name: $(this).attr('data-object-name'),
+                            obj_id: $(this).attr('data-object-id'),
+                            obj_redirect: $(this).attr('data-object-redirect')
+                        }, function(res) {
+                            if (res.success) {
+                                router.navigate(res.data);
+                            }else{
+                                openModal('error', res.message, true);
+                            }
+
+                        });
+
+                        break;
                     case 'modal-delete':
                         $.post(url, {
                             resource: $(this).attr('data-delete')

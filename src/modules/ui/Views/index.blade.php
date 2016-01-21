@@ -42,6 +42,18 @@
                                                     >
                                                         Edit
                                                     </a>
+                                                @elseif($action == 'clone')
+                                                    <a
+                                                        data-action="clone"
+                                                        href=""
+                                                        data-click="/clone-resource"
+                                                        data-object-name="{{ get_class($record) }}"
+                                                        data-object-id="{{ $record->id }}"
+                                                        data-object-redirect="{{ $meta->base_url }}"
+                                                        class="btn btn-info"
+                                                    >
+                                                        Clone
+                                                    </a>
                                                 @elseif($action == 'delete')
                                                     <a
                                                         data-action="modal-delete"
