@@ -19,7 +19,7 @@ Class WebsitesServiceProvider extends ServiceProvider {
         // Register Website Validation
         Validator::extend('site_connection', function($attribute, $value, $parameters, $validator) {
 
-            return Website::testConnection($value);
+            return Website::testConnection($value, true);
 
         });
 

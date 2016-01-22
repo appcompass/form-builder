@@ -232,8 +232,6 @@ class CpWebsiteController extends UiBaseController
 
         $this->record = Website::create($data);
 
-        // $this->record->initRemote();
-
         return $this->json($this->setBaseUrl(['websites', $this->record->id, 'settings']));
     }
 
@@ -253,6 +251,7 @@ class CpWebsiteController extends UiBaseController
     public function edit($id)
     {
         $this->record = Website::managedById($id);
+
         return $this->build('edit', ['websites', $id]);
     }
 
@@ -263,13 +262,11 @@ class CpWebsiteController extends UiBaseController
     {
 
         $this->validate($request, [
-            'site_name' => 'required|max:255', //|unique:websites // we need to do a unique if not self appproach.
+            'site_name' => 'required|max:255',
             'site_url' => 'required',
             'config.host' => 'required:ip',
             'config.username' => 'required',
-            // 'config.password' => 'required',
             'config.root' => 'required',
-            // 'config' => 'site_connection',
         ]);
 
         $website = $this->record = Website::managedById($id);
@@ -277,10 +274,12 @@ class CpWebsiteController extends UiBaseController
         $data = $request->except(['_method','_token']);
 
         if (!$data['config']['privateKey']) {
+
             $data['config']['password'] = $data['config']['password'] ?: $website->config->password;
+
         }
 
-        if ($website->testConnection($data['config'])) {
+        if ($website->testConnection($data['config'], true)) {
 
             $website->update($data);
 

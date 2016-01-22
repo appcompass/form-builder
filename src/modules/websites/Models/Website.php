@@ -10,7 +10,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
+use League\Flysystem\Sftp\SftpAdapter;
 use Less_Parser;
+use Log;
 use P3in\Models\Page;
 use P3in\Module;
 use P3in\Traits\NavigatableTrait;
@@ -204,7 +206,7 @@ class Website extends Model
     public function deploy()
     {
 
-        if (!$this->testConnection((array) $this->config)) {
+        if (!self::testConnection((array) $this->config)) {
 
             throw new \Exception('Unable to connect.');
 
@@ -212,7 +214,7 @@ class Website extends Model
 
         $ver = Carbon::now()->timestamp;
 
-        $saved_css_file = '/'.$ver.'-style.css';
+        $css_path = '/'.$ver.'-style.css';
 
         $css = $this->buildCss();
 
@@ -220,15 +222,15 @@ class Website extends Model
 
             $disk = $this->getDiskInstance();
 
-            if (!$disk->put($saved_css_file, $css) ) {
+            if (!$disk->put($css_path, $css) ) {
 
-                \Log::error('Unable to write file on the remote server: '.$this->config->host);
+                Log::error('Unable to write file on the remote server: '.$this->config->host);
 
                 return false;
 
             }
 
-            $this->settings('css_file', $saved_css_file);
+            $this->settings('css_file', $css_path);
 
             return true;
 
@@ -243,12 +245,20 @@ class Website extends Model
     }
 
     /**
-     *
-     */
-    public function getDiskInstance()
+      * Get disk instance
+      *
+      * @param boolean $first_time uses parent as root
+      */
+    public function getDiskInstance($first_time = false)
     {
 
         $connection_info = array_replace(Config::get('filesystems.disks.sftp'), (array) $this->config);
+
+        if ($first_time) {
+
+          $connection_info['root'] = dirname($connection_info['root']);
+
+        }
 
         Config::set('filesystems.disks.sftp', $connection_info);
 
@@ -260,52 +270,45 @@ class Website extends Model
 
     /**
     *  Test connection to website
+    *
+    *
     */
-    public static function testConnection(array $overrides = [])
+    public static function testConnection(array $overrides = [], $first_time = false)
     {
 
         $instance = new static;
 
         $instance->config = $overrides;
 
-        $connection_details = array_replace((array) config('filesystems.disks.sftp'), $overrides);
-
-        $disk = $instance->getDiskInstance()
-            ->getDriver()
-            ->getAdapter();
+        $disk = $instance->getDiskInstance($first_time);
 
         try {
 
-            $disk->connect();
-
-            $result = $disk->isConnected();
-
-            $disk->disconnect();
-
-            return $result;
-
-        } catch (\RuntimeException $e) {
-
-            \Log::error($e->getMessage());
-            return false;
-
-        } catch (\ErrorException $e) {
-
-            \Log::error($e->getMessage());
-            return false;
+          $disk->getAdapter()->getConnection();
 
         } catch (\LogicException $e) {
 
-            \Log::error($e->getMessage());
-            return false;
+          return false;
 
         }
+
+        $website_folder = basename($instance->config->root);
+
+        if ($first_time AND !$disk->has($website_folder)) {
+
+          return $disk->createDir($website_folder);
+
+        }
+
+        return true;
 
     }
 
     /**
-     *
-     */
+      * buildCSS
+      *
+      * builds css files out of the settings
+      */
     public function buildCss()
     {
 
@@ -332,13 +335,17 @@ class Website extends Model
 
     /*
     * Store an image as the website logo
-    * TODO: stub
+    *
     */
     public function addLogo(UploadedFile $file)
     {
-        Config::set('filesystems.disks.'.config('app.default_storage').'.root', $this->config->root);
 
-        $photo = Photo::store($file, Auth::user(), [], 'images/');
+        // TODO vvvv BULLCRAP, move it to a separate method
+        $connection_info = array_replace(Config::get('filesystems.disks.sftp'), (array) $this->config);
+
+        Config::set('filesystems.disks.'.config('app.default_storage'), $connection_info);
+
+        $photo = Photo::store($file, Auth::user(), [], '/images/');
 
         $this->logo()->delete();
 
