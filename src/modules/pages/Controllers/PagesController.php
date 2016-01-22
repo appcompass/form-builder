@@ -39,7 +39,7 @@ class PagesController extends Controller
         Mail::send('mail.form-submission', ['website' => $website, 'data' => $data, 'name' => $request->get('form_name')], function($message) use($from, $to, $request, $website) {
             $message->from($from)
                 ->to($to)
-                ->subject($request->get('form_name').' Submission');
+                ->subject('New '.$request->get('form_name').' from '.$website->site_name);
 
                 foreach($request->file() as $field_name => $file) {
 
