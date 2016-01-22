@@ -3,9 +3,10 @@
 namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use P3in\ModularBaseModel;
 use P3in\Models\Section;
 
-class Template extends Model
+class Template extends ModularBaseModel
 {
 
 	/**

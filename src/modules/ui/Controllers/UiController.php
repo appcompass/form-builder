@@ -99,11 +99,11 @@ class UiController extends UiBaseController {
     {
         if (class_exists($request->obj_name)) {
 
-            $obj = new $request->obj_name;
+            $obj = $request->obj_name::find($request->obj_id);
 
             if (method_exists($obj , 'clone')) {
 
-                $rslt = $obj->clone($request->obj_id);
+                $rslt = $obj->clone();
 
             }else{
                 return $this->json([],false, 'Class cannot be cloned.');

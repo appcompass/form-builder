@@ -6,13 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use P3in\ModularBaseModel;
 use P3in\Models\PageSection;
 use P3in\Models\Section;
 use P3in\Models\Website;
 use P3in\Traits\NavigatableTrait as Navigatable;
 use P3in\Traits\SettingsTrait;
 
-class Page extends Model
+class Page extends ModularBaseModel
 {
 
         use SettingsTrait, Navigatable;
@@ -119,13 +120,12 @@ class Page extends Model
                         ->save();
         }
 
-        public function clone($id)
+        public function clone()
         {
-            $original = $this->find($id);
+            $original = $this->load('content');
             $settings = $original->settings()->first();
-            // $content = $original->content;
 
-            $new = $original->replicate();
+            $new = $original->replicateWithRelations();
 
             $new->title = $original->title.' (copy)';
 
@@ -134,7 +134,7 @@ class Page extends Model
             $new->push();
 
             if (!empty($settings->data)) {
-                $new->settings();
+                $new->settings((array) $settings->data);
             }
 
             return $new;

@@ -4,13 +4,14 @@ namespace P3in\Models;
 
 use BostonPads\Models\Photo;
 use Illuminate\Database\Eloquent\Model;
+use P3in\ModularBaseModel;
 use P3in\Models\Page;
 use P3in\Models\Template;
 use P3in\Models\Website;
 use P3in\Pivots\PageSectionPivot;
 use P3in\Traits\NavigatableTrait;
 
-class Section extends Model
+class Section extends ModularBaseModel
 {
 
 	use NavigatableTrait;

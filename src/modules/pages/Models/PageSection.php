@@ -6,11 +6,12 @@ use BostonPads\Models\Photo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Support\Facades\Config;
+use P3in\ModularBaseModel;
 use P3in\Models\Page;
 use P3in\Models\Section;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class PageSection extends Model
+class PageSection extends ModularBaseModel
 {
     /**
      *
