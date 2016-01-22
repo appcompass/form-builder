@@ -1,136 +1,165 @@
 @foreach($fields as $field)
-<div class="form-group @if($field->type == 'repeatable') form-repeatable @endif ">
-    {!! Form::label(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $field->label, ['class' => empty($repeatable) ? 'col-lg-3 control-label' : '']) !!}
-    @if(empty($repeatable)) <div class="col-lg-6"> @endif
-        @if($field->type == 'text')
-            {!! Form::text(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
-        @elseif($field->type == 'slugify')
-            {!! Form::text(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, ['class' => 'form-control slugify' ,'data-source' => $field->field, 'placeholder' => $field->placeholder]) !!}
-        @elseif($field->type == 'password')
-            {!! Form::password(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
-        @elseif($field->type == 'textarea')
-            {!! Form::textarea(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, ['class' => 'form-control', 'rows' => '6', 'placeholder' => $field->placeholder]) !!}
-        @elseif($field->type == 'wysiwyg')
-            {!! Form::textarea(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, ['class' => 'wysihtml5 form-control', 'rows' => '9', 'placeholder' => $field->placeholder]) !!}
-        @elseif($field->type == 'selectlist')
-            {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $field->data, null, ['class' => 'form-control']) !!}
-        @elseif($field->type == 'checkbox')
-            @if(!empty($field->data))
-                <div class="checkbox">
-                    @foreach($field->data as $checkbox)
-                        <div class="col-lg-3">
+    @if($field->type == 'fieldset_break')
+            </div>
+        </div>
+    </section>
+    <section class="panel">
+        <header class="panel-heading">
+            {{ $field->window_title or '' }}
+        </header>
+        <div class="panel-body row">
+            @if(!empty($field->window_header) || !empty($field->window_sub_header))
+            <div class="col-lg-12">
+                 @if(!empty($field->window_header)) <h4>{{ $field->window_header }}</h4> @endif
+                @if(!empty($field->window_sub_header)) <p>{{ $field->window_sub_header }}</p> @endif
+                <br>
+            </div>
+            @endif
+            <div class="col-lg-12">
+    @else
+        <div class="form-group @if($field->type == 'repeatable') form-repeatable @endif ">
+            {!! Form::label(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $field->label, ['class' => empty($repeatable) ? 'col-lg-3 control-label' : '']) !!}
+            @if(empty($repeatable)) <div class="col-lg-6"> @endif
+                @if($field->type == 'text')
+                    {!! Form::text(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
+                @elseif($field->type == 'slugify')
+                    {!! Form::text(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, ['class' => 'form-control slugify' ,'data-source' => $field->field, 'placeholder' => $field->placeholder]) !!}
+                @elseif($field->type == 'password')
+                    {!! Form::password(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
+                @elseif($field->type == 'textarea')
+                    {!! Form::textarea(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, ['class' => 'form-control', 'rows' => '6', 'placeholder' => $field->placeholder]) !!}
+                @elseif($field->type == 'wysiwyg')
+                    {!! Form::textarea(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, ['class' => 'wysihtml5 form-control', 'rows' => '9', 'placeholder' => $field->placeholder]) !!}
+                @elseif($field->type == 'selectlist')
+                    {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $field->data, null, ['class' => 'form-control']) !!}
+                @elseif($field->type == 'checkbox')
+                    @if(!empty($field->data))
+                        <div class="checkbox">
+                            @foreach($field->data as $checkbox)
+                                <div class="col-lg-3">
+                                    <label>
+                                        {!! Form::checkbox($checkbox->name, 'true', null, ['class' => '']) !!}
+                                        {{ $checkbox->label }}
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="checkbox">
                             <label>
-                                {!! Form::checkbox($checkbox->name, 'true', null, ['class' => '']) !!}
-                                {{ $checkbox->label }}
+                                {!! Form::checkbox(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, 'true', null, ['class' => '']) !!}
                             </label>
                         </div>
-                    @endforeach
-                </div>
-            @else
-                <div class="checkbox">
-                    <label>
-                        {!! Form::checkbox(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, 'true', null, ['class' => '']) !!}
-                    </label>
-                </div>
-            @endif
-        @elseif($field->type == 'radio')
-                @foreach($field->data as $label => $value)
-                <div class="radio">
-                    <label>
-                        {!! Form::radio(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $value, ['class' => 'form-control']) !!}
-                       {{ $label }}
-                    </label>
-                </div>
-                @endforeach
-        @elseif($field->type == 'file')
-            {!! Form::file(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
-            @if(isset($prefix) AND isset($index) AND isset($record->{$prefix}[$index]->{$field->name}))
-                <b>Image Id: {{ $record->{$prefix}[$index]->{$field->name} }}</b>
-            @elseif (!empty($record->{$field->name}))
-                {{-- {{ dd($record) }} --}}
-                <b>Image Id: {{ $record->{$field->name} }}</b>
-            @endif
-        @elseif($field->type == 'datepicker')
-            {!! Form::date('name', \Carbon\Carbon::now(), ['class' => 'form-control form-control-inline input-medium date-picker-default', 'placeholder' => $field->placeholder]) !!}
-        @elseif($field->type == 'from_to_input')
-            <div class="input-group input-large">
-                @foreach($field->data as $i => $from_to)
-                    @if($i == 1) <span class="input-group-addon">{{ $field->operator }}</span> @endif
-                    @if($field->type == 'text')
-                        {!! Form::text($from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
-                    @elseif($from_to->type == 'password')
-                        {!! Form::password($from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
-                    @elseif($from_to->type == 'datepicker')
-                        {!! Form::date($from_to->name, \Carbon\Carbon::now(), ['class' => 'form-control date-picker-default', 'placeholder' => $from_to->placeholder]) !!}
                     @endif
-                @endforeach
-            </div>
-        @elseif($field->type == 'from_to_list')
-            <div class="row">
-                @foreach($field->data as $i => $from_to)
-                    @if($from_to->type == 'selectlist')
-                        <div class="col-lg-6">
-                            {!! Form::select($from_to->name, $from_to->data, null, ['class' => 'form-control']) !!}
+                @elseif($field->type == 'radio')
+                        @foreach($field->data as $label => $value)
+                        <div class="radio">
+                            <label>
+                                {!! Form::radio(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $value, ['class' => 'form-control']) !!}
+                               {{ $label }}
+                            </label>
                         </div>
+                        @endforeach
+                @elseif($field->type == 'file')
+                    {!! Form::file(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
+                    @if(isset($prefix) AND isset($index) AND isset($record->{$prefix}[$index]->{$field->name}))
+                        <b>Image Path: {{ $record->{$prefix}[$index]->{$field->name} }}</b>
+                    @elseif (!empty($record->{$field->name}))
+                        {{-- {{ dd($record) }} --}}
+                        <b>Image Path: {{ $record->{$field->name} }}</b>
                     @endif
-                @endforeach
-            </div>
-        @elseif($field->type == 'from_to_mixed')
-            <div class="row">
-                @foreach($field->data as $i => $from_to)
-                    @if($from_to->type == 'selectlist')
-                        <div class="col-lg-6">
-                            {!! Form::select($from_to->name, $from_to->data, null, ['class' => 'form-control']) !!}
-                        </div>
-                    @elseif($field->type == 'text')
-                        <div class="col-lg-6">
-                            {!! Form::text($from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
-                        </div>
-                    @elseif($from_to->type == 'password')
-                        <div class="col-lg-6">
-                            {!! Form::password($from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
-                        </div>
-                    @elseif($from_to->type == 'datepicker')
-                        <div class="col-lg-6">
-                            {!! Form::date($from_to->name, \Carbon\Carbon::now(), ['class' => 'form-control date-picker-default', 'placeholder' => $from_to->placeholder]) !!}
-                        </div>
-                    @endif
-                @endforeach
-            </div>
-        @elseif($field->type == 'model_selectlist')
-            {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, with(new $field->data)->lists($field->key, $field->value), null, ['class' => 'form-control', 'placeholder' => isset($field->placeholder) ? $field->placeholder : null]) !!}
-        @elseif($field->type == 'model_checkbox')
-            <div class="checkbox">
-                @foreach(with(new $field->data)->lists($field->key, $field->value) as $check_id => $check_label)
-                    <div class="col-lg-3">
-                        <label>
-                            {!! Form::checkbox($field->name.'[]', $check_id, !empty($record->{$field->name}) &&  in_array($check_id, $record->{$field->name}) ? true : null, ['class' => '']) !!}
-                            {{ $check_label }}
-                        </label>
+                @elseif($field->type == 'datepicker')
+                    {!! Form::date('name', null, ['class' => 'form-control form-control-inline input-medium date-picker-default', 'placeholder' => $field->placeholder]) !!}
+                @elseif($field->type == 'from_to_input')
+                    <div class="input-group input-large">
+                        @foreach($field->data as $i => $from_to)
+                            @if($i == 1) <span class="input-group-addon">{{ $field->operator }}</span> @endif
+                            @if($field->type == 'text')
+                                {!! Form::text($from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
+                            @elseif($from_to->type == 'password')
+                                {!! Form::password($from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
+                            @elseif($from_to->type == 'datepicker')
+                                {!! Form::date($from_to->name, null, ['class' => 'form-control date-picker-default', 'placeholder' => $from_to->placeholder]) !!}
+                            @endif
+                        @endforeach
                     </div>
-                @endforeach
-            </div>
-        @elseif($field->type == 'layout_selector')
-            {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $meta->available_layouts) !!}
-        @elseif($field->type == 'repeatable')
-            @if(isset($record))
-                @include('ui::partials.repeatable_block', ['prefix' => $field->name, 'records' => !empty($record->{$field->name}) ? $record->{$field->name}: [[]]])
-            @else
-                @include('ui::partials.repeatable_block', ['prefix' => $field->name, 'records' => [[]]])
-            @endif
-        @endif
-        @if ($field->help_block)
-            <small class="help-block">{{ $field->help_block }}</small>
-        @endif
-    @if(empty($repeatable)) </div> @endif
-</div>
+                @elseif($field->type == 'from_to_list')
+                    <div class="row">
+                        @foreach($field->data as $i => $from_to)
+                            @if($from_to->type == 'selectlist')
+                                <div class="col-lg-6">
+                                    {!! Form::select($from_to->name, $from_to->data, null, ['class' => 'form-control']) !!}
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+                @elseif($field->type == 'from_to_mixed')
+                    <div class="row">
+                        @foreach($field->data as $i => $from_to)
+                            @if($from_to->type == 'selectlist')
+                                <div class="col-lg-6">
+                                    {!! Form::select($from_to->name, $from_to->data, null, ['class' => 'form-control']) !!}
+                                </div>
+                            @elseif($field->type == 'text')
+                                <div class="col-lg-6">
+                                    {!! Form::text($from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
+                                </div>
+                            @elseif($from_to->type == 'password')
+                                <div class="col-lg-6">
+                                    {!! Form::password($from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
+                                </div>
+                            @elseif($from_to->type == 'datepicker')
+                                <div class="col-lg-6">
+                                    {!! Form::date($from_to->name, null, ['class' => 'form-control date-picker-default', 'placeholder' => $from_to->placeholder]) !!}
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+                @elseif($field->type == 'model_selectlist')
+                    {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, with(new $field->data)->lists($field->key, $field->value), null, ['class' => 'form-control', 'placeholder' => isset($field->placeholder) ? $field->placeholder : null]) !!}
+                @elseif($field->type == 'model_checkbox')
+                    <div class="checkbox">
+                        @foreach(with(new $field->data)->lists($field->key, $field->value) as $check_id => $check_label)
+                            <div class="col-lg-3">
+                                <label>
+                                    {!! Form::checkbox($field->name.'[]', $check_id, !empty($record->{$field->name}) &&  in_array($check_id, $record->{$field->name}) ? true : null, ['class' => '']) !!}
+                                    {{ $check_label }}
+                                </label>
+                            </div>
+                        @endforeach
+                    </div>
+                @elseif($field->type == 'filtered_selectlist')
+                    {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $meta->{$field->data}, null, ['class' => 'form-control', 'placeholder' => isset($field->placeholder) ? $field->placeholder : null]) !!}
+                @elseif($field->type == 'filtered_checkbox')
+                    <div class="checkbox">
+                        @foreach($meta->{$field->data} as $check_id => $check_label)
+                            <div class="col-lg-3">
+                                <label>
+                                    {!! Form::checkbox($field->name.'[]', $check_id, !empty($record->{$field->name}) &&  in_array($check_id, $record->{$field->name}) ? true : null, ['class' => '']) !!}
+                                    {{ $check_label }}
+                                </label>
+                            </div>
+                        @endforeach
+                    </div>
+                @elseif($field->type == 'layout_selector')
+                    {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $meta->available_layouts) !!}
+                @elseif($field->type == 'repeatable')
+                    @if(isset($record))
+                        @include('ui::partials.repeatable_block', ['prefix' => $field->name, 'records' => !empty($record->{$field->name}) ? $record->{$field->name}: [[]]])
+                    @else
+                        @include('ui::partials.repeatable_block', ['prefix' => $field->name, 'records' => [[]]])
+                    @endif
+                @endif
+                @if ($field->help_block)
+                    <small class="help-block">{{ $field->help_block }}</small>
+                @endif
+            @if(empty($repeatable)) </div> @endif
+        </div>
+    @endif
 @endforeach
 
 @if(empty($repeatable))
 {!! Form::submit('Save', ["class" => "btn btn-info"]) !!}
-
-<script src="/assets/ui/js/bootstrap-wysihtml5/wysihtml5-0.3.0.js" type="text/javascript"></script>
-<script src="/assets/ui/js/bootstrap-wysihtml5/bootstrap-wysihtml5.js" type="text/javascript"></script>
 
 <script type="text/javascript">
     function slugify(text) {
@@ -171,7 +200,15 @@
     }
 
     $(document).ready(function(){
-        $('.wysihtml5').wysihtml5();
+        $('.wysihtml5').wysihtml5({
+            "font-styles": true, //Font styling, e.g. h1, h2, etc. Default true
+            "emphasis": true, //Italics, bold, etc. Default true
+            "lists": true, //(Un)ordered lists, e.g. Bullets, Numbers. Default true
+            "html": false, //Button which allows you to edit the generated HTML. Default false
+            "link": true, //Button to insert a link. Default true
+            "image": true, //Button to insert an image. Default true,
+            "color": false //Button to change color of font
+        });
 
         // Slugify logic
         var name = '';

@@ -6,6 +6,7 @@ use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
+use P3in\Models\Website;
 
 Class WebsitesServiceProvider extends ServiceProvider {
 
@@ -18,7 +19,7 @@ Class WebsitesServiceProvider extends ServiceProvider {
         // Register Website Validation
         Validator::extend('site_connection', function($attribute, $value, $parameters, $validator) {
 
-            return Website::testConnection($value);
+            return Website::testConnection($value, true);
 
         });
 

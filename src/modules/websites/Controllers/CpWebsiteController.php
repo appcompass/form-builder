@@ -70,7 +70,7 @@ class CpWebsiteController extends UiBaseController
                     'target' => '#record-detail',
                 ],
             ],
-            'heading' => 'Connection Information',
+            'heading' => 'Website Setup',
             'route' => 'websites.update',
         ],
         'create' => [
@@ -88,6 +88,11 @@ class CpWebsiteController extends UiBaseController
         'form' => [
             'fields' => [
                 [
+                    'type' => 'fieldset_break',
+                    'window_title' => 'Basic Info',
+                    'window_header' => '',
+                    'window_sub_header' => '',
+                ],[
                     'label' => 'Name',
                     'name' => 'site_name',
                     'placeholder' => 'Website.com',
@@ -100,23 +105,10 @@ class CpWebsiteController extends UiBaseController
                     'type' => 'text',
                     'help_block' => '',
                 ],[
-                    'label' => 'From Email Address',
-                    'name' => 'config[from_email]',
-                    'placeholder' => 'website@website.com',
-                    'type' => 'text',
-                    'help_block' => '',
-                ],[
-                    'label' => 'From Email Name',
-                    'name' => 'config[from_name]',
-                    'placeholder' => 'Website Name',
-                    'type' => 'text',
-                    'help_block' => '',
-                ],[
-                    'label' => 'A Managed Website',
-                    'name' => 'config[managed]',
-                    'placeholder' => '',
-                    'type' => 'checkbox',
-                    'help_block' => '',
+                    'type' => 'fieldset_break',
+                    'window_title' => 'Server Connection',
+                    'window_header' => 'Server Connection',
+                    'window_sub_header' => 'Server Connection information',
                 ],[
                     'label' => 'SSH Host',
                     'name' => 'config[host]',
@@ -216,7 +208,7 @@ class CpWebsiteController extends UiBaseController
      */
     public function index()
     {
-        $this->records = Website::all();
+        $this->records = Website::managed()->get();
 
         return $this->build('index', ['websites']);
     }
@@ -240,9 +232,7 @@ class CpWebsiteController extends UiBaseController
 
         $this->record = Website::create($data);
 
-        // $this->record->initRemote();
-
-        return $this->json($this->setBaseUrl(['websites', $id, 'edit']));
+        return $this->json($this->setBaseUrl(['websites', $this->record->id, 'settings']));
     }
 
     /**
@@ -250,7 +240,7 @@ class CpWebsiteController extends UiBaseController
      */
     public function show($id)
     {
-        $this->record = Website::findOrFail($id);
+        $this->record = Website::managedById($id);
 
         return $this->build('show', ['websites', $id]);
     }
@@ -260,7 +250,8 @@ class CpWebsiteController extends UiBaseController
      */
     public function edit($id)
     {
-        $this->record = Website::findOrFail($id);
+        $this->record = Website::managedById($id);
+
         return $this->build('edit', ['websites', $id]);
     }
 
@@ -271,20 +262,26 @@ class CpWebsiteController extends UiBaseController
     {
 
         $this->validate($request, [
-            'site_name' => 'required|max:255', //|unique:websites // we need to do a unique if not self appproach.
+            'site_name' => 'required|max:255',
             'site_url' => 'required',
             'config.host' => 'required:ip',
             'config.username' => 'required',
-            // 'config.password' => 'required',
             'config.root' => 'required',
-            // 'config' => 'site_connection',
         ]);
 
-        $website = $this->record = Website::findOrFail($id);
+        $website = $this->record = Website::managedById($id);
 
-        if ($website->testConnection($request->config)) {
+        $data = $request->except(['_method','_token']);
 
-            $website->update($request->all());
+        if (!$data['config']['privateKey']) {
+
+            $data['config']['password'] = $data['config']['password'] ?: $website->config->password;
+
+        }
+
+        if ($website->testConnection($data['config'], true)) {
+
+            $website->update($data);
 
             return $this->json($this->setBaseUrl(['websites', $id, 'edit']));
         }

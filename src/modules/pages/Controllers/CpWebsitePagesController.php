@@ -57,7 +57,7 @@ class CpWebsitePagesController extends UiBaseController
                     ],
                     'actions' => [
                         'type' => 'action_buttons',
-                        'data' => ['edit', 'delete']
+                        'data' => ['edit', 'clone', 'delete']
                     ],
                 ],
             ],
@@ -127,22 +127,22 @@ class CpWebsitePagesController extends UiBaseController
                     'help_block' => 'The title of the page.',
                 ],[
                     'label' => 'Meta Title',
-                    'name' => 'settings[meta_title]',
-                    'placeholder' => 'Meta Title',
+                    'name' => 'settings[meta_data][title]',
+                    'placeholder' => 'Page Meta Title',
                     'type' => 'text',
-                    'help_block' => 'The meta title of the blog entry.',
+                    'help_block' => 'Leave this blank if you wish to use the Page Title above as the title.',
                 ],[
                     'label' => 'Meta Description',
-                    'name' => 'settings[meta_description]',
+                    'name' => 'settings[meta_data][description]',
                     'placeholder' => 'Description Block',
                     'type' => 'textarea',
-                    'help_block' => 'The title of the blog entry.',
+                    'help_block' => 'The title of the page.',
                 ],[
                     'label' => 'Meta Keywords',
-                    'name' => 'settings[meta_keywords]',
+                    'name' => 'settings[meta_data][keywords]',
                     'placeholder' => 'Meta Keywords',
                     'type' => 'text',
-                    'help_block' => 'The meta keywords of the blog entry.',
+                    'help_block' => 'The meta keywords of the page.',
                 ],[
                     'label' => 'Active',
                     'name' => 'active',
@@ -169,10 +169,13 @@ class CpWebsitePagesController extends UiBaseController
 
         $this->setControllerDefaults();
 
+        // $sections = Section::whereNotIn('fits', ['*', 'utils'])->groupBy('fits')->lists('fits');
+
         $this->meta->available_layouts = [
             'full' => 'Full Width',
             'aside:main' => 'Left Sidenav',
-            'main:aside' => 'Right Sidenav'
+            'main:aside' => 'Right Sidenav',
+            'list_listings' => 'Listings Page',
         ];
 
     }
@@ -184,7 +187,7 @@ class CpWebsitePagesController extends UiBaseController
      */
     public function index($website_id)
     {
-        $this->records = Website::findOrFail($website_id)->pages;
+        $this->records = Website::managedById($website_id)->pages;
 
         return $this->build('index', ['websites', $website_id, 'pages']);
     }
@@ -211,16 +214,20 @@ class CpWebsitePagesController extends UiBaseController
     {
         $page = new Page($request->all());
 
-        $page->name = strtolower(str_replace(' ', '_', $page->title));
+        $page->name = strtolower(str_replace(' ', '_', trim($page->title)));
 
         $page->published_at = Carbon::now();
 
-        Website::findOrFail($website_id)->pages()
+        Website::managedById($website_id)->pages()
             ->save($page);
+
+        if ($request->has('settings')) {
+            $page->settings($request->settings);
+        }
 
         $this->record = $page;
 
-        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $this->record->id]));
+        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $this->record->id, 'edit']));
     }
 
     /**
@@ -233,7 +240,7 @@ class CpWebsitePagesController extends UiBaseController
     public function show($website_id, $page_id)
     {
 
-        $website = Website::findOrFail($website_id);
+        $website = Website::managedById($website_id);
 
         $this->record = Page::ofWebsite($website)->findOrFail($page_id)->load('sections');
 
@@ -259,7 +266,7 @@ class CpWebsitePagesController extends UiBaseController
     public function edit($website_id, $page_id)
     {
 
-        $website = Website::findOrFail($website_id);
+        $website = Website::managedById($website_id);
 
         $this->record = Page::ofWebsite($website)->findOrFail($page_id);
 
@@ -280,7 +287,7 @@ class CpWebsitePagesController extends UiBaseController
     public function update(Request $request, $website_id, $page_id)
     {
 
-        $website = Website::findOrFail($website_id);
+        $website = Website::managedById($website_id);
 
         $page = Page::ofWebsite($website)->findOrFail($page_id);
 
@@ -303,7 +310,7 @@ class CpWebsitePagesController extends UiBaseController
     public function destroy($website_id, $id)
     {
 
-        $website = Website::findOrFail($website_id);
+        $website = Website::managedById($website_id);
 
         $this->record = Page::ofWebsite($website)->findOrFail($id);
 

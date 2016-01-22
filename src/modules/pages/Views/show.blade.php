@@ -21,8 +21,8 @@
                         </span>
                         <a
                             data-action="link"
-                            href="#{{ $meta->base_url.'/'.$item->url }}"
-                            data-click="{{ $meta->base_url.'/'.$item->url }}"
+                            href="#{{ $meta->base_url.$item->url }}"
+                            data-click="{{ $meta->base_url.$item->url }}"
                             data-target="#content-edit"
                             class="btn btn-primary btn-xs"
                         >

@@ -42,6 +42,18 @@
                                                     >
                                                         Edit
                                                     </a>
+                                                @elseif($action == 'clone')
+                                                    <a
+                                                        data-action="clone"
+                                                        href=""
+                                                        data-click="/clone-resource"
+                                                        data-object-name="{{ get_class($record) }}"
+                                                        data-object-id="{{ $record->id }}"
+                                                        data-object-redirect="{{ $meta->base_url }}"
+                                                        class="btn btn-info"
+                                                    >
+                                                        Clone
+                                                    </a>
                                                 @elseif($action == 'delete')
                                                     <a
                                                         data-action="modal-delete"
@@ -58,7 +70,7 @@
                                             @endforeach
                                         </td>
                                     @elseif($row_data->type == 'link_to_blank')
-                                        <td><a href="{{ $record->$row_key }}" target="_blank">{{ $record->$row_key }}</a></td>
+                                        <td><a href="{{ $record->$row_key }}" target="_blank" class="no-link">{{ $record->$row_key }}</a></td>
                                     @elseif($row_data->type == 'datetime')
                                         <td>{{ $record->$row_key }}</td>
                                     @elseif($row_data->type == 'image')

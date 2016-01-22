@@ -71,7 +71,7 @@ class CpWebsitePageSectionsController extends UiBaseController
      */
     public function store(Request $request, $website_id, $page_id)
     {
-        $website = Website::findOrFail($website_id);
+        $website = Website::managedById($website_id);
 
         $page = Page::ofWebsite($website)->findOrFail($page_id);
 
@@ -84,7 +84,6 @@ class CpWebsitePageSectionsController extends UiBaseController
                 return $this->json([], false, 'Unable to complete the request, section has been dragged in the wrong spot.');
 
             }
-
 
             $this->record = new PageSection([
                 'section' => $section->fits,
@@ -107,7 +106,6 @@ class CpWebsitePageSectionsController extends UiBaseController
         if ($request->has('reorder')) {
 
             $sections = $page->content()->get();
-
             $this->sort($sections, $request->reorder);
 
             $redirect = $request->redirect;
@@ -139,7 +137,7 @@ class CpWebsitePageSectionsController extends UiBaseController
     public function edit($website_id, $page_id, $section_id)
     {
 
-        $website = Website::findOrFail($website_id);
+        $website = Website::managedById($website_id);
 
         $page = Page::ofWebsite($website)
             ->findOrFail($page_id)
@@ -172,7 +170,7 @@ class CpWebsitePageSectionsController extends UiBaseController
     public function update(Request $request, $website_id, $page_id, $section_id)
     {
 
-        $website = Website::findOrFail($website_id);
+        $website = Website::managedById($website_id);
 
         $page = Page::ofWebsite($website)
             ->findOrFail($page_id);
@@ -191,13 +189,11 @@ class CpWebsitePageSectionsController extends UiBaseController
 
                 $content[$field_name] = $photo->path;
 
-            }
-
-            else if (is_array($file)) {
+            }elseif (is_array($file)) {
 
                 foreach($file as $idx => $single_file) {
 
-                    if (is_null($single_file['image'])) {
+                    if (empty($single_file['image'])) {
 
                         // if not passed the image field comes back null, we don't want that
                         $content[$field_name][$idx]['image'] = $existing_content[$field_name][$idx]['image'];
@@ -212,7 +208,6 @@ class CpWebsitePageSectionsController extends UiBaseController
                 }
             }
         }
-
         $section->content = array_replace($existing_content, $content);
 
         $section->save();
@@ -228,7 +223,7 @@ class CpWebsitePageSectionsController extends UiBaseController
      */
     public function destroy(Request $request, $website_id, $page_id, $section_id)
     {
-        $website = Website::findOrFail($website_id);
+        $website = Website::managedById($website_id);
 
         $page = Page::ofWebsite($website)
             ->findOrFail($page_id);
@@ -251,19 +246,6 @@ class CpWebsitePageSectionsController extends UiBaseController
                 $sq->where('id', $website_id);
             });
         });
-    }
-
-    /**
-     * @return P3in\Models\Photo
-     */
-    public function makePhoto(UploadedFile $file, PageSection $section)
-    {
-        return Photo::store($file, Auth::user(), [
-            'status' => Photo::STATUSES_ACTIVE
-        ]);
-
-
-        $content[$field_name][$idx]['image'] = $photo->id;
     }
 
 }

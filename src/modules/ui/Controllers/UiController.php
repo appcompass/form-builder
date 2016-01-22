@@ -94,4 +94,24 @@ class UiController extends UiBaseController {
             'url' => $request->resource,
         ]);
     }
+
+    public function postCloneResource(Request $request)
+    {
+        if (class_exists($request->obj_name)) {
+
+            $obj = $request->obj_name::find($request->obj_id);
+
+            if (method_exists($obj , 'clone')) {
+
+                $rslt = $obj->clone();
+
+            }else{
+                return $this->json([],false, 'Class cannot be cloned.');
+            }
+        }else{
+            return $this->json([],false, 'Class does not exist.');
+        }
+
+        return $this->json($request->obj_redirect.'/'.$rslt->id.'/edit');
+    }
 }
