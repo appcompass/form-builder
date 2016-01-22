@@ -38,7 +38,7 @@ class PageSection extends ModularBaseModel
      */
     public function page()
     {
-      return $this->belongsTo(Page::class);
+        return $this->belongsTo(Page::class);
     }
 
     /**
@@ -46,7 +46,7 @@ class PageSection extends ModularBaseModel
      */
     public function website()
     {
-      return $this->page->website();
+        return $this->page->website();
     }
 
     /**
@@ -62,7 +62,7 @@ class PageSection extends ModularBaseModel
      */
     public function photos()
     {
-      return $this->morphMany(Photo::class, 'photoable');
+        return $this->morphMany(Photo::class, 'photoable');
     }
 
     /**
@@ -86,10 +86,10 @@ class PageSection extends ModularBaseModel
 
     public function render()
     {
-     return [
-         'view' => '/sections'.$this->template->display_view,
-         'data' => $this->content,
-     ];
+        return [
+            'view' => '/sections'.$this->template->display_view,
+            'data' => $this->content,
+        ];
     }
 
 }
