@@ -32,11 +32,15 @@
 	<script src="/assets/ui/js/flot-chart/jquery.flot.growraf.js"></script>
 	<script src="/assets/ui/js/jquery.customSelect.min.js" ></script>
 	<script src="/assets/ui/js/jquery.customSelect.min.js" ></script>
+    <!-- wysiwyg editor  -->
+    <script src="/assets/ui/js/bootstrap-wysihtml5/wysihtml5-0.3.0.js" type="text/javascript"></script>
+    <script src="/assets/ui/js/bootstrap-wysihtml5/bootstrap-wysihtml5.js" type="text/javascript"></script>
 	<!-- iCheck -->
 	<script src="/assets/ui/js/iCheck/jquery.icheck.min.js" ></script>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.10/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/0.6.0/vue-resource.js"></script>
 
     <script src="/assets/ui/js/jquery-ui/jquery-ui-1.10.1.custom.min.js"></script>
 
@@ -176,7 +180,7 @@
                 update: function(event, ui) {
                     event.preventDefault();
                     if (!sender) {
-                        var sortData = $.deparam($('.sortable').sortable('serialize'));
+                        var sortData = $.deparam($(this).sortable('serialize'));
 
                         var item = $(ui.item[0]).find('a[data-action="link"]');
 
@@ -317,15 +321,15 @@
 				}
 			});
 
-			$(document).on('click', '.panel .tools .fa', function () {
-				var el = $(this).parents(".panel").children(".panel-body");
-				if ($(this).hasClass("fa-chevron-down")) {
-					$(this).removeClass("fa-chevron-down").addClass("fa-chevron-up");
-					el.slideUp(200);
-				} else if ($(this).hasClass("fa-chevron-up")) {
-					$(this).removeClass("fa-chevron-up").addClass("fa-chevron-down");
-					el.slideDown(200); }
-			});
+            $(document).on('click', '.panel .tools .fa', function () {
+                var el = $(this).parents(".panel").first().find('.panel-body');
+                if ($(this).hasClass("fa-chevron-down")) {
+                    $(this).removeClass("fa-chevron-down").addClass("fa-chevron-up");
+                    el.slideUp(200);
+                } else if ($(this).hasClass("fa-chevron-up")) {
+                    $(this).removeClass("fa-chevron-up").addClass("fa-chevron-down");
+                    el.slideDown(200); }
+            });
 
 			$(document).on('click', '.panel .tools .fa-times', function () {
 				$(this).parents(".panel").parent().remove();
@@ -342,6 +346,22 @@
                 var href = $(this).attr('href');
 
                 switch(action){
+                    case 'clone':
+
+                        $.post(url, {
+                            obj_name: $(this).attr('data-object-name'),
+                            obj_id: $(this).attr('data-object-id'),
+                            obj_redirect: $(this).attr('data-object-redirect')
+                        }, function(res) {
+                            if (res.success) {
+                                router.navigate(res.data);
+                            }else{
+                                openModal('error', res.message, true);
+                            }
+
+                        });
+
+                        break;
                     case 'modal-delete':
                         $.post(url, {
                             resource: $(this).attr('data-delete')

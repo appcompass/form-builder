@@ -34,22 +34,26 @@ class CreateNavigationItems extends Migration
        });
 
         Schema::create('navigation_item_navmenu', function(Blueprint $table) {
-        	$table->increments('id');
+            $table->increments('id');
 
-        	$table->integer('navmenu_id')->unsigned();
-        	$table->integer('order')->nullable();
-        	$table->foreign('navmenu_id')
-        		->references('id')
-        		->on('navmenus')
-        		->onDelete('cascade');
+            $table->string('label')->nullable();
+            $table->string('url')->nullable();
+            $table->boolean('new_tab')->default(false);
 
-        	$table->integer('navigation_item_id')->unsigned();
-        	$table->foreign('navigation_item_id')
-        		->references('id')
-        		->on('navigation_items')
-        		->onDelete('cascade');
+            $table->integer('navmenu_id')->unsigned();
+            $table->integer('order')->nullable();
+            $table->foreign('navmenu_id')
+                ->references('id')
+                ->on('navmenus')
+                ->onDelete('cascade');
 
-        	$table->unique(['navigation_item_id', 'navmenu_id']);
+            $table->integer('navigation_item_id')->unsigned();
+            $table->foreign('navigation_item_id')
+                ->references('id')
+                ->on('navigation_items')
+                ->onDelete('cascade');
+
+            $table->unique(['navigation_item_id', 'navmenu_id']);
         });
 
     }

@@ -6,13 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use P3in\ModularBaseModel;
 use P3in\Models\PageSection;
 use P3in\Models\Section;
 use P3in\Models\Website;
 use P3in\Traits\NavigatableTrait as Navigatable;
 use P3in\Traits\SettingsTrait;
 
-class Page extends Model
+class Page extends ModularBaseModel
 {
 
     use SettingsTrait, Navigatable;
@@ -38,7 +39,7 @@ class Page extends Model
         'active',
         'layout',
         'req_permission',
-        'published_at'
+        'published_at',
     ];
 
     /**
@@ -77,7 +78,7 @@ class Page extends Model
     public function content()
     {
         // should probably split the template type and provide it divided? we'll see
-        return $this->hasMany(PageSection::class);
+        return $this->hasMany(PageSection::class)->orderBy('order', 'asc');
     }
 
     /**
@@ -86,16 +87,16 @@ class Page extends Model
     public function makeLink($overrides = [])
     {
         return array_replace([
-          "label" => $this->title,
-          "url" => $this->slug,
-          "req_perms" => null,
-          "props" => [
-              'icon' => 'list',
-              "link" => [
-                  'href' => $this->slug,
-                  'data-target' => '#main-content-out'
-              ],
-          ]
+            "label" => $this->title,
+            "url" => $this->slug,
+            "req_perms" => null,
+            "props" => [
+                'icon' => 'list',
+                "link" => [
+                    'href' => $this->slug,
+                    'data-target' => '#main-content-out'
+                ],
+            ]
         ], $overrides);
     }
 
@@ -119,11 +120,32 @@ class Page extends Model
             ->save();
     }
 
+    public function clone()
+    {
+        $original = $this->load('content');
+        $settings = $original->settings()->first();
+
+        $new = $original->replicateWithRelations();
+
+        $new->title = $original->title.' (copy)';
+
+        $new->slug = $original->slug.'-copy';
+
+        $new->push();
+
+        if (!empty($settings->data)) {
+            $new->settings((array) $settings->data);
+        }
+
+        return $new;
+
+    }
+
     /**
      * Render the page
      *
      */
-    public function render()
+    public function render($code = 200)
     {
 
         $views = [];
@@ -131,6 +153,14 @@ class Page extends Model
         $website = Website::current();
 
         $globals = Section::whereIn('id',[$website->settings('header'), $website->settings('footer')])->get();
+
+        $this->load('settings');
+
+        $views['website'] = $website;
+        $views['page'] = $this;
+        $view['breadcrumbs'] = $this->breadcrumbs();
+
+        $views['settings'] = $this->settings->data;
 
         $views['files'] = [
             'css_file' => $website->settings('css_file'),
@@ -143,28 +173,93 @@ class Page extends Model
                 // 'data' => $global->pivot->content // TODO MUST LINK SECTION ON WEBSITE SETTINGS STORAGE
             ];
         }
-        $pageSections = $this->content()->with('template')->get();
+        if ($code == 200) {
+            $pageSections = $this->content()->with('template')->get();
 
 
-        // dd($pageSections);
-        foreach($pageSections as $pageSection) {
-            $views[$pageSection->section][] = $pageSection->render();
+            // dd($pageSections);
+            foreach($pageSections as $pageSection) {
+                $views[$pageSection->section][] = $pageSection->render();
+            }
         }
 
-       //  foreach(explode(':', $this->layout) as $layout_part) {
+        $views['navmenus'] = [];
 
-                // foreach($this->sections()->where('fits', $layout_part)->get() as $section) {
+        $navmenus = $website->navmenus()
+            ->whereNull('parent_id')
+            ->get();
 
-                //  $views[$layout_part][] = $section->render();
+        foreach ($navmenus as $navmenu) {
+            $navmenu->load('items');
 
-                // }
+            $views['navmenus'][$navmenu->name] = $navmenu->toArray();
 
-       //  }
+            $views['navmenus'][$navmenu->name]['children'] = [];
+
+            foreach($navmenu->children as $child) {
+
+                $views['navmenus'][$navmenu->name]['children'][$child->id] = $child;
+
+            }
+
+
+        }
+
+        $views['navmenus'] = json_decode(json_encode($views['navmenus']));
+
 
         return $views;
 
     }
 
+    /**
+     * breadcrumb rendering function
+     *
+     * @return array
+     * @author Jubair Saidi
+     **/
+    public function breadcrumbs($end = null)
+    {
+        $rtn = $this->withParents()->orderBy('level', 'desc')->get();
+        if ($end) {
+            $end->current = true;
+            $rtn->add($end);
+        }
+
+        // $rtn->each(function($rec){
+        //     $rec->current = true;
+        // });
+
+        return $rtn;
+    }
+
+    /**
+     * scope for fetching a page and it's parents
+     *
+     * @return QueryBuilder
+     * @author
+     **/
+    public function scopeWithParents($query)
+    {
+        $page_id = !empty($this->id) ? $this->id : $page_id;
+
+        $escaped_page_id = DB::connection()->getPdo()->quote($page_id);
+        $p_id = DB::raw($escaped_page_id);
+
+        $query->select("pages.*", "p2.level")->join(DB::raw("(WITH RECURSIVE pages_tree AS (SELECT id, parent_id, 1 AS level
+                    FROM pages
+                    WHERE id = $p_id
+                    UNION ALL
+                    SELECT c.id, c.parent_id, p.level + 1
+                    FROM pages c
+                    JOIN pages_tree p ON c.id = p.parent_id)
+                SELECT *
+                FROM pages_tree) as p2"), function($join){
+            $join->on('p2.id', '=', 'pages.id');
+        })->whereNotNull('level');
+
+        return $query;
+    }
     /**
      * scopeOfWebsite
      * if $website is passed, then we look up that website's pages.
@@ -173,7 +268,9 @@ class Page extends Model
     public function scopeOfWebsite($query, Website $website = null)
     {
         $website = $website ?: Website::current();
-
+        if (is_null($website)) {
+            throw new \Exception("Website not defined");
+        }
         return $query->whereHas('website',function($q) use ($website) {
 
             $q->where('id', $website->id);
@@ -201,7 +298,14 @@ class Page extends Model
      */
     public function getFullUrlAttribute()
     {
-        return 'https://'.$this->website->site_url.$this->slug;
+            $slug = $this->dynamic_segment ? str_replace('([a-z0-9-]+)', $this->dynamic_segment, $this->slug) : $this->slug;
+            return rtrim($this->website->site_url,'/').'/'.trim($slug,'/');
+    }
+
+    public function getUrlAttribute()
+    {
+            $slug = $this->dynamic_segment ? str_replace('([a-z0-9-]+)', $this->dynamic_segment, $this->slug) : $this->slug;
+            return '/'.trim($slug,'/');
     }
 
     /**

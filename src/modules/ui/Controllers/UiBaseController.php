@@ -22,7 +22,17 @@ class UiBaseController extends ModularBaseController {
     public $record;
     public $site_url;
     public $meta;
+    public $template;
 
+    public function output($data, $success = true, $message = '')
+    {
+        if (with(new Request)->capture()->wantsJson()) {
+            return $this->json($data, $success, $message);
+        }else{
+            return view($this->template, $data);
+
+        }
+    }
     public function json($data, $success = true, $message = '')
     {
         $rtn = [
@@ -51,7 +61,9 @@ class UiBaseController extends ModularBaseController {
 
     private function viewIndex()
     {
-        return view('ui::index', [
+        $this->template = 'ui::index';
+
+        return $this->output([
             'meta' => $this->meta,
             'records' => $this->records,
         ]);
@@ -59,14 +71,18 @@ class UiBaseController extends ModularBaseController {
 
     private function viewCreate()
     {
-        return view('ui::create', [
+        $this->template = 'ui::create';
+
+        return $this->output([
             'meta' => $this->meta,
         ]);
     }
 
     private function viewShow()
     {
-        return view('ui::show', [
+        $this->template = 'ui::show';
+
+        return $this->output([
             'meta' => $this->meta,
             'record' => $this->record,
             'nav' => $this->getCpSubNav(),
@@ -77,7 +93,9 @@ class UiBaseController extends ModularBaseController {
 
     private function viewEdit()
     {
-        return view('ui::edit', [
+        $this->template = 'ui::edit';
+
+        return $this->output([
             'meta' => $this->meta,
             'record' => $this->record,
         ]);
@@ -97,7 +115,6 @@ class UiBaseController extends ModularBaseController {
         $navmenu_name = 'cp_'.$this->module_name.'_subnav';
 
         $navmenu = Navmenu::byName($navmenu_name);
-
         return $navmenu;
 
     }

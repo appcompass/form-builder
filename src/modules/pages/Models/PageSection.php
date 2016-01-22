@@ -5,11 +5,13 @@ namespace P3in\Models;
 use BostonPads\Models\Photo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Support\Facades\Config;
+use P3in\ModularBaseModel;
 use P3in\Models\Page;
 use P3in\Models\Section;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class PageSection extends Model
+class PageSection extends ModularBaseModel
 {
     /**
      *
@@ -36,7 +38,7 @@ class PageSection extends Model
      */
     public function page()
     {
-      return $this->belongsTo(Page::class);
+        return $this->belongsTo(Page::class);
     }
 
     /**
@@ -44,7 +46,7 @@ class PageSection extends Model
      */
     public function website()
     {
-      return $this->page->website();
+        return $this->page->website();
     }
 
     /**
@@ -60,7 +62,7 @@ class PageSection extends Model
      */
     public function photos()
     {
-      return $this->morphMany(Photo::class, 'photoable');
+        return $this->morphMany(Photo::class, 'photoable');
     }
 
     /**
@@ -68,9 +70,11 @@ class PageSection extends Model
      */
     public function addPhoto(UploadedFile $file, User $user)
     {
+        Config::set('filesystems.disks.'.config('app.default_storage').'.root', $this->website->config->root);
+
         $photo = Photo::store($file, $user, [
             'status' => Photo::STATUSES_ACTIVE
-        ]);
+        ], 'images/');
 
         $this->website
             ->gallery
@@ -82,10 +86,10 @@ class PageSection extends Model
 
     public function render()
     {
-     return [
-         'view' => '/sections'.$this->template->display_view,
-         'data' => $this->content,
-     ];
+        return [
+            'view' => '/sections'.$this->template->display_view,
+            'data' => $this->content,
+        ];
     }
 
 }

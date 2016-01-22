@@ -10,6 +10,7 @@ use Illuminate\View\Factory;
 use P3in\Models\Page;
 use P3in\Models\Section;
 use P3in\Models\Website;
+use Mail;
 
 class PagesController extends Controller
 {
@@ -20,21 +21,38 @@ class PagesController extends Controller
 
         $data = $page->render();
 
-        $data['dynamic_segment'] = $page->dynamic_segment;
+        return view('layouts.master.'.str_replace(':', '_', $page->layout), $data);
 
-        $data['website'] = Website::current();
+    }
 
-        $data['navmenus'] = [];
+    public function submitForm(Request $request)
+    {
 
-        $navmenus = Website::current()->navmenus()
-            ->whereNull('parent_id')
-            ->get();
-        foreach ($navmenus as $navmenu) {
+        $website = Website::current();
 
-            $data['navmenus'][$navmenu->name] = $navmenu;
+        $from = $website->settings('from_email') ?: 'info@bostonpads.com';
 
-        }
-        return view('layouts.master.'.$page->assembler_template, $data);
+        $to = $request->has('form_id') ? base64_decode($request->get('form_id')) : $website->settings('to_email');
+
+        $data = $request->except(['_token', 'form_id', 'heading', 'subheading', 'text', 'style', 'form_name', 'file', 'g-recaptcha-response']);
+
+        Mail::send('mail.form-submission', ['website' => $website, 'data' => $data, 'name' => $request->get('form_name')], function($message) use($from, $to, $request, $website) {
+            $message->from($from)
+                ->to($to)
+                ->subject('New '.$request->get('form_name').' from '.$website->site_name);
+
+                foreach($request->file() as $field_name => $file) {
+
+                    $message->attach($file->getRealPath(), [
+                        'as' => $file->getClientOriginalName(),
+                        'mime' => $file->getMimeType()
+                    ]);
+
+                }
+
+            });
+
+        return back();
 
     }
 }

@@ -17,6 +17,8 @@ class CreateNavmenusTable extends Migration
             $table->string('label');
             $table->string('name');
 
+            $table->integer('max_depth')->unsigned()->nullable()->default(2);
+
             $table->string('req_perms')->nullable();
 
             $table->integer('parent_id')->unsigned()->nullable();
