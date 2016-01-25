@@ -507,6 +507,8 @@
 			});
 		});
 	</script>
+@else
+    @yield('scripts.footer')
 @endif
 </body>
 </html>
