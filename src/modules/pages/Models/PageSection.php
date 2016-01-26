@@ -70,11 +70,13 @@ class PageSection extends ModularBaseModel
      */
     public function addPhoto(UploadedFile $file, User $user)
     {
-        Config::set('filesystems.disks.'.config('app.default_storage').'.root', $this->website->config->root);
+
+        $disk = $this->website->getDiskInstance();
 
         $photo = Photo::store($file, $user, [
-            'status' => Photo::STATUSES_ACTIVE
-        ], 'images/');
+            'status' => Photo::STATUSES_ACTIVE,
+            'storage' => $this->website->site_url
+        ], $disk);
 
         $this->website
             ->gallery

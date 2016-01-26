@@ -181,19 +181,21 @@ class CpWebsitePageSectionsController extends UiBaseController
 
         $existing_content = json_decode(json_encode($section->content), true);
 
-        if ($request->get('selected_file')) {
+        // dd($website->getDiskInstance());
 
-            $file = Photo::findOrFail($request->get('selected_file'));
+        // if ($request->get('selected_file')) {
 
-            $file = new UploadedFile($file->path, basename($file->name));
+            // $file = Photo::findOrFail($request->get('selected_file'));
 
-            dd($file);
+            // $file = new UploadedFile($file->path, basename($file->name));
 
-            $photo = $section->addPhoto($file, Auth::user());
+            // dd($file->path);
 
-            $content[$field_name] = $photo->path;
+            // $photo = $section->addPhoto($file, Auth::user());
 
-        } else {
+            // $content['file'] = $file->path;
+
+        // } else {
 
             foreach($request->file() as $field_name => $file) {
 
@@ -222,7 +224,7 @@ class CpWebsitePageSectionsController extends UiBaseController
                     }
                 }
             }
-        }
+        // }
 
 
         $section->content = array_replace($existing_content, $content);

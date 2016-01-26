@@ -268,6 +268,7 @@ class Page extends ModularBaseModel
     public function scopeOfWebsite($query, Website $website = null)
     {
         $website = $website ?: Website::current();
+
         if (is_null($website)) {
             throw new \Exception("Website not defined");
         }

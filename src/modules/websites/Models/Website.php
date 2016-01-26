@@ -345,7 +345,7 @@ class Website extends Model
 
         Config::set('filesystems.disks.'.config('app.default_storage'), $connection_info);
 
-        $photo = Photo::store($file, Auth::user(), [], '/images/');
+        $photo = Photo::store($file, Auth::user(), [], $this->getDiskInstance());
 
         $this->logo()->delete();
 
