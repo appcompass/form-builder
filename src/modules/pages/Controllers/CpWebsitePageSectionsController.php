@@ -13,8 +13,8 @@ use P3in\Models\Page;
 use P3in\Models\PageSection;
 use P3in\Models\Section;
 use P3in\Models\Website;
-use Response;
 use Photo;
+use Response;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class CpWebsitePageSectionsController extends UiBaseController
@@ -177,37 +177,54 @@ class CpWebsitePageSectionsController extends UiBaseController
 
         $section = $page->content()->findOrFail($section_id);
 
-        $content = $request->except(['_token', '_method']);
+        $content = $request->except(['_token', '_method', 'selected_file']);
 
         $existing_content = json_decode(json_encode($section->content), true);
 
-        foreach($request->file() as $field_name => $file) {
+        if ($request->get('selected_file')) {
 
-            if ($file instanceof UploadedFile) {
+            $file = Photo::findOrFail($request->get('selected_file'));
 
-                $photo = $section->addPhoto($file, Auth::user());
+            $file = new UploadedFile($file->path, basename($file->name));
 
-                $content[$field_name] = $photo->path;
+            dd($file);
 
-            }elseif (is_array($file)) {
+            $photo = $section->addPhoto($file, Auth::user());
 
-                foreach($file as $idx => $single_file) {
+            $content[$field_name] = $photo->path;
 
-                    if (empty($single_file['image'])) {
+        } else {
 
-                        // if not passed the image field comes back null, we don't want that
-                        $content[$field_name][$idx]['image'] = $existing_content[$field_name][$idx]['image'];
+            foreach($request->file() as $field_name => $file) {
 
-                        continue;
+                if ($file instanceof UploadedFile) {
 
+                    $photo = $section->addPhoto($file, Auth::user());
+
+                    $content[$field_name] = $photo->path;
+
+                } elseif (is_array($file)) {
+
+                    foreach($file as $idx => $single_file) {
+
+                        if (empty($single_file['image'])) {
+
+                            // if not passed the image field comes back null, we don't want that
+                            $content[$field_name][$idx]['image'] = $existing_content[$field_name][$idx]['image'];
+
+                            continue;
+
+                        }
+
+                        $photo = $section->addPhoto($single_file['image'], Auth::user());
+
+                        $content[$field_name][$idx]['image'] = $photo->path;
                     }
-
-                    $photo = $section->addPhoto($single_file['image'], Auth::user());
-
-                    $content[$field_name][$idx]['image'] = $photo->path;
                 }
             }
         }
+
+
         $section->content = array_replace($existing_content, $content);
 
         $section->save();

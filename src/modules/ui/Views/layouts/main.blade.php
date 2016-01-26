@@ -53,7 +53,7 @@
 			<section id="main-content">
                 <section class="wrapper">
                 <!-- page start-->
-                    <div class="row">
+                    <div class="row" id="app">
                         <div class="col-sm-12" id="main-content-out">
                         </div>
                     </div>
@@ -72,22 +72,24 @@
 
 	</section>
 
-  <div class="modal fade" id="modal-alert" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                  <h4 class="modal-title"><span></span></h4>
-              </div>
-              <div class="modal-body message">
+    @if (isset($website))
+    <div class="modal fade" id="modal-alert" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title"><span></span></h4>
+                </div>
+                <div class="modal-body message">
 
-              </div>
-              <div class="modal-footer">
-                  <button class="btn btn-primary" type="button" data-dismiss="modal"> Ok</button>
-              </div>
-          </div>
-      </div>
-  </div>
+                </div>
+                <div class="modal-footer">
+                      <button class="btn btn-primary" type="button" data-dismiss="modal"> Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 
   {{-- Generic modal injection point --}}
   <div class="modal fade" id="modal-edit" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">

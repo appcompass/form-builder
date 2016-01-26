@@ -17,7 +17,7 @@
             @endif
             <div class="col-lg-12">
     @else
-        <div class="form-group @if($field->type == 'repeatable') form-repeatable @endif ">
+        <div class="form-group @if($field->type == 'repeatable') form-repeatable @endif">
             {!! Form::label(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $field->label, ['class' => empty($repeatable) ? 'col-lg-3 control-label' : '']) !!}
             @if(empty($repeatable)) <div class="col-lg-6"> @endif
                 @if($field->type == 'text')
@@ -62,10 +62,10 @@
                         @endforeach
                 @elseif($field->type == 'file')
                     {!! Form::file(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
+                    <button class="btn btn-sm pull-right btn-primary open-select-image-modal">Select Image</button>
                     @if(isset($prefix) AND isset($index) AND isset($record->{$prefix}[$index]->{$field->name}))
                         <b>Image Path: {{ $record->{$prefix}[$index]->{$field->name} }}</b>
                     @elseif (!empty($record->{$field->name}))
-                        {{-- {{ dd($record) }} --}}
                         <b>Image Path: {{ $record->{$field->name} }}</b>
                     @endif
                 @elseif($field->type == 'datepicker')
@@ -154,14 +154,70 @@
                     <small class="help-block">{{ $field->help_block }}</small>
                 @endif
             @if(empty($repeatable)) </div> @endif
+
         </div>
+
     @endif
 @endforeach
+
+<div class="modal fade" id="modal-photo-selector" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title"><span>Select an image</span></h4>
+            </div>
+            <div class="modal-body message">
+                <ul class="image-selector" style="float: left; margin-top: 20px; width: 100%">
+                    @foreach ($website->gallery->photos as $photo)
+                    <li data-id="{{ $photo->id }}"><img src="https://placehold.it/200x200" alt="" title="{{ $photo->path }}" style="float: left; margin: 10px;"></li><?php //<img src="{{ $photo->path }}" alt=""></li> ?>
+                    @endforeach
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" type="button" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @if(empty($repeatable))
 {!! Form::submit('Save', ["class" => "btn btn-info"]) !!}
 
-<script type="text/javascript">
+<script>
+    (function photoSelector(w) {
+
+        $('.open-select-image-modal').on('click', function(e) { e.preventDefault(), photoSelector.openModal($(this)) });
+        $('.image-selector > li').on('click', function() { photoSelector.selectImage($(this).attr('data-id')) } )
+
+        var photoSelector = {
+            selectedImage: undefined,
+            relatedFormInput: undefined,
+            form: undefined,
+            modal: $('#modal-photo-selector'),
+            hidden: $('<input>').attr({
+                type: 'hidden',
+                name: 'selected_file',
+                value: undefined
+            }),
+            openModal: function(ele) {
+                this.relatedFormInput = ele.siblings('input[type="file"]');
+                this.form = ele.parents('form')[0];
+                this.modal.modal()
+            },
+            selectImage: function(id) {
+                this.hidden.val(id).appendTo(this.form);
+                this.relatedFormInput.val(''); // reset input value, for good measure
+                this.modal.modal('hide');
+            }
+        }
+
+
+    })(window)
+
+</script>
+
+<script>
     function slugify(text) {
       return text.toString().toLowerCase()
         .replace(/\s+/g, '-')           // Replace spaces with -
