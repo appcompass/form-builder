@@ -53,7 +53,7 @@
 			<section id="main-content">
                 <section class="wrapper">
                 <!-- page start-->
-                    <div class="row" id="app">
+                    <div class="row">
                         <div class="col-sm-12" id="main-content-out">
                         </div>
                     </div>
