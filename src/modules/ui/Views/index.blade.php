@@ -88,6 +88,9 @@
                     </div>
                 </section>
 
+        <script type="text/javascript" language="javascript" src="/assets/ui/js/advanced-datatable/js/jquery.dataTables.js"></script>
+        <script type="text/javascript" src="/assets/ui/js/data-tables/DT_bootstrap.js"></script>
+
     <script>
 
     $(document).ready(function() {

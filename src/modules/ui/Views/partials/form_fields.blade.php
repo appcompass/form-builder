@@ -64,9 +64,9 @@
                     {!! Form::file(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
                     <button class="btn btn-sm pull-right btn-primary open-select-image-modal">Select Image</button>
                     @if(isset($prefix) AND isset($index) AND isset($record->{$prefix}[$index]->{$field->name}))
-                        <b>Image Path: {{ $record->{$prefix}[$index]->{$field->name} }}</b>
+                        <b class="image-path">Image Path: {{ $record->{$prefix}[$index]->{$field->name} }}</b>
                     @elseif (!empty($record->{$field->name}))
-                        <b>Image Path: {{ $record->{$field->name} }}</b>
+                        <b class="image-path">Image Path: {{ $record->{$field->name} }}</b>
                     @endif
                 @elseif($field->type == 'datepicker')
                     {!! Form::date('name', null, ['class' => 'form-control form-control-inline input-medium date-picker-default', 'placeholder' => $field->placeholder]) !!}
@@ -168,10 +168,11 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4 class="modal-title"><span>Select an image</span></h4>
             </div>
-            <div class="modal-body message">
-                <ul class="image-selector" style="float: left; margin-top: 20px; width: 100%">
+            <div class="modal-body message media-gal isotope">
+                <ul class="image-selector " style="float: left; margin-top: 20px; width: 100%">
                     @foreach ($website->gallery->photos as $photo)
-                    <li data-id="{{ $photo->id }}"><img src="https://placehold.it/200x200" alt="" title="{{ $photo->path }}" style="float: left; margin: 10px;"></li><?php //<img src="{{ $photo->path }}" alt=""></li> ?>
+                    <li data-id="{{ $photo->id }}" class="item isotope-item" data-path="{{ $photo->path }}">
+                        <img src="{{ $photo->path }}" alt="" title="{{ $photo->path }}"></li>
                     @endforeach
                 </ul>
             </div>
@@ -190,7 +191,7 @@
     (function photoSelector(w) {
 
         $('.open-select-image-modal').on('click', function(e) { e.preventDefault(), photoSelector.openModal($(this)) });
-        $('.image-selector > li').on('click', function() { photoSelector.selectImage($(this).attr('data-id')) } )
+        $('.image-selector > li').on('click', function() { photoSelector.selectImage($(this).attr('data-id'), $(this).attr('data-path')) } )
 
         var photoSelector = {
             selectedImage: undefined,
@@ -207,7 +208,8 @@
                 this.form = ele.parents('form')[0];
                 this.modal.modal()
             },
-            selectImage: function(id) {
+            selectImage: function(id, path) {
+                $('.image-path').html('<b>Image Path: <b>' + path)
                 this.hidden.val(id).appendTo(this.form);
                 this.relatedFormInput.val(''); // reset input value, for good measure
                 this.modal.modal('hide');

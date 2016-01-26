@@ -76,7 +76,7 @@ class PageSection extends ModularBaseModel
         $photo = Photo::store($file, $user, [
             'status' => Photo::STATUSES_ACTIVE,
             'storage' => $this->website->site_url
-        ], $disk);
+        ], $disk, 'images/');
 
         $this->website
             ->gallery
