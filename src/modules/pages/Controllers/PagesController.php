@@ -27,6 +27,17 @@ class PagesController extends Controller
 
     public function submitForm(Request $request)
     {
+        if ($website->settings('recaptcha_secret_key')) {
+            $recaptcha = new \ReCaptcha\ReCaptcha($website->settings('recaptcha_secret_key'));
+            $resp = $recaptcha->verify($request->get('g-recaptcha-response'), $request->getClientIp());
+
+            if ($resp->isSuccess()) {
+                dd('verified!');
+            }else{
+                $errors = $resp->getErrorCodes();
+                dd($errors);
+            }
+        }
 
         $website = Website::current();
 

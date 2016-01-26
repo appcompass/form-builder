@@ -33,6 +33,16 @@ Class WebsitesServiceProvider extends ServiceProvider {
 
     public function register()
     {
+        // Our system expects there to serve websites via revers proxy.
+        // So we need to set the trusted proxies here.
+        $request = $this->app['request'];
+        $proxies = $this->app['config']->get('app.trusted_proxies');
+
+        if (empty($proxies) || $proxies === '*') {
+            $proxies = [$request->getClientIp()];
+        }
+
+        $request->setTrustedProxies($proxies);
 
         $this->app->register(\Collective\Remote\RemoteServiceProvider::class);
         $this->app->register(\Langemike\Laravel5Less\LessServiceProvider::class);
