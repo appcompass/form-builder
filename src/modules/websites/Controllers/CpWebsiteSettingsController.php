@@ -185,6 +185,18 @@ class CpWebsiteSettingsController extends UiBaseController
                     'placeholder' => 'UA-XXXXX-Y',
                     'type' => 'text',
                     'help_block' => '',
+                ],[
+                    'label' => 'Facebook App ID',
+                    'name' => 'facebook_app_id',
+                    'placeholder' => 'XXXXXXXXXXXXX',
+                    'type' => 'text',
+                    'help_block' => '',
+                ],[
+                    'label' => 'Facebook Page URL',
+                    'name' => 'facebook_page_url',
+                    'placeholder' => 'https://www.facebook.com/facebook',
+                    'type' => 'text',
+                    'help_block' => '',
                 ],
             ],
         ],
