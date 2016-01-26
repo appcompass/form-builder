@@ -160,6 +160,7 @@
     @endif
 @endforeach
 
+@if (isset($website))
 <div class="modal fade" id="modal-photo-selector" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -180,6 +181,7 @@
         </div>
     </div>
 </div>
+@endif
 
 @if(empty($repeatable))
 {!! Form::submit('Save', ["class" => "btn btn-info"]) !!}

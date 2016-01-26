@@ -72,7 +72,6 @@
 
 	</section>
 
-    @if (isset($website))
     <div class="modal fade" id="modal-alert" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -89,7 +88,6 @@
             </div>
         </div>
     </div>
-    @endif
 
   {{-- Generic modal injection point --}}
   <div class="modal fade" id="modal-edit" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
