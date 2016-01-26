@@ -49,18 +49,18 @@ class PagesController extends Controller
                 ->to($to)
                 ->subject('New '.$request->get('form_name').' from '.$website->site_name);
 
-                foreach($request->file() as $field_name => $file) {
+            foreach($request->file() as $field_name => $file) {
 
-                    $message->attach($file->getRealPath(), [
-                        'as' => $file->getClientOriginalName(),
-                        'mime' => $file->getMimeType()
-                    ]);
+                $message->attach($file->getRealPath(), [
+                    'as' => $file->getClientOriginalName(),
+                    'mime' => $file->getMimeType()
+                ]);
 
-                }
+            }
 
-            });
+        });
 
-        return back()->with('message', $meta['success_message']);
+        return redirect($request->get('redirect'))->with('success_message', $meta['success_message']);
 
     }
 }
