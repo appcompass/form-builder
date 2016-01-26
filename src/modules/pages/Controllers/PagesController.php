@@ -33,10 +33,18 @@ class PagesController extends Controller
         $from = $website->settings('from_email') ?: 'info@bostonpads.com';
 
         $to = $request->has('form_id') ? base64_decode($request->get('form_id')) : $website->settings('to_email');
+        $to = 'jubair.saidi@p3in.com';
+        $data = $request->except(['_token', 'form_id', 'meta', 'heading', 'subheading', 'text', 'style', 'form_name', 'file', 'g-recaptcha-response']);
+        $meta = unserialize(base64_decode($request->get('meta')));
 
-        $data = $request->except(['_token', 'form_id', 'heading', 'subheading', 'text', 'style', 'form_name', 'file', 'g-recaptcha-response']);
+        $formData = [
+            'website' => $website,
+            'data' => $data,
+            'name' => $request->get('form_name'),
+            'messaging' => $meta['email_body_intro'],
+        ];
 
-        Mail::send('mail.form-submission', ['website' => $website, 'data' => $data, 'name' => $request->get('form_name')], function($message) use($from, $to, $request, $website) {
+        Mail::send('mail.form-submission', $formData, function($message) use($from, $to, $request, $website) {
             $message->from($from)
                 ->to($to)
                 ->subject('New '.$request->get('form_name').' from '.$website->site_name);
@@ -52,7 +60,7 @@ class PagesController extends Controller
 
             });
 
-        return back();
+        return back()->with('message', $meta['success_message']);
 
     }
 }
