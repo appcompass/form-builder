@@ -174,6 +174,17 @@ class CpWebsiteSettingsController extends UiBaseController
                     'placeholder' => '',
                     'type' => 'text',
                     'help_block' => 'Use this for communication between your site and Google. Be sure to keep it a secret.',
+                ],[
+                    'type' => 'fieldset_break',
+                    'window_title' => 'Integrations',
+                    'window_header' => '',
+                    'window_sub_header' => '',
+                ],[
+                    'label' => 'Google Analytics TRacking ID',
+                    'name' => 'ga_tracking_id',
+                    'placeholder' => 'UA-XXXXX-Y',
+                    'type' => 'text',
+                    'help_block' => '',
                 ],
             ],
         ],
