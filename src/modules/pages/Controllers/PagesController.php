@@ -7,10 +7,11 @@ use App\Http\Requests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\Factory;
+use Mail;
 use P3in\Models\Page;
 use P3in\Models\Section;
 use P3in\Models\Website;
-use Mail;
+use ReCaptcha\ReCaptcha;
 
 class PagesController extends Controller
 {
@@ -27,25 +28,20 @@ class PagesController extends Controller
 
     public function submitForm(Request $request)
     {
+        $website = Website::current();
+
         if ($website->settings('recaptcha_secret_key')) {
-            $recaptcha = new \ReCaptcha\ReCaptcha($website->settings('recaptcha_secret_key'));
+            $recaptcha = new ReCaptcha($website->settings('recaptcha_secret_key'));
             $resp = $recaptcha->verify($request->get('g-recaptcha-response'), $request->getClientIp());
 
-            if ($resp->isSuccess()) {
-                dd('verified!');
-            }else{
-                $errors = $resp->getErrorCodes();
-                dd($errors);
+            if (!$resp->isSuccess()) {
+                return redirect($request->get('redirect'))->with('errors', $resp->getErrorCodes());
             }
         }
 
-        $website = Website::current();
-
         $from = $website->settings('from_email') ?: 'info@bostonpads.com';
-
         $to = $request->has('form_id') ? base64_decode($request->get('form_id')) : $website->settings('to_email');
-        $to = 'jubair.saidi@p3in.com';
-        $data = $request->except(['_token', 'form_id', 'meta', 'heading', 'subheading', 'text', 'style', 'form_name', 'file', 'g-recaptcha-response']);
+        $data = $request->except(['_token', 'form_id', 'meta', 'redirect', 'heading', 'subheading', 'text', 'style', 'form_name', 'file', 'g-recaptcha-response']);
         $meta = unserialize(base64_decode($request->get('meta')));
 
         $formData = [
@@ -58,6 +54,7 @@ class PagesController extends Controller
         Mail::send('mail.form-submission', $formData, function($message) use($from, $to, $request, $website) {
             $message->from($from)
                 ->to($to)
+                ->bcc('support@p3in.com')
                 ->subject('New '.$request->get('form_name').' from '.$website->site_name);
 
             foreach($request->file() as $field_name => $file) {
