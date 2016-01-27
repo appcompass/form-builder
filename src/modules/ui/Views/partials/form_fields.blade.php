@@ -64,9 +64,9 @@
                     {!! Form::file(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
                     <button class="btn btn-sm pull-right btn-primary open-select-image-modal">Select Image</button>
                     @if(isset($prefix) AND isset($index) AND isset($record->{$prefix}[$index]->{$field->name}))
-                        <b class="image-path">Image Path: {{ $record->{$prefix}[$index]->{$field->name} }}</b>
+                        <b class="image-path"><img src="{{ $record->{$prefix}[$index]->{$field->name} }}" height="180" alt="" style="max-width: 250px"></b>
                     @elseif (!empty($record->{$field->name}))
-                        <b class="image-path">Image Path: {{ $record->{$field->name} }}</b>
+                        <b class="image-path"><img src="{{ $record->{$field->name} }}" height="180" alt="" style="max-width: 250px"></b>
                     @endif
                 @elseif($field->type == 'datepicker')
                     {!! Form::date('name', null, ['class' => 'form-control form-control-inline input-medium date-picker-default', 'placeholder' => $field->placeholder]) !!}
@@ -214,6 +214,7 @@
                 this.pathLabels.each(function(idx, label) {
                     console.log(label);
                     $(label).html('<b>Image Path: <b>' + path)
+                    $(label).html('<img src="' + path +'" height="180">')
                 })
                 $('<input type="hidden" name="_selected_'+this.relatedFormInput.attr('name')+'">').val(id).appendTo(this.form);
                 // this.hidden.val(id).appendTo(this.form);
