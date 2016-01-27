@@ -101,9 +101,9 @@ class CpWebsiteController extends UiBaseController
                 ],[
                     'label' => 'URL',
                     'name' => 'site_url',
-                    'placeholder' => 'https://www.website.com',
+                    'placeholder' => 'www.website.com',
                     'type' => 'text',
-                    'help_block' => '',
+                    'help_block' => 'IMPORTANT: do not inclde the schema (https:// or http://), this is done automatically, only include the full hostname.',
                 ],[
                     'type' => 'fieldset_break',
                     'window_title' => 'Server Connection',
