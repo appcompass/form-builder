@@ -38,8 +38,10 @@ class PagesController extends Controller
                 return redirect($request->get('redirect'))->with('errors', $resp->getErrorCodes());
             }
         }
-
-        $from = $website->settings('from_email') ?: 'info@bostonpads.com';
+        $from = $website->settings('from_email');
+        if (!$from) {
+            return redirect($request->get('redirect'))->with('errors', ['Error 42: Please contact the website admin.']);
+        }
         $to = $request->has('form_id') ? base64_decode($request->get('form_id')) : $website->settings('to_email');
         $data = $request->except(['_token', 'form_id', 'meta', 'redirect', 'heading', 'subheading', 'text', 'style', 'form_name', 'file', 'g-recaptcha-response']);
         $meta = unserialize(base64_decode($request->get('meta')));
