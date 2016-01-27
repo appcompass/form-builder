@@ -162,7 +162,7 @@
 
 @if (isset($website))
 <div class="modal fade" id="modal-photo-selector" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -170,10 +170,7 @@
             </div>
             <div class="modal-body message media-gal isotope">
                 <ul class="image-selector " style="float: left; margin-top: 20px; width: 100%">
-                    @foreach ($website->gallery->photos as $photo)
-                    <li data-id="{{ $photo->id }}" class="item isotope-item" data-path="{{ $photo->path }}">
-                        <img src="{{ $photo->path }}" alt="" title="{{ $photo->path }}"></li>
-                    @endforeach
+                    @include('photos::photo-grid', ['photos' => $website->gallery->photos, 'is_modal' => true])
                 </ul>
             </div>
             <div class="modal-footer">
@@ -191,26 +188,35 @@
     (function photoSelector(w) {
 
         $('.open-select-image-modal').on('click', function(e) { e.preventDefault(), photoSelector.openModal($(this)) });
-        $('.image-selector > li').on('click', function() { photoSelector.selectImage($(this).attr('data-id'), $(this).attr('data-path')) } )
+        $('.image-selector > div').on('click', function() { photoSelector.selectImage($(this)) } )
 
         var photoSelector = {
             selectedImage: undefined,
             relatedFormInput: undefined,
+            pathLabels: [],
             form: undefined,
             modal: $('#modal-photo-selector'),
-            hidden: $('<input>').attr({
+            hidden: $('<input name="selected_files[]">').attr({
                 type: 'hidden',
-                name: 'selected_file',
                 value: undefined
             }),
             openModal: function(ele) {
                 this.relatedFormInput = ele.siblings('input[type="file"]');
+                this.pathLabels = ele.siblings('b.image-path');
+
                 this.form = ele.parents('form')[0];
                 this.modal.modal()
             },
-            selectImage: function(id, path) {
-                $('.image-path').html('<b>Image Path: <b>' + path)
-                this.hidden.val(id).appendTo(this.form);
+            selectImage: function(item) {
+                var id = item.attr('data-id'),
+                    path = item.attr('data-path');
+
+                this.pathLabels.each(function(idx, label) {
+                    console.log(label);
+                    $(label).html('<b>Image Path: <b>' + path)
+                })
+                $('<input type="hidden" name="_selected_'+this.relatedFormInput.attr('name')+'">').val(id).appendTo(this.form);
+                // this.hidden.val(id).appendTo(this.form);
                 this.relatedFormInput.val(''); // reset input value, for good measure
                 this.modal.modal('hide');
             }
