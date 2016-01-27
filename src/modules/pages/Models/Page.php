@@ -120,7 +120,7 @@ class Page extends ModularBaseModel
             ->save();
     }
 
-    public function clone()
+    public function not_clone()
     {
         $original = $this->load('content');
         $settings = $original->settings()->first();
