@@ -99,7 +99,7 @@ class UiController extends UiBaseController {
     {
         if (class_exists($request->obj_name)) {
 
-            $obj = with(new $request->obj_name)->findOrFail($request->obj_id);
+            // $obj = $request->obj_name::findOrFail($request->obj_id);
 
             if (method_exists($obj , 'clone')) {
 
