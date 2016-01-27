@@ -177,49 +177,63 @@ class CpWebsitePageSectionsController extends UiBaseController
 
         $section = $page->content()->findOrFail($section_id);
 
-        $content = $request->except(['_token', '_method', 'selected_file']);
+        $content = $request->except(['_token', '_method']);
 
         $existing_content = json_decode(json_encode($section->content), true);
 
-        if ($request->get('selected_file')) {
+        if (isset($content['_selected_image'])) {
 
-            $photo = Photo::findOrFail($request->get('selected_file'));
+            $photo = Photo::findOrFail($content['_selected_image']);
 
             $section->photos()->save($photo);
 
             $content['image'] = $photo->path;
 
-        } else {
+        }
 
-            foreach($request->file() as $field_name => $file) {
+        // @TODO move this in a separate method. all it does is handling files scenarios
+        foreach($request->file() as $field_name => $file) {
 
-                if ($file instanceof UploadedFile) {
+            if ($file instanceof UploadedFile) {
 
-                    $photo = $section->addPhoto($file, Auth::user());
+                $photo = $section->addPhoto($file, Auth::user());
 
-                    $content[$field_name] = $photo->path;
+                $content[$field_name] = $photo->path;
 
-                } elseif (is_array($file)) {
+            } elseif (is_array($file)) {
 
-                    foreach($file as $idx => $single_file) {
+                foreach($file as $idx => $single_file) {
 
-                        if (empty($single_file['image'])) {
+                    if (empty($single_file['image'])) {
+
+                        $selected_field_name = '_selected_'.$field_name;
+
+                        // check if the user has selected an image
+                        if (isset($content[$selected_field_name]) AND isset($content[$selected_field_name][$idx])) {
+
+                            $photo = Photo::findOrFail($content['_selected_'.$field_name][$idx]['image']);
+
+                            $section->photos()->save($photo);
+
+                            $content[$field_name][$idx]['image'] = $photo->path;
+
+                        } else {
 
                             // if not passed the image field comes back null, we don't want that
                             $content[$field_name][$idx]['image'] = $existing_content[$field_name][$idx]['image'];
 
-                            continue;
-
                         }
 
-                        $photo = $section->addPhoto($single_file['image'], Auth::user());
+                        continue;
 
-                        $content[$field_name][$idx]['image'] = $photo->path;
                     }
+
+                    $photo = $section->addPhoto($single_file['image'], Auth::user());
+
+                    $content[$field_name][$idx]['image'] = $photo->path;
                 }
             }
         }
-
 
         $section->content = array_replace($existing_content, $content);
 
