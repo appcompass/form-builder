@@ -30,7 +30,6 @@ class UiBaseController extends ModularBaseController {
             return $this->json($data, $success, $message);
         }else{
             return view($this->template, $data);
-
         }
     }
     public function json($data, $success = true, $message = '')
