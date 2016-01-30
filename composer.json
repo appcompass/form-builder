@@ -15,8 +15,8 @@
     ],
     "require": {
         "php": ">=5.5.9",
-        "laravelcollective/html": "5.1.*",
-        "laravelcollective/remote": "5.1.*",
+        "laravelcollective/html": "5.*",
+        "laravelcollective/remote": "5.*",
         "langemike/laravel5-less": "~1.0",
         "google/recaptcha": "~1.1",
         "p3in/modular": "dev-develop"
