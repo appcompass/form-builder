@@ -3,7 +3,7 @@
 namespace P3in\Models;
 
 use Auth;
-use BostonPads\Models\Photo;
+use P3in\Models\Photo;
 use Carbon\Carbon;
 use HasGallery;
 use Illuminate\Database\Eloquent\Model;

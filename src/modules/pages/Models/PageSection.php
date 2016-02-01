@@ -2,7 +2,7 @@
 
 namespace P3in\Models;
 
-use BostonPads\Models\Photo;
+use P3in\Models\Photo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Support\Facades\Config;

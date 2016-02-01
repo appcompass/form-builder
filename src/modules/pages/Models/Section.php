@@ -2,7 +2,7 @@
 
 namespace P3in\Models;
 
-use BostonPads\Models\Photo;
+use P3in\Models\Photo;
 use Illuminate\Database\Eloquent\Model;
 use P3in\ModularBaseModel;
 use P3in\Models\Page;
