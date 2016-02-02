@@ -1,7 +1,8 @@
 <?php
 
 Route::group([
-  'namespace' => 'P3in\Controllers'
+    'namespace' => 'P3in\Controllers',
+    'middleware' => 'web',
 ], function() {
 
     Route::post('render-page/form-submissions', 'PagesController@submitForm');

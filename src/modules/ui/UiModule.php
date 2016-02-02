@@ -10,22 +10,22 @@ use Modular;
 Class UiModule extends BaseModule
 {
 
-	use NavigatableTrait;
+    use NavigatableTrait;
 
-	public $module_name = "ui";
+    public $module_name = "ui";
 
-	public function __construct()
-	{
+    public function __construct()
+    {
 
-	}
+    }
 
-	public function bootstrap()
-	{
+    public function bootstrap()
+    {
 
-	}
+    }
 
-	public function register()
-	{
+    public function register()
+    {
 
         if (Modular::isLoaded('navigation')) {
             $cp_main_nav = Navmenu::byName('cp_main_nav');
@@ -45,25 +45,25 @@ Class UiModule extends BaseModule
             ])->first(), 999);
         }
 
-	}
+    }
 
-	/**
-	 *
-	 */
-	public function makeLink($overrides = [])
-	{
-	    return array_replace([
-	        "label" => 'Dashboard',
-	        "url" => '',
-	        "req_perms" => null,
-	        "props" => [
-	            'icon' => 'dashboard',
-	            "link" => [
-	                'href' => '/dashboard',
-	                'data-target' => '#main-content-out'
-	            ],
-	        ]
-	    ], $overrides);
-	}
+    /**
+     *
+     */
+    public function makeLink($overrides = [])
+    {
+        return array_replace([
+            "label" => 'Dashboard',
+            "url" => '',
+            "req_perms" => null,
+            "props" => [
+                'icon' => 'dashboard',
+                "link" => [
+                    'href' => '/dashboard',
+                    'data-target' => '#main-content-out'
+                ],
+            ]
+        ], $overrides);
+    }
 
 }

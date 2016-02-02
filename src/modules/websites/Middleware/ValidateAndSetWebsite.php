@@ -4,11 +4,10 @@ namespace P3in\Modules\Middleware;
 
 use App;
 use Closure;
-use Illuminate\Contracts\Routing\Middleware;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use P3in\Models\Website;
 
-class ValidateAndSetWebsite implements Middleware
+class ValidateAndSetWebsite
 {
     /**
      * Handle an incoming request.

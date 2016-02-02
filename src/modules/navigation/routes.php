@@ -3,9 +3,10 @@
 // Route::resource('nav', 'P3in\Controllers\NavigationController');
 
 Route::group([
-  'namespace' => 'P3in\Controllers'
-  ], function() {
+    'namespace' => 'P3in\Controllers',
+    'middleware' => 'web',
+], function() {
 
-  Route::resource('websites.navigation', 'CpWebsiteNavigationController');
+    Route::resource('websites.navigation', 'CpWebsiteNavigationController');
 
 });

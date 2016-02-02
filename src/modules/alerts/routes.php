@@ -5,42 +5,49 @@ use P3in\Models\User;
 // use Auth;
 use P3in\Models\Alert as AlertModel;
 
-Route::get('login', function() {
+Route::group([
+    'prefix' => '/alerts',
+    'namespace' => 'P3in\Controllers',
+    'middleware' => ['web', 'auth'],
+], function() {
 
-  event(new AlertEvent('info', "User Logged in", "User ".Auth()->user()->fullName." logged in.", Auth::user()));
+    Route::get('login', function() {
 
-  return "Logged in / Event Emitted";
+      event(new AlertEvent('info', "User Logged in", "User ".Auth()->user()->fullName." logged in.", Auth::user()));
 
-})->middleware('auth');
+      return "Logged in / Event Emitted";
 
-
-Route::get('logout', function() {
-
-  $user = Auth::user();
-
-  Auth::logout();
-
-  event(new AlertEvent('info', "User Disconnected", "User ".$user->fullName." logged off.", $user));
-
-  return "Logged out / Event Emitted";
-
-})->middleware('auth');
+    });
 
 
+    Route::get('logout', function() {
 
-Route::get('notifications/alerts/{level}', function($level) {
+      $user = Auth::user();
 
-  $hash = Request::get('hash');
+      Auth::logout();
 
-  return AlertModel::where('level', 'info')
-    ->byHash($hash)
-    ->firstOrFail()
-    ->matchPerms(Request::user());
+      event(new AlertEvent('info', "User Disconnected", "User ".$user->fullName." logged off.", $user));
 
+      return "Logged out / Event Emitted";
+
+    });
+
+
+
+    Route::get('notifications/alerts/{level}', function($level) {
+
+      $hash = Request::get('hash');
+
+      return AlertModel::where('level', 'info')
+        ->byHash($hash)
+        ->firstOrFail()
+        ->matchPerms(Request::user());
+
+    });
+
+    Route::get('alerts', function() {
+
+      return view('alerts::alerts');
+
+    });
 });
-
-Route::get('alerts', function() {
-
-  return view('alerts::alerts');
-
-})->middleware('auth');
