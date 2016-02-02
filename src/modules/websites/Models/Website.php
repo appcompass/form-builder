@@ -75,7 +75,8 @@ class Website extends Model
         'site_url' => 'required',
         'config.host' => 'required:ip',
         'config.username' => 'required',
-        'config.password' => 'required',
+        'config.privateKey' => 'required_without:config.password',
+        'config.password' => 'required_without:config.privateKey',
         'config.root' => 'required',
         'config' => 'site_connection',
     ];
@@ -287,7 +288,7 @@ class Website extends Model
           $disk->getAdapter()->getConnection();
 
         } catch (\LogicException $e) {
-
+            // dd($e->getMessage());
           return false;
 
         }

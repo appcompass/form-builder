@@ -216,7 +216,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 		if (! Modular::isDef('photos')) {
 
 			$userEmail = \Auth::user()->email;
-			return "http://www.gravatar.com/avatar/".md5($userEmail)."?s={$size}";
+			return "//www.gravatar.com/avatar/".md5($userEmail)."?s={$size}";
 
 		}
 

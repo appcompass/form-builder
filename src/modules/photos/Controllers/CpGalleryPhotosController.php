@@ -19,7 +19,7 @@ class CpGalleryPhotosController extends UiBaseController
         'index' => [
             'data_targets' => [
                 [
-                    'route' => 'galleries.show',
+                    'route' => 'galleries.photos.show',
                     'target' => '#main-content-out',
                 ],[
                     'route' => 'galleries.photos.index',
@@ -30,7 +30,7 @@ class CpGalleryPhotosController extends UiBaseController
         'show' => [
             'data_targets' => [
                 [
-                    'route' => 'galleries.show',
+                    'route' => 'galleries.photos.show',
                     'target' => '#main-content-out',
                 // ],[
                 //     'route' => 'galleries.pages.show',
@@ -43,25 +43,25 @@ class CpGalleryPhotosController extends UiBaseController
         'edit' => [
             'data_targets' => [
                 [
-                    'route' => 'galleries.show',
+                    'route' => 'galleries.photos.show',
                     'target' => '#main-content-out',
                 ],[
-                    'route' => 'galleries.edit',
+                    'route' => 'galleries.photos.edit',
                     'target' => '#record-detail',
                 ],
             ],
             'heading' => 'Gallery Information',
-            'route' => 'galleries.update'
+            'route' => 'galleries.photos.update'
         ],
         'create' => [
             'data_targets' => [
                 [
-                    'route' => 'galleries.create',
+                    'route' => 'galleries.photos.create',
                     'target' => '#main-content-out',
                 ],
             ],
             'heading' => 'Add a page to this website',
-            'route' => '/galleries/store'
+            'route' => 'galleries.photos.store'
         ],
         'form' => [],
     ];

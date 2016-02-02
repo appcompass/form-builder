@@ -65,7 +65,7 @@ class CpWebsiteSettingsController extends UiBaseController
         ],
         'create' => [
             'heading' => 'Create New Site',
-            'route' => '/websites'
+            'route' => 'websites.settings.create'
         ],
         'form' => [
             'fields' => [

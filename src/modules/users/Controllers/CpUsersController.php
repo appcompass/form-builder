@@ -85,7 +85,7 @@ class CpUsersController extends UiBaseController
                 ],
             ],
             'heading' => 'Create a User',
-            'route' => '/users/store'
+            'route' => 'users.store'
         ],
         'form' => [
             'fields' => [

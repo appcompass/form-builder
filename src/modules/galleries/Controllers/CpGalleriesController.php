@@ -80,7 +80,7 @@ class CpGalleriesController extends UiBaseController
                 ],
             ],
             'heading' => 'Add a page to this website',
-            'route' => '/galleries/store'
+            'route' => 'galleries.store'
         ],
         'form' => [
             'fields' => [

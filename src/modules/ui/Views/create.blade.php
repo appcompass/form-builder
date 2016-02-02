@@ -1,6 +1,5 @@
 {!! Form::open([
-    'url' => $meta->base_url,
-    'method' => 'POST',
+    'route' => $meta->create->route,
     'data-target' => $meta->data_target,
     'class' => 'form-horizontal bucket-form ajax-form'])
 !!}

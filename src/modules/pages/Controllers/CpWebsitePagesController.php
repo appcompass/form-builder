@@ -102,7 +102,7 @@ class CpWebsitePagesController extends UiBaseController
                 ],
             ],
             'heading' => 'Add a page to this website',
-            'route' => '/pages/store'
+            'route' => 'websites.pages.store'
         ],
         'form' => [
             'fields' => [
@@ -171,12 +171,7 @@ class CpWebsitePagesController extends UiBaseController
 
         // $sections = Section::whereNotIn('fits', ['*', 'utils'])->groupBy('fits')->lists('fits');
 
-        $this->meta->available_layouts = [
-            'full' => 'Full Width',
-            'aside:main' => 'Left Sidenav',
-            'main:aside' => 'Right Sidenav',
-            'list_listings' => 'Listings Page',
-        ];
+        $this->meta->available_layouts = config('app.available_layouts');
 
     }
 
@@ -199,7 +194,7 @@ class CpWebsitePagesController extends UiBaseController
      */
     public function create($website_id)
     {
-
+        $this->meta->create->route = [$this->meta->create->route, $website_id];
         return $this->build('create', ['websites', $website_id, 'pages']);
 
     }

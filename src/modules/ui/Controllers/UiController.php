@@ -73,7 +73,7 @@ class UiController extends UiBaseController {
     public function getUserAvatar($size = 56)
     {
         $userEmail = \Auth::user()->email;
-        return "http://www.gravatar.com/avatar/".md5($userEmail)."?s={$size}";
+        return "//www.gravatar.com/avatar/".md5($userEmail)."?s={$size}";
     }
 
     public function getUserNav()
