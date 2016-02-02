@@ -73,6 +73,10 @@ class NavigationItem extends Model
       return $this->morphTo();
     }
 
+    public function getHasContentAttribute()
+    {
+        return $this->navigatable_type == 'P3in\Models\Navmenu';
+    }
     /**
      *
      */

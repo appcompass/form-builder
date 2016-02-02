@@ -170,7 +170,15 @@ class Navmenu extends Model
      */
     public function hasParent()
     {
-        return (bool)count($this->parent);
+        return (bool) count($this->parent);
+    }
+
+    /**
+     *
+     */
+    public function hasChildren()
+    {
+        return (bool) count($this->children);
     }
 
     /**
