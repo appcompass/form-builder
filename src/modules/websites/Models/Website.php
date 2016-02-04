@@ -354,18 +354,20 @@ class Website extends Model
             'name' => 'logo',
         ], $this->getDiskInstance());
 
+        $photo_original_path = $connection_info['root'].$photo->attributes['path'];
+
         // Now lets create the alternate png version.
         // get file size.
-        $sizeCheck = new Imagick($connection_info['root'].$photo->path);
+        $sizeCheck = new Imagick($photo_original_path);
         $size = $sizeCheck->getImageGeometry();
 
         // lets create the png version
         $image = new Imagick();
         $image->setResolution(4096, 4096);
         $image->setBackgroundColor(new ImagickPixel('transparent'));
-        $image->readImageBlob(file_get_contents($connection_info['root'].$photo->path));
+        $image->readImageBlob(file_get_contents($photo_original_path));
         $image->setImageFormat("png32");
-        $image->writeImage($connection_info['root'].str_replace('.svg', '.png', $photo->path));
+        $image->writeImage($connection_info['root'].str_replace('.svg', '.png', $photo->attributes['path']));
 
 
         $this->logo()->delete();
