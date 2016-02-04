@@ -18,6 +18,8 @@ use P3in\Module;
 use P3in\Traits\NavigatableTrait;
 use P3in\Traits\SettingsTrait;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Imagick;
+use ImagickPixel;
 
 class Website extends Model
 {
@@ -346,7 +348,25 @@ class Website extends Model
 
         Config::set('filesystems.disks.'.config('app.default_storage'), $connection_info);
 
-        $photo = Photo::store($file, Auth::user(), ['storage' => $this->site_url], $this->getDiskInstance(), 'images/');
+        $photo = Photo::store($file, Auth::user(), [
+            'storage' => $this->site_url,
+            'file_path' => 'images/',
+            'name' => 'logo',
+        ], $this->getDiskInstance());
+
+        // Now lets create the alternate png version.
+        // get file size.
+        $sizeCheck = new Imagick($connection_info['root'].$photo->path);
+        $size = $sizeCheck->getImageGeometry();
+
+        // lets create the png version
+        $image = new Imagick();
+        $image->setResolution(4096, 4096);
+        $image->setBackgroundColor(new ImagickPixel('transparent'));
+        $image->readImageBlob(file_get_contents($connection_info['root'].$photo->path));
+        $image->setImageFormat("png32");
+        $image->writeImage($connection_info['root'].str_replace('.svg', '.png', $photo->path));
+
 
         $this->logo()->delete();
 

@@ -6,7 +6,7 @@ Route::group([
 ], function() {
 
     Route::post('render-page/form-submissions', 'PagesController@submitForm');
-
+    Route::get('render-page/sitemap.{type}', 'PagesController@renderSitemap')->where('type', '(xml|html|txt|ror-rss|ror-rdf)');
     Route::any('render-page/{path?}', 'PagesController@renderPage')->where('path', '(.*)');
 
     Route::group([

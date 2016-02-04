@@ -275,7 +275,7 @@ class CpWebsiteController extends UiBaseController
 
         if (!$data['config']['privateKey']) {
 
-            $data['config']['password'] = $data['config']['password'] ?: $website->config->password;
+            $data['config']['password'] = $data['config']['password'] ?: !empty($website->config->password) ? $website->config->password : '';
 
         }
 

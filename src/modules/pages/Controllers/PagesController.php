@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
 use Illuminate\View\Factory;
 use Mail;
 use P3in\Models\Page;
@@ -26,6 +27,23 @@ class PagesController extends Controller
 
     }
 
+    public function renderSitemap(Request $request, $type = 'xml')
+    {
+        $sitemap = \App::make("sitemap");
+
+        $sitemap->setCache('laravel.sitemap', 60);
+
+        if (!$sitemap->isCached()) {
+            $pages = Page::with('content')->ofWebsite()->get();
+
+             foreach ($pages as $page) {
+                $sitemap->add(URL::to($page->url), $page->updated_at, $page->priority, $page->update_frequency, $page->images);
+             }
+        }
+
+        return $sitemap->render($type);
+    }
+
     public function submitForm(Request $request)
     {
         $website = Website::current();
@@ -38,10 +56,13 @@ class PagesController extends Controller
                 return redirect($request->get('redirect'))->with('errors', $resp->getErrorCodes());
             }
         }
+
         $from = $website->settings('from_email');
+
         if (!$from) {
             return redirect($request->get('redirect'))->with('errors', ['Error 42: Please contact the website admin.']);
         }
+
         $to = $request->has('form_id') ? base64_decode($request->get('form_id')) : $website->settings('to_email');
         $data = $request->except(['_token', 'form_id', 'meta', 'redirect', 'heading', 'subheading', 'text', 'style', 'form_name', 'file', 'g-recaptcha-response']);
         $meta = unserialize(base64_decode($request->get('meta')));

@@ -11,7 +11,6 @@ use P3in\Traits\AlertableTrait;
 use P3in\Traits\NavigatableTrait;
 use P3in\Traits\OptionableTrait;
 use P3in\Traits\SettingsTrait;
-use Storage;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class Photo extends Model implements GalleryItemInterface
@@ -117,18 +116,30 @@ class Photo extends Model implements GalleryItemInterface
    * @param string storage instance
    * @return \P3in\Models\Photo
    */
-  public static function store(UploadedFile $file, User $user, $attributes = [], $disk = null, $file_path = '')
+  public static function store(UploadedFile $file, User $user, $attributes = [], $disk = null)
   {
 
     $ext = $file->getClientOriginalExtension();
 
-    $name = date('m-y').'/'.time().'-'.str_slug(str_replace($ext, '', $file->getClientOriginalName()), '-');
+    if (isset($attributes['file_path'])) {
+        $file_path = $attributes['file_path'];
+        unset($attributes['file_path']);
+    }else{
+        $file_path = '';
+    }
+
+    if (isset($attributes['name'])) {
+        $name = $attributes['name'];
+        unset($attributes['name']);
+    }else{
+        $name = date('m-y').'/'.time().'-'.str_slug(str_replace($ext, '', $file->getClientOriginalName()), '-');
+    }
 
     $file_name = $file_path.$name.'.'.$ext;
 
     if (is_null($disk)) {
 
-      $disk = Storage::disk(config('app.default_storage'));
+      $disk = \Storage::disk(config('app.default_storage'));
 
     }
 

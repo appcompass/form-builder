@@ -113,12 +113,36 @@ class CpWebsitePagesController extends UiBaseController
                     'type' => 'text',
                     'help_block' => 'The title of the page.',
                 ],[
-                    'label' => 'Page URL',
+                    'label' => 'Page Slug',
                     'name' => 'slug',
                     'placeholder' => '',
                     'type' => 'slugify',
                     'field' => 'title',
                     'help_block' => 'This field is set automatically.  But if you need to override it, do so AFTER you set the Title above.',
+                ],[
+                    'label' => 'Page Parent',
+                    'name' => 'parent',
+                    'type' => 'filtered_selectlist',
+                    'data' => 'page_list',
+                    'help_block' => 'Select a parent for this page.',
+                ],[
+                    'label' => 'Active',
+                    'name' => 'active',
+                    'placeholder' => '',
+                    'type' => 'checkbox',
+                    'help_block' => 'is the page live?',
+                ],[
+                    'label' => 'Dynamic Page',
+                    'name' => 'settings[config][dynamic]',
+                    'placeholder' => '',
+                    'type' => 'checkbox',
+                    'help_block' => 'This is used only for dynamic segment pages taht get their content from other, non page module sources. For example: a single blog entry.',
+                ],[
+                    'label' => 'Layout Type',
+                    'name' => 'layout',
+                    'placeholder' => '',
+                    'type' => 'layout_selector',
+                    'help_block' => 'Select the page\'s layout.',
                 ],[
                     'label' => 'Description',
                     'name' => 'description',
@@ -143,18 +167,6 @@ class CpWebsitePagesController extends UiBaseController
                     'placeholder' => 'Meta Keywords',
                     'type' => 'text',
                     'help_block' => 'The meta keywords of the page.',
-                ],[
-                    'label' => 'Active',
-                    'name' => 'active',
-                    'placeholder' => '',
-                    'type' => 'checkbox',
-                    'help_block' => 'is the page published?',
-                ],[
-                    'label' => 'Layout Type',
-                    'name' => 'layout',
-                    'placeholder' => '',
-                    'type' => 'layout_selector',
-                    'help_block' => 'Select the page\'s layout.',
                 ]
             ]
         ]
@@ -194,7 +206,11 @@ class CpWebsitePagesController extends UiBaseController
      */
     public function create($website_id)
     {
+        $website = Website::managedById($website_id);
+
         $this->meta->create->route = [$this->meta->create->route, $website_id];
+        $this->meta->page_list = Page::ofWebsite($website)->isActive()->lists('title', 'id')->put('' , 'No Parent')->reverse();
+
         return $this->build('create', ['websites', $website_id, 'pages']);
 
     }
@@ -207,14 +223,22 @@ class CpWebsitePagesController extends UiBaseController
      */
     public function store(Request $request, $website_id)
     {
+        $website = Website::managedById($website_id);
+
         $page = new Page($request->all());
 
         $page->name = strtolower(str_replace(' ', '_', trim($page->title)));
 
         $page->published_at = Carbon::now();
 
-        Website::managedById($website_id)->pages()
-            ->save($page);
+        $page->website()->associate($website);
+
+        if ($request->has('parent')) {
+            $parent = Page::ofWebsite($website)->findOrFail($request->get('parent'));
+            $page->parent()->associate($parent);
+        }
+
+        $page->save();
 
         if ($request->has('settings')) {
             $page->settings($request->settings);
@@ -263,8 +287,12 @@ class CpWebsitePagesController extends UiBaseController
 
         $website = Website::managedById($website_id);
 
+        $this->meta->page_list = Page::ofWebsite($website)->isNot($page_id)->isActive()->lists('title', 'id')->put('' , 'No Parent')->reverse();
         $this->record = Page::ofWebsite($website)->findOrFail($page_id);
 
+        if (!empty($this->record->parent->id)) {
+            $this->record->parent = $this->record->parent->id;
+        }
         $this->record->settings = $this->record->settings->data;
 
         $this->meta->data_target = '#content-edit';
@@ -286,11 +314,18 @@ class CpWebsitePagesController extends UiBaseController
 
         $page = Page::ofWebsite($website)->findOrFail($page_id);
 
-        $page->update($request->except(['settings']));
+        if ($request->has('parent')) {
+            $parent = Page::ofWebsite($website)->findOrFail($request->get('parent'));
+            $page->parent()->associate($parent);
+        }
 
         if ($request->has('settings')) {
             $page->settings($request->settings);
         }
+
+        $page->url = $page->getUrl();
+
+        $page->update($request->except(['settings', 'parent']));
 
         return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $page_id, 'edit']));
     }

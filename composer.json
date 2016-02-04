@@ -19,6 +19,7 @@
         "laravelcollective/remote": "5.*",
         "langemike/laravel5-less": "~1.0",
         "google/recaptcha": "~1.1",
+        "roumen/sitemap": "2.6.*",
         "p3in/modular": "dev-develop"
     },
     "autoload": {

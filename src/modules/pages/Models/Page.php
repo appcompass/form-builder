@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
-use P3in\ModularBaseModel;
+use Illuminate\Support\Facades\URL;
 use P3in\Models\PageSection;
 use P3in\Models\Section;
 use P3in\Models\Website;
+use P3in\ModularBaseModel;
 use P3in\Traits\NavigatableTrait as Navigatable;
 use P3in\Traits\SettingsTrait;
 
@@ -35,6 +36,7 @@ class Page extends ModularBaseModel
         'title',
         'description',
         'slug',
+        'url',
         'order',
         'active',
         'layout',
@@ -48,6 +50,35 @@ class Page extends ModularBaseModel
     */
     protected $dates = ['published_at'];
 
+
+    public function parent()
+    {
+        return $this->belongsTo(Page::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Page::class, 'parent_id');
+    }
+
+    public function hasParent()
+    {
+        return !empty($this->parent->id);
+    }
+    public function getUrl()
+    {
+        $tree = $this->withParents()->orderBy('level', 'desc')->get();
+        $url = '';
+        foreach ($tree as $page) {
+            if (!empty($page->slug)) {
+                $url .= '/'.$page->slug;
+            }
+        }
+        if (!empty($this->settings->data->config->dynamic) && $this->settings->data->config->dynamic == true) {
+            $url .= '/([a-z0-9-]+)';
+        }
+        return trim($url,'/');
+    }
     /**
      *
      */
@@ -130,6 +161,8 @@ class Page extends ModularBaseModel
         $new->title = $original->title.' (copy)';
 
         $new->slug = $original->slug.'-copy';
+
+        $new->url = $original->url.'-copy';
 
         $new->push();
 
@@ -282,14 +315,24 @@ class Page extends ModularBaseModel
     public function scopeByUrl($query, $url)
     {
         $escaped_url = DB::connection()->getPdo()->quote($url);
-        $escaped_slug = DB::raw($escaped_url);
+        $raw_url = DB::raw($escaped_url);
 
-        $query
+        return $query
             ->select(
                 "*",
-                DB::raw("NULLIF(substring($escaped_url from slug), slug) AS dynamic_segment")
+                DB::raw("NULLIF(substring($escaped_url from url), url) AS dynamic_segment")
             )
-            ->where($escaped_slug,'SIMILAR TO', DB::raw('slug'));
+            ->where($raw_url,'SIMILAR TO', DB::raw('url'));
+    }
+
+    public function scopeIsActive($query)
+    {
+        return $query->where('active', true);
+    }
+
+    public function scopeIsNot($query, $id)
+    {
+        return $query->where('id', '!=', $id);
     }
 
     /**
@@ -299,14 +342,36 @@ class Page extends ModularBaseModel
      */
     public function getFullUrlAttribute()
     {
-            $slug = $this->dynamic_segment ? str_replace('([a-z0-9-]+)', $this->dynamic_segment, $this->slug) : $this->slug;
-            return rtrim($this->website->site_url,'/').'/'.trim($slug,'/');
+        $url = $this->dynamic_segment ? str_replace('([a-z0-9-]+)', $this->dynamic_segment, $this->url) : $this->url;
+        return $this->website->site_url.'/'.$url;
     }
 
     public function getUrlAttribute()
     {
-            $slug = $this->dynamic_segment ? str_replace('([a-z0-9-]+)', $this->dynamic_segment, $this->slug) : $this->slug;
-            return '/'.trim($slug,'/');
+        return $this->dynamic_segment ? str_replace('([a-z0-9-]+)', $this->dynamic_segment, $this->url) : $this->url;
+    }
+
+    public function getImagesAttribute()
+    {
+        $images = [];
+        $page_title = $this->title;
+        $page = json_decode($this->toJson(),true);
+        array_walk_recursive($page, function($value, $key) use (&$images, $page_title){
+            if ($key == 'image') {
+                $images[] = ['url' => URL::to($value), 'title' => $page_title.' - '.$value];
+            }
+        });
+        return $images;
+    }
+
+    public function getUpdateFrequencyAttribute()
+    {
+        return 'daily'; //this needs to be dynamically set.
+    }
+
+    public function getPriorityAttribute()
+    {
+        return '1.0'; // this needs to be dynamically set.
     }
 
     /**
