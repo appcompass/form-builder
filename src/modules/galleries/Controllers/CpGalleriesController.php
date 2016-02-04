@@ -117,7 +117,7 @@ class CpGalleriesController extends UiBaseController
      */
     public function index()
     {
-        // $this->authorize('index', Gallery::class);
+        $this->authorize('index', Gallery::class);
 
         $this->records = Gallery::all();
 

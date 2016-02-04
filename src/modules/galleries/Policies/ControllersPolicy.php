@@ -27,7 +27,7 @@ class ControllersPolicy
     public function index(User $user)
     {
 
-        return true;
+        return $this->evaluate($user, PermissionsRequired::retrieve(new Controller($this->controller)));
 
     }
 
@@ -37,17 +37,7 @@ class ControllersPolicy
     public function store(User $user, $model)
     {
 
-        // dd(\App::make('request')->getUserResolver()());
-        // dd(\App::make('request')->getRouteResolver()()->uri());
-        // dd(get_class($model));
-
-        if (is_object($model)) {
-
-            \Log::info(get_class($model));
-
-        }
-
-        return true;
+        return $this->evaluate($user, PermissionsRequired::retrieve(new Controller($this->controller)));
 
     }
 
@@ -57,24 +47,23 @@ class ControllersPolicy
     public function edit(User $user, $model)
     {
 
-        // $controller = \Request::route()->getAction()['controller'];
-        //
-        // dd($this->controller);
-        //
         return $this->evaluate($user, PermissionsRequired::retrieve(new Controller($this->controller)));
-
-        // $req_perm = PermissionsRequired::retrieve(new Controller($this->controller));
-
-        // if ($req_perm->count() AND $user->hasPermission($req_perm->type)) {
-
-            // return true;
-
-        // }
-
-        // return false;
 
     }
 
+    /**
+     *
+     */
+    public function update(User $user, $model)
+    {
+
+        return $this->evaluate($user, PermissionsRequired::retrieve(new Controller($this->controller)));
+
+    }
+
+    /**
+     *
+     */
     private function evaluate(User $user, $perm = null )
     {
 
@@ -92,20 +81,4 @@ class ControllersPolicy
 
 
     }
-
-    public function update(User $user, $model)
-    {
-
-        // dd($model);
-
-    }
-
-    /**
-     *
-     */
-    // public function ()
-    // {
-
-    // }
-
 }
