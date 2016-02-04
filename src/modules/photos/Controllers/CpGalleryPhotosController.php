@@ -19,7 +19,7 @@ class CpGalleryPhotosController extends UiBaseController
         'index' => [
             'data_targets' => [
                 [
-                    'route' => 'galleries.photos.show',
+                    'route' => 'galleries.show',
                     'target' => '#main-content-out',
                 ],[
                     'route' => 'galleries.photos.index',
