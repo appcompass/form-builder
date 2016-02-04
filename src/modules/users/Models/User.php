@@ -226,6 +226,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	  return $this->hasMany(Gallery::class);
 	}
 
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = bcrypt($value);
+    }
+
 	/**
 	 *	Get user's full name
 	 *
