@@ -2,7 +2,7 @@
 Route::group([
     // 'prefix' => 'cp',
     'namespace' => 'P3in\Controllers',
-    'middleware' => 'web',
+    'middleware' => 'web'
 ], function() {
 
     // website routes

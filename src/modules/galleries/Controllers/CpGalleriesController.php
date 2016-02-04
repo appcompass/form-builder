@@ -117,9 +117,12 @@ class CpGalleriesController extends UiBaseController
      */
     public function index()
     {
+        // $this->authorize('index', Gallery::class);
+
         $this->records = Gallery::all();
 
         return $this->build('index', ['galleries']);
+
     }
 
     /**
@@ -152,6 +155,8 @@ class CpGalleriesController extends UiBaseController
      */
     public function show($id)
     {
+        // dd(\Route::current());
+
         $this->record = Gallery::findOrFail($id);
 
         return $this->build('show', ['galleries', $id]);
@@ -163,6 +168,8 @@ class CpGalleriesController extends UiBaseController
      */
     public function edit($id)
     {
+        // $this->authorize('edit', Gallery::class); // @TODO this works
+
         $this->record = Gallery::findOrFail($id);
 
         return $this->build('edit', ['galleries', $id]);

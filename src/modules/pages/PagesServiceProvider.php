@@ -12,7 +12,7 @@ Class PagesServiceProvider extends ServiceProvider {
 
     public function boot()
     {
-        $this->app->register(\Roumen\Sitemap\SitemapServiceProvider::class);
+        // $this->app->register(\Roumen\Sitemap\SitemapServiceProvider::class);
     }
 
     public function register()

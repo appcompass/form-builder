@@ -113,6 +113,22 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	}
 
 	/**
+	 * Adds a permission to the user
+	 */
+	public function grantPermission(Permission $perm)
+	{
+		return $this->permissions()->attach($perm);
+	}
+
+	/**
+	 * Revokes a user's permission
+	 */
+	public function revokePermission(Permission $perm)
+	{
+	  	return $this->permissions()->detach($perm);
+	}
+
+	/**
 	 *	Check if user has a single permission
 	 *
 	 *	@param string $permission Permission type.

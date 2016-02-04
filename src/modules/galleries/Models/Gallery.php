@@ -3,13 +3,13 @@
 namespace P3in\Models;
 
 use Auth;
-use P3in\Models\GalleryItem;
-use P3in\Models\Photo;
-use P3in\Models\Video;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use P3in\Interfaces\GalleryItemInterface;
+use P3in\Models\GalleryItem;
 use P3in\Models\User;
+use P3in\Models\Video;
+use Photo;
 
 
 class Gallery extends Model

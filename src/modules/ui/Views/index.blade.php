@@ -5,9 +5,11 @@
                     <div class="panel-body">
                         <div class="clearfix">
                             <div class="btn-group">
+                                @can('edit', $records[0]) <?php /* @TODO find a cleaner way to check this */ ?>
                                 <a id="editable-sample_new" class="btn btn-primary" href="#{{ $meta->base_url }}/create" data-click="{{ $meta->base_url }}/create" data-target="{{ $meta->data_target }}">
                                     Add New <i class="fa fa-plus"></i>
                                 </a>
+                                @endcan
                             </div>
                         </div>
                         <div class="space15"></div>
@@ -28,11 +30,16 @@
                             <tr>
                                 @foreach($meta->index->table->rows as $row_key => $row_data)
                                     @if($row_data->type == 'link_by_id')
-                                        <td><a href="{{ $meta->base_url }}/{{ $record->id }}" data-click="{{ $meta->base_url }}/{{ $record->id }}" data-target="{{ $meta->data_target }}">{{ $record->$row_key }}</a></td>
+                                        <td>
+                                            @can('edit', $record)
+                                                <a href="{{ $meta->base_url }}/{{ $record->id }}" data-click="{{ $meta->base_url }}/{{ $record->id }}" data-target="{{ $meta->data_target }}">
+                                            @endcan{{ $record->$row_key }}</a>
+                                        </td>
                                     @elseif($row_data->type == 'action_buttons')
                                         <td>
                                             @foreach($row_data->data as $action)
                                                 @if ($action == 'edit')
+                                                @can('edit', $record)
                                                     <a
                                                         data-action="link"
                                                         href="{{ $meta->base_url }}/{{ $record->id }}"
@@ -42,6 +49,7 @@
                                                     >
                                                         Edit
                                                     </a>
+                                                @endcan
                                                 @elseif($action == 'clone')
                                                     <a
                                                         data-action="clone"

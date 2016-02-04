@@ -252,6 +252,8 @@ class CpWebsiteController extends UiBaseController
     {
         $this->record = Website::managedById($id);
 
+        $this->authorize('edit', $this->record);
+
         return $this->build('edit', ['websites', $id]);
     }
 
