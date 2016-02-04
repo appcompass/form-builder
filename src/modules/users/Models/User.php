@@ -179,6 +179,22 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	}
 
 	/**
+	  * Add current user to a group
+	  */
+	public function addToGroup(Group $group)
+	{
+	  	return $group->addUser($this);
+	}
+
+	/**
+	  *  Remove current user from a group
+	  */
+	public function removeFromGroup(Group $group)
+	{
+	  	return $group->removeUser($this);
+	}
+
+	/**
 	 *	Get either all or a specific profile type of a user
 	 *
 	 *

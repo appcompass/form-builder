@@ -40,9 +40,24 @@ class Group extends Model
 	*/
 	public function users()
 	{
-		return $this->belongsToMany('P3in\Models\User');
+		return $this->belongsToMany('P3in\Models\User')->withTimestamps();
 	}
 
+	/**
+	  * Add a User to the Group
+	  */
+	public function addUser(User $user)
+	{
+	  	return $this->users()->attach($user);
+	}
+
+	/**
+	 * remove a user from this group
+	 */
+	public function removeUser(User $user)
+	{
+	  	return $this->users()->detach($user);
+	}
 	/**
 	*	Group permissions
 	*
@@ -51,5 +66,21 @@ class Group extends Model
 	public function permissions()
 	{
 		return $this->belongsToMany('P3in\Models\Permission')->withTimestamps();
+	}
+
+	/**
+	  *
+	  */
+	public function grantPermission(Permission $perm)
+	{
+	  	return $this->permissions()->attach($perm);
+	}
+
+	/**
+	  *
+	  */
+	public function revokePermission(Permission $perm)
+	{
+	  	return $this->permissions()->detach($perm);
 	}
 }

@@ -36,6 +36,7 @@ class CreateGroupsTable extends Migration
 					->on('users')
 					->onDelete('cascade');
 
+			$table->unique(['group_id', 'user_id']);
 			$table->timestamps();
 		});
 
