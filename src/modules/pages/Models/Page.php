@@ -151,7 +151,7 @@ class Page extends ModularBaseModel
             ->save();
     }
 
-    public function clone()
+    public function cloneRecord()
     {
         $original = $this->load('content');
         $settings = $original->settings()->first();

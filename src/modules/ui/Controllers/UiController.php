@@ -101,9 +101,9 @@ class UiController extends UiBaseController {
 
             $obj = with(new $request->obj_name)->findOrFail($request->obj_id);
 
-            if (method_exists($obj , 'clone')) {
+            if (method_exists($obj , 'cloneRecord')) {
 
-                $rslt = $obj->clone();
+                $rslt = $obj->cloneRecord();
 
             }else{
                 return $this->json([],false, 'Class cannot be cloned.');
