@@ -7,12 +7,13 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 use P3in\Models\Page;
+use Roumen\Sitemap\SitemapServiceProvider;
 
 Class PagesServiceProvider extends ServiceProvider {
 
     public function boot()
     {
-        // $this->app->register(\Roumen\Sitemap\SitemapServiceProvider::class);
+        $this->app->register(SitemapServiceProvider::class);
     }
 
     public function register()

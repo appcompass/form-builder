@@ -44,6 +44,12 @@ class PagesController extends Controller
         return $sitemap->render($type);
     }
 
+    public function renderRobotsTxt(Request $request)
+    {
+        $website = Website::current();
+        return !empty($website->settings->data->robots_txt) ? $website->settings->data->robots_txt : '' ;
+    }
+
     public function submitForm(Request $request)
     {
         $website = Website::current();
