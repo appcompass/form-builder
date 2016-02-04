@@ -348,7 +348,7 @@ class Page extends ModularBaseModel
 
     public function getUrlAttribute()
     {
-        return $this->dynamic_segment ? str_replace('([a-z0-9-]+)', $this->dynamic_segment, $this->url) : $this->url;
+        return $this->dynamic_segment ? str_replace('([a-z0-9-]+)', $this->dynamic_segment, $this->attributes['url']) : $this->attributes['url'];
     }
 
     public function getImagesAttribute()
