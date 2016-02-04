@@ -12,6 +12,7 @@ class CpUsersController extends UiBaseController
 {
 
     public $meta_install = [
+        'classname' => User::class,
         'index' => [
             'data_targets' => [
                 [

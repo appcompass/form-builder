@@ -10,6 +10,7 @@ class CpGalleriesController extends UiBaseController
 {
 
     public $meta_install = [
+        'classname' => Gallery::class,
         'index' => [
             'data_targets' => [
                 [

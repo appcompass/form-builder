@@ -7,6 +7,7 @@ use P3in\Models\Website;
 class CpWebsiteController extends UiBaseController
 {
     public $meta_install = [
+        'classname' => Website::class,
         'index' => [
             'data_targets' => [
                 [

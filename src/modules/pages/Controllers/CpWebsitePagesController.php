@@ -17,6 +17,7 @@ class CpWebsitePagesController extends UiBaseController
 {
 
     public $meta_install = [
+        'classname' => Page::class,
         'index' => [
             'data_targets' => [
                 [
