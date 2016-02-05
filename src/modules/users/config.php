@@ -4,5 +4,5 @@
 *
 */
 return [
-	'dependencies' => ['alerts', 'permissions', 'auth']
+	'dependencies' => ['alerts', 'permissions']
 ];

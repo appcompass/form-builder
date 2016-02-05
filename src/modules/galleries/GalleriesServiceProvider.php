@@ -56,9 +56,6 @@ class GalleriesServiceProvider extends ServiceProvider
 
         $loader = AliasLoader::getInstance();
 
-        // $loader->alias('Gallery', Gallery::class);
-        // $loader->alias('HasGallery', HasGallery::class);
-
         // $gate->define('create-galleries', function(User $user) {
         //     dd($user);
         // });

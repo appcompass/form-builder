@@ -18,7 +18,7 @@ class CreatePagesTable extends Migration
             $table->string('title');
             $table->string('description');
             $table->string("slug");
-            $table->string("url");
+            $table->string("url")->default('');
             $table->integer('order')->nullable();
             $table->boolean('active')->default(false);
 

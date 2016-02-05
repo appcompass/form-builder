@@ -5,7 +5,7 @@ namespace P3in\Models;
 use Auth;
 use P3in\Models\Photo;
 use Carbon\Carbon;
-use HasGallery;
+use P3in\Traits\HasGallery;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
