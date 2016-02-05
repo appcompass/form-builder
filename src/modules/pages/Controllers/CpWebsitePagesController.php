@@ -182,8 +182,6 @@ class CpWebsitePagesController extends UiBaseController
 
         $this->setControllerDefaults();
 
-        // $sections = Section::whereNotIn('fits', ['*', 'utils'])->groupBy('fits')->lists('fits');
-
         $this->meta->available_layouts = config('app.available_layouts');
 
     }
@@ -191,40 +189,40 @@ class CpWebsitePagesController extends UiBaseController
     /**
      * Display a listing of the resource.
      *
+     * @param  Website  P3in\Models\Website
      * @return Response
      */
-    public function index($website_id)
+    public function index(Website $websites)
     {
-        $this->records = Website::managedById($website_id)->pages;
+        $this->records = $websites->pages;
 
-        return $this->build('index', ['websites', $website_id, 'pages']);
+        return $this->build('index', ['websites', $websites->id, 'pages']);
     }
 
     /**
      * Show the form for creating a new resource.
      *
+     * @param  Website  P3in\Models\Website
      * @return Response
      */
-    public function create($website_id)
+    public function create(Website $websites)
     {
-        $website = Website::managedById($website_id);
+        $this->meta->create->route = [$this->meta->create->route, $websites->id];
 
-        $this->meta->create->route = [$this->meta->create->route, $website_id];
-        $this->meta->page_list = Page::ofWebsite($website)->isActive()->lists('title', 'id')->put('' , 'No Parent')->reverse();
+        $this->meta->page_list = Page::ofWebsite($websites)->isActive()->lists('title', 'id')->put('' , 'No Parent')->reverse();
 
-        return $this->build('create', ['websites', $website_id, 'pages']);
-
+        return $this->build('create', ['websites', $websites->id, 'pages']);
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  Request  $request
+     * @param  Website  P3in\Models\Website
      * @return Response
      */
-    public function store(Request $request, $website_id)
+    public function store(Request $request, Website $websites)
     {
-        $website = Website::managedById($website_id);
 
         $page = new Page($request->all());
 
@@ -232,22 +230,27 @@ class CpWebsitePagesController extends UiBaseController
 
         $page->published_at = Carbon::now();
 
-        $page->website()->associate($website);
+        $page->website()->associate($websites);
 
         if ($request->has('parent')) {
-            $parent = Page::ofWebsite($website)->findOrFail($request->get('parent'));
+
+            $parent = Page::ofWebsite($websites)->findOrFail($request->get('parent'));
+
             $page->parent()->associate($parent);
+
         }
 
         $page->save();
 
         if ($request->has('settings')) {
+
             $page->settings($request->settings);
+
         }
 
         $this->record = $page;
 
-        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $this->record->id, 'edit']));
+        return $this->json($this->setBaseUrl(['websites', $websites->id, 'pages', $this->record->id, 'edit']));
     }
 
     /**
@@ -257,19 +260,16 @@ class CpWebsitePagesController extends UiBaseController
      * @param  int  $page_id
      * @return Response
      */
-    public function show($website_id, $page_id)
+    public function show(Website $websites, Page $pages)
     {
+        $this->record = $pages->load('sections');
 
-        $website = Website::managedById($website_id);
-
-        $this->record = Page::ofWebsite($website)->findOrFail($page_id)->load('sections');
-
-        $this->setBaseUrl(['websites', $website_id, 'pages', $page_id]);
+        $this->setBaseUrl(['websites', $websites->id, 'pages', $pages->id]);
 
         $this->meta->data_target = '#content-edit';
 
         return view('pages::show')
-            ->with('website', $website)
+            ->with('website', $websites)
             ->with('page', $this->record)
             ->with('meta', $this->meta)
             ->with('nav', $this->getCpSubNav())
@@ -283,22 +283,26 @@ class CpWebsitePagesController extends UiBaseController
      * @param  int  $id
      * @return Response
      */
-    public function edit($website_id, $page_id)
+    public function edit(Website $websites, Page $pages)
     {
+        $this->meta->page_list = Page::ofWebsite($websites)->isNot($pages->id)
+            ->isActive()
+            ->lists('title', 'id')
+            ->put('' , 'No Parent')
+            ->reverse();
 
-        $website = Website::managedById($website_id);
-
-        $this->meta->page_list = Page::ofWebsite($website)->isNot($page_id)->isActive()->lists('title', 'id')->put('' , 'No Parent')->reverse();
-        $this->record = Page::ofWebsite($website)->findOrFail($page_id);
+        $this->record = $pages;
 
         if (!empty($this->record->parent->id)) {
+
             $this->record->parent = $this->record->parent->id;
+
         }
         $this->record->settings = $this->record->settings->data;
 
         $this->meta->data_target = '#content-edit';
 
-        return $this->build('edit', ['websites', $website_id, 'pages', $page_id]);
+        return $this->build('edit', ['websites', $websites->id, 'pages', $pages->id]);
     }
 
     /**
@@ -308,27 +312,25 @@ class CpWebsitePagesController extends UiBaseController
      * @param  int  $id
      * @return Response
      */
-    public function update(Request $request, $website_id, $page_id)
+    public function update(Request $request, Website $websites, Page $pages)
     {
 
-        $website = Website::managedById($website_id);
-
-        $page = Page::ofWebsite($website)->findOrFail($page_id);
-
         if ($request->has('parent')) {
-            $parent = Page::ofWebsite($website)->findOrFail($request->get('parent'));
-            $page->parent()->associate($parent);
+            $parent = Page::ofWebsite($websites)->findOrFail($request->get('parent'));
+            $pages->parent()->associate($parent);
         }
 
         if ($request->has('settings')) {
-            $page->settings($request->settings);
+
+            $pages->settings($request->settings);
+
         }
 
-        $page->url = $page->getUrl();
+        $pages->url = $pages->getUrl();
 
-        $page->update($request->except(['settings', 'parent']));
+        $pages->update($request->except(['settings', 'parent']));
 
-        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $page_id, 'edit']));
+        return $this->json($this->setBaseUrl(['websites', $websites->id, 'pages', $pages->id, 'edit']));
     }
 
 
@@ -338,16 +340,14 @@ class CpWebsitePagesController extends UiBaseController
      * @param  int  $id
      * @return Response
      */
-    public function destroy($website_id, $id)
+    public function destroy(Website $websites, Page $pages)
     {
 
-        $website = Website::managedById($website_id);
-
-        $this->record = Page::ofWebsite($website)->findOrFail($id);
+        $this->record = $pages;
 
         $this->record->delete();
 
-        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages']));
+        return $this->json($this->setBaseUrl(['websites', $websites->id, 'pages']));
     }
 
     /**

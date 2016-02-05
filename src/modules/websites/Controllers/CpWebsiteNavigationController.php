@@ -55,17 +55,17 @@ class CpWebsiteNavigationController extends UiBaseController
   /**
    *  Store
    */
-  public function index($website_id)
+  public function index(Website $websites)
   {
 
-    $website = Website::managedById($website_id)->load('navmenus', 'pages');
+    $websites->load('navmenus', 'pages');
 
-    $navmenus = $website->navmenus()->whereNull('parent_id')->get();
+    $navmenus = $websites->navmenus()->whereNull('parent_id')->get();
 
     $navitems = [];
 
     // get navitem component out of all the website's pages
-    foreach ($website->pages as $page) {
+    foreach ($websites->pages as $page) {
 
       $navitems[] = $page->navItem;
 
@@ -82,7 +82,7 @@ class CpWebsiteNavigationController extends UiBaseController
     }
 
     return view('navigation::index')
-      ->with('website', $website)
+      ->with('website', $websites)
       ->with('navmenus', $navmenus)
       ->with('utils', $utils)
       ->with('items', $navitems);
@@ -91,15 +91,12 @@ class CpWebsiteNavigationController extends UiBaseController
   /**
    *  Edit
    */
-  public function edit($website_id, $navitem_id)
+  public function edit(Website $websites, NavigationItem $navigationItems)
   {
-    $website = Website::managedById($website_id)->load('navmenus', 'pages');
-
-    $navItem = NavigationItem::findOrFail($navitem_id);
 
     return view('navigation::edit-navmenu')
-      ->with('navItem', $navItem)
-      ->with('website', $website);
+      ->with('navItem', $navigationItems)
+      ->with('website', $websites);
   }
 
   /**
@@ -126,17 +123,17 @@ class CpWebsiteNavigationController extends UiBaseController
   /**
    * Update
    */
-  public function update(Request $request, $website_id, $navitem_id) {}
+  public function update(Request $request, $website_id, $navitem_id) { return abort(500, 'Method not allowed.'); }
 
   /**
    * Destroy
    */
-  public function destroy(Request $request, $website_id, $item_id) {}
+  public function destroy(Request $request, $website_id, $item_id) { return abort(500, 'Method not allowed.'); }
 
   /**
    *
    */
-  public function store(Request $request, $website_id)
+  public function store(Request $request, Website $websites)
   {
 
     $this->validate($request, [
@@ -144,9 +141,7 @@ class CpWebsiteNavigationController extends UiBaseController
         'hierarchy' => 'required'
     ]);
 
-    $website = Website::managedById($website_id);
-
-    $navmenu = $website->navmenus()
+    $navmenu = $websites->navmenus()
       ->where('name', '=', $request->navmenu_name)
       ->firstOrFail();
 
@@ -160,7 +155,7 @@ class CpWebsiteNavigationController extends UiBaseController
 
       $navmenu = $navmenu->clean(true);
 
-      $this->parseHierarchy($navmenu, json_decode($request->hierarchy, true), $website);
+      $this->parseHierarchy($navmenu, json_decode($request->hierarchy, true), $websites);
 
       $navmenu = $navmenu->fresh();
 

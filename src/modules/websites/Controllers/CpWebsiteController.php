@@ -239,54 +239,44 @@ class CpWebsiteController extends UiBaseController
     /**
      *
      */
-    public function show($id)
+    public function show(Website $websites)
     {
-        $this->record = Website::managedById($id);
-
-        return $this->build('show', ['websites', $id]);
+        return $this->build('show', ['websites', $websites->id]);
     }
 
     /**
      *
      */
-    public function edit($id)
+    public function edit(Website $websites)
     {
-        $this->record = Website::managedById($id);
+        $this->record = $websites;
 
         $this->authorize('edit', $this->record);
 
-        return $this->build('edit', ['websites', $id]);
+        return $this->build('edit', ['websites', $websites->id]);
     }
 
     /**
      *
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Website $websites)
     {
 
-        $this->validate($request, [
-            'site_name' => 'required|max:255',
-            'site_url' => 'required',
-            'config.host' => 'required:ip',
-            'config.username' => 'required',
-            'config.root' => 'required',
-        ]);
-
-        $website = $this->record = Website::managedById($id);
+        $this->validate($request, Website::$rules);
 
         $data = $request->except(['_method','_token']);
 
         if (!$data['config']['privateKey']) {
 
-            $data['config']['password'] = $data['config']['password'] ?: !empty($website->config->password) ? $website->config->password : '';
+            $data['config']['password'] = $data['config']['password'] ?: !empty($websites->config->password) ? $websites->config->password : '';
 
         }
 
-        if ($website->testConnection($data['config'], true)) {
+        if ($websites->testConnection($data['config'], true)) {
 
-            $website->update($data);
+            $websites->update($data);
 
-            return $this->json($this->setBaseUrl(['websites', $id, 'edit']));
+            return $this->json($this->setBaseUrl(['websites', $websites->id, 'edit']));
         }
 
         return $this->json([], false, 'Unable to connect, please verify connection details.');

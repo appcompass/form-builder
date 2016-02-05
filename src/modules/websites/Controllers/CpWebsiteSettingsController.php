@@ -215,68 +215,68 @@ class CpWebsiteSettingsController extends UiBaseController
     /**
      *
      */
-    public function index($website_id)
+    public function index(Website $websites)
     {
+        $this->record = $websites->settings->data;
 
-        // $website = Website::managedById($website_id);
+        if (isset($this->record->logo) AND !$websites->hasLogo()) {
 
-        // return view('websites::settings/index', compact('website'))
-        //     ->with('settings', $website->settings->data)
-        //     ->with('headers', Section::headers()->get()->lists('name', 'id'))
-        //     ->with('footers', Section::footers()->get()->lists('name', 'id'));
-
-
-        $website = Website::managedById($website_id);
-        $this->record = $website->settings->data;
-
-        if (isset($this->record->logo) && !is_string($this->record->logo)) {
             $this->record->logo = '';
-        }
-        $this->meta->header_list = Section::headers()->orderBy('name')->get()->lists('name', 'id');
-        $this->meta->footer_list = Section::footers()->orderBy('name')->get()->lists('name', 'id');
 
-        return $this->build('edit', ['websites', $website_id, 'settings', $website->settings->id]);
+        }
+
+        $this->meta->header_list = Section::headers()->orderBy('name')
+            ->get()
+            ->lists('name', 'id');
+
+        $this->meta->footer_list = Section::footers()->orderBy('name')
+            ->get()
+            ->lists('name', 'id');
+
+        return $this->build('edit', ['websites', $websites->id, 'settings', $websites->settings->id]);
     }
 
     /**
      *
      */
-    public function create($website_id)
+    public function create(Website $websites)
     {
-        $parent = Website::managedById($website_id);
+        $parent = $websites;
+
         return view('websites::settings/create', compact('parent'));
     }
 
     /**
      *
      */
-    public function store(Request $request, $website_id)
+    public function store(Request $request, Website $websites)
     {
-
-        $website = Website::managedById($website_id);
 
         $data = $request->except(['_token', '_method']);
 
         if ($request->hasFile('logo')) {
-            $logo = $website->addLogo($request->file('logo'));
+
+            $logo = $websites->addLogo($request->file('logo'));
+
             $data['logo'] = $logo->path;
+
         }
 
-        $records = $website->settings($data);
+        $records = $websites->settings($data);
 
         try {
 
-            $website->deploy();
+            $websites->deploy();
 
         } catch (\RuntimeException $e) {
 
-            \Log::error("Error while deploying $website->site_name: ".$e->getMessage());
+            \Log::error("Error while deploying $websites->site_name: ".$e->getMessage());
 
             return $this->json([], false, 'Error during deployment. Please contact us.' );
 
         }
 
-        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages']));
+        return $this->json($this->setBaseUrl(['websites', $websites->id, 'pages']));
 
     }
 
@@ -284,20 +284,20 @@ class CpWebsiteSettingsController extends UiBaseController
      *
      *
      */
-    public function update(Request $request, $website_id)
+    public function update(Request $request, Website $websites)
     {
-        return $this->store($request, $website_id);
-        // $website = Website::managedById($website_id);
+        return $this->store($request, $websites);
     }
 
     /**
      *
      */
-    public function show($website_id, $id)
+    public function show(Website $websites, $id)
     {
 
-        $parent = Website::managedById($website_id);
-        $records = $parent->settings(); //id ?
+        $parent = $websites;
+
+        $records = $parent->settings();
 
         return view('websites::settings/show', compact('parent', 'records'));
     }

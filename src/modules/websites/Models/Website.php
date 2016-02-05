@@ -375,6 +375,13 @@ class Website extends Model
         return $this->logo()->save($photo);
     }
 
+    /**
+     * Check if current website has a logo
+     */
+    public function hasLogo()
+    {
+        return $this->logo()->exists();
+    }
 
     /**
      * as per hasGallery Trait
