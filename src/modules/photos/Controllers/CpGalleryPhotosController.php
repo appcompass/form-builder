@@ -78,19 +78,19 @@ class CpGalleryPhotosController extends UiBaseController
     /**
      *
      */
-    public function index($gallery_id)
+    public function index(Gallery $galleries)
     {
 
-        $gallery = Gallery::findOrFail($gallery_id)
-            ->load('photos.galleryItem', 'photos.user');
+        $galleries->load('photos.galleryItem', 'photos.user');
 
-        $photos = $gallery->photos
+        $photos = $galleries->photos
             ->each(function($photo) {
                 $photo->type = $photo->getOption(Photo::TYPE_ATTRIBUTE_NAME, 'label');
                 $photo->item_id = $photo->galleryItem->id;
             });
 
-        return view('photos::galleries.index', compact('gallery', 'photos', 'options'))
+        return view('photos::galleries.index', compact('photos', 'options'))
+            ->with('gallery', $galleries)
             ->with('meta', $this->meta)
             ->with('options', Option::byLabel(Photo::TYPE_ATTRIBUTE_NAME)->content);
     }
@@ -98,22 +98,22 @@ class CpGalleryPhotosController extends UiBaseController
     /**
      *
      */
-    public function create($gallery_id)
+    public function create(Gallery $galleries)
     {
-        return $this->build('create', ['galleries', $gallery_id, 'photos']);
+        return $this->build('create', ['galleries', $galleries->id, 'photos']);
     }
 
     /**
      *  Store
      */
-    public function store(Request $request, $gallery_id)
+    public function store(Request $request, Gallery $galleries)
     {
 
-        $gallery = Gallery::findOrFail($gallery_id)->load('items', 'photos.user');
+        $galleries->load('items', 'photos.user');
 
         if ($request->has('reorder')) {
 
-            $this->sort($gallery->items, $request->reorder);
+            $this->sort($galleries->items, $request->reorder);
 
         }
 
@@ -124,7 +124,7 @@ class CpGalleryPhotosController extends UiBaseController
             $this->bulk($items, $request->bulk, $request->has('attributes') ? $request->get('attributes') : []);
 
             // we add this only when there is a bulk update for now till we sort out how to avoid it, if possible.
-            $gallery = Gallery::findOrFail($gallery_id)->load('items', 'photos.user');
+            $gallery = Gallery::findOrFail($galleries->id)->load('items', 'photos.user');
 
         }
 
@@ -132,9 +132,9 @@ class CpGalleryPhotosController extends UiBaseController
 
             $atributes = [];
 
-            if (get_class($gallery->galleryable) === Website::class) {
+            if (get_class($galleries->galleryable) === Website::class) {
 
-                $website = $gallery->galleryable;
+                $website = $galleries->galleryable;
 
                 $disk = $website->getDiskInstance();
 
@@ -146,41 +146,13 @@ class CpGalleryPhotosController extends UiBaseController
 
             }
 
-            $gallery->addPhoto(Photo::store($request->file, Auth::user(), $attributes, $disk, 'images/'));
+            $galleries->addPhoto(Photo::store($request->file, Auth::user(), $attributes, $disk, 'images/'));
 
         }
 
-        return view('photos::photo-grid')->with('photos', $gallery->photos)->with('gallery', $gallery);
+        return view('photos::photo-grid')
+            ->with('photos', $galleries->photos)
+            ->with('gallery', $galleries);
 
     }
-
-    // /**
-    //  * Show
-    //  *
-    //  */
-    // public function show($gallery_id, $photo_id)
-    // {
-    //     return $this->build('show', ['galleries', $gallery_id, 'photos', $photo_id]);
-    // }
-
-    // /**
-    //  *
-    //  */
-    // public function edit($gallery_id, $photo_id)
-    // {
-    //     return $this->build('edit', ['galleries', $gallery_id, 'photos', $photo_id]);
-    // }
-
-    // /**
-    //  *
-    //  */
-    // public function update(Request $request, $gallery_id, $photo_id)
-    // {
-    //     $record = Gallery::findOrFail($gallery_id);
-
-    //     $record->update($request->all());
-
-    //     return $this->build('edit', ['galleries', $gallery_id, 'photos', $photo_id]);
-    // }
-
 }

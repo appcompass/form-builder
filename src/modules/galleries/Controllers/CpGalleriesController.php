@@ -141,7 +141,6 @@ class CpGalleriesController extends UiBaseController
      */
     public function store(Request $request)
     {
-
         $gallery = new Gallery($request->all());
 
         $this->record = $this->user->galleries()->save($gallery);
@@ -154,38 +153,34 @@ class CpGalleriesController extends UiBaseController
      *
      *
      */
-    public function show($id)
+    public function show(Gallery $galleries)
     {
-        // dd(\Route::current());
+        $this->record = $galleries;
 
-        $this->record = Gallery::findOrFail($id);
-
-        return $this->build('show', ['galleries', $id]);
+        return $this->build('show', ['galleries', $galleries->id]);
     }
 
     /**
      *
      *
      */
-    public function edit($id)
+    public function edit(Gallery $galleries)
     {
-        // $this->authorize('edit', Gallery::class); // @TODO this works
+        $this->record = $galleries;
 
-        $this->record = Gallery::findOrFail($id);
-
-        return $this->build('edit', ['galleries', $id]);
+        return $this->build('edit', ['galleries', $galleries->id]);
     }
 
     /**
      *
      *
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Gallery $galleries)
     {
-        $this->record = Gallery::findOrFail($id);
+        $this->record = $galleries;
 
         $this->record->update($request->all());
 
-        return $this->build('edit', ['galleries', $id]);
+        return $this->json($this->setBaseUrl(['galleries', $galleries->id, 'edit']));
     }
 }
