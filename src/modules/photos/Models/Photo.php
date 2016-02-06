@@ -2,6 +2,7 @@
 
 namespace P3in\Models;
 
+use Image;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use OpenCloud\Rackspace;
@@ -16,83 +17,88 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class Photo extends Model implements GalleryItemInterface
 {
 
-  use OptionableTrait, SettingsTrait, AlertableTrait, NavigatableTrait;
+    use OptionableTrait, SettingsTrait, AlertableTrait, NavigatableTrait;
 
-  const DEFAULT_STATUS = Photo::STATUSES_PENDING;
-  const TYPE_ATTRIBUTE_NAME = 'photo_of';
+    const DEFAULT_STATUS = Photo::STATUSES_PENDING;
+    const TYPE_ATTRIBUTE_NAME = 'photo_of';
 
-  const STATUSES_PENDING = 'pending';
-  const STATUSES_APPROVED = 'approved';
-  const STATUSES_DELETED = 'deleted';
-  const STATUSES_ACTIVE = 'active';
-  const STATUSES_HIDDEN = 'hidden';
+    const STATUSES_PENDING = 'pending';
+    const STATUSES_APPROVED = 'approved';
+    const STATUSES_DELETED = 'deleted';
+    const STATUSES_ACTIVE = 'active';
+    const STATUSES_HIDDEN = 'hidden';
 
-  /**
-   * Table Name
-   */
-  protected $table = 'photos';
+    /**
+    * Table Name
+    */
+    protected $table = 'photos';
 
-  /**
-   * Fillable Attributes
-   */
-  protected $fillable = [
-    'path',
-    'name',
-    'user_id',
-    'status',
-    'storage',
-    'options'
-  ];
+    /**
+    * Fillable Attributes
+    */
+    protected $fillable = [
+        'path',
+        'name',
+        'meta',
+        'user_id',
+        'status',
+        'storage',
+        'options'
+    ];
 
-  /**
-   * Hidden properties
-   */
-  protected $hidden = [];
+    /**
+    * Hidden properties
+    */
+    protected $hidden = [];
 
-  /**
-   * With
-   */
-  protected $with = ['options'];
+    /**
+    * With
+    */
+    protected $with = ['options'];
 
-  /**
-   *   Allow multiple owners through polymorphic
-   *
-   */
-  public function photoable()
-  {
-    return $this->morphTo();
-  }
+    protected $casts = [
+        'meta' => 'object'
+    ];
 
-  /**
-   *
-   */
-  public function user()
-  {
-    return $this->belongsTo(User::class);
-  }
+    /**
+    *   Allow multiple owners through polymorphic
+    *
+    */
+    public function photoable()
+    {
+        return $this->morphTo();
+    }
 
-  /**
-   *  Get all the photos in the gallery
-   *
-   */
-  public function galleryItem()
-  {
-      return $this->morphOne(GalleryItem::class, 'itemable');
-  }
+    /**
+    *
+    */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
-  /**
+    /**
+    *  Get all the photos in the gallery
+    *
+    */
+    public function galleryItem()
+    {
+        return $this->morphOne(GalleryItem::class, 'itemable');
+    }
+
+    /**
     * Galleries
     *
     */
-  public function galleries()
-  {
-      return $this->hasManyThrough(Gallery::class, GalleryItem::class, 'itemable_id', 'id');
-  }
+    public function galleries()
+    {
+        return $this->hasManyThrough(Gallery::class, GalleryItem::class, 'itemable_id', 'id');
+    }
 
-  /**
-   *  Navigatable Trait
-   *
-   */
+    /**
+    *  Navigatable Trait
+    *
+    */
     public function makeLink($overrides = [])
     {
         return array_replaces([
@@ -109,103 +115,185 @@ class Photo extends Model implements GalleryItemInterface
         ], $overrides);
     }
 
-  /**
-   * Store a new image
-   *
-   * @param UploadedFile $file File instance
-   * @param string storage instance
-   * @return \P3in\Models\Photo
-   */
-  public static function store(UploadedFile $file, User $user, $attributes = [], $disk = null)
-  {
+    /**
+    * Store a new image
+    *
+    * @param UploadedFile $file File instance
+    * @param string storage instance
+    * @return \P3in\Models\Photo
+    */
+    public static function store(UploadedFile $file, User $user, $attributes = [], $disk = null)
+    {
 
-    $ext = $file->getClientOriginalExtension();
+        // TODO: this block below should not be here, needs to be abstracted out.
+        // get image extension
+        $ext = $file->getClientOriginalExtension();
 
-    if (isset($attributes['file_path'])) {
-        $file_path = $attributes['file_path'];
-        unset($attributes['file_path']);
-    }else{
-        $file_path = '';
+        if (isset($attributes['file_path'])) {
+            $file_path = $attributes['file_path'];
+            unset($attributes['file_path']);
+        }else{
+            $file_path = '';
+        }
+
+        if (isset($attributes['name'])) {
+            $name = $attributes['name'];
+            unset($attributes['name']);
+        }else{
+            $name = date('m-y').'/'.time().'-'.str_slug(str_replace($ext, '', $file->getClientOriginalName()), '-');
+        }
+
+        $file_name = $file_path.$name.'.'.$ext;
+        // END TODO
+
+        // get image exif data.
+        $exif = Image::make($file)->exif();
+
+        // the FileName here becomes the php temp file name so we rename it to the original file name before storage.
+        if (!empty($exif['FileName'])) {
+            $exif['FileName'] = $file->getClientOriginalName();
+        }
+
+        // we set it to attributes here because assigning it to create directly stores a malformed json string.
+        $attributes['meta'] = $exif;
+
+        if (is_null($disk)) {
+
+            $disk = \Storage::disk(config('app.default_storage'));
+
+        }
+
+        $disk->put(
+            $file_name,
+            file_get_contents($file->getRealpath())
+        );
+        $photo = $user->photos()
+            ->create([
+                'path' => isset($attributes['prefix']) ? $attributes[$prefix].$file_name : $file_name,
+                'label' => $file->getClientOriginalName(),
+
+                'storage' => config('app.default_storage'),
+                'status' => Photo::DEFAULT_STATUS
+            ]);
+
+          $photo->fill(array_replace($photo->attributes, $attributes));
+
+          $photo->save();
+
+        return $photo;
     }
 
-    if (isset($attributes['name'])) {
-        $name = $attributes['name'];
-        unset($attributes['name']);
-    }else{
-        $name = date('m-y').'/'.time().'-'.str_slug(str_replace($ext, '', $file->getClientOriginalName()), '-');
-    }
-
-    $file_name = $file_path.$name.'.'.$ext;
-
-    if (is_null($disk)) {
-
-      $disk = \Storage::disk(config('app.default_storage'));
-
-    }
-
-    $disk->put(
-      $file_name,
-      file_get_contents($file->getRealpath())
-    );
-
-    $photo = $user->photos()
-        ->create([
-            'path' => isset($attributes['prefix']) ? $attributes[$prefix].$file_name : $file_name,
-            'label' => $file->getClientOriginalName(),
-            'storage' => config('app.default_storage'),
-            'status' => Photo::DEFAULT_STATUS
-        ]);
-
-      $photo->fill(array_replace($photo->attributes, $attributes));
-
-      $photo->save();
-
-    return $photo;
-  }
-
-  /**
-   *
-   *
-   */
-  public function getNameAttribute()
-  {
-    return $this->attributes['path'];
-  }
-
-  /**
+    /**
     *
     *
     */
-  public function getPathAttribute()
-  {
+    public function getNameAttribute()
+    {
+        return !empty($this->meta->FileName) ? $this->meta->FileName : $this->attributes['path'];
+    }
 
-    if (preg_match('/^[a-z0-9]+([._-][a-z0-9]+)+$/i', $this->storage, $matches)) {
+    /**
+    *
+    *
+    */
+    public function getXResolutionAttribute()
+    {
+        if (!empty($this->meta->XResolution)) {
+            $res = explode('/', $this->meta->XResolution);
+            return count($res) == 2 ? $res[0]/$res[1] : null;
+        }
+        return null;
+    }
 
-      $schema = \Request::secure() ? 'https://' : 'http://';
+    /**
+    *
+    *
+    */
+    public function getYResolutionAttribute()
+    {
+        if (!empty($this->meta->YResolution)) {
+            $res = explode('/', $this->meta->YResolution);
+            return count($res) == 2 ? $res[0]/$res[1] : null;
+        }
+        return null;
+    }
 
-      return $schema.$this->storage.'/' . $this->attributes['path'];
+
+    /**
+    *
+    *
+    */
+    public function getResolutionAttribute()
+    {
+        return $this->x_resolution && $this->y_resolution ? $this->x_resolution.'x'.$this->y_resolution : null;
+    }
+
+    /**
+    *
+    *
+    */
+    public function getHeightAttribute()
+    {
+
+        return !empty($this->meta->COMPUTED->Height) ? $this->meta->COMPUTED->Height : null;
+    }
+
+    /**
+    *
+    *
+    */
+    public function getWidthAttribute()
+    {
+        return !empty($this->meta->COMPUTED->Width) ? $this->meta->COMPUTED->Width : null;
+    }
+
+    public function getDimensionsAttribute()
+    {
+        return $this->width && $this->height ? $this->width.'x'.$this->height : null;
+    }
+    /**
+    *
+    *
+    */
+    public function getMimeTypeAttribute()
+    {
+        return !empty($this->meta->MimeType) ? $this->meta->MimeType : null;
+    }
+
+    /**
+    *
+    *
+    */
+    public function getPathAttribute()
+    {
+
+        if (preg_match('/^[a-z0-9]+([._-][a-z0-9]+)+$/i', $this->storage, $matches)) {
+
+            $schema = \Request::secure() ? 'https://' : 'http://';
+
+            return $schema.$this->storage.'/' . $this->attributes['path'];
+
+        }
+
+        return $this->attributes['path'];
 
     }
 
-    return $this->attributes['path'];
-
-  }
-
-  /**
+    /**
     * Access to options
     */
-  public function setOptionsAttribute($option)
-  {
-    $this->setOption(key($option), $option[key($option)]);
-  }
+    public function setOptionsAttribute($option)
+    {
+        $this->setOption(key($option), $option[key($option)]);
+    }
 
-  /**
-   * All the photos posted in between 2 dates
-   *
-   *
-   */
-  public function scopePostedBetween($query, Carbon $start, Carbon $end)
-  {
-    // return $query->where('')
-  }
+    /**
+    * All the photos posted in between 2 dates
+    *
+    *
+    */
+    public function scopePostedBetween($query, Carbon $start, Carbon $end)
+    {
+        // return $query->where('')
+    }
 }

@@ -15,6 +15,7 @@ class CreatePhotosTable extends Migration
         Schema::create('photos', function (Blueprint $table) {
             $table->increments('id');
             $table->string('path');
+            $table->json('meta')->nullable();
 
             // to use with polymorphic relationships
             $table->integer('photoable_id')->unsigned()->nullable();
