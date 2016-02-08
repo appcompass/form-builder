@@ -5,6 +5,7 @@ namespace P3in\Models;
 use Image;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use OpenCloud\Rackspace;
 use P3in\Interfaces\GalleryItemInterface;
 use P3in\Models\User as User;
@@ -17,7 +18,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class Photo extends Model implements GalleryItemInterface
 {
 
-    use OptionableTrait, SettingsTrait, AlertableTrait, NavigatableTrait;
+    use OptionableTrait, SettingsTrait, AlertableTrait, NavigatableTrait, SoftDeletes;
 
     const DEFAULT_STATUS = Photo::STATUSES_PENDING;
     const TYPE_ATTRIBUTE_NAME = 'photo_of';
@@ -59,6 +60,13 @@ class Photo extends Model implements GalleryItemInterface
     protected $casts = [
         'meta' => 'object'
     ];
+
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 
     /**
     *   Allow multiple owners through polymorphic
