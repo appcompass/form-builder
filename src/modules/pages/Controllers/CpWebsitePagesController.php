@@ -240,6 +240,8 @@ class CpWebsitePagesController extends UiBaseController
 
         }
 
+        $page->url = $page->getUrl();
+
         $page->save();
 
         if ($request->has('settings')) {

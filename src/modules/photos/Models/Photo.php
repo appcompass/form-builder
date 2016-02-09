@@ -154,8 +154,10 @@ class Photo extends Model implements GalleryItemInterface
         $file_name = $file_path.$name.'.'.$ext;
         // END TODO
 
-        // get image exif data.
-        $exif = Image::make($file)->exif();
+        // get intervention image object.
+        $image = Image::make($file);
+        // get exif data for images that have it.
+        $exif = $image->exif();
 
         // the FileName here becomes the php temp file name so we rename it to the original file name before storage.
         if (!empty($exif['FileName'])) {
@@ -164,6 +166,19 @@ class Photo extends Model implements GalleryItemInterface
 
         // we set it to attributes here because assigning it to create directly stores a malformed json string.
         $attributes['meta'] = $exif;
+
+        // short cut since we have these values.
+        $attributes['meta']['height'] = $image->height();
+        $attributes['meta']['width'] = $image->width();
+
+        // THis is because this object can (and seems to often) contain non UTF8 encoded characters resulting in a json_encode that fails.
+        $encode_fix = function(&$item, $key)
+        {
+            $item = utf8_encode($item);
+        };
+
+        array_walk_recursive($attributes['meta'], $encode_fix);
+
 
         if (is_null($disk)) {
 
@@ -243,7 +258,7 @@ class Photo extends Model implements GalleryItemInterface
     public function getHeightAttribute()
     {
 
-        return !empty($this->meta->COMPUTED->Height) ? $this->meta->COMPUTED->Height : null;
+        return !empty($this->meta->height) ? $this->meta->height : null;
     }
 
     /**
@@ -252,7 +267,7 @@ class Photo extends Model implements GalleryItemInterface
     */
     public function getWidthAttribute()
     {
-        return !empty($this->meta->COMPUTED->Width) ? $this->meta->COMPUTED->Width : null;
+        return !empty($this->meta->width) ? $this->meta->width : null;
     }
 
     public function getDimensionsAttribute()
