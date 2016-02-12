@@ -246,6 +246,14 @@ class Page extends ModularBaseModel
     }
 
     /**
+     * Matches passed type agai
+     */
+    public function type($type)
+    {
+        return preg_match('/'.$type.'/i', $this->name);
+    }
+
+    /**
      * breadcrumb rendering function
      *
      * @return array
