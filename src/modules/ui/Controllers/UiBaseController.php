@@ -105,17 +105,11 @@ class UiBaseController extends ModularBaseController {
      */
     public function getCpSubNav($id = null)
     {
-        if (!is_null($id)) {
-
-            // dd($id);
-
-        }
-
         $navmenu_name = 'cp_'.$this->module_name.'_subnav';
 
         $navmenu = Navmenu::byName($navmenu_name);
-        return $navmenu;
 
+        return $navmenu;
     }
 
     /**

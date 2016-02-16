@@ -23,7 +23,8 @@ class PagesController extends Controller
 
         $data = $page->render();
 
-        return view('layouts.master.'.str_replace(':', '_', $page->layout), $data);
+        return view('layouts.master.'.str_replace(':', '_', $page->layout), $data)
+            ->with('page', $page);
 
     }
 

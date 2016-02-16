@@ -140,14 +140,14 @@ class Photo extends Model implements GalleryItemInterface
         if (isset($attributes['file_path'])) {
             $file_path = $attributes['file_path'];
             unset($attributes['file_path']);
-        }else{
+        } else {
             $file_path = '';
         }
 
         if (isset($attributes['name'])) {
             $name = $attributes['name'];
             unset($attributes['name']);
-        }else{
+        } else {
             $name = date('m-y').'/'.time().'-'.str_slug(str_replace($ext, '', $file->getClientOriginalName()), '-');
         }
 
@@ -190,18 +190,18 @@ class Photo extends Model implements GalleryItemInterface
             $file_name,
             file_get_contents($file->getRealpath())
         );
-        $photo = $user->photos()
-            ->create([
-                'path' => isset($attributes['prefix']) ? $attributes[$prefix].$file_name : $file_name,
-                'label' => $file->getClientOriginalName(),
 
-                'storage' => config('app.default_storage'),
-                'status' => Photo::DEFAULT_STATUS
-            ]);
+        $photo = $user->photos()->create([
+            'path' => isset($attributes['prefix']) ? $attributes[$prefix].$file_name : $file_name,
+            'label' => $file->getClientOriginalName(),
 
-          $photo->fill(array_replace($photo->attributes, $attributes));
+            'storage' => config('app.default_storage'),
+            'status' => Photo::DEFAULT_STATUS
+        ]);
 
-          $photo->save();
+        $photo->fill(array_replace($photo->attributes, $attributes));
+
+        $photo->save();
 
         return $photo;
     }
