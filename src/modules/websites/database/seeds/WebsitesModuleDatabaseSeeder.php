@@ -194,6 +194,26 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             $page->save();
 
             $website_subnav->addItem($page, 8, ['props' => ['link' => ['data-target' => '#record-detail']]]);
+
+            //
+            //  REDIRECTS MANAGER
+            //
+            $page = Page::firstOrNew([
+                'name' => 'cp_website_redirects',
+                'title' => 'Manage Redirects',
+                'description' => 'Manage Redirects',
+                'slug' => 'redirects',
+                'order' => 9,
+                'active' => true,
+                'req_permission' => null,
+                "published_at" => Carbon::now(),
+            ]);
+
+            $page->website()->associate($website);
+
+            $page->save();
+
+            $website_subnav->addItem($page, 8, ['props' => ['link' => ['data-target' => '#record-detail']]]);
         }
 
         Model::reguard();

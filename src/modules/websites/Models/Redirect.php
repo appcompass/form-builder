@@ -50,9 +50,9 @@ class Redirect extends Model
     /**
      *  Render a single redirect
      */
-    public function render()
+    public function render($base_url)
     {
-        return "redirect ^{$this->from}$ {$this->to}";
+        return "rewrite ^{$this->from}$ \$scheme://{$base_url}".trim($this->to, '/'). " last";
     }
 
     /**
@@ -72,7 +72,7 @@ class Redirect extends Model
 
         foreach (Redirect::forWebsite($websites)->get() as $redirect) {
 
-            $acc .= $redirect->render() . "\n";
+            $acc .= $redirect->render($websites->site_url) . ";\n";
 
         }
 

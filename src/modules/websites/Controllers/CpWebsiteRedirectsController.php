@@ -115,7 +115,7 @@ class CpWebsiteRedirectsController extends UiBaseController
 
         }
 
-        return $this->json(['success' => true, 'message' => 'Redirects successfully updated.']);
+        return $this->json([], true, "Redirects successfully updated.");
 
     }
 
