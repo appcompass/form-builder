@@ -102,7 +102,6 @@
     </div>
 @stop
 
-
 @section('footer.scripts')
 
     <script>
