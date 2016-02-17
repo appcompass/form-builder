@@ -170,7 +170,9 @@
             </div>
             <div class="modal-body message media-gal isotope">
                 <ul class="image-selector " style="float: left; margin-top: 20px; width: 100%">
-                    @include('photos::photo-grid', ['photos' => $website->gallery->photos, 'is_modal' => true])
+                    @if(!empty($website->gallery->photos))
+                        @include('photos::photo-grid', ['photos' => $website->gallery->photos, 'is_modal' => true])
+                    @endif
                 </ul>
             </div>
             <div class="modal-footer">
