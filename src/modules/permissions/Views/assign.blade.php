@@ -6,7 +6,12 @@
 
 @section('body')
     <div class="col-sm-9 col-sm-offset-1" id="permissions-manager">
-        <p class="page-header">Currently Owned - <b>{{ $owner->label or $owner->full_name }}</b></p>
+        <p class="page-header">Currently Owned by: <b>{{ $owner->label or $owner->full_name }}</b></p>
+
+        {{--
+            OWNED
+        --}}
+
         <table class="table" v-if="owned.length">
             <thead>
                 <tr>
@@ -36,14 +41,20 @@
                 </tr>
             </tbody>
         </table>
+
         <p v-else><b>Nothing at the moment.</b></p>
 
+        {{--
+            AVAILABLE
+        --}}
+
         <p class="page-header">Available</p>
-        <table class="table">
+        <table v-if="avail.length" class="table">
             <thead>
                 <tr>
                     <th>Label</th>
                     <th>Description</th>
+                    <th v-if="avail[0] && avail[0].permissions">Permissions</th>
                     <th></th>
                 </tr>
             </thead>
@@ -54,6 +65,11 @@
                 >
                     <td>@{{ single.label }}</td>
                     <td>@{{ single.description }}</td>
+                    <td v-if="single.permissions">
+                        <ul>
+                            <li v-for="perm in single.permissions">@{{ perm.label }}</li>
+                        </ul>
+                    </td>
                     <td>
                         <a
                             href
@@ -67,6 +83,8 @@
                 </tr>
             </tbody>
         </table>
+
+        <p v-else><b>Nothing at the moment. Please go add some first!</b></p>
 
         <div class="tools pull-right">
             <a

@@ -215,7 +215,7 @@
             var alertModal = $('#modal-alert');
 
             $(this).ajaxStart(function(){
-                openModal('Loading', 'Loading Please wait..');
+                // openModal('Loading', 'Loading Please wait..');
             });
 
             $(this).ajaxStop(function(){
