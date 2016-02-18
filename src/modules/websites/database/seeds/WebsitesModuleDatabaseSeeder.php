@@ -44,7 +44,6 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 'slug' => 'edit',
                 'order' => 2,
                 'active' => true,
-                'req_permission' => null,
                 "published_at" => Carbon::now(),
             ]);
 
@@ -65,7 +64,6 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 'slug' => 'settings',
                 'order' => 1,
                 'active' => true,
-                'req_permission' => null,
                 "published_at" => Carbon::now(),
             ]);
 
@@ -85,7 +83,6 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 'slug' => 'pages',
                 'order' => 3,
                 'active' => true,
-                'req_permission' => null,
                 "published_at" => Carbon::now(),
             ]);
 
@@ -105,7 +102,6 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 'slug' => 'navigation',
                 'order' => 4,
                 'active' => true,
-                'req_permission' => null,
                 "published_at" => Carbon::now(),
             ]);
 
@@ -125,7 +121,6 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 'slug' => 'blog-entries',
                 'order' => 5,
                 'active' => true,
-                'req_permission' => null,
                 "published_at" => Carbon::now(),
             ]);
 
@@ -145,7 +140,6 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 'slug' => 'blog-categories',
                 'order' => 6,
                 'active' => true,
-                'req_permission' => null,
                 "published_at" => Carbon::now(),
             ]);
 
@@ -165,7 +159,6 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 'slug' => 'blog-tags',
                 'order' => 7,
                 'active' => true,
-                'req_permission' => null,
                 "published_at" => Carbon::now(),
             ]);
 
@@ -185,7 +178,6 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 'slug' => 'blog-settings',
                 'order' => 8,
                 'active' => true,
-                'req_permission' => null,
                 "published_at" => Carbon::now(),
             ]);
 
@@ -205,7 +197,6 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 'slug' => 'redirects',
                 'order' => 9,
                 'active' => true,
-                'req_permission' => null,
                 "published_at" => Carbon::now(),
             ]);
 

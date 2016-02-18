@@ -36,7 +36,8 @@
     <link rel="stylesheet" type="text/css" href="/assets/ui/js/jquery-multi-select/css/multi-select.css" />
     <link rel="stylesheet" type="text/css" href="/assets/ui/js/jquery-tags-input/jquery.tagsinput.css" />
 
-    <link rel="stylesheet" type="text/css" href="/assets/ui/js/select2/select2.css" />
+    <!-- <link rel="stylesheet" type="text/css" href="/assets/ui/js/select2/select2.css" /> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css">
     <link rel="stylesheet" type="text/css" href="/assets/ui/css/clndr.css">
     <!--clock css-->
     <link rel="stylesheet" type="text/css" href="/assets/ui/js/css3clock/css/style.css">

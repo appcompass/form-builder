@@ -30,6 +30,23 @@ class PermissionsRequired extends Model
     }
 
     /**
+     *
+     *  @param mixed owner [route/controller@method@]
+     */
+    public static function requirePermission(PermissionItemContract $owner, Permission $requires)
+    {
+        $instance = new static();
+
+        $instance->pointer = $owner;
+
+        $instance->permission()->save($permission);
+
+        $instance->website()->save(Website::current());
+
+        $instance->save();
+    }
+
+    /**
      *  Returns a call to the `how` method on the PermissionItem
      */
     public function scopeRetrieve(Builder $query, PermissionItemContract $perm)

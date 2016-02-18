@@ -27,6 +27,14 @@ class Group extends Model
 	protected $fillable = ['name', 'label', 'description', 'active'];
 
 	/**
+	 * Validation rules
+	 */
+	public static $rules = [
+		'name' => 'required',
+		'label' => 'required'
+	];
+
+	/**
 	 * The attributes excluded from the model's JSON form.
 	 *
 	 * @var array
@@ -58,9 +66,9 @@ class Group extends Model
 	{
 	  	return $this->users()->detach($user);
 	}
+
 	/**
 	*	Group permissions
-	*
 	*
 	*/
 	public function permissions()
@@ -68,19 +76,84 @@ class Group extends Model
 		return $this->belongsToMany('P3in\Models\Permission')->withTimestamps();
 	}
 
-	/**
-	  *
-	  */
-	public function grantPermission(Permission $perm)
+	public function grantPermission($perm)
 	{
-	  	return $this->permissions()->attach($perm);
+	  	return $this->grantPermissions($perm);
 	}
 
 	/**
+	  * Grant Permission(s)
 	  *
+	  *	@param mixed $perm  (string) Permission Type | (Permission) Permission Instance | (array)
 	  */
-	public function revokePermission(Permission $perm)
+	public function grantPermissions($perm)
 	{
-	  	return $this->permissions()->detach($perm);
+		if (is_null($perm)) {
+
+			return;
+
+		} else 	if ( is_string($perm)) {
+
+			return $this->grantPermissions(Permission::byType($perm)->firstOrFail());
+
+		} else if ($perm instanceof Permission) {
+
+		  	return $this->permissions()->attach($perm);
+
+		} else if (is_array($perm)) {
+
+			foreach($perm as $single_permission) {
+
+				$this->grantPermissions($single_permission);
+
+			}
+
+		}
+	}
+
+	/**
+	 *  Revoke all group's permissions
+	 */
+	public function revokeAll()
+	{
+		return $this->revokePermissions($this->permissions->lists('type')->toArray());
+	}
+
+	/**
+	 *
+	 */
+	public function revokePermission($perm)
+	{
+	  	return $this->revokePermissions($perm);
+	}
+
+	/**
+	  * Revoke permission(s)
+	  *
+	  *	@param mixed $perm  (string) Permission Type | (Permission) Permission Instance | (array)
+	  */
+	public function revokePermissions($perm)
+	{
+		if (is_null($perm)) {
+
+			return;
+
+		} else if ( is_string($perm)) {
+
+			return $this->revokePermissions(Permission::byType($perm)->firstOrFail());
+
+		} else if ($perm instanceof Permission) {
+
+		  	return $this->permissions()->detach($perm);
+
+		}  else if (is_array($perm)) {
+
+			foreach($perm as $single_permission) {
+
+				$this->revokePermissions($single_permission);
+
+			}
+
+		}
 	}
 }

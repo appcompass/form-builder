@@ -7,7 +7,7 @@
 @section('body')
 
     <div class="col-sm-9 col-sm-offset-1">
-        <p class="clearfix">You can manage your redirects from here. The webserver is gonna automatically restart when you save.</p>
+        <p class="page-head clearfix">You can manage your redirects from here. The webserver is gonna automatically restart when you save.</p>
 
         <table class="table table-hover general-table dataTable" id="app">
             <thead v-if="redirects.length">
@@ -131,7 +131,6 @@
                     this.resource.save({
                         redirects: this.redirects
                     }).then(function(response) {
-                        console.log(response)
                     }, function(error) {
                         console.log(error);
                     })

@@ -149,6 +149,14 @@
                     @else
                         @include('ui::partials.repeatable_block', ['prefix' => $field->name, 'records' => [[]]])
                     @endif
+                @elseif($field->type == 'multi_select')
+                    <select class="multi_select form-control" name="{{ $field->name }}[]" multiple>
+                        <optgroup label="Admin Permissions">
+                            <option value="create-users" @if(in_array('create-users', $record->{$field->name})) selected @endif>Create Users</option>
+                            <option value="cp-login" @if(in_array('cp-login', $record->{$field->name})) selected @endif>CP Login</option>
+                            <option value="create-galleries" @if(in_array('create-galleries', $record->{$field->name})) selected @endif>Create Galleries</option>
+                        </optgroup>
+                    </select>
                 @endif
                 @if ($field->help_block)
                     <small class="help-block">{{ $field->help_block }}</small>
@@ -331,6 +339,10 @@
         $('.panel-heading .fa-times').on('click', function(e){
             $(this).parents('.repeatable-container').remove();
             reIndexRepeatables($('.repeatable-container'));
+        });
+
+        $('.multi_select').select2({
+            // data: '' FETCH DATA USING VUE
         });
     });
 </script>

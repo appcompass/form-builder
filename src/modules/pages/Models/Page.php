@@ -40,7 +40,6 @@ class Page extends ModularBaseModel
         'order',
         'active',
         'layout',
-        'req_permission',
         'published_at',
     ];
 
