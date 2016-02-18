@@ -6,8 +6,8 @@
 
 @section('body')
     <div class="col-sm-9 col-sm-offset-1" id="permissions-manager">
-        <p class="page-header">Currently Owned</p>
-        <table class="table">
+        <p class="page-header">Currently Owned - <b>{{ $owner->label or $owner->full_name }}</b></p>
+        <table class="table" v-if="owned.length">
             <thead>
                 <tr>
                     <th>Label</th>
@@ -36,6 +36,7 @@
                 </tr>
             </tbody>
         </table>
+        <p v-else><b>Nothing at the moment.</b></p>
 
         <p class="page-header">Available</p>
         <table class="table">
@@ -52,7 +53,7 @@
                     v-bind:class="{disabled: single.isOwned}"
                 >
                     <td>@{{ single.label }}</td>
-                    <td>@{{ single.description }} @{{ single.isOwned }}</td>
+                    <td>@{{ single.description }}</td>
                     <td>
                         <a
                             href
@@ -86,19 +87,23 @@
 </style>
 
 <script>
+
     (function(Vue) {
+
+        /// DATA INIT
 
         var data = {
             owned: {!! json_encode($owned) !!},
             avail: {!! json_encode($avail) !!},
             owner: {!! json_encode($owner) !!}
         };
-
-        /// DATA INIT
         data.avail.forEach(function(item) {
             item.isOwned = false;
         })
 
+        //
+        //  VUE INSTANCE
+        //
         var Vue = new Vue({
             el: '#permissions-manager',
             data: {
@@ -113,6 +118,7 @@
             ready: function() {
                 var self = this;
                 self.resource = self.$resource("{{ $meta->base_url }}");
+
                 self.avail.forEach(function(item) {
                     if (has(item, self.owned)) {
                         item.isOwned = true;
@@ -120,10 +126,6 @@
                 })
 
                 data.owned.forEach(function(item) {
-
-                    // var item = self.avail.some(function(el) {
-                    //     return el.id === item.id;
-                    // })
 
                     var item = self.avail.find(function(el) {
                         return el.id === item.id;
@@ -134,6 +136,10 @@
             },
 
         });
+
+        //
+        //  METHODS
+        //
 
         function add(item) {
 
@@ -159,7 +165,9 @@
             })
         }
 
-        ///// PRIVATE
+        //
+        // PRIVATE
+        //
 
         function has(needle, hay, property) {
 
