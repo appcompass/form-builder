@@ -12,7 +12,7 @@ class Route extends PermissionItem implements PermissionRequiredItemInterface
     // Name of the item we're instantiating
     protected $pointer;
 
-    protected $type = 'controller';
+    protected $type = 'route';
 
     /**
      *  Return the class pointer

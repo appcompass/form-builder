@@ -55,13 +55,12 @@ class CpUserPermissionsController extends UiBaseController
 
     public function index(User $users)
     {
-        $users->load('permissions');
-
-        $available_perms = Permission::all();
-
         $this->meta->base_url = '/users/' . $users->id . '/permissions/';
 
-        return view('permissions::user.permissions.index', compact('users', 'available_perms'))
+        return view('permissions::assign', compact('users', 'available_perms'))
+            ->with('owner', $users)
+            ->with('owned', $users->permissions)
+            ->with('avail', Permission::all())
             ->with('meta', $this->meta);
     }
 

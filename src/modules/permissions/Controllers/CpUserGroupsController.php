@@ -56,13 +56,14 @@ class CpUserGroupsController extends UiBaseController
 
     public function index(User $users)
     {
-        $users->load('groups');
-
         $available_groups = Group::all();
 
         $this->meta->base_url = '/users/' . $users->id . '/groups/';
 
-        return view('permissions::user.groups.index', compact('users', 'available_groups'))
+        return view('permissions::assign', compact('users', 'available_groups'))
+            ->with('owner', $users)
+            ->with('owned', $users->groups)
+            ->with('avail', $available_groups)
             ->with('meta', $this->meta);
     }
 
@@ -70,7 +71,7 @@ class CpUserGroupsController extends UiBaseController
     {
         $users->groups()->detach();
 
-        foreach ($request->groups as $group) {
+        foreach ($request->owned as $group) {
 
             $users->addToGroup(Group::findOrFail($group['id']));
 

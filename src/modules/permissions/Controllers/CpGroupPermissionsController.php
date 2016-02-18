@@ -79,7 +79,10 @@ class CpGroupPermissionsController extends UiBaseController
 
         $this->meta->base_url = "/groups/" . $groups->id . "/permissions/";
 
-        return view('permissions::groups.permissions.index', compact('permissions', 'groups'))
+        return view('permissions::assign', compact('permissions', 'groups'))
+            ->with('owner', $groups)
+            ->with('owned', $groups->permissions)
+            ->with('avail', $permissions)
             ->with('meta', $this->meta);
     }
 
@@ -87,7 +90,7 @@ class CpGroupPermissionsController extends UiBaseController
     {
         $groups->revokeAll();
 
-        foreach($request->get('permissions') as $permission) {
+        foreach($request->owned as $permission) {
 
             $groups->grantPermissions($permission['type']);
 

@@ -34,8 +34,8 @@
     (function(Vue) {
 
         var data = {
-            owned: {!! json_encode($groups->permissions) !!},
-            avail: {!! json_encode($permissions) !!}
+            owned: {!! json_encode($owned) !!},
+            avail: {!! json_encode($avail) !!}
         };
 
         var Vue = new Vue({
@@ -65,7 +65,7 @@
 
                 store: function() {
                     this.resource.save({
-                        permissions: this.owned
+                        owned: this.owned
                     }).then(function(response) {
                         console.log(response)
                     }, function(error) {
