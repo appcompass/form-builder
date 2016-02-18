@@ -45,7 +45,7 @@
                                     @can('edit', $record)
                                         <a
                                             data-action="link"
-                                            href="{{ $meta->base_url }}/{{ $record->id }}"
+                                            href="{{ $meta->base_url }}/{{ $record->id }}/edit"
                                             data-click="{{ $meta->base_url }}/{{ $record->id }}"
                                             data-target="{{ $meta->data_target }}"
                                             class="btn btn-primary"

@@ -6,4 +6,6 @@ Route::group([
     Route::resource('permissions', 'CpPermissionsController');
     Route::resource('groups', 'CpGroupsController');
     Route::resource('groups.permissions', 'CpGroupPermissionsController');
+    Route::resource('users.permissions', 'CpUserPermissionsController');
+    Route::resource('users.groups', 'CpUserGroupsController');
 });

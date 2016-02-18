@@ -19,37 +19,23 @@ class CpPermissionsNavSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('permissions')->delete();
-
-        Permission::create([
-            'type' => 'create-galleries',
-            'label' => 'Create Galleries',
-            'description' => 'User is able to create galleries'
-        ]);
-
-        Permission::create([
-            'type' => 'cp-login',
-            'label' => 'Control Panel Login',
-            'description' => 'User can login into the Control Panel'
-        ]);
-
         if (\Modular::isLoaded('websites')) {
 
             $control_panel = Website::admin();
 
-            $permissions = Page::firstOrNew([
-                'description' => 'Permissions Manager',
-                'active' => true,
-                'title' => 'Permissions',
-                'order' => 2,
-                'slug' => 'permissions',
-                'name' => 'cp_users_permissions',
-                "published_at" => Carbon::now(),
-            ]);
+            // $permissions = Page::firstOrNew([
+            //     'description' => 'Permissions Manager',
+            //     'active' => true,
+            //     'title' => 'Permissions',
+            //     'order' => 2,
+            //     'slug' => 'permissions',
+            //     'name' => 'cp_users_permissions',
+            //     "published_at" => Carbon::now(),
+            // ]);
 
-            $permissions->website()->associate($control_panel);
+            // $permissions->website()->associate($control_panel);
 
-            $permissions->save();
+            // $permissions->save();
 
             $groups = Page::firstOrNew([
                 'description' => 'Groups Manager',
@@ -65,15 +51,15 @@ class CpPermissionsNavSeeder extends Seeder
 
             $groups->save();
 
-            Navmenu::byName('cp_main_nav_users')->addItem($permissions, 1, [
-                'props' => [
-                    'icon' => 'user',
-                    'link' => [
-                        'href' => '/permissions',
-                        'data-target' => '#record-detail'
-                    ]
-                ]
-            ]);
+            // Navmenu::byName('cp_main_nav_users')->addItem($permissions, 1, [
+            //     'props' => [
+            //         'icon' => 'user',
+            //         'link' => [
+            //             'href' => '/permissions',
+            //             'data-target' => '#record-detail'
+            //         ]
+            //     ]
+            // ]);
 
             Navmenu::byName('cp_main_nav_users')->addItem($groups, 2, [
                 'props' => [
@@ -86,7 +72,7 @@ class CpPermissionsNavSeeder extends Seeder
             ]);
 
             //
-            // GROUP SUBNAV
+            // GROUP INTERNAL SUBNAV
             //
 
             $groups_subnav = Navmenu::byName('cp_groups_subnav');
@@ -128,6 +114,50 @@ class CpPermissionsNavSeeder extends Seeder
             $group_permissions->save();
 
             $groups_subnav->addItem($group_permissions);
+
+            //
+            //  USER INTERNAL SUBNAV
+            //
+            $user_subnav = Navmenu::byName('cp_users_subnav');
+
+            //
+            //  USER PERMISSIONS
+            //
+            $user_permissions = Page::firstOrNew([
+                'name' => 'cp_user_permissions',
+                'title' => 'Permissions',
+                'description' => 'User\'s permissions',
+                'slug' => 'permissions',
+                'order' => 2,
+                'active' => true,
+                'published_at' => Carbon::now()
+            ]);
+
+            $user_permissions->website()->associate($control_panel);
+
+            $user_permissions->save();
+
+            $user_subnav->addItem($user_permissions);
+
+            //
+            //  USER GROUPS
+            //
+            $user_groups = Page::firstOrNew([
+                'name' => 'cp_user_groups',
+                'title' => 'Groups',
+                'description' => 'User\'s groups',
+                'slug' => 'groups',
+                'order' => 3,
+                'active' => true,
+                'published_at' => Carbon::now()
+            ]);
+
+            $user_groups->website()->associate($control_panel);
+
+            $user_groups->save();
+
+            $user_subnav->addItem($user_groups);
+
         }
 
 

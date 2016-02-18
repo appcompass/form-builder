@@ -25,7 +25,9 @@
                 @elseif($field->type == 'slugify')
                     {!! Form::text(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, ['class' => 'form-control slugify' ,'data-source' => $field->field, 'placeholder' => $field->placeholder]) !!}
                 @elseif($field->type == 'password')
-                    {!! Form::password(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
+                    <div class="password">
+                        {!! Form::password(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
+                    </div>
                 @elseif($field->type == 'textarea')
                     {!! Form::textarea(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, ['class' => 'form-control', 'rows' => '6', 'placeholder' => $field->placeholder]) !!}
                 @elseif($field->type == 'wysiwyg')
@@ -345,6 +347,10 @@
             // data: '' FETCH DATA USING VUE
         });
     });
+</script>
+
+<script>
+
 </script>
 @endif
 

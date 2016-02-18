@@ -178,208 +178,212 @@
 
 <script>
 
-    // Vue.config.debug = true
+    (function(Vue) {
 
-    var content = {
-        navmenus: {!! $navmenus->toJson() !!},
-        items: {!! json_encode($items) !!},
-        utils: {!! json_encode($utils) !!},
-        content: []
-    }
+        // Vue.config.debug = true
 
-    /**
-     *  Parses content of a navmenu
-     *
-     */
-    function parseContent(navmenu, parent) {
-        var newContent = [];
-        parent = parent || null;
-
-        navmenu.items.forEach(function(item) {
-
-            var children = mapFromArray(navmenu.children, 'id');
-
-            var newItem = {
-                id: item.id,
-                label: item.pivot ? item.pivot.label : item.label,
-                url: item.pivot ? item.pivot.url : item.url,
-                new_tab: item.pivot ? item.pivot.new_tab : item.new_tab,
-                children: [],
-                parent: parent ? parent.id : null
-            };
-
-            if (children && children[item.navigatable_id] !== undefined) {
-                newItem.children = parseContent(children[item.navigatable_id], item);
-            }
-
-            newContent.push(newItem)
-        });
-
-        return newContent
-    }
-
-    /**
-     * Creates a map out of an array be choosing what property to key by
-     *
-     */
-    function mapFromArray(array, prop) {
-        var map = {};
-        if (array && array.length) {
-            for (var i=0; i < array.length; i++) {
-                map[ array[i][prop] ] = array[i];
-            }
+        var content = {
+            navmenus: {!! $navmenus->toJson() !!},
+            items: {!! json_encode($items) !!},
+            utils: {!! json_encode($utils) !!},
+            content: []
         }
-        return map;
-    }
 
-    var Navmenu = Vue.extend({
-        template: '#navmenu',
-        props: ['navmenu'],
+        /**
+         *  Parses content of a navmenu
+         *
+         */
+        function parseContent(navmenu, parent) {
+            var newContent = [];
+            parent = parent || null;
 
-        data: function() {
-            return {
-                content: [],
-                hierarchy: undefined,
-                initialState: undefined,
-                importVisible: false,
-                jsonVisible: false,
-                importedContent: undefined
-            }
-        },
+            navmenu.items.forEach(function(item) {
 
-        ready: function() {
-            this.resource = this.$resource("/websites/{{ $website->id }}/navigation/");
+                var children = mapFromArray(navmenu.children, 'id');
 
-            var $el = $(this.$el).children('ol').first();
-            var vm = this;
-            var received = false;
+                var newItem = {
+                    id: item.id,
+                    label: item.pivot ? item.pivot.label : item.label,
+                    url: item.pivot ? item.pivot.url : item.url,
+                    new_tab: item.pivot ? item.pivot.new_tab : item.new_tab,
+                    children: [],
+                    parent: parent ? parent.id : null
+                };
 
-            // LINK SORTABLE
-            $el.nestedSortable({
-                handle: '.handle',
-                items: 'li',
-                helper: 'original',
-                toleranceElement: '> div',
-                placeholder: 'placeholder',
-                maxLevels: this.navmenu.max_depth || 2,
-
-                stop: function(e, ui) {
-                    var hierarchy = $el.nestedSortable('toHierarchy', {attribute: 'data-id'});
-                    var item = $(ui.item);
-                    item.find('i').removeClass().addClass('fa fa-spinner fa-spin')
-                    vm.store(hierarchy, true, function() { item.parent('ol').children('.ui-draggable').remove(); });
+                if (children && children[item.navigatable_id] !== undefined) {
+                    newItem.children = parseContent(children[item.navigatable_id], item);
                 }
 
+                newContent.push(newItem)
             });
 
-            vm.content = parseContent(vm.navmenu);
-            vm.initialState = parseContent(vm.navmenu);
+            return newContent
+        }
 
-        },
+        /**
+         * Creates a map out of an array be choosing what property to key by
+         *
+         */
+        function mapFromArray(array, prop) {
+            var map = {};
+            if (array && array.length) {
+                for (var i=0; i < array.length; i++) {
+                    map[ array[i][prop] ] = array[i];
+                }
+            }
+            return map;
+        }
 
-        methods: {
-            restore: function() {
-                this.content = this.initialState;
+        var Navmenu = Vue.extend({
+            template: '#navmenu',
+            props: ['navmenu'],
+
+            data: function() {
+                return {
+                    content: [],
+                    hierarchy: undefined,
+                    initialState: undefined,
+                    importVisible: false,
+                    jsonVisible: false,
+                    importedContent: undefined
+                }
             },
-            serialize: function() {
-                console.log(JSON.stringify(this.content));
-            },
-            importContent: function() {
-                this.content = this.importedContent;
-                this.importedContent = '';
-            },
-            store: function(hierarchy, pretend, cb) {
 
-                pretend = pretend || false;
-                hierarchy = hierarchy || this.content;
+            ready: function() {
+                this.resource = this.$resource("/websites/{{ $website->id }}/navigation/");
 
-                this.resource.save({
-                    navmenu_name: this.navmenu.name,
-                    hierarchy: JSON.stringify(hierarchy),
-                    pretend: pretend
-                }).then(function(response) {
-                    this.content = parseContent(response.data);
+                var $el = $(this.$el).children('ol').first();
+                var vm = this;
+                var received = false;
 
-                    if (!pretend) {
-                        this.initialState = this.content;
+                // LINK SORTABLE
+                $el.nestedSortable({
+                    handle: '.handle',
+                    items: 'li',
+                    helper: 'original',
+                    toleranceElement: '> div',
+                    placeholder: 'placeholder',
+                    maxLevels: this.navmenu.max_depth || 2,
+
+                    stop: function(e, ui) {
+                        var hierarchy = $el.nestedSortable('toHierarchy', {attribute: 'data-id'});
+                        var item = $(ui.item);
+                        item.find('i').removeClass().addClass('fa fa-spinner fa-spin')
+                        vm.store(hierarchy, true, function() { item.parent('ol').children('.ui-draggable').remove(); });
                     }
 
-                    if (cb) {
-                        cb(response);
-                    }
+                });
 
-                }, function(error) {
-                    console.error(error)
+                vm.content = parseContent(vm.navmenu);
+                vm.initialState = parseContent(vm.navmenu);
+
+            },
+
+            methods: {
+                restore: function() {
+                    this.content = this.initialState;
+                },
+                serialize: function() {
+                    console.log(JSON.stringify(this.content));
+                },
+                importContent: function() {
+                    this.content = this.importedContent;
+                    this.importedContent = '';
+                },
+                store: function(hierarchy, pretend, cb) {
+
+                    pretend = pretend || false;
+                    hierarchy = hierarchy || this.content;
+
+                    this.resource.save({
+                        navmenu_name: this.navmenu.name,
+                        hierarchy: JSON.stringify(hierarchy),
+                        pretend: pretend
+                    }).then(function(response) {
+                        this.content = parseContent(response.data);
+
+                        if (!pretend) {
+                            this.initialState = this.content;
+                        }
+
+                        if (cb) {
+                            cb(response);
+                        }
+
+                    }, function(error) {
+                        console.error(error)
+                    });
+                }
+            },
+
+            events: {
+                destroyNavitem: function(data) {
+                    var $el = $(this.$el).children('ol').first();
+                    var hierarchy = $el.nestedSortable('toHierarchy', {attribute: 'data-id'});
+                    this.store(hierarchy, true)
+                }
+            },
+
+            http: {
+                root: '/root',
+                headers: {
+                   'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            }
+        })
+
+        var Navitem = Vue.extend({
+            template: '#navitem',
+            props: ['navitem'],
+            data: function() {
+                return {
+                    showOptions: false
+                }
+            },
+            methods: {
+                destroy: function() {
+                    var parent = $(this.$el).remove();
+                    this.$dispatch('destroyNavitem', {item: this.navitem})
+                }
+            }
+        })
+
+        Vue.component('Navitem', Navitem);
+        Vue.component('Navmenu', Navmenu);
+
+        Vue.directive('draggable', {
+            bind: function() {
+                var vm = this.vm;
+                var $el = $(this.el);
+
+                $el.draggable({
+                    connectToSortable: '.sortable',
+                    helper: 'clone',
+                    opacity: 0.2,
+                    handle: '.handle',
                 });
             }
-        },
+        });
 
-        events: {
-            destroyNavitem: function(data) {
-                var $el = $(this.$el).children('ol').first();
-                var hierarchy = $el.nestedSortable('toHierarchy', {attribute: 'data-id'});
-                this.store(hierarchy, true)
+        var NavSources = new Vue({
+            el: '#sources-wrapper',
+            data: content
+        })
+
+        var UtilsSources = new Vue({
+            el: '#utils-wrapper',
+            data: content
+        })
+
+        var NavManager = new Vue({
+            el: "#navmanager",
+            data: content,
+            ready: function() {
+                this.items = mapFromArray(content.items, 'id');
             }
-        },
+        });
 
-        http: {
-            root: '/root',
-            headers: {
-               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        }
-    })
-
-    var Navitem = Vue.extend({
-        template: '#navitem',
-        props: ['navitem'],
-        data: function() {
-            return {
-                showOptions: false
-            }
-        },
-        methods: {
-            destroy: function() {
-                var parent = $(this.$el).remove();
-                this.$dispatch('destroyNavitem', {item: this.navitem})
-            }
-        }
-    })
-
-    Vue.component('Navitem', Navitem);
-    Vue.component('Navmenu', Navmenu);
-
-    Vue.directive('draggable', {
-        bind: function() {
-            var vm = this.vm;
-            var $el = $(this.el);
-
-            $el.draggable({
-                connectToSortable: '.sortable',
-                helper: 'clone',
-                opacity: 0.2,
-                handle: '.handle',
-            });
-        }
-    });
-
-    var NavSources = new Vue({
-        el: '#sources-wrapper',
-        data: content
-    })
-
-    var UtilsSources = new Vue({
-        el: '#utils-wrapper',
-        data: content
-    })
-
-    var NavManager = new Vue({
-        el: "#navmanager",
-        data: content,
-        ready: function() {
-            this.items = mapFromArray(content.items, 'id');
-        }
-    });
+    })(Vue)
 
 </script>
 

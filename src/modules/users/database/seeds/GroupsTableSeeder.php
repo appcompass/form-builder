@@ -26,5 +26,23 @@ class GroupsTableSeeder extends Seeder
 		])
 			->permissions()
 			->attach(Permission::first());
+
+		$group = Group::create([
+			'name' => 'admin',
+			'label' => 'Administrators',
+			'description' => 'Allows basic Control Panel access',
+			'active' => true
+		])
+			->permissions()
+			->attach(Permission::first());
+
+		$group = Group::create([
+			'name' => 'agents',
+			'label' => 'Agents',
+			'description' => 'Encompasses all the agents specific permissions',
+			'active' => true
+		])
+			->permissions()
+			->attach(Permission::first());
 	}
 }

@@ -175,9 +175,9 @@ class CpGroupsController extends UiBaseController
     {
         $groups->update($request->all());
 
-        if ($request->permissions) {
+        $groups->revokeAll();
 
-            $groups->revokeAll();
+        if ($request->permissions) {
 
             $groups->grantPermissions($request->permissions);
 

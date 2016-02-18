@@ -27,6 +27,14 @@ class Permission extends Model
     ];
 
     /**
+     * Rules
+     */
+    public static $rules = [
+        'label' => 'required',
+        'type' => 'required'
+    ];
+
+    /**
     *	  Get permission by name
     *
     *

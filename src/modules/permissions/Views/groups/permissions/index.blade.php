@@ -31,53 +31,57 @@
 @section('footer.scripts')
 
 <script>
-    var data = {
-        owned: {!! json_encode($groups->permissions) !!},
-        avail: {!! json_encode($permissions) !!}
-    };
+    (function(Vue) {
 
-    var Vue = new Vue({
-        el: '#permissions-manager',
-        data: data,
+        var data = {
+            owned: {!! json_encode($groups->permissions) !!},
+            avail: {!! json_encode($permissions) !!}
+        };
 
-        ready: function() {
-            this.resource = this.$resource("{{ $meta->base_url }}");
-        },
+        var Vue = new Vue({
+            el: '#permissions-manager',
+            data: data,
 
-        methods: {
-            add: function(permission) {
-
-                var found = this.owned.some(function(el) {
-                    return el.id === permission.id;
-                })
-
-                if (!found) {
-                    this.owned.push(permission);
-                }
-
+            ready: function() {
+                this.resource = this.$resource("{{ $meta->base_url }}");
             },
 
-            remove: function(item) {
-                this.owned.$remove(item);
-            },
+            methods: {
+                add: function(permission) {
 
-            store: function() {
-                this.resource.save({
-                    permissions: this.owned
-                }).then(function(response) {
-                    console.log(response)
-                }, function(error) {
-                    console.error(error);
-                })
-            },
+                    var found = this.owned.some(function(el) {
+                        return el.id === permission.id;
+                    })
 
-            http: {
-                root: '/root',
-                headers: {
-                   'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    if (!found) {
+                        this.owned.push(permission);
+                    }
+
+                },
+
+                remove: function(item) {
+                    this.owned.$remove(item);
+                },
+
+                store: function() {
+                    this.resource.save({
+                        permissions: this.owned
+                    }).then(function(response) {
+                        console.log(response)
+                    }, function(error) {
+                        console.error(error);
+                    })
+                },
+
+                http: {
+                    root: '/root',
+                    headers: {
+                       'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
                 }
             }
-        }
-    })
+        })
+
+    })(Vue)
 </script>
 @stop

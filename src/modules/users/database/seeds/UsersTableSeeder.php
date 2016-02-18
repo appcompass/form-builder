@@ -2,11 +2,15 @@
 
 namespace P3in\Seeders;
 
-use Illuminate\Database\Seeder;
-use P3in\Models\User;
-use P3in\Models\Permission;
-use P3in\Models\Group;
+use Carbon\Carbon;
 use DB;
+use Illuminate\Database\Seeder;
+use P3in\Models\Group;
+use P3in\Models\Navmenu;
+use P3in\Models\Page;
+use P3in\Models\Permission;
+use P3in\Models\User;
+use P3in\Models\Website;
 
 class UsersTableSeeder extends Seeder
 {
@@ -17,29 +21,29 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        // some error going on with factory not finding this model.  so commenting out for now.
-        // $user = factory('P3in\Models\User', 10)
-        //  ->create()
-        //  ->each(function($user) {
-        //      $user
-        //          ->permissions()
-        //          ->attach(Permission::first());
-        //   });
 
-    //    $user
-    //      ->permissions()
-    //      ->attach([Permission::firstOrFail()->id, factory('P3in\Models\Permission')->create()->id]);
+        $control_panel = Website::admin();
 
-    //    $user
-    //      ->groups()
-    //      ->attach(Group::first());
-    //  });
+        $user_subnav = Navmenu::byName('cp_users_subnav');
 
-        /**
-        *   create some actual users
-        *
-        *
-        */
+        //
+        // USER INFO
+        //
+        $user_info = Page::firstOrNew([
+            'name' => 'cp_user_info',
+            'title' => 'User Info',
+            'description' => 'User informations',
+            'slug' => 'edit',
+            'order' => 1,
+            'active' => true,
+            'published_at' => Carbon::now()
+        ]);
 
-  }
+        $user_info->website()->associate($control_panel);
+
+        $user_info->save();
+
+        $user_subnav->addItem($user_info);
+
+    }
 }
