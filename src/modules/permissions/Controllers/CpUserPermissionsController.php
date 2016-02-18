@@ -2,25 +2,28 @@
 
 namespace P3in\Controllers;
 
+use Illuminate\Http\Request;
 use P3in\Controllers\UiBaseController;
+use P3in\Models\Permission;
 use P3in\Models\User;
 
-class CpUserGroupsController extends UiBaseController
+class CpUserPermissionsController extends UiBaseController
 {
 
     public $meta_install = [
 
-        'classname' => User::class,
+        'classname' => Permission::class,
         'index' => [
             'data_targets' => [
                 [
-                    'route' => 'users.index',
-                    'target' => '#record-detail'
+                    'route' => 'users.show',
+                    'target' => '#main-content-out'
                 ],[
-                    'route' => 'users.groups',
+                    'route' => 'users.permissions.index',
                     'target' => '#record-detail'
                 ]
-            ]
+            ],
+            'heading' => 'User Groups',
         ],
         'show' => [
             'data_targets' => [
@@ -28,15 +31,50 @@ class CpUserGroupsController extends UiBaseController
                     'route' => 'users.show',
                     'target' => '#main-content-out'
                 ],[
-                    'route' => 'users.groups',
+                    'route' => 'users.permissions',
                     'target' => '#record-detail'
                 ]
             ],
-            'heading' => 'User Groups',
-            'sub_section_name' => 'Manage User\'s Groups'
+            'heading' => 'User Permissions',
+            'sub_section_name' => 'Manage User\'s Permissions'
         ]
 
     ];
 
 
+    public function __construct()
+    {
+        $this->middleware('auth');
+
+        $this->controller_class = __CLASS__;
+        $this->module_name = 'permissions';
+
+        $this->setControllerDefaults();
+
+    }
+
+    public function index(User $users)
+    {
+        $users->load('permissions');
+
+        $available_perms = Permission::all();
+
+        $this->meta->base_url = '/users/' . $users->id . '/permissions/';
+
+        return view('permissions::user.permissions.index', compact('users', 'available_perms'))
+            ->with('meta', $this->meta);
+    }
+
+    public function store(Request $request, User $users)
+    {
+        $users->permissions()->detach();
+
+        foreach ($request->permissions as $perm) {
+
+            $users->grantPermission(Permission::findOrFail($perm['id']));
+
+        }
+
+        return \Response::json(['/users/'.$users->id.'/permissions']);
+    }
 }

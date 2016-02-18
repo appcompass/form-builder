@@ -10,7 +10,7 @@
         <ul>
             <li v-for="permission in owned">
                 @{{ permission.label }}
-                <a href v-on:click.prevenr="remove(permission)" class="btn btn-xs btn-danger">-</a>
+                <a href v-on:click.prevenr="remove(permission)" class="btn btn-xs btn-danger"><i class="fa fa-trash-o"> </i></a>
             </li>
         </ul>
 

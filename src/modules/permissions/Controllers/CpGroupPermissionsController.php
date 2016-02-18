@@ -85,9 +85,9 @@ class CpGroupPermissionsController extends UiBaseController
 
     public function store(Request $request, Group $groups)
     {
-        foreach($request->get('permissions') as $permission) {
+        $groups->revokeAll();
 
-            $groups->revokeAll();
+        foreach($request->get('permissions') as $permission) {
 
             $groups->grantPermissions($permission['type']);
 
