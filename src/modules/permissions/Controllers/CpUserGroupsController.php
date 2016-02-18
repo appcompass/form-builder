@@ -38,6 +38,9 @@ class CpUserGroupsController extends UiBaseController
             ],
             'heading' => 'User Groups',
             'sub_section_name' => 'Manage User\'s Groups'
+        ],
+        'edit' => [
+            'heading' => 'User\'s Groups'
         ]
 
     ];
@@ -56,7 +59,9 @@ class CpUserGroupsController extends UiBaseController
 
     public function index(User $users)
     {
-        $available_groups = Group::all();
+        $available_groups = Group::all()->load('permissions');
+
+        $users->load('groups.permissions');
 
         $this->meta->base_url = '/users/' . $users->id . '/groups/';
 

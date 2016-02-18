@@ -37,6 +37,9 @@ class CpUserPermissionsController extends UiBaseController
             ],
             'heading' => 'User Permissions',
             'sub_section_name' => 'Manage User\'s Permissions'
+        ],
+        'edit' => [
+            'heading' => 'User Permissions'
         ]
 
     ];
@@ -68,7 +71,7 @@ class CpUserPermissionsController extends UiBaseController
     {
         $users->permissions()->detach();
 
-        foreach ($request->permissions as $perm) {
+        foreach ($request->owned as $perm) {
 
             $users->grantPermission(Permission::findOrFail($perm['id']));
 

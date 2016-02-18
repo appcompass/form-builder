@@ -60,7 +60,7 @@ class CpGroupsController extends UiBaseController
                 ]
             ],
             'heading' => 'Groups Informations',
-            'sub_section_name' => 'Groups Administration',
+            'sub_section_name' => 'Group Administration',
         ],
         'edit' => [
             'data_targets' => [

@@ -6,21 +6,65 @@
 
 @section('body')
     <div class="col-sm-9 col-sm-offset-1" id="permissions-manager">
-        <p class="page-header">Group's Permissions</p>
-        <ul>
-            <li v-for="permission in owned">
-                @{{ permission.label }}
-                <a href v-on:click.prevenr="remove(permission)" class="btn btn-xs btn-danger"><i class="fa fa-trash-o"> </i></a>
-            </li>
-        </ul>
+        <p class="page-header">Currently Owned</p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Label</th>
+                    <th>Description</th>
+                    <th>Permissions</th>
+                    <th></th>
+                </tr>
+            </thead>
 
-        <p class="page-header">Available Permissions</p>
-        <ul>
-            <li v-for="permission in avail">
-                @{{ permission.label }}
-                <a href v-on:click.prevenr="add(permission)" class="btn btn-xs btn-success">+</a>
-            </li>
-        </ul>
+            <tbody>
+                <tr v-for="single in owned">
+                    <td>@{{ single.label }}</td>
+                    <td>@{{ single.description }}</td>
+                    <td>
+                        <div v-if="single.permissions">
+                            <ul>
+                                <li v-for="perm in single.permissions">@{{ perm.label }}</li>
+                            </ul>
+                        </div>
+                    </td>
+                    <td>
+                        <a
+                            href
+                            v-on:click.prevent="remove(single)"
+                            class="btn btn-xs btn-danger"
+                        ><i class="fa fa-trash-o"> </i></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p class="page-header">Available</p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Label</th>
+                    <th>Description</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="single in avail">
+                    <td>@{{ single.label }}</td>
+                    <td>@{{ single.description }}</td>
+                    <td>
+                        <a
+                            href
+                            v-on:click.prevenr="add(single)"
+                            class="btn btn-xs btn-success"
+                        >
+                            <i class="fa fa-plus"></i>
+                        </a>
+
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
         <div class="tools pull-right">
             <a class="btn btn-primary" v-on:click.prevent="store()">Save</a>
@@ -35,7 +79,8 @@
 
         var data = {
             owned: {!! json_encode($owned) !!},
-            avail: {!! json_encode($avail) !!}
+            avail: {!! json_encode($avail) !!},
+            owner: {!! json_encode($owner) !!}
         };
 
         var Vue = new Vue({
@@ -47,14 +92,14 @@
             },
 
             methods: {
-                add: function(permission) {
+                add: function(item) {
 
                     var found = this.owned.some(function(el) {
-                        return el.id === permission.id;
+                        return el.id === item.id;
                     })
 
                     if (!found) {
-                        this.owned.push(permission);
+                        this.owned.push(item);
                     }
 
                 },
@@ -67,7 +112,6 @@
                     this.resource.save({
                         owned: this.owned
                     }).then(function(response) {
-                        console.log(response)
                     }, function(error) {
                         console.error(error);
                     })

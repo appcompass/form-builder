@@ -41,7 +41,8 @@ class CpGroupPermissionsController extends UiBaseController
             'data_targets' => [
                 'route' => 'groups.permissions.edit',
                 'target' => '#record-detail'
-            ]
+            ],
+            'heading' => 'Group Permissions'
         ],
         'show' => [
             'data_targets' => [
