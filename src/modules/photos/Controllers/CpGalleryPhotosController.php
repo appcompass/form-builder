@@ -3,12 +3,13 @@
 namespace P3in\Controllers;
 
 use Auth;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use P3in\Controllers\UiBaseController;
 use P3in\Models\Gallery;
 use P3in\Models\GalleryItem;
-use P3in\Models\Photo;
-use Illuminate\Http\Request;
-use P3in\Controllers\UiBaseController;
 use P3in\Models\Option;
+use P3in\Models\Photo;
 use P3in\Models\Website;
 
 class CpGalleryPhotosController extends UiBaseController
@@ -83,6 +84,10 @@ class CpGalleryPhotosController extends UiBaseController
 
         $galleries->load('photos.galleryItem', 'photos.user');
 
+        if (empty($this->meta->base_url)) {
+            $this->setBaseUrl(['galleries', $galleries->id, 'photos']);
+        }
+
         $photos = $galleries->photos
             ->each(function($photo) {
                 $photo->type = $photo->getOption(Photo::TYPE_ATTRIBUTE_NAME, 'label');
@@ -130,7 +135,7 @@ class CpGalleryPhotosController extends UiBaseController
 
         if ($request->hasFile('file')) {
 
-            $atributes = [];
+            $attributes = ['file_path' => 'photos/'];
 
             if (get_class($galleries->galleryable) === Website::class) {
 
@@ -146,7 +151,17 @@ class CpGalleryPhotosController extends UiBaseController
 
             }
 
-            $galleries->addPhoto(Photo::store($request->file, Auth::user(), $attributes, $disk, 'images/'));
+            if (!empty($this->photo_root)) {
+                $attributes['file_path'] = $this->photo_root;
+            }
+
+            $photo = Photo::store($request->file, Auth::user(), $attributes, $disk);
+
+            $galleries->addPhoto($photo);
+
+            if (!empty($this->keep_gallery_polymorphic) && !is_null($galleries->galleryable)) {
+                $galleries->galleryable->photos()->save($photo);
+            }
 
         }
 

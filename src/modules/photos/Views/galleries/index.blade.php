@@ -7,14 +7,20 @@
         </span>
         Upload Photos
     </header>
-
     <div class="panel-body">
         <div class="row">
             <div class="col-lg-12">
                 {{-- @can('update', $record) --}}
-                    <form action="/galleries/{{ $gallery->id }}/photos" method="POST" class="dropzone" id="dropzone_{{ $gallery->id }}">
-                        {{ csrf_field() }}
-                    </form>
+                    {!!
+                        Form::model($gallery, [
+                            'class' => 'dropzone',
+                            'id' => 'dropzone_'.$gallery->id,
+                            'method' => 'POST',
+                            'data-target' => '#record-detail',
+                            'url' => $meta->base_url
+                        ])
+                    !!}
+                    {!! Form::close() !!}
                 {{-- @endcan --}}
             </div>
         </div>

@@ -122,4 +122,9 @@ class Gallery extends Model
         ]);
     }
 
+    public function scopeOf($query, $class_name)
+    {
+        return $query->where('galleryable_type', $class_name);
+    }
+
 }
