@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use P3in\Controllers\UiBaseController;
 use P3in\Models\NavigationItem;
+use P3in\Models\NavitemNavmenu;
 use P3in\Models\Navmenu;
 use P3in\Models\Section;
 use P3in\Models\Website;
@@ -58,34 +59,22 @@ class CpWebsiteNavigationController extends UiBaseController
   public function index(Website $websites)
   {
 
-    $websites->load('navmenus', 'pages');
+    $websites->load('navmenus', 'pages', 'pages.navitem');
 
     $navmenus = $websites->navmenus()->whereNull('parent_id')->get();
 
-    $navitems = [];
+    foreach($websites->pages as $page) {
 
-    // get navitem component out of all the website's pages
-    foreach ($websites->pages as $page) {
-
-      $navitems[] = $page->navItem;
-
-    }
-
-    $utilities = Section::byType('utils')->get();
-
-    $utils = [];
-
-    foreach ($utilities as $util) {
-
-      $utils[] = $util->navItem;
+      $navitems[] = $page->navItem()
+        ->first()
+        ->toArray();
 
     }
 
-    return view('navigation::index')
-      ->with('website', $websites)
-      ->with('navmenus', $navmenus)
-      ->with('utils', $utils)
-      ->with('items', $navitems);
+    $utils = Section::byType('utils')->with('navitem')->get();
+
+    return view('navigation::index', compact('navmenus', 'navitems', 'utils'))
+      ->with('website', $websites);
   }
 
   /**
@@ -175,9 +164,19 @@ class CpWebsiteNavigationController extends UiBaseController
 
       $item = NavigationItem::findOrFail($content['id']);
 
-      if ($item->name === 'empty') {
+      if ($item->name === 'empty') { $item->children = []; }
 
-        $item->children = [];
+      $original = NavitemNavmenu::where('navigation_item_id', $content['id'])->first();
+
+      if ($original) {
+
+        $item->label = $original->label;
+
+        $item->order = $original->order;
+
+        $item->new_tab = $original->new_tab;
+
+        $item->url = $original->url;
 
       }
 
@@ -189,13 +188,17 @@ class CpWebsiteNavigationController extends UiBaseController
           'label' => $item['label']
         ]);
 
-        $child_nav->id = $item->id;
+        $child_nav->id = $original_item->id;
 
         $navmenu->children->push($child_nav);
 
-        $item = $child_nav->getNavigationItem(['has_content' => true]);
+        $item = $child_nav->getNavigationItem([
+          'url' => $item->url,
+          'label' => $item->label,
+          'new_tab' => $item->new_tab
+        ]);
 
-        $item->navigatable_id = $original_item->id;
+        $item->linked_id = $original_item->id;
 
         $item->id = $original_item->id;
 
@@ -203,7 +206,7 @@ class CpWebsiteNavigationController extends UiBaseController
 
       }
 
-      $navmenu->items->push($item);
+      $navmenu->navitems->push($item);
 
     }
 
@@ -225,11 +228,8 @@ class CpWebsiteNavigationController extends UiBaseController
         'new_tab' => isset($content['new_tab']) ? $content['new_tab'] : false
       ];
 
-      $item->fill(array_replace($item->toArray(), $overrides));
 
-      if ( (isset($content['children']) && count($content['children'])) || $item->name === 'empty') {
-
-          $overrides['has_content'] = true;
+      if ( (isset($content['children']) && count($content['children'])) ) { //} || $item->name === 'empty') {
 
           $child_nav = Navmenu::byName($item->label);
 
@@ -241,11 +241,15 @@ class CpWebsiteNavigationController extends UiBaseController
 
       } else {
 
-          $navmenu->addItem($item, null, $overrides);
+        $item->fill(array_replace($item->toArray(), $overrides));
+
+        $navmenu->addItem($item, null, $overrides);
 
       }
 
     }
+
+    return $navmenu;
 
   }
 

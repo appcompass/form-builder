@@ -93,14 +93,6 @@
             <div class="col-md-12">
                 <div class="pull-right clearfix row">
                     <a
-                        class="btn btn-primary"
-                        @click="importVisible = !importVisible"
-                    >Import</a>
-                    <a
-                        class="btn btn-primary"
-                        @click="serialize"
-                    >Serialize</a>
-                    <a
                         class="btn btn-danger"
                         @click="restore"
                     >Cancel</a>
@@ -112,21 +104,6 @@
             </div>
         </div>
 
-        <div class="row" v-if="importVisible">
-            <h5>Write or paste the Navigation Menu content</h5>
-            <div class="col-md-12">
-                <pre>
-                    <textarea
-                        class="form-control"
-                        cols="30"
-                        rows="10"
-                        v-model="importedContent"
-                        @change="importContent()"
-                    ></textarea>
-                </pre>
-            </div>
-
-        </div>
     </div>
 </template>
 
@@ -144,19 +121,44 @@
             </div>
             <img src="https://placehold.it/120x120" alt="">
             <footer>@{{ navitem.label }}</footer>
-            <span class="row" v-if="showOptions" style="background: #ccc;">
-                <div class="col-md-10 col-offset-md-1">
-                    <label for="" class="col-md-4">Url</label>
-                    <div class="col-md-8">
-                        <input type="text" class="form-control" v-model="navitem.url">
-                    </div>
-                </div>
+            <span class="item-options row" v-if="showOptions">
 
-                <div class="col-md-10 col-offset-md-1">
-                    <label for="" class="col-md-4">New Tab</label>
-                    <div class="col-md-8">
-                        <input type="checkbox" v-model="navitem.new_tab">
+                <div class="col-sm-10 col-sm-offset-1 well">
+
+                    <div class="form-group">
+                        <label for="url" class="control-label col-sm-4">Url</label>
+                        <div class="col-sm-8">
+                            <input
+                                type="text"
+                                class="form-control input-sm"
+                                v-model="navitem.url"
+                            >
+                            <small class="help-block">What should this element point to?</small>
+                        </div>
                     </div>
+
+                    <div class="form-group">
+                        <label for="url" class="control-label col-sm-4">New Tab</label>
+                        <div class="col-sm-8">
+                            <input
+                                type="text"
+                                class="form-control input-sm"
+                                v-model="navitem.new_tab"
+                            >
+                            <small class="help-block">Check if link should open in a new tab</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="url" class="control-label col-sm-4">Permission Required</label>
+                        <div class="col-sm-8">
+                            <select class="form-control input-sm">
+                                <option value="somethig">Create Galleries</option>
+                            </select>
+                            <small class="help-block">Select what permission is required to view this item. Leave blank for guest.</small>
+                        </div>
+                    </div>
+
                 </div>
             </span>
         </div>
@@ -180,38 +182,36 @@
 
     (function(Vue) {
 
-        // Vue.config.debug = true
-
         var content = {
             navmenus: {!! $navmenus->toJson() !!},
-            items: {!! json_encode($items) !!},
+            items: {!! json_encode($navitems) !!},
             utils: {!! json_encode($utils) !!},
             content: []
         }
 
         /**
          *  Parses content of a navmenu
-         *
+         *  converting it to 'toHierarchy' output
          */
         function parseContent(navmenu, parent) {
             var newContent = [];
             parent = parent || null;
 
-            navmenu.items.forEach(function(item) {
+            var children = mapFromArray(navmenu.children, 'id');
 
-                var children = mapFromArray(navmenu.children, 'id');
+            navmenu.navitems.forEach(function(item) {
 
                 var newItem = {
-                    id: item.id,
+                    id: item.navigation_item_id || item.id,
                     label: item.pivot ? item.pivot.label : item.label,
                     url: item.pivot ? item.pivot.url : item.url,
                     new_tab: item.pivot ? item.pivot.new_tab : item.new_tab,
                     children: [],
-                    parent: parent ? parent.id : null
+                    parent: parent ? parent.id : null,
                 };
 
-                if (children && children[item.navigatable_id] !== undefined) {
-                    newItem.children = parseContent(children[item.navigatable_id], item);
+                if (children && children[item.linked_id] !== undefined) {
+                    newItem.children = parseContent(children[item.linked_id], item);
                 }
 
                 newContent.push(newItem)
@@ -243,9 +243,7 @@
                     content: [],
                     hierarchy: undefined,
                     initialState: undefined,
-                    importVisible: false,
                     jsonVisible: false,
-                    importedContent: undefined
                 }
             },
 
@@ -268,8 +266,12 @@
                     stop: function(e, ui) {
                         var hierarchy = $el.nestedSortable('toHierarchy', {attribute: 'data-id'});
                         var item = $(ui.item);
+
                         item.find('i').removeClass().addClass('fa fa-spinner fa-spin')
-                        vm.store(hierarchy, true, function() { item.parent('ol').children('.ui-draggable').remove(); });
+
+                        vm.store(hierarchy, true, function() {
+                            item.parent('ol').children('.ui-draggable').remove();
+                        });
                     }
 
                 });
@@ -285,10 +287,6 @@
                 },
                 serialize: function() {
                     console.log(JSON.stringify(this.content));
-                },
-                importContent: function() {
-                    this.content = this.importedContent;
-                    this.importedContent = '';
                 },
                 store: function(hierarchy, pretend, cb) {
 
@@ -405,8 +403,8 @@
     .handle { float: left;  /*background: #ddd;*/  display: inline-block; line-height: 30px !important; width: 26px; margin-right: 10px; text-align: center; border-radius: 3px;}
     .handle:hover { cursor: pointer; background: #eee; }
 
-    li input[type="text"] { border: 0; background: transparent; min-width: 25rem; border-bottom: 1px solid transparent; }
-    li input[type="text"]:focus { border-bottom: 1px solid #666; background: transparent; }
+    .title > input[type="text"] { border: 0; background: transparent; min-width: 25rem; border-bottom: 1px solid transparent; }
+    .title > input[type="text"]:focus { border-bottom: 1px solid #666; background: transparent; }
     li button { background: #fff; border: 0; }
 
     .placeholder { border: 1px dashed #aaa; height: 25px; background: rgba(238, 238, 238, 0.1); width: 100%;}
@@ -417,7 +415,8 @@
     .inline-draggable li div .handle { position: absolute; right: -15px; top: -6px;}
     .inline-draggable .tools, .inline-draggable .title {display: none;}
     .inline-draggable li div footer { display: block; color: #fff; padding: 5px 0; text-align: center; line-height: 20px; 100%; width: 100%; position: absolute; bottom: 0;left: 0;right: 0; background: rgba(128, 128, 128, 0.7); }
-
+    .item-options label { text-align: right; }
+    .item-options {float: left; width: 100%; margin-top: 1rem;}
 </style>
 
 @stop

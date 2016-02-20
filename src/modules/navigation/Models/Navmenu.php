@@ -35,7 +35,7 @@ class Navmenu extends Model
         'temp'
     ];
 
-    protected $with = ['children.items', 'items'];
+    protected $with = ['children.navitems', 'navitems'];
 
     /**
      *  Get a navmenu by name
@@ -78,20 +78,12 @@ class Navmenu extends Model
      *  Add a child nav
      *
      */
-    public function addChildren(Navmenu $navmenu, $order = null, $overrides = [], $pretend = false)
+    public function addChildren(Navmenu $navmenu, $order = null, $overrides = [])
     {
 
-        if ($pretend) {
+        $this->children()->save($navmenu);
 
-            $this->children->push($navmenu);
-
-        } else {
-
-            $this->children()->save($navmenu);
-
-        }
-
-        $this->addItem($navmenu, $order, $overrides, $pretend);
+        $this->addItem($navmenu, $order, $overrides);
 
         return;
     }
@@ -114,15 +106,6 @@ class Navmenu extends Model
 
       return $navmenu->save();
     }
-  /**
-   *
-   *
-   *
-   */
-    public function item()
-    {
-        return $this->item();
-    }
 
     /**
      *  Link items to Navigation Items
@@ -131,10 +114,15 @@ class Navmenu extends Model
     public function items()
     {
 
-        return $this->belongsToMany(NavigationItem::class)
-            ->withPivot('id', 'order', 'label', 'url', 'new_tab')
-            ->orderBy('pivot_order');
+        return $this->hasMany(NavitemNavmenu::class)
+            ->orderBy('order');
 
+    }
+
+    public function navitems()
+    {
+        return $this->hasMany(NavitemNavmenu::class)
+            ->orderBy('order');
     }
 
     /**
@@ -157,9 +145,9 @@ class Navmenu extends Model
 
         }
 
-        $this->items()->detach();
+        $this->navitems()->delete();
 
-        $this->load('items');
+        $this->load('navitems');
 
         return $this;
 
@@ -212,22 +200,18 @@ class Navmenu extends Model
      *
      *  @param mixed $navItem either an instance of NavigationItem or an object which navItem's method returns an instance of NavigationItem
      */
-    public function addItem($navItem, $order = null, $overrides = [], $pretend = false)
+    public function addItem($navItem, $order = null, $overrides = [])
     {
 
         if (method_exists($navItem, 'navItem')) {
-
-            return $this->addItem($navItem->navItem($overrides, $pretend)->first(), $order, $overrides, $pretend);
-
+            return $this->addItem($navItem->navItem($overrides)->first(), $order, $overrides);
         }
 
         if (! $navItem instanceof NavigationItem) {
-
             throw new Exception("Can't add item to {$this->name}.");
-
         }
 
-        if (! $this->items->contains($navItem)) {
+        if (! $this->navitems->contains($navItem)) {
 
             if (is_null($order)) {
 
@@ -237,24 +221,16 @@ class Navmenu extends Model
 
             }
 
-            if ($pretend) {
+            $navitem_navmenu = new NavitemNavmenu([
+                'navmenu_id' => $this->id,
+                'navigation_item_id' => $navItem->id,
+                'order' => $order,
+                'label' => isset($overrides['label']) ? $overrides['label'] : $navItem['label'],
+                'url' => isset($overrides['url']) ? $overrides['url'] : $navItem['url'],
+                'new_tab' => isset($overrides['new_tab']) ? $overrides['new_tab'] : $navItem['new_tab']
+            ]);
 
-                $navItem['pivot'] = $overrides;
-
-                $this->items->push($navItem);
-
-            } else {
-
-                // $navItem->save();
-
-                $this->items()->attach($navItem, [
-                    'order' => $order,
-                    'label' => isset($overrides['label']) ? $overrides['label'] : $navItem['label'],
-                    'url' => isset($overrides['url']) ? $overrides['url'] : $navItem['url'],
-                    'new_tab' => isset($overrides['new_tab']) ? $overrides['new_tab'] : $navItem['new_tab']
-                ]);
-
-            }
+            $navitem_navmenu->save();
 
         }
 
@@ -266,7 +242,7 @@ class Navmenu extends Model
      *  Get or create navigation menu by name
      *
      */
-    public function scopeByName($query, $name, $label = null, $pretend = false)
+    public function scopeByName($query, $name, $label = null)
     {
 
         $navmenu = Navmenu::where('name', '=', $name)->first();
@@ -284,13 +260,7 @@ class Navmenu extends Model
                 'label' => $label
             ]);
 
-            if (!$pretend) {
-
-                $navmenu->save();
-
-            }
-
-            $navmenu->load('items', 'children.items');
+            $navmenu->load('navitems', 'children.navitems');
 
         }
 
@@ -319,7 +289,6 @@ class Navmenu extends Model
         return array_replace([
             "label" => $this->label,
             "url" => '',
-            "has_content" => false,
             "req_perms" => null,
             "props" => []
         ], $overrides);

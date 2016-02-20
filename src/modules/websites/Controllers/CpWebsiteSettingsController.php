@@ -276,7 +276,7 @@ class CpWebsiteSettingsController extends UiBaseController
 
         }
 
-        return $this->json($this->setBaseUrl(['websites', $websites->id, 'pages']));
+        return $this->json($this->setBaseUrl(['websites', $websites->id, 'settings']));
 
     }
 

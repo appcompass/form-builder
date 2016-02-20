@@ -25,38 +25,30 @@ trait NavigatableTrait
    *
    *
    */
-  public function navItem($overrides = [], $pretend = false)
+  public function navItem($overrides = [])
   {
 
     if (str_is('*Module', get_class($this))) {
 
-      $this->id = Modular::get($this->module_name)->id;
+        $this->id = Modular::get($this->module_name)->id;
 
-      $rel = new MorphOne(
-        (new NavigationItem)->newQuery(),
-        $this,
-        'navigatable_type',
-        'navigatable_id',
-        'id'
-      );
+        $rel = new MorphOne(
+            (new NavigationItem)->newQuery(),
+            $this,
+            'navigatable_type',
+            'navigatable_id',
+            'id'
+        );
 
     } else {
 
-      $rel = $this->morphOne(NavigationItem::class, 'navigatable');
+        $rel = $this->morphOne(NavigationItem::class, 'navigatable');
 
     }
 
     if (!$rel->get()->count() || count($overrides)) {
 
-        if ($pretend) {
-
-          return $this->getNavigationItem($overrides);
-
-        } else {
-
-          $rel->save($this->makeNavigationItem($overrides));
-
-        }
+        $rel->save($this->makeNavigationItem($overrides));
 
     }
 
@@ -83,38 +75,28 @@ trait NavigatableTrait
 	private function makeNavigationItem($overrides = [])
 	{
 
-    if (count($overrides)) {
+        $link = (new LinkClass($this->makeLink($overrides)))->toArray();
 
-      $link = (new LinkClass($this->makeLink($overrides)))->toArray();
+        $props = '';
 
-      // $link = array_replace($link, $attributes);
+        /**
+         * To provide a reliable matching and avoid duplicate instances we
+         * are temporary removing the json field props (if present)
+         */
 
-    } else {
+        if (isset($link['props'])) {
 
-      $link = (new LinkClass($this->makeLink()))->toArray();
+          $props = $link['props'];
 
-    }
+          unset($link['props']);
 
-    $props = '';
-
-    /**
-     * To provide a reliable matching and avoid duplicate instances we
-     * are temporary removing the json field props (if present)
-     */
-
-    if (isset($link['props'])) {
-
-      $props = $link['props'];
-
-      unset($link['props']);
-
-    }
+        }
 
 		$item = NavigationItem::firstOrNew($link);
 
-    $item->props = $props;
+        $item->props = $props;
 
-    return $item;
+        return $item;
 
 	}
 
