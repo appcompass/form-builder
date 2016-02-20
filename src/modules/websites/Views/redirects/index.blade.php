@@ -105,48 +105,53 @@
 @section('footer.scripts')
 
     <script>
-        var data = {!! json_encode($redirects) !!};
 
-        data.forEach(function(item) {
-            item.editMode = false;
-        })
+        (function(Vue) {
 
-        var Vue = new Vue({
-            el: '#app',
-            data: {
-                redirects: data,
-                types: [
-                    {name: '301'},
-                    {name: '300'},
-                ]
-            },
-            ready: function() {
-                this.resource = this.$resource("{{ $meta->base_url }}");
-            },
-            methods: {
-                add: function() {
-                    this.redirects.push({from: '', to: '', type: '301', editMode: true});
+            var data = {!! json_encode($redirects) !!};
+
+            data.forEach(function(item) {
+                item.editMode = false;
+            })
+
+            var Vue = new Vue({
+                el: '#app',
+                data: {
+                    redirects: data,
+                    types: [
+                        {name: '301'},
+                        {name: '300'},
+                    ]
                 },
-                store: function() {
-                    this.resource.save({
-                        redirects: this.redirects
-                    }).then(function(response) {
-                    }, function(error) {
-                        console.log(error);
-                    })
+                ready: function() {
+                    this.resource = this.$resource("{{ $meta->base_url }}");
                 },
-                destroy: function(item) {
-                    this.redirects.$remove(item);
+                methods: {
+                    add: function() {
+                        this.redirects.push({from: '', to: '', type: '301', editMode: true});
+                    },
+                    store: function() {
+                        this.resource.save({
+                            redirects: this.redirects
+                        }).then(function(response) {
+                        }, function(error) {
+                            console.log(error);
+                        })
+                    },
+                    destroy: function(item) {
+                        this.redirects.$remove(item);
+                    }
+                },
+                http: {
+                    root: '/root',
+                    headers: {
+                       'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
                 }
-            },
-            http: {
-                root: '/root',
-                headers: {
-                   'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            }
 
-        })
+            })
+
+        })(Vue)
 
     </script>
 @stop
