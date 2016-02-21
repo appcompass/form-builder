@@ -232,6 +232,8 @@ class CpWebsitePagesController extends UiBaseController
 
         $page->website()->associate($websites);
 
+        $page->save();
+
         if ($request->has('parent')) {
 
             $parent = Page::ofWebsite($websites)->findOrFail($request->get('parent'));

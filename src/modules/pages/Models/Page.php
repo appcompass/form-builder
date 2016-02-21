@@ -208,8 +208,6 @@ class Page extends ModularBaseModel
         if ($code == 200) {
             $pageSections = $this->content()->with('template')->get();
 
-
-            // dd($pageSections);
             foreach($pageSections as $pageSection) {
                 $views[$pageSection->section][] = $pageSection->render();
             }
@@ -219,25 +217,14 @@ class Page extends ModularBaseModel
 
         $navmenus = $website->navmenus()
             ->whereNull('parent_id')
+            ->with('navitems')
             ->get();
 
-        foreach ($navmenus as $navmenu) {
-            $navmenu->load('items');
+        $views['navmenus'] = $navmenus;
 
-            $views['navmenus'][$navmenu->name] = $navmenu->toArray();
+        $views['navmenus']['main_nav'] = $navmenus->where('name', $website->getMachineName() . '_main_nav')->first();
 
-            $views['navmenus'][$navmenu->name]['children'] = [];
-
-            foreach($navmenu->children as $child) {
-
-                $views['navmenus'][$navmenu->name]['children'][$child->id] = $child;
-
-            }
-
-
-        }
-
-        $views['navmenus'] = json_decode(json_encode($views['navmenus']));
+        $views['navmenus']['footer'] = $navmenus->where('name', $website->getMachineName() . '_footer_nav')->first();
 
 
         return $views;
@@ -392,8 +379,6 @@ class Page extends ModularBaseModel
 
             $page = Page::findOrFail($path);
 
-            $this->checkPermissions($user);
-
         } catch (ModelNotFoundException $e ) {
 
             return false;
@@ -401,32 +386,4 @@ class Page extends ModularBaseModel
         }
 
     }
-
-    /**
-     * Check if User has permissions
-     *
-     *
-     */
-    public function checkPermissions(User $user = null)
-    {
-
-        $this->req_permission = is_array($this->req_permission) ? $this->req_permission : explode(",", $this->req_permission);
-
-
-        if (count($this->req_permission)) {
-
-            if (is_null($user)) {
-
-                return false;
-
-            }
-
-            return $user->hasPermissions($this->req_permission);
-
-        }
-
-        return true;
-
-    }
-
 }
