@@ -48,7 +48,6 @@
 
   @if ($item->has_content)
     <ol>
-      {{-- <a href="#!" title="Add Subnav Container" class="btn btn-default btn-xs add_subnav pull-right" data-parent-nav=""><i class="fa fa-plus"> </i> </a> --}}
       @foreach($item->navigatable->items as $sub_item)
         @include('navigation::navmenu_section', ['item' => $sub_item, 'navmenu' => $navmenu,  'website' => $website])
       @endforeach

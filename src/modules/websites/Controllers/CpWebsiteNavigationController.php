@@ -71,7 +71,13 @@ class CpWebsiteNavigationController extends UiBaseController
 
     }
 
-    $utils = Section::byType('utils')->with('navitem')->get();
+    foreach (Section::byType('utils')->with('navitem')->get() as $util) {
+
+      $utils[] = $util->navItem()
+        ->first()
+        ->toArray();
+
+    }
 
     return view('navigation::index', compact('navmenus', 'navitems', 'utils'))
       ->with('website', $websites);
@@ -80,13 +86,13 @@ class CpWebsiteNavigationController extends UiBaseController
   /**
    *  Edit
    */
-  public function edit(Website $websites, NavigationItem $navigationItems)
-  {
+  // public function edit(Website $websites, NavigationItem $navigationItems)
+  // {
 
-    return view('navigation::edit-navmenu')
-      ->with('navItem', $navigationItems)
-      ->with('website', $websites);
-  }
+  //   return view('navigation::edit-navmenu')
+  //     ->with('navItem', $navigationItems)
+  //     ->with('website', $websites);
+  // }
 
   /**
    *  Create
