@@ -70,7 +70,7 @@ class CpPermissionsNavSeeder extends Seeder
                 'active' => true,
                 'title' => 'Permissions Manager',
                 'order' => 2,
-                'slug' => 'groups',
+                'slug' => 'permissions',
                 'name' => 'cp_users_permissions',
             ]);
 
