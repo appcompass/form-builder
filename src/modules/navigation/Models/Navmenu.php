@@ -164,9 +164,15 @@ class Navmenu extends Model
     /**
      *
      */
-    public function hasChildren()
+    public function hasChildren($id = null)
     {
-        return (bool) count($this->children);
+        if (!is_null($id)) {
+
+            return (bool) $this->children->find($id);
+
+        }
+
+        return (bool) $this->children->count();
     }
 
     /**
@@ -211,7 +217,17 @@ class Navmenu extends Model
             throw new Exception("Can't add item to {$this->name}.");
         }
 
-        if (! $this->navitems->contains($navItem)) {
+        $navitem_navmenu = NavitemNavmenu::firstOrNew([
+            'navmenu_id' => $this->id,
+            'navigation_item_id' => $navItem->id,
+            'label' => isset($overrides['label']) ? $overrides['label'] : $navItem['label'],
+            'url' => isset($overrides['url']) ? $overrides['url'] : $navItem['url'],
+            'new_tab' => isset($overrides['new_tab']) ? $overrides['new_tab'] : $navItem['new_tab']
+        ]);
+
+        $navitem_navmenu->save();
+
+        if (! $this->navitems->contains($navitem_navmenu)) {
 
             if (is_null($order)) {
 
@@ -219,18 +235,11 @@ class Navmenu extends Model
                     ->where('navmenu_id', '=', $this->id)
                     ->max('order') ) + 1;
 
+                $navitem_navmenu->order = $order;
+
+                $navitem_navmenu->save();
             }
 
-            $navitem_navmenu = new NavitemNavmenu([
-                'navmenu_id' => $this->id,
-                'navigation_item_id' => $navItem->id,
-                'order' => $order,
-                'label' => isset($overrides['label']) ? $overrides['label'] : $navItem['label'],
-                'url' => isset($overrides['url']) ? $overrides['url'] : $navItem['url'],
-                'new_tab' => isset($overrides['new_tab']) ? $overrides['new_tab'] : $navItem['new_tab']
-            ]);
-
-            $navitem_navmenu->save();
 
         }
 

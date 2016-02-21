@@ -21,22 +21,22 @@ class CpPermissionsNavSeeder extends Seeder
     {
         if (\Modular::isLoaded('websites')) {
 
+            //
+            //  INIT NAVMENUS
+            //
+
             $control_panel = Website::admin();
 
-            // $permissions = Page::firstOrNew([
-            //     'description' => 'Permissions Manager',
-            //     'active' => true,
-            //     'title' => 'Permissions',
-            //     'order' => 2,
-            //     'slug' => 'permissions',
-            //     'name' => 'cp_users_permissions',
-            //     "published_at" => Carbon::now(),
-            // ]);
+            $users_main_nav = Navmenu::byName('cp_main_nav_users');
 
-            // $permissions->website()->associate($control_panel);
+            $users_main_nav->website_id = $control_panel->id;
 
-            // $permissions->save();
+            $users_main_nav->save();
 
+
+            //
+            //  GROUPS MANAGER
+            //
             $groups = Page::firstOrNew([
                 'description' => 'Groups Manager',
                 'active' => true,
@@ -44,24 +44,43 @@ class CpPermissionsNavSeeder extends Seeder
                 'order' => 2,
                 'slug' => 'groups',
                 'name' => 'cp_users_groups',
-                "published_at" => Carbon::now(),
             ]);
 
             $groups->website()->associate($control_panel);
 
+            $groups->published_at = Carbon::now();
+
             $groups->save();
 
-            // Navmenu::byName('cp_main_nav_users')->addItem($permissions, 1, [
-            //     'props' => [
-            //         'icon' => 'user',
-            //         'link' => [
-            //             'href' => '/permissions',
-            //             'data-target' => '#record-detail'
-            //         ]
-            //     ]
-            // ]);
+            $users_main_nav->addItem($groups, 2, [
+                'props' => [
+                    'icon' => 'users',
+                    'link' => [
+                        'href' => '/groups',
+                        'data-target' => '#record-detail'
+                    ]
+                ]
+            ]);
 
-            Navmenu::byName('cp_main_nav_users')->addItem($groups, 2, [
+            //
+            //  PERMISSIONS MANAGER
+            //
+            $groups = Page::firstOrNew([
+                'description' => 'Permissions Manager',
+                'active' => true,
+                'title' => 'Permissions Manager',
+                'order' => 2,
+                'slug' => 'groups',
+                'name' => 'cp_users_permissions',
+            ]);
+
+            $groups->website()->associate($control_panel);
+
+            $groups->published_at = Carbon::now();
+
+            $groups->save();
+
+            $users_main_nav->addItem($groups, 2, [
                 'props' => [
                     'icon' => 'users',
                     'link' => [
@@ -77,6 +96,10 @@ class CpPermissionsNavSeeder extends Seeder
 
             $groups_subnav = Navmenu::byName('cp_groups_subnav');
 
+            $groups_subnav->website_id = $control_panel->id;
+
+            $groups_subnav->save();
+
             //
             // GROUP INFO
             //
@@ -87,14 +110,16 @@ class CpPermissionsNavSeeder extends Seeder
                 'slug' => 'edit',
                 'order' => 1,
                 'active' => true,
-                'published_at' => Carbon::now()
             ]);
 
             $group_info->website()->associate($control_panel);
 
+            $group_info->published_at = Carbon::now();
+
             $group_info->save();
 
             $groups_subnav->addItem($group_info);
+
 
             //
             // GROUP PERMISSIONS
@@ -105,11 +130,12 @@ class CpPermissionsNavSeeder extends Seeder
                 'description' => 'Group permissions',
                 'slug' => 'permissions',
                 'order' => 2,
-                'active' => true,
-                'published_at' => Carbon::now()
+                'active' => true
             ]);
 
             $group_permissions->website()->associate($control_panel);
+
+            $group_permissions->published_at = Carbon::now();
 
             $group_permissions->save();
 
@@ -120,6 +146,10 @@ class CpPermissionsNavSeeder extends Seeder
             //
             $user_subnav = Navmenu::byName('cp_users_subnav');
 
+            $user_subnav->website_id = $control_panel->id;
+
+            $user_subnav->save();
+
             //
             //  USER PERMISSIONS
             //
@@ -129,11 +159,12 @@ class CpPermissionsNavSeeder extends Seeder
                 'description' => 'User\'s permissions',
                 'slug' => 'permissions',
                 'order' => 2,
-                'active' => true,
-                'published_at' => Carbon::now()
+                'active' => true
             ]);
 
             $user_permissions->website()->associate($control_panel);
+
+            $user_permissions->published_at = Carbon::now();
 
             $user_permissions->save();
 
@@ -148,15 +179,17 @@ class CpPermissionsNavSeeder extends Seeder
                 'description' => 'User\'s groups',
                 'slug' => 'groups',
                 'order' => 3,
-                'active' => true,
-                'published_at' => Carbon::now()
+                'active' => true
             ]);
 
             $user_groups->website()->associate($control_panel);
 
+            $user_groups->published_at = Carbon::now();
+
             $user_groups->save();
 
             $user_subnav->addItem($user_groups);
+
 
         }
 
