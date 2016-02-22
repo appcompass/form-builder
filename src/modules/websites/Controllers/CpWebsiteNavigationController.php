@@ -201,8 +201,7 @@ class CpWebsiteNavigationController extends UiBaseController
         'new_tab' => isset($content['new_tab']) ? $content['new_tab'] : false
       ];
 
-
-      if ( (isset($content['children']) && count($content['children'])) ) { //} || $item->name === 'empty') {
+      if ( (isset($content['children']) && count($content['children'])) ) {
 
           $child_nav = Navmenu::byName($item->label);
 

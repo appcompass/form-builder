@@ -13,11 +13,12 @@ use P3in\Models\Website;
 use P3in\ModularBaseModel;
 use P3in\Traits\NavigatableTrait as Navigatable;
 use P3in\Traits\SettingsTrait;
+use P3in\Traits\HasPermissions;
 
 class Page extends ModularBaseModel
 {
 
-    use SettingsTrait, Navigatable;
+    use SettingsTrait, Navigatable, HasPermissions;
 
     /**
      * The database table used by the model.
@@ -116,17 +117,13 @@ class Page extends ModularBaseModel
      */
     public function makeLink($overrides = [])
     {
+        $req_perm = $this->getRequiredPermission();
+
         return array_replace([
             "label" => $this->title,
             "url" => $this->slug,
-            "req_perms" => null,
-            "props" => [
-                'icon' => 'list',
-                "link" => [
-                    'href' => $this->slug,
-                    'data-target' => '#main-content-out'
-                ],
-            ]
+            "req_perms" => $req_perm->id,
+            "props" => ['icon' => 'list']
         ], $overrides);
     }
 

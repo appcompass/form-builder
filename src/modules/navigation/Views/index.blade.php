@@ -381,7 +381,7 @@
 
                     var newItem = {
                         id: item.id,
-                        label: item.label,
+                        label: item.label === 'Empty' ? 'Rename Me' : item.label,
                         url: item.label === 'Empty' ? '' : item.url,
                         new_tab: false,
                         children: [],
@@ -407,15 +407,10 @@
          *  converting it to 'toHierarchy' output
          */
         function parseContent(navmenu) {
-
             var children = mapFromArray(navmenu.children, 'id');
-
             var build = function(navmenu) {
-
                 var newContent = [];
-
                 navmenu.navitems.forEach(function(item) {
-
                     var newItem = {
                         id: item.navigation_item_id,
                         label: item.label,
@@ -425,17 +420,13 @@
                         linked_id: item.linked_id,
                         children: [],
                     };
-
                     if (children[newItem.linked_id] !== undefined) {
                         newItem.children = build(children[newItem.linked_id]);
                     }
-
                     newContent.push(newItem)
                 });
-
                 return newContent;
             }
-
             return build(navmenu);
         }
 

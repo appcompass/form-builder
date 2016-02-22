@@ -13,6 +13,8 @@ class PermissionsRequired extends Model
 
     protected $table = 'permissions_required';
 
+    protected $fillable = ['pointer', 'permission_id'];
+
     /**
      *  A specific permission_required belongs to a website
      */
@@ -35,15 +37,18 @@ class PermissionsRequired extends Model
      */
     public static function requirePermission(PermissionItemContract $owner, Permission $requires)
     {
-        $instance = new static();
+        // Enforcing only one permission per item
+        $permission_required = PermissionsRequired::firstOrNew([
+            'pointer' => $owner->getPointer(),
+        ]);
 
-        $instance->pointer = $owner;
+        $permission_required->permission()->associate($requires);
 
-        $instance->permission()->save($permission);
+        $permission_required->type = $owner->getType();
 
-        $instance->website()->save(Website::current());
+        $permission_required->website()->associate(Website::current());
 
-        $instance->save();
+        return $permission_required->save();
     }
 
     /**

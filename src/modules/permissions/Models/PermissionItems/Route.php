@@ -14,33 +14,4 @@ class Route extends PermissionItem implements PermissionRequiredItemInterface
 
     protected $type = 'route';
 
-    /**
-     *  Return the class pointer
-     */
-    public function pointer()
-    {
-        return $this->pointer;
-    }
-
-    /**
-     *  Return permission type
-     */
-    public function type()
-    {
-        return $this->type;
-    }
-
-    /**
-     *  Provides means to fetch target
-     */
-    public function how(Builder $query)
-    {
-        return $query
-            ->where('website_id', '=', Website::getCurrent()->id)
-            ->where('pointer', '=', $this->pointer())
-            ->where('type', '=', $this->type())
-            ->firstOrFail()
-            ->permission;
-    }
-
 }

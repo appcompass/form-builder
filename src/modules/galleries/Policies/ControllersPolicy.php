@@ -16,7 +16,7 @@ class ControllersPolicy
 
     public function __construct()
     {
-
+        // string
         $this->controller = \Request::route()->getAction()['controller'];
 
     }
