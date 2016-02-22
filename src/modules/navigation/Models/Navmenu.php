@@ -96,15 +96,16 @@ class Navmenu extends Model
     {
         if ($delete) {
 
-            $navmenu->delete();
+            return $navmenu->delete();
 
         } else {
 
           $navmenu->parent_id = null;
 
+          return $navmenu->save();
+
         }
 
-      return $navmenu->save();
     }
 
     /**

@@ -59,60 +59,28 @@ class CpWebsiteNavigationController extends UiBaseController
   public function index(Website $websites)
   {
 
-    $websites->load('navmenus', 'pages', 'pages.navitem');
+        $websites->load('navmenus', 'pages', 'pages.navitem');
 
-    $navmenus = $websites->navmenus()->whereNull('parent_id')->get();
+        $navmenus = $websites->navmenus()->whereNull('parent_id')->get();
 
-    foreach($websites->pages as $page) {
+        foreach($websites->pages as $page) {
 
-      $navitems[] = $page->navItem()
-        ->first()
-        ->toArray();
+          $navitems[] = $page->navItem()
+            ->first()
+            ->toArray();
 
-    }
+        }
 
-    foreach (Section::byType('utils')->with('navitem')->get() as $util) {
+        foreach (Section::byType('utils')->with('navitem')->get() as $util) {
 
-      $utils[] = $util->navItem()
-        ->first()
-        ->toArray();
+          $utils[] = $util->navItem()
+            ->first()
+            ->toArray();
 
-    }
+        }
 
-    return view('navigation::index', compact('navmenus', 'navitems', 'utils'))
-      ->with('website', $websites);
-  }
-
-  /**
-   *  Edit
-   */
-  // public function edit(Website $websites, NavigationItem $navigationItems)
-  // {
-
-  //   return view('navigation::edit-navmenu')
-  //     ->with('navItem', $navigationItems)
-  //     ->with('website', $websites);
-  // }
-
-  /**
-   *  Create
-   */
-  public function create($website_id)
-  {
-
-    if (\Request::get('parent') === null) {
-
-      return abort(500, "Error!");
-
-    }
-
-    $website = Website::managedById($website_id)->load('navmenus', 'pages');
-
-    $parent = $website->navmenus()->where('name', '=', \Request::get('parent'))->firstOrFail();
-
-    return view('navigation::create-navmenu')
-      ->with('parent', $parent)
-      ->with('website', $website);
+        return view('navigation::index', compact('navmenus', 'navitems', 'utils'))
+          ->with('website', $websites);
   }
 
   /**
@@ -142,17 +110,19 @@ class CpWebsiteNavigationController extends UiBaseController
 
     if ($request->pretend) {
 
-      $navmenu = new Navmenu($navmenu->toArray());
+        $navmenu = new Navmenu($navmenu->toArray());
 
-      $this->parsePretend($navmenu, json_decode($request->hierarchy, true));
+        $navmenu->load('children.navitems', 'navitems');
+
+        $this->parsePretend($navmenu, json_decode($request->hierarchy, true));
 
     } else {
 
-      $navmenu = $navmenu->clean(true);
+        $navmenu = $navmenu->clean(true);
 
-      $this->parseHierarchy($navmenu, json_decode($request->hierarchy, true), $websites);
+        $this->parseHierarchy($navmenu, json_decode($request->hierarchy, true), $websites);
 
-      $navmenu = $navmenu->fresh();
+        $navmenu = $navmenu->fresh();
 
     }
 
@@ -160,63 +130,60 @@ class CpWebsiteNavigationController extends UiBaseController
 
   }
 
-  /**
-   *  parsePretend
-   */
-  private function parsePretend(Navmenu $navmenu, array $hierarchy)
-  {
+    /**
+    *  parsePretend
+    *
+    *  generates a navmenu hierarchy on the fly, without persisting
+    */
+    private function parsePretend(Navmenu $navmenu, array $hierarchy)
+    {
 
-    foreach($hierarchy as $index => $content) {
+        foreach($hierarchy as $content) {
 
-      $item = NavigationItem::findOrFail($content['id']);
+            list($discard, $id) = explode('_', $content['id']);
 
-      if ($item->name === 'empty') { $item->children = []; }
+            if (isset($content['pivot'])) {
 
-      $original = NavitemNavmenu::where('navigation_item_id', $content['id'])->first();
+                $pivot = NavitemNavmenu::findOrFail($content['pivot']);
 
-      if ($original) {
+            } else {
 
-        $item->label = $original->label;
+                $navitem = NavigationItem::findOrFail($id);
 
-        $item->order = $original->order;
+                $pivot = new NavitemNavmenu([
+                    'navmenu_id' => $navmenu->id,
+                    'navigation_item_id' => $navitem->id,
+                    'order' => null,
+                    'label' => $navitem->label,
+                    'url' => $navitem->url,
+                    'new_tab' => false
+                ]);
 
-        $item->new_tab = $original->new_tab;
+                $pivot->id = null;
 
-        $item->url = $original->url;
+            }
 
-      }
+            if (isset($content['children']) && count($content['children'])) {
 
-      if (isset($content['children']) && count($content['children'])) {
+                $child_nav = new Navmenu(['label' => $pivot->label ]);
 
-        $original_item = $item;
+                $child_nav->load('children.navitems', 'navitems');
 
-        $child_nav = new Navmenu([
-          'label' => $item['label']
-        ]);
+                $child_nav->id = $pivot->linked_id;
 
-        $child_nav->id = $original_item->id;
+                $this->parsePretend($child_nav, $content['children'], $navmenu);
 
-        $navmenu->children->push($child_nav);
+                $navmenu->children->push($child_nav);
 
-        $item = $child_nav->getNavigationItem([
-          'url' => $item->url,
-          'label' => $item->label,
-          'new_tab' => $item->new_tab
-        ]);
+            }
 
-        $item->linked_id = $original_item->id;
+            $navmenu->navitems->push($pivot);
 
-        $item->id = $original_item->id;
+        }
 
-        $this->parsePretend($child_nav, $content['children']);
-
-      }
-
-      $navmenu->navitems->push($item);
+        return $navmenu;
 
     }
-
-  }
 
   /**
    *

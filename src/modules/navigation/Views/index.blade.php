@@ -10,6 +10,8 @@
 
 <div id="navmanager">
 
+    <!-- <pre>@{{ navmenus | json }}</pre> -->
+
     <header class="panel-heading tab-bg-dark-navy-blue ">
         <ul class="nav nav-tabs">
             <li
@@ -42,10 +44,7 @@
                     v-bind:class="{'active': $index == 0 }"
                     id="@{{ navmenu.name }}"
                 >
-                    <navmenu
-                        :navmenu="navmenu"
-                    />
-
+                    <navmenu :navmenu="navmenu"/>
                 </div>
             </div>
         </div>
@@ -103,6 +102,7 @@
 <template id="navitem">
     <li
         data-id="navitem_@{{ navitem.id }}"
+        data-pivot="@{{ navitem.pivot }}"
         stlye="font-weight: bold"
     >
         <div>
@@ -382,9 +382,10 @@
                     var newItem = {
                         id: item.id,
                         label: item.label,
-                        url: item.url,
+                        url: item.label === 'Empty' ? '' : item.url,
                         new_tab: false,
                         children: [],
+                        pivot: null,
                         parent: null,
                     };
 
@@ -405,31 +406,37 @@
          *  Parses content of a navmenu
          *  converting it to 'toHierarchy' output
          */
-        function parseContent(navmenu, parent) {
-            var newContent = [];
-            parent = parent || null;
+        function parseContent(navmenu) {
 
             var children = mapFromArray(navmenu.children, 'id');
 
-            navmenu.navitems.forEach(function(item) {
+            var build = function(navmenu) {
 
-                var newItem = {
-                    id: item.navigation_item_id || item.id,
-                    label: item.pivot ? item.pivot.label : item.label,
-                    url: item.pivot ? item.pivot.url : item.url,
-                    new_tab: item.pivot ? item.pivot.new_tab : item.new_tab,
-                    children: [],
-                    parent: parent ? parent.linked_id : null,
-                };
+                var newContent = [];
 
-                if (children && children[item.linked_id] !== undefined) {
-                    newItem.children = parseContent(children[item.linked_id], item);
-                }
+                navmenu.navitems.forEach(function(item) {
 
-                newContent.push(newItem)
-            });
+                    var newItem = {
+                        id: item.navigation_item_id,
+                        label: item.label,
+                        url: item.url,
+                        new_tab: item.new_tab,
+                        pivot: item.id,
+                        linked_id: item.linked_id,
+                        children: [],
+                    };
 
-            return newContent
+                    if (children[newItem.linked_id] !== undefined) {
+                        newItem.children = build(children[newItem.linked_id]);
+                    }
+
+                    newContent.push(newItem)
+                });
+
+                return newContent;
+            }
+
+            return build(navmenu);
         }
 
         /**
