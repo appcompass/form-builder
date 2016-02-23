@@ -45,7 +45,6 @@ class PhotosModuleDatabaseSeeder extends Seeder
             $page = Page::firstOrNew([
                 'description' => 'Photos in this gallery',
                 'active' => true,
-                'req_permission' => null,
                 'title' => 'Photos',
                 'order' => 2,
                 'slug' => 'photos',

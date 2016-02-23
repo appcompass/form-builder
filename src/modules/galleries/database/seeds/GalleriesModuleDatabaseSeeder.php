@@ -32,8 +32,7 @@ class GalleriesModuleDatabaseSeeder extends Seeder
                 'description' => 'Gallery Info Details Form',
                 'slug' => 'edit',
                 'order' => 4,
-                'active' => true,
-                'req_permission' => null,
+                'active' => true
             ]);
 
             $page->published_at = Carbon::now();

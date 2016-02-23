@@ -25,7 +25,6 @@ class CreatePagesTable extends Migration
             $table->string('layout')->default('full')->nullable();
             $table->integer('parent_id')->unsigned()->nullable();
             $table->integer('website_id')->unsigned();
-            $table->string('req_permission')->nullable();
 
             $table->foreign('parent_id')
                 ->references('id')

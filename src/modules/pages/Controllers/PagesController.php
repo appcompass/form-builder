@@ -17,6 +17,7 @@ use ReCaptcha\ReCaptcha;
 class PagesController extends Controller
 {
 
+
     public function renderPage(Request $request, $url = '')
     {
 

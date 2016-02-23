@@ -28,7 +28,7 @@ class Navmenu extends Model
     protected $fillable = [
         'name',
         'label',
-        'req_permission',
+        'req_perms',
         'parent_id',
         'website_id',
         'max_depth',
