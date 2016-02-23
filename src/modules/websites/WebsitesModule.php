@@ -19,16 +19,16 @@ Class WebsitesModule extends BaseModule
     /**
      * Module Name
      */
-	public $module_name = "websites";
+    public $module_name = "websites";
 
-	public function __construct() {}
+    public function __construct() {}
 
     /**
      * Bootstrap, runs every time
      *
      */
-	public function bootstrap()
-	{
+    public function bootstrap()
+    {
     }
 
     /**
@@ -40,9 +40,13 @@ Class WebsitesModule extends BaseModule
         $this->setConfig();
 
         if (Modular::isLoaded('navigation')) {
-            Navmenu::byName('cp_main_nav')->addItem($this->navItem, 2);
+            $control_panel = Website::admin();
+            $cp_main_nav = Navmenu::byName('cp_main_nav');
+
+            $control_panel->navmenus()->save($cp_main_nav);
+            $cp_main_nav->addItem($this->navItem, 2);
         }
-	}
+    }
 
     /**
      *
@@ -51,7 +55,7 @@ Class WebsitesModule extends BaseModule
     {
       return array_replace([
         "label" => 'Websites Manager',
-        "url" => '',
+        "url" => '/websites',
         "req_perms" => null,
         "props" => [
             'icon' => 'dashboard',

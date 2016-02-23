@@ -29,10 +29,7 @@ class CpPermissionsNavSeeder extends Seeder
 
             $users_main_nav = Navmenu::byName('cp_main_nav_users');
 
-            $users_main_nav->website_id = $control_panel->id;
-
-            $users_main_nav->save();
-
+            $control_panel->navmenus()->save($users_main_nav);
 
             //
             //  GROUPS MANAGER
@@ -46,11 +43,9 @@ class CpPermissionsNavSeeder extends Seeder
                 'name' => 'cp_users_groups',
             ]);
 
-            $groups->website()->associate($control_panel);
-
             $groups->published_at = Carbon::now();
 
-            $groups->save();
+            $control_panel->pages()->save($groups);
 
             $users_main_nav->addItem($groups, 2, [
                 'props' => [
@@ -74,11 +69,9 @@ class CpPermissionsNavSeeder extends Seeder
                 'name' => 'cp_users_permissions',
             ]);
 
-            $groups->website()->associate($control_panel);
-
             $groups->published_at = Carbon::now();
 
-            $groups->save();
+            $control_panel->pages()->save($groups);
 
             $users_main_nav->addItem($groups, 2, [
                 'props' => [
@@ -96,10 +89,7 @@ class CpPermissionsNavSeeder extends Seeder
 
             $groups_subnav = Navmenu::byName('cp_groups_subnav');
 
-            $groups_subnav->website_id = $control_panel->id;
-
-            $groups_subnav->save();
-
+            $control_panel->navmenus()->save($groups_subnav);
             //
             // GROUP INFO
             //
@@ -112,11 +102,9 @@ class CpPermissionsNavSeeder extends Seeder
                 'active' => true,
             ]);
 
-            $group_info->website()->associate($control_panel);
-
             $group_info->published_at = Carbon::now();
 
-            $group_info->save();
+            $control_panel->pages()->save($group_info);
 
             $groups_subnav->addItem($group_info);
 
@@ -133,11 +121,9 @@ class CpPermissionsNavSeeder extends Seeder
                 'active' => true
             ]);
 
-            $group_permissions->website()->associate($control_panel);
-
             $group_permissions->published_at = Carbon::now();
 
-            $group_permissions->save();
+            $control_panel->pages()->save($group_permissions);
 
             $groups_subnav->addItem($group_permissions);
 
@@ -146,10 +132,7 @@ class CpPermissionsNavSeeder extends Seeder
             //
             $user_subnav = Navmenu::byName('cp_users_subnav');
 
-            $user_subnav->website_id = $control_panel->id;
-
-            $user_subnav->save();
-
+            $control_panel->navmenus()->save($user_subnav);
             //
             //  USER PERMISSIONS
             //
@@ -162,11 +145,9 @@ class CpPermissionsNavSeeder extends Seeder
                 'active' => true
             ]);
 
-            $user_permissions->website()->associate($control_panel);
-
             $user_permissions->published_at = Carbon::now();
 
-            $user_permissions->save();
+            $control_panel->pages()->save($user_permissions);
 
             $user_subnav->addItem($user_permissions);
 
@@ -182,11 +163,9 @@ class CpPermissionsNavSeeder extends Seeder
                 'active' => true
             ]);
 
-            $user_groups->website()->associate($control_panel);
-
             $user_groups->published_at = Carbon::now();
 
-            $user_groups->save();
+            $control_panel->pages()->save($user_groups);
 
             $user_subnav->addItem($user_groups);
 

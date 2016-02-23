@@ -8,6 +8,7 @@ use Illuminate\Filesystem\Filesystem;
 use Modular;
 use P3in\Models\Navmenu;
 use P3in\Models\User;
+use P3in\Models\Website;
 use P3in\Module;
 use P3in\Modules\BaseModule;
 use P3in\Traits\NavigatableTrait as Navigatable;
@@ -44,9 +45,13 @@ Class GalleriesModule extends BaseModule
 
         $this->checkOrSetUiConfig();
 
-        if (Modular::isLoaded('navigation')) {
+        if (Modular::isLoaded('websites') &&Modular::isLoaded('navigation')) {
+            $website = Website::admin();
+
             $main_nav = Navmenu::byName('cp_main_nav');
             $main_nav_media =  Navmenu::byName('cp_main_nav_media', 'Media Manager');
+
+            $website->navmenus()->saveMany([$main_nav, $main_nav_media]);
 
             $main_nav_media->addItem($this->navItem, 0);
             $main_nav->addChildren($main_nav_media, 5);

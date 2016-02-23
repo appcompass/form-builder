@@ -2,10 +2,11 @@
 
 namespace P3in\Modules;
 
+use Modular;
 use P3in\Models\Navmenu;
+use P3in\Models\Website;
 use P3in\Modules\BaseModule;
 use P3in\Traits\NavigatableTrait;
-use Modular;
 
 Class UiModule extends BaseModule
 {
@@ -27,8 +28,11 @@ Class UiModule extends BaseModule
     public function register()
     {
 
-        if (Modular::isLoaded('navigation')) {
+        if (Modular::isLoaded('websites') && Modular::isLoaded('navigation')) {
+            $control_panel = Website::admin();
             $cp_main_nav = Navmenu::byName('cp_main_nav');
+
+            $control_panel->navmenus()->save($cp_main_nav);
 
             $cp_main_nav->addItem($this->navItem, 0);
 
@@ -54,7 +58,7 @@ Class UiModule extends BaseModule
     {
         return array_replace([
             "label" => 'Dashboard',
-            "url" => '',
+            "url" => '/',
             "req_perms" => null,
             "props" => [
                 'icon' => 'dashboard',

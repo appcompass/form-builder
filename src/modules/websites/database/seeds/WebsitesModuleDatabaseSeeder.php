@@ -34,6 +34,8 @@ class WebsitesModuleDatabaseSeeder extends Seeder
         if (Modular::isLoaded('navigation') && Modular::isLoaded('pages')) {
             $website_subnav = Navmenu::byName('cp_websites_subnav');
 
+            $website->navmenus()->save($website_subnav);
+
             //
             //  SETUP
             //

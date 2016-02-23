@@ -12,42 +12,47 @@ use P3in\Models\Website;
 class PagesModuleDatabaseSeeder extends Seeder
 {
 
-	/**
-	 * Run the database seeds.
-	 *
-	 * @return void
-	 */
-	public function run()
-	{
-		Model::unguard();
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        Model::unguard();
 
-		Page::where('name','cp_pages_info')->delete();
+        $control_panel = Website::admin();
 
-		$page = Page::firstOrCreate([
-		    'name' => 'cp_pages_info',
-		    'title' => 'Page Info',
-		    'description' => 'Page Info',
-		    'slug' => 'edit',
-		    'order' => 2,
-		    'published_at' => Carbon::now(),
-		    'active' => true,
-		    'req_permission' => null,
-		    'website_id' => Website::admin()->id
-		]);
+        Page::where('name','cp_pages_info')->delete();
 
+        $page = Page::firstOrNew([
+            'name' => 'cp_pages_info',
+            'title' => 'Page Info',
+            'description' => 'Page Info',
+            'slug' => 'edit',
+            'order' => 2,
+            'active' => true
+        ]);
 
+        $page->published_at = Carbon::now();
 
-		Navmenu::byName('cp_pages_subnav')->addItem($page, 2, [
-			'props' => [
-			    // 'icon' => 'file-text-o',
-			    'icon' => 'globe',
-			    'link' => [
-			        'href' => '/websites/'.Website::admin()->id.'/pages',
-			        'data-target' => '#content-edit'
-			    ]
-			]
-		]);
+        $control_panel->pages()->save($page);
 
-		Model::reguard();
-	}
+        $pages_subnav = Navmenu::byName('cp_pages_subnav');
+
+        $control_panel->navmenus()->save($pages_subnav);
+
+        $pages_subnav->addItem($page, 2, [
+            'props' => [
+                // 'icon' => 'file-text-o',
+                'icon' => 'globe',
+                'link' => [
+                    'href' => '/websites/'.$control_panel->id.'/pages',
+                    'data-target' => '#content-edit'
+                ]
+            ]
+        ]);
+
+        Model::reguard();
+    }
 }

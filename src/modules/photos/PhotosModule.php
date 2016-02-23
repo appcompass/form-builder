@@ -2,11 +2,12 @@
 
 namespace P3in\Modules;
 
+use Modular;
 use P3in\Models\Gallery;
 use P3in\Models\Navmenu;
-use Modular;
-use P3in\Traits\NavigatableTrait as Navigatable;
+use P3in\Models\Website;
 use P3in\Modules\BaseModule;
+use P3in\Traits\NavigatableTrait as Navigatable;
 
 class PhotosModule extends BaseModule
 {
@@ -28,9 +29,13 @@ class PhotosModule extends BaseModule
     {
         $this->checkOrSetUiConfig();
 
-        if (Modular::isLoaded('navigation')) {
+        if (Modular::isLoaded('websites') && Modular::isLoaded('navigation')) {
+            $control_panel = Website::admin();
+
             $main_nav = Navmenu::byName('cp_main_nav');
             $main_nav_media =  Navmenu::byName('cp_main_nav_media', 'Media Manager');
+
+            $control_panel->navmenus()->saveMany([$main_nav, $main_nav_media]);
 
             $main_nav_media->addItem($this->navItem, 1);
             $main_nav->addChildren($main_nav_media, 5);
@@ -44,7 +49,7 @@ class PhotosModule extends BaseModule
     {
         return array_replace([
             "label" => 'Photos',
-            "url" => '',
+            "url" => '/photos',
             "req_perms" => null,
             "props" => [
                 "icon" => "camera",

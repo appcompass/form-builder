@@ -44,6 +44,8 @@ class UsersTableSeeder extends Seeder
 
             $user_info->save();
 
+            $control_panel->navmenus()->save($user_subnav);
+
             $user_subnav->addItem($user_info);
         }
     }

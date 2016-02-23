@@ -37,7 +37,10 @@ class PhotosModuleDatabaseSeeder extends Seeder
 
         if (\Modular::isLoaded('websites')) {
 
-            $website = Website::admin();
+            $control_panel = Website::admin();
+            $cp_galleries_subnav = Navmenu::byName('cp_galleries_subnav');
+
+            $control_panel->navmenus()->save($cp_galleries_subnav);
 
             $page = Page::firstOrNew([
                 'description' => 'Photos in this gallery',
@@ -46,15 +49,15 @@ class PhotosModuleDatabaseSeeder extends Seeder
                 'title' => 'Photos',
                 'order' => 2,
                 'slug' => 'photos',
+                "url" => '/photos',
                 'name' => 'cp_galleries_photos',
-                "published_at" => Carbon::now(),
             ]);
 
-            $page->website()->associate($website);
+            $page->published_at = Carbon::now();
 
-            $page->save();
+            $control_panel->pages()->save($page);
 
-            Navmenu::byName('cp_galleries_subnav')->addItem($page, 2, [
+            $cp_galleries_subnav->addItem($page, 2, [
                 'props' => [
                     'icon' => 'camera',
                     'link' => [

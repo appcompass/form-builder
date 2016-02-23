@@ -8,6 +8,7 @@ use Illuminate\Database\Seeder;
 use P3in\Models\Navmenu;
 use P3in\Models\Page;
 use P3in\Models\Website;
+use Modular;
 
 class GalleriesModuleDatabaseSeeder extends Seeder
 {
@@ -21,7 +22,7 @@ class GalleriesModuleDatabaseSeeder extends Seeder
     {
         Model::unguard();
 
-        if (\Modular::isLoaded('websites')) {
+        if (Modular::isLoaded('websites') && Modular::isLoaded('navigation') && Modular::isLoaded('pages')) {
 
             $website = Website::admin();
 
@@ -33,14 +34,17 @@ class GalleriesModuleDatabaseSeeder extends Seeder
                 'order' => 4,
                 'active' => true,
                 'req_permission' => null,
-                "published_at" => Carbon::now(),
             ]);
 
-            $page->website()->associate($website);
+            $page->published_at = Carbon::now();
 
-            $page->save();
+            $website->pages()->save($page);
 
-            Navmenu::byName('cp_galleries_subnav')->addItem($page, 4, [
+            $navmenu = Navmenu::byName('cp_galleries_subnav');
+
+            $website->navmenus()->save($navmenu);
+
+            $navmenu->addItem($page, 4, [
                 'props' => [
                     'icon' => 'camera',
                     'link' => [

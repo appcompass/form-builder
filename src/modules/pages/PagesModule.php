@@ -47,7 +47,7 @@ Class PagesModule extends BaseModule
 
         $module = Modular::get($this->module_name);
 
-            $module->config = [];
+        $module->config = [];
         return $module->save();
     }
 
