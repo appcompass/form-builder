@@ -19,7 +19,7 @@ class CpPermissionsNavSeeder extends Seeder
      */
     public function run()
     {
-        if (\Modular::isLoaded('websites')) {
+        if (\Modular::isLoaded('websites') && \Modular::isLoaded('navigation') && \Modular::isLoaded('pages')) {
 
             //
             //  INIT NAVMENUS
