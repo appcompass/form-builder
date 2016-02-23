@@ -36,8 +36,9 @@ class UsersTableSeeder extends Seeder
             'slug' => 'edit',
             'order' => 1,
             'active' => true,
-            'published_at' => Carbon::now()
         ]);
+
+        $user_info->published_at = Carbon::now();
 
         $user_info->website()->associate($control_panel);
 

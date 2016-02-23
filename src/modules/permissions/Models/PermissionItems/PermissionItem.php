@@ -32,6 +32,13 @@ class PermissionItem
      */
     public function how(Builder $query)
     {
+
+        if (!Website::getCurrent()) {
+
+            Website::setCurrent(Website::admin());
+
+        }
+
         return $query
             ->where('website_id', '=', Website::getCurrent()->id)
             ->where('pointer', '=', $this->getPointer())

@@ -15,6 +15,8 @@ class Permission extends Model
      */
     protected $table = 'permissions';
 
+    const GUEST_PERMISSION = null;
+
     /**
      * The attributes that are mass assignable.
      *

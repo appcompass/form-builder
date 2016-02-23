@@ -84,16 +84,6 @@ class CpWebsiteNavigationController extends UiBaseController
   }
 
   /**
-   * Update
-   */
-  public function update(Request $request, $website_id, $navitem_id) { return abort(500, 'Method not allowed.'); }
-
-  /**
-   * Destroy
-   */
-  public function destroy(Request $request, $website_id, $item_id) { return abort(500, 'Method not allowed.'); }
-
-  /**
    *
    */
   public function store(Request $request, Website $websites)

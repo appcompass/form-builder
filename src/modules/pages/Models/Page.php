@@ -117,12 +117,12 @@ class Page extends ModularBaseModel
      */
     public function makeLink($overrides = [])
     {
-        $req_perm = $this->getRequiredPermission();
+        $req_perm = $this->getRequiredPermission()->first();
 
         return array_replace([
             "label" => $this->title,
             "url" => $this->slug,
-            "req_perms" => $req_perm->id,
+            "req_perms" => $req_perm ? $req_perm->id : Permission::GUEST_PERMISSION,
             "props" => ['icon' => 'list']
         ], $overrides);
     }

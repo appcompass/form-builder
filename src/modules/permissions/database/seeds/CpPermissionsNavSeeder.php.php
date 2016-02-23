@@ -190,9 +190,7 @@ class CpPermissionsNavSeeder extends Seeder
 
             $user_subnav->addItem($user_groups);
 
-
         }
-
 
     }
 }

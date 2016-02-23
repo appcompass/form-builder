@@ -22,9 +22,9 @@ class CreateNavigationItems extends Migration
 
             $table->morphs('navigatable');
 
-            $table->string('req_perms')->nullable();
+            $table->integer('req_perms')->unsigned()->nullable();
             $table->foreign('req_perms')
-                ->references('type')
+                ->references('id')
                 ->on('permissions');
 
             $table->json('props')->nullable();
