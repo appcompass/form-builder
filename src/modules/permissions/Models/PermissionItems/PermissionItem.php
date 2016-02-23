@@ -11,7 +11,8 @@ class PermissionItem
 
     public function __construct($pointer)
     {
-        // find out what we're pointing at
+        // @TODO find out what we're pointing at, now we rely on client code to be aware
+        // @TODO this should be delegated to the specific class
 
         $this->pointer = $pointer;
 

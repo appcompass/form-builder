@@ -44,7 +44,7 @@
                     v-bind:class="{'active': $index == 0 }"
                     id="@{{ navmenu.name }}"
                 >
-                    <navmenu :navmenu="navmenu"/>
+                    <navmenu :navmenu="navmenu"></navmenu>
                 </div>
             </div>
         </div>
@@ -79,7 +79,7 @@
                 v-if="content.legth != ''"
                 v-for="item in content"
                 :navitem.sync="item"
-            />
+            ></nav-item>
         </ol>
 
         <a class="btn btn-primary" @click="jsonVisible = !jsonVisible">Toggle JSON Dump</a>
@@ -103,9 +103,8 @@
     <li
         data-id="navitem_@{{ navitem.id }}"
         data-pivot="@{{ navitem.pivot }}"
-        stlye="font-weight: bold"
     >
-        <div>
+        <div class="clearfix">
             <i class="handle fa fa-arrows" ></i>
             <span class="title"><input type="text" v-model="navitem.label"></span>
             <div class="tools pull-right">
@@ -114,45 +113,43 @@
             </div>
             <img src="https://placehold.it/120x120" alt="">
             <footer>@{{ navitem.label }}</footer>
-            <span class="item-options row" v-if="showOptions">
+            <span class="item-options col-sm-10 col-sm-offset-1 well" v-if="showOptions">
 
-                <div class="col-sm-10 col-sm-offset-1 well">
-
-                    <div class="form-group">
-                        <label for="url" class="control-label col-sm-4">Url</label>
-                        <div class="col-sm-8">
-                            <input
-                                type="text"
-                                class="form-control input-sm"
-                                v-model="navitem.url"
-                            >
-                            <small class="help-block">What should this element point to?</small>
-                        </div>
+                <div class="form-group">
+                    <label for="url" class="control-label col-sm-4">Url</label>
+                    <div class="col-sm-8">
+                        <input
+                            type="text"
+                            class="form-control input-sm"
+                            v-model="navitem.url"
+                        >
+                        <small class="help-block">Url this element points at</small>
                     </div>
-
-                    <div class="form-group">
-                        <label for="url" class="control-label col-sm-4">New Tab</label>
-                        <div class="col-sm-8">
-                            <input
-                                type="text"
-                                class="form-control input-sm"
-                                v-model="navitem.new_tab"
-                            >
-                            <small class="help-block">Check if link should open in a new tab</small>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="url" class="control-label col-sm-4">Permission Required</label>
-                        <div class="col-sm-8">
-                            <select class="form-control input-sm">
-                                <option value="somethig">Create Galleries</option>
-                            </select>
-                            <small class="help-block">Select what permission is required to view this item. Leave blank for guest.</small>
-                        </div>
-                    </div>
-
                 </div>
+
+                <div class="form-group">
+                    <label for="url" class="control-label col-sm-4">New Tab</label>
+                    <div class="col-sm-8">
+                        <input
+                            type="checkbox"
+                            class=""
+                            v-model="navitem.new_tab"
+                        >
+                        <small class="help-block">Check if link should open in a new tab</small>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="url" class="control-label col-sm-4">Permission Required</label>
+                    <div class="col-sm-8">
+                        <select class="form-control input-sm" :disabled="0 !== navitem.req_perm">
+                            <option value="">Guest</option>
+                            <option value="somethig">Create Galleries</option>
+                        </select>
+                        <small class="help-block">Select what permission is required to view this item.</small>
+                    </div>
+                </div>
+
             </span>
         </div>
 
@@ -162,7 +159,7 @@
             <nav-item
                 v-for="item in navitem.children"
                 :navitem.sync="item"
-            />
+            ></nav-item>
         </ol>
     </li>
 </template>
@@ -379,6 +376,8 @@
             events: {
                 addItem: function(item) {
 
+                    console.log(item);
+
                     var newItem = {
                         id: item.id,
                         label: item.label === 'Empty' ? 'Rename Me' : item.label,
@@ -386,6 +385,7 @@
                         new_tab: false,
                         children: [],
                         pivot: null,
+                        req_perm: item.req_perms,
                         parent: null,
                     };
 
@@ -408,9 +408,12 @@
          */
         function parseContent(navmenu) {
             var children = mapFromArray(navmenu.children, 'id');
+
             var build = function(navmenu) {
                 var newContent = [];
+
                 navmenu.navitems.forEach(function(item) {
+
                     var newItem = {
                         id: item.navigation_item_id,
                         label: item.label,
@@ -418,6 +421,7 @@
                         new_tab: item.new_tab,
                         pivot: item.id,
                         linked_id: item.linked_id,
+                        req_perm: item.navitem.req_perms | null,
                         children: [],
                     };
                     if (children[newItem.linked_id] !== undefined) {
@@ -425,8 +429,10 @@
                     }
                     newContent.push(newItem)
                 });
+
                 return newContent;
             }
+
             return build(navmenu);
         }
 
@@ -475,7 +481,6 @@
     .inline-draggable .tools, .inline-draggable .title {display: none;}
     .inline-draggable li div footer { display: block; color: #fff; padding: 5px 0; text-align: center; line-height: 20px; 100%; width: 100%; position: absolute; bottom: 0;left: 0;right: 0; background: rgba(128, 128, 128, 0.7); }
     .item-options label { text-align: right; }
-    .item-options {float: left; width: 100%; margin-top: 1rem;}
 </style>
 
 @stop

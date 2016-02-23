@@ -109,25 +109,32 @@ class Navmenu extends Model
     }
 
     /**
-     *  Link items to Navigation Items
+     *  Link navmenu to NavitemNavmenu items
      *
+     *  NavitemNavmenu is the pivot table that links an instance of a NavigationItem to a specific Navmenu
      */
-    public function items()
-    {
-
-        return $this->hasMany(NavitemNavmenu::class)
-            ->orderBy('order');
-
-    }
-
     public function navitems()
     {
+
+        $user_perms = [];
+
+        if (\Auth::check()) {
+
+            $user_perms = \Auth::user()->allPermissions()->toArray();
+
+        }
+
         return $this->hasMany(NavitemNavmenu::class)
-            ->orderBy('order');
+            ->whereHas('navitem', function($q) use ($user_perms) {
+            $q->whereNull('req_perms');
+            $q->orWhereIn('req_perms', array_keys($user_perms));
+        });
     }
 
     /**
-     *  Keep data consistent
+     *  Clean
+     *  Keep data consistent by cleaning up the navmenus structure
+     *  @param boolean delete true = delete all children false = unlink the children
      */
     public function clean($delete = false)
     {
@@ -240,7 +247,6 @@ class Navmenu extends Model
 
                 $navitem_navmenu->save();
             }
-
 
         }
 

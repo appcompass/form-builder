@@ -20,6 +20,8 @@ trait HasPermissions
             return PermissionsRequired::retrieve($this->getElementPointer());
 
         }
+
+        return;
     }
 
     /**

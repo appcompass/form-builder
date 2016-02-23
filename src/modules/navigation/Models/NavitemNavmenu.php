@@ -19,7 +19,7 @@ class NavitemNavmenu extends Model
 
     public $timestamps = [];
 
-    protected $appends = ['linked_id', 'linked_model'];
+    protected $appends = ['linked_id', 'linked_model', 'req_perms'];
 
     public function navitem()
     {
@@ -44,6 +44,11 @@ class NavitemNavmenu extends Model
     public function getLinkedModelAttribute()
     {
         return $this->navitem->navigatable_type;
+    }
+
+    public function getReqPermsAttribute()
+    {
+        return $this->navitem->req_perms;
     }
 
 }

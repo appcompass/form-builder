@@ -56,6 +56,11 @@ class NavigationItem extends Model
     protected $hidden = [];
 
     /**
+     *  Relations to load always
+     */
+    protected $with = ['requires'];
+
+    /**
      *
      *
      */
@@ -92,6 +97,14 @@ class NavigationItem extends Model
     {
         $url = strpos($this->attributes['url'], '([a-z0-9-]+)') ? str_replace('([a-z0-9-]+)', '', $this->attributes['url']) : $this->attributes['url'];
         return '/'.trim($url,'/');
+    }
+
+    /**
+     *
+     */
+    public function requires()
+    {
+        return $this->belongsTo(Permission::class, 'req_perms');
     }
 
 }

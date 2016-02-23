@@ -19,6 +19,7 @@ class PagesController extends Controller
 
     public function renderPage(Request $request, $url = '')
     {
+
         $page = Page::byUrl($url)->ofWebsite()->firstOrFail();
 
         $data = $page->render();
