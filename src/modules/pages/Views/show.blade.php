@@ -9,7 +9,7 @@
         <div class="col-lg-{{ 12 / intVal(count($sections['page'])) }}">
             <h3>{{ ucwords(str_replace('_', ' ', $layout_part)) }}</h3>
             <ol class="sortable" href="/websites/{{ $website->id }}/navigation" data-layout-part="{{ $layout_part }}">
-            @foreach($page_section->items as $item)
+            @foreach($page_section->navitems as $item)
                 <li
                     id="reorder_{{ $item->id }}"
                     data-section-id="{{ $item->id }}"
@@ -53,7 +53,7 @@
             <div class="panel-heading">{{ $page_section->label }}</div>
             <div class="panel-body">
                 <ol class="inline-draggable">
-                @foreach($page_section->items as $item)
+                @foreach($page_section->navitems as $item)
                     <li
                         id="menuItem_{{ $item->name }}"
                         data-section-id="{{ $item->props['id'] }}"

@@ -173,8 +173,8 @@ class CpWebsitePagesController extends UiBaseController
         ]
     ];
 
-	public function __construct()
-	{
+    public function __construct()
+    {
         $this->middleware('auth');
 
         $this->controller_class = __CLASS__;
@@ -369,8 +369,7 @@ class CpWebsitePagesController extends UiBaseController
         ];
 
         foreach(explode(':', $page->layout) as $layout_part) {
-
-            $current_nav = $sections['page'][$layout_part] = new Navmenu(['label' => 'Current Template']);
+            $current_nav = $sections['page'][$layout_part] = Navmenu::byName('tmp_current_template', 'Current Template');
 
             foreach ($page->sections()->where('section', $layout_part)->get() as $section) {
 
@@ -381,20 +380,19 @@ class CpWebsitePagesController extends UiBaseController
 
                 $nav_item->id = $section->pivot->id;
 
-                $current_nav->items->push($nav_item);
+                $current_nav->navitems->push($nav_item);
 
             }
 
-            $current_templates_nav = $sections['available'][$layout_part] = new Navmenu(['label' => ucfirst($layout_part).' Templates']);
+            $current_templates_nav = $sections['available'][$layout_part] = Navmenu::byName('tmp_'.strtolower($layout_part).'_template', ucfirst($layout_part).' Template');
 
             foreach (Section::where('fits', $layout_part)->get() as $section) {
-
                 $nav_item = $section->getNavigationItem([
                     'url' => '',
                     'props' => ['id' => $section->id]
                 ]);
 
-                $current_templates_nav->items->push($nav_item);
+                $current_templates_nav->navitems->push($nav_item);
 
             }
 
