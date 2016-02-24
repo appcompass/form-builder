@@ -64,7 +64,7 @@
                         @endforeach
                 @elseif($field->type == 'file')
                     {!! Form::file(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
-                    <button class="btn btn-sm pull-right btn-primary open-select-image-modal">Select Image</button>
+                    @if (isset($website->gallery)) <button class="btn btn-sm pull-right btn-primary open-select-image-modal">Select Image</button> @endif
                     @if(isset($prefix) AND isset($index) AND isset($record->{$prefix}[$index]->{$field->name}))
                         <b class="image-path"><img src="{{ $record->{$prefix}[$index]->{$field->name} }}" height="180" alt="" style="max-width: 250px"></b>
                     @elseif (!empty($record->{$field->name}))
@@ -170,7 +170,7 @@
     @endif
 @endforeach
 
-@if (isset($website))
+@if (isset($website->gallery))
 <div class="modal fade" id="modal-photo-selector" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
