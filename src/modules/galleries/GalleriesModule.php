@@ -67,6 +67,7 @@ Class GalleriesModule extends BaseModule
 
         return array_replace([
             "label" => 'Galleries',
+            'url' => '/galleries',
             "props" => ['icon' => 'camera'],
         ], $overrides);
     }

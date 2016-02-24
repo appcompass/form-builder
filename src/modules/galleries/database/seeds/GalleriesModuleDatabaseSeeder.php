@@ -44,10 +44,11 @@ class GalleriesModuleDatabaseSeeder extends Seeder
             $website->navmenus()->save($navmenu);
 
             $navmenu->addItem($page, 4, [
+                'url' => '/edit',
                 'props' => [
                     'icon' => 'camera',
                     'link' => [
-                        'href' => '/photos',
+                        'href' => '/edit',
                         'data-target' => '#record-detail'
                     ]
                 ]

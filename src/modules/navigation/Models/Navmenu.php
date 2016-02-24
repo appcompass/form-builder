@@ -233,6 +233,10 @@ class Navmenu extends Model
             'new_tab' => isset($overrides['new_tab']) ? $overrides['new_tab'] : $navItem['new_tab']
         ]);
 
+        if (!is_null($order)) {
+            $navitem_navmenu->order = $order;
+        }
+
         $navitem_navmenu->save();
 
         if (! $this->navitems->contains($navitem_navmenu)) {
@@ -252,6 +256,13 @@ class Navmenu extends Model
 
         return true;
 
+    }
+
+    public function addItems($items)
+    {
+        foreach ($items as $i => $item) {
+            $this->addItem($item, $i);
+        }
     }
 
     /**
