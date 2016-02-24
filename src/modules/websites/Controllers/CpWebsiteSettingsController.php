@@ -253,27 +253,29 @@ class CpWebsiteSettingsController extends UiBaseController
     {
 
         $data = $request->except(['_token', '_method']);
-
         if ($request->hasFile('logo')) {
+            $fileObj = $request->file('logo');
 
-            $logo = $websites->addLogo($request->file('logo'));
+            if ($fileObj->getSize()) {
+                $logo = $websites->addLogo($fileObj);
 
-            $data['logo'] = $logo->path;
-
+                $data['logo'] = $logo->path;
+            }
         }
-
         $records = $websites->settings($data);
 
-        try {
+        if (!empty($data['color_primary']) || !empty($data['color_secondary'])) {
+            try {
 
-            $websites->deploy();
+                $websites->deploy();
 
-        } catch (\RuntimeException $e) {
+            } catch (\RuntimeException $e) {
 
-            \Log::error("Error while deploying $websites->site_name: ".$e->getMessage());
+                \Log::error("Error while deploying $websites->site_name: ".$e->getMessage());
 
-            return $this->json([], false, 'Error during deployment. Please contact us.' );
+                return $this->json([], false, 'Error during deployment. Please contact us.' );
 
+            }
         }
 
         return $this->json($this->setBaseUrl(['websites', $websites->id, 'settings']));

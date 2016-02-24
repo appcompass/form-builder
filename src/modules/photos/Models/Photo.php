@@ -153,31 +153,32 @@ class Photo extends Model implements GalleryItemInterface
 
         $file_name = $file_path.$name.'.'.$ext;
         // END TODO
+        if ($ext != 'svg') {
+            // get intervention image object.
+            $image = Image::make($file);
+            // get exif data for images that have it.
+            $exif = $image->exif();
 
-        // get intervention image object.
-        $image = Image::make($file);
-        // get exif data for images that have it.
-        $exif = $image->exif();
+            // the FileName here becomes the php temp file name so we rename it to the original file name before storage.
+            if (!empty($exif['FileName'])) {
+                $exif['FileName'] = $file->getClientOriginalName();
+            }
 
-        // the FileName here becomes the php temp file name so we rename it to the original file name before storage.
-        if (!empty($exif['FileName'])) {
-            $exif['FileName'] = $file->getClientOriginalName();
+            // we set it to attributes here because assigning it to create directly stores a malformed json string.
+            $attributes['meta'] = $exif;
+
+            // short cut since we have these values.
+            $attributes['meta']['height'] = $image->height();
+            $attributes['meta']['width'] = $image->width();
+
+            // THis is because this object can (and seems to often) contain non UTF8 encoded characters resulting in a json_encode that fails.
+            $encode_fix = function(&$item, $key)
+            {
+                $item = utf8_encode($item);
+            };
+
+            array_walk_recursive($attributes['meta'], $encode_fix);
         }
-
-        // we set it to attributes here because assigning it to create directly stores a malformed json string.
-        $attributes['meta'] = $exif;
-
-        // short cut since we have these values.
-        $attributes['meta']['height'] = $image->height();
-        $attributes['meta']['width'] = $image->width();
-
-        // THis is because this object can (and seems to often) contain non UTF8 encoded characters resulting in a json_encode that fails.
-        $encode_fix = function(&$item, $key)
-        {
-            $item = utf8_encode($item);
-        };
-
-        array_walk_recursive($attributes['meta'], $encode_fix);
 
 
         if (is_null($disk)) {
