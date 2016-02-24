@@ -194,14 +194,13 @@ class CpWebsitePageSectionsController extends UiBaseController
         // @TODO move this in a separate method. all it does is handling files scenarios
         foreach($request->file() as $field_name => $file) {
 
-            if ($file instanceof UploadedFile) {
+            if ($file instanceof UploadedFile && $file->getSize()) {
 
                 $photo = $section->addPhoto($file, Auth::user());
 
                 $content[$field_name] = $photo->path;
 
             } elseif (is_array($file)) {
-
                 foreach($file as $idx => $single_file) {
 
                     if (empty($single_file['image'])) {
@@ -233,6 +232,13 @@ class CpWebsitePageSectionsController extends UiBaseController
                     $content[$field_name][$idx]['image'] = $photo->path;
                 }
             }
+        }
+
+        // There should be no instances of UploadedFile in the content array at this point.
+        foreach ($content as $k => $v) {
+           if ($v instanceof UploadedFile) {
+                unset($content[$k]);
+           }
         }
 
         $section->content = array_replace($existing_content, $content);
