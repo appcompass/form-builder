@@ -113,81 +113,83 @@ class WebsitesModuleDatabaseSeeder extends Seeder
 
             $website_subnav->addItem($page, 4, ['props' => ['link' => ['data-target' => '#record-detail']]]);
 
-            //
-            //  BLOG ENTRIES
-            //
-            $page = Page::firstOrNew([
-                'name' => 'cp_website_blog_entries',
-                'title' => 'Blog Entries',
-                'description' => 'Blog Info',
-                'slug' => 'blog-entries',
-                'order' => 5,
-                'active' => true,
-                "published_at" => Carbon::now(),
-            ]);
+            if (Modular::isLoaded('blog')) {
+                //
+                //  BLOG ENTRIES
+                //
+                $page = Page::firstOrNew([
+                    'name' => 'cp_website_blog_entries',
+                    'title' => 'Blog Entries',
+                    'description' => 'Blog Info',
+                    'slug' => 'blog-entries',
+                    'order' => 5,
+                    'active' => true,
+                    "published_at" => Carbon::now(),
+                ]);
 
-            $page->website()->associate($website);
+                $page->website()->associate($website);
 
-            $page->save();
+                $page->save();
 
-            $website_subnav->addItem($page, 5, ['props' => ['link' => ['data-target' => '#record-detail']]]);
+                $website_subnav->addItem($page, 5, ['props' => ['link' => ['data-target' => '#record-detail']]]);
 
-            //
-            //  BLOG CATEGORIES
-            //
-            $page = Page::firstOrNew([
-                'name' => 'cp_website_blog_categories',
-                'title' => 'Blog Categories',
-                'description' => 'Blog Categories',
-                'slug' => 'blog-categories',
-                'order' => 6,
-                'active' => true,
-                "published_at" => Carbon::now(),
-            ]);
+                //
+                //  BLOG CATEGORIES
+                //
+                $page = Page::firstOrNew([
+                    'name' => 'cp_website_blog_categories',
+                    'title' => 'Blog Categories',
+                    'description' => 'Blog Categories',
+                    'slug' => 'blog-categories',
+                    'order' => 6,
+                    'active' => true,
+                    "published_at" => Carbon::now(),
+                ]);
 
-            $page->website()->associate($website);
+                $page->website()->associate($website);
 
-            $page->save();
+                $page->save();
 
-            $website_subnav->addItem($page, 6, ['props' => ['link' => ['data-target' => '#record-detail']]]);
+                $website_subnav->addItem($page, 6, ['props' => ['link' => ['data-target' => '#record-detail']]]);
 
-            //
-            //  BLOG TAGS
-            //
-            $page = Page::firstOrNew([
-                'name' => 'cp_website_blog_tags',
-                'title' => 'Blog Tags',
-                'description' => 'Blog Tags',
-                'slug' => 'blog-tags',
-                'order' => 7,
-                'active' => true,
-                "published_at" => Carbon::now(),
-            ]);
+                //
+                //  BLOG TAGS
+                //
+                $page = Page::firstOrNew([
+                    'name' => 'cp_website_blog_tags',
+                    'title' => 'Blog Tags',
+                    'description' => 'Blog Tags',
+                    'slug' => 'blog-tags',
+                    'order' => 7,
+                    'active' => true,
+                    "published_at" => Carbon::now(),
+                ]);
 
-            $page->website()->associate($website);
+                $page->website()->associate($website);
 
-            $page->save();
+                $page->save();
 
-            $website_subnav->addItem($page, 7, ['props' => ['link' => ['data-target' => '#record-detail']]]);
+                $website_subnav->addItem($page, 7, ['props' => ['link' => ['data-target' => '#record-detail']]]);
 
-            //
-            //  BLOG SETTINGS
-            //
-            $page = Page::firstOrNew([
-                'name' => 'cp_website_blog_settings',
-                'title' => 'Blog Settings',
-                'description' => 'Blog Settings',
-                'slug' => 'blog-settings',
-                'order' => 8,
-                'active' => true,
-                "published_at" => Carbon::now(),
-            ]);
+                //
+                //  BLOG SETTINGS
+                //
+                $page = Page::firstOrNew([
+                    'name' => 'cp_website_blog_settings',
+                    'title' => 'Blog Settings',
+                    'description' => 'Blog Settings',
+                    'slug' => 'blog-settings',
+                    'order' => 8,
+                    'active' => true,
+                    "published_at" => Carbon::now(),
+                ]);
 
-            $page->website()->associate($website);
+                $page->website()->associate($website);
 
-            $page->save();
+                $page->save();
 
-            $website_subnav->addItem($page, 8, ['props' => ['link' => ['data-target' => '#record-detail']]]);
+                $website_subnav->addItem($page, 8, ['props' => ['link' => ['data-target' => '#record-detail']]]);
+            }
 
             //
             //  REDIRECTS MANAGER
