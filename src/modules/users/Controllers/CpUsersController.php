@@ -161,7 +161,7 @@ class CpUsersController extends UiBaseController
      */
     public function store(Request $request)
     {
-        $this->validate($request, User::$validator_rules);
+        $this->validate($request, User::$rules);
 
         $data = $request->all();
 
