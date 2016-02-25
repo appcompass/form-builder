@@ -47,11 +47,17 @@ trait HasGallery
     {
         try {
 
+            if (!\Auth::check()) {
+
+                throw new \Exception('User must be logged in order to create a gallery.');
+
+            }
+
             return Gallery::where('name', '=', $name)->firstOrFail();
 
         } catch (ModelNotFoundException $e) {
 
-            return $this->make([
+            return Gallery::create([
                 'name' => $name,
                 'description' => '',
                 'user_id' => \Auth::user()->id,
