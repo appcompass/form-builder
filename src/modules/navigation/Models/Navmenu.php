@@ -126,8 +126,9 @@ class Navmenu extends Model
 
         return $this->hasMany(NavitemNavmenu::class)
             ->whereHas('navitem', function($q) use ($user_perms) {
-            $q->whereNull('req_perms');
-            $q->orWhereIn('req_perms', array_keys($user_perms));
+                $q->whereNull('req_perms');
+                $q->orWhereIn('req_perms', array_keys($user_perms));
+                $q->orderBy('order');
         });
     }
 
