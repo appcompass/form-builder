@@ -53,7 +53,10 @@ trait HasGallery
 
             }
 
-            return Gallery::where('name', '=', $name)->firstOrFail();
+            // return Gallery::where('name', '=', $name)->firstOrFail();
+            return Gallery::where('galleryable_id', $this->id)
+                ->where('galleryable_type', get_class($this))
+                ->firstOrFail();
 
         } catch (ModelNotFoundException $e) {
 
