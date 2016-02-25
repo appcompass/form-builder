@@ -1,4 +1,4 @@
-@extends('layouts/basic_admin_panel')
+@extends('ui::layouts.basic_admin_panel')
 
 @section('header')
     {{ $meta->edit->heading or '' }}

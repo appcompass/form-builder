@@ -1,4 +1,4 @@
-@extends('layouts/basic_admin_panel')
+@extends('ui::layouts.basic_admin_panel')
 
 {{-- TABS ON PANEL HEADER --}}
 @section('header')
