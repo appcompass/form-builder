@@ -45,9 +45,10 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 'description' => 'Website Informations',
                 'slug' => 'edit',
                 'order' => 2,
-                'active' => true,
-                "published_at" => Carbon::now(),
+                'active' => true
             ]);
+
+            $page->published_at = Carbon::now();
 
             $page->website()->associate($website);
 
@@ -66,8 +67,9 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 'slug' => 'settings',
                 'order' => 1,
                 'active' => true,
-                "published_at" => Carbon::now(),
             ]);
+
+            $page->published_at = Carbon::now();
 
             $page->website()->associate($website);
 
@@ -85,8 +87,9 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 'slug' => 'pages',
                 'order' => 3,
                 'active' => true,
-                "published_at" => Carbon::now(),
             ]);
+
+            $page->published_at = Carbon::now();
 
             $page->website()->associate($website);
 
@@ -103,9 +106,10 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 'description' => 'Website Navigation Menus',
                 'slug' => 'navigation',
                 'order' => 4,
-                'active' => true,
-                "published_at" => Carbon::now(),
+                'active' => true
             ]);
+
+            $page->published_at = Carbon::now();
 
             $page->website()->associate($website);
 
@@ -123,9 +127,10 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                     'description' => 'Blog Info',
                     'slug' => 'blog-entries',
                     'order' => 5,
-                    'active' => true,
-                    "published_at" => Carbon::now(),
+                    'active' => true
                 ]);
+
+                $page->published_at = Carbon::now();
 
                 $page->website()->associate($website);
 
@@ -142,9 +147,10 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                     'description' => 'Blog Categories',
                     'slug' => 'blog-categories',
                     'order' => 6,
-                    'active' => true,
-                    "published_at" => Carbon::now(),
+                    'active' => true
                 ]);
+
+                $page->published_at = Carbon::now();
 
                 $page->website()->associate($website);
 
@@ -161,9 +167,10 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                     'description' => 'Blog Tags',
                     'slug' => 'blog-tags',
                     'order' => 7,
-                    'active' => true,
-                    "published_at" => Carbon::now(),
+                    'active' => true
                 ]);
+
+                $page->published_at = Carbon::now();
 
                 $page->website()->associate($website);
 
@@ -180,9 +187,10 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                     'description' => 'Blog Settings',
                     'slug' => 'blog-settings',
                     'order' => 8,
-                    'active' => true,
-                    "published_at" => Carbon::now(),
+                    'active' => true
                 ]);
+
+                $page->published_at = Carbon::now();
 
                 $page->website()->associate($website);
 
@@ -200,15 +208,16 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 'description' => 'Manage Redirects',
                 'slug' => 'redirects',
                 'order' => 9,
-                'active' => true,
-                "published_at" => Carbon::now(),
+                'active' => true
             ]);
+
+            $page->published_at = Carbon::now();
 
             $page->website()->associate($website);
 
             $page->save();
 
-            $website_subnav->addItem($page, 8, ['props' => ['link' => ['data-target' => '#record-detail']]]);
+            $website_subnav->addItem($page, 9, ['props' => ['link' => ['data-target' => '#record-detail']]]);
         }
 
         Model::reguard();
