@@ -127,8 +127,14 @@ class Photo extends Model implements GalleryItemInterface
     * Store a new image
     *
     * @param UploadedFile $file File instance
-    * @param string storage instance
+    * @param User $user Uploader
+    * @param array attributes
+    *    [file_path] specifies a sub path to add to the root pointed by the disk instance
+    *    [name] probably an override, not sure
+    * @param disk disk Disk Instance
     * @return \P3in\Models\Photo
+    *
+    * @TODO Refactor this big time
     */
     public static function store(UploadedFile $file, User $user, $attributes = [], $disk = null)
     {

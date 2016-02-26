@@ -34,6 +34,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     protected $table = 'users';
 
     /**
+     * Specifiy the connectin for good measure
+     */
+    protected $connection = 'pgsql';
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
