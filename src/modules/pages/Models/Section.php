@@ -37,6 +37,10 @@ class Section extends ModularBaseModel
         'type'
     ];
 
+    protected $casts = [
+        'config' => 'object'
+    ];
+
     /**
     *   Fields that needs to be treated as a date
     *
