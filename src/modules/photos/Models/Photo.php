@@ -297,12 +297,19 @@ class Photo extends Model implements GalleryItemInterface
     public function getPathAttribute()
     {
 
-        if (preg_match('/^[a-z0-9]+([._-][a-z0-9]+)+$/i', $this->storage, $matches)) {
+        $schema = \Request::secure() ? 'https://' : 'http://';
 
-            $schema = \Request::secure() ? 'https://' : 'http://';
+        if (preg_match('/^[a-z0-9]+([._-][a-z0-9]+)+$/i', $this->storage, $matches)) {
 
             return $schema.$this->storage.'/' . $this->attributes['path'];
 
+        } else if ($this->photoable instanceof Model) {
+
+            if (method_exists($this->photoable, 'getBasePhotoPath')) {
+
+                return $this->photoable->getBasePhotoPath() . $this->attributes['path'];
+
+            }
         }
 
         return $this->attributes['path'];
