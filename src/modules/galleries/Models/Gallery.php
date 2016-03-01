@@ -70,7 +70,8 @@ class Gallery extends Model
      */
     public function videos()
     {
-        return $this->hasManyThrough(Video::class, GalleryItem::class, 'gallery_id', 'id');
+        return $this->hasManyThrough(Video::class, GalleryItem::class, 'gallery_id', 'id')
+            ->orderBy('order', 'asc');
     }
 
     /**
