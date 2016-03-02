@@ -2,7 +2,7 @@
 
 namespace P3in\Traits;
 
-use P3in\Models\Photo;
+use Photo;
 
 Trait HasPhoto {
 
@@ -14,6 +14,11 @@ Trait HasPhoto {
     }
 
     public function photo()
+    {
+        return $this->photos;
+    }
+
+    public function photos()
     {
         return $this->morphMany(Photo::class, 'photoable');
     }

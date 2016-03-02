@@ -54,7 +54,7 @@ trait HasGallery
             }
 
             // return Gallery::where('name', '=', $name)->firstOrFail();
-            return Gallery::where('galleryable_id', $this->id)
+            return Gallery::where('galleryable_id', $this->{$this->primaryKey})
                 ->where('galleryable_type', get_class($this))
                 ->firstOrFail();
 
@@ -64,7 +64,7 @@ trait HasGallery
                 'name' => $name,
                 'description' => '',
                 'user_id' => \Auth::user()->id,
-                'galleryable_id' => $this->id,
+                'galleryable_id' => $this->{$this->primaryKey},
                 'galleryable_type' => get_class($this)
             ]);
 
