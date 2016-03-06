@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\View;
 use P3in\Controllers\UiBaseController;
 use P3in\Models\User;
 
-class CpPhotosController extends UiBaseController
+class CpVideosController extends UiBaseController
 {
 
     public $meta_install = [
@@ -25,7 +25,7 @@ class CpPhotosController extends UiBaseController
         $this->middleware('auth');
 
         $this->controller_class = __CLASS__;
-        $this->module_name = 'photos';
+        $this->module_name = 'videos';
 
         $this->setControllerDefaults();
     }
@@ -39,7 +39,7 @@ class CpPhotosController extends UiBaseController
     {
         $this->records = Photo::all();
 
-        return $this->build('index', ['photos']);
+        return $this->build('index', ['videos']);
     }
 
     /**
@@ -49,7 +49,7 @@ class CpPhotosController extends UiBaseController
      */
     public function create()
     {
-        return View::make('photos::create');
+        return View::make('videos::create');
     }
 
     /**
@@ -62,11 +62,11 @@ class CpPhotosController extends UiBaseController
     {
 
         // we commeted this out for now to skip over permisisons till we start seeding basic master admin permissions etc.
-        // $this->user->can('create-photos');
+        // $this->user->can('create-videos');
 
         $record = Photo::store($request->file, $this->user);
 
-        return view('photos::show', compact('record'));
+        return view('videos::show', compact('record'));
 
     }
 
@@ -81,7 +81,7 @@ class CpPhotosController extends UiBaseController
 
         $photo = Photo::findOrFail($id);
 
-        return View::make('photos::show', compact('photo'));
+        return View::make('videos::show', compact('photo'));
 
     }
 

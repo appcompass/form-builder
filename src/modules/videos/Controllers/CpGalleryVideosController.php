@@ -12,7 +12,7 @@ use P3in\Models\Option;
 use P3in\Models\Photo;
 use P3in\Models\Website;
 
-class CpGalleryPhotosController extends UiBaseController
+class CpGalleryVideosController extends UiBaseController
 {
 
 
@@ -23,7 +23,7 @@ class CpGalleryPhotosController extends UiBaseController
                     'route' => 'galleries.show',
                     'target' => '#main-content-out',
                 ],[
-                    'route' => 'galleries.photos.index',
+                    'route' => 'galleries.videos.index',
                     'target' => '#record-detail',
                 ],
             ],
@@ -31,7 +31,7 @@ class CpGalleryPhotosController extends UiBaseController
         'show' => [
             'data_targets' => [
                 [
-                    'route' => 'galleries.photos.show',
+                    'route' => 'galleries.videos.show',
                     'target' => '#main-content-out',
                 // ],[
                 //     'route' => 'galleries.pages.show',
@@ -44,25 +44,25 @@ class CpGalleryPhotosController extends UiBaseController
         'edit' => [
             'data_targets' => [
                 [
-                    'route' => 'galleries.photos.show',
+                    'route' => 'galleries.videos.show',
                     'target' => '#main-content-out',
                 ],[
-                    'route' => 'galleries.photos.edit',
+                    'route' => 'galleries.videos.edit',
                     'target' => '#record-detail',
                 ],
             ],
             'heading' => 'Gallery Information',
-            'route' => 'galleries.photos.update'
+            'route' => 'galleries.videos.update'
         ],
         'create' => [
             'data_targets' => [
                 [
-                    'route' => 'galleries.photos.create',
+                    'route' => 'galleries.videos.create',
                     'target' => '#main-content-out',
                 ],
             ],
             'heading' => 'Add a page to this website',
-            'route' => 'galleries.photos.store'
+            'route' => 'galleries.videos.store'
         ],
         'form' => [],
     ];
@@ -72,7 +72,7 @@ class CpGalleryPhotosController extends UiBaseController
         $this->middleware('auth');
 
         $this->controller_class = __CLASS__;
-        $this->module_name = 'photos';
+        $this->module_name = 'videos';
 
         $this->setControllerDefaults();
     }
@@ -82,19 +82,19 @@ class CpGalleryPhotosController extends UiBaseController
     public function index(Gallery $galleries)
     {
 
-        $galleries->load('photos.galleryItem', 'photos.user');
+        $galleries->load('videos.galleryItem', 'videos.user');
 
         if (empty($this->meta->base_url)) {
-            $this->setBaseUrl(['galleries', $galleries->id, 'photos']);
+            $this->setBaseUrl(['galleries', $galleries->id, 'videos']);
         }
 
-        $photos = $galleries->photos
+        $videos = $galleries->videos
             ->each(function($photo) {
                 $photo->type = $photo->getOption(Photo::TYPE_ATTRIBUTE_NAME, 'label');
                 $photo->item_id = $photo->galleryItem->id;
             });
 
-        return view('photos::galleries.index', compact('photos', 'options'))
+        return view('videos::galleries.index', compact('videos', 'options'))
             ->with('gallery', $galleries)
             ->with('meta', $this->meta)
             ->with('options', Option::byLabel(Photo::TYPE_ATTRIBUTE_NAME)->content);
@@ -105,7 +105,7 @@ class CpGalleryPhotosController extends UiBaseController
      */
     public function create(Gallery $galleries)
     {
-        return $this->build('create', ['galleries', $galleries->id, 'photos']);
+        return $this->build('create', ['galleries', $galleries->id, 'videos']);
     }
 
     /**
@@ -114,7 +114,7 @@ class CpGalleryPhotosController extends UiBaseController
     public function store(Request $request, Gallery $galleries)
     {
 
-        $galleries->load('items', 'photos.user');
+        $galleries->load('items', 'videos.user');
 
         if ($request->has('reorder')) {
 
@@ -129,13 +129,13 @@ class CpGalleryPhotosController extends UiBaseController
             $this->bulk($items, $request->bulk, $request->has('attributes') ? $request->get('attributes') : []);
 
             // we add this only when there is a bulk update for now till we sort out how to avoid it, if possible.
-            $gallery = Gallery::findOrFail($galleries->id)->load('items', 'photos.user');
+            $gallery = Gallery::findOrFail($galleries->id)->load('items', 'videos.user');
 
         }
 
         if ($request->hasFile('file')) {
 
-            $attributes = ['file_path' => 'photos/'];
+            $attributes = ['file_path' => 'videos/'];
 
             if (get_class($galleries->galleryable) === Website::class) {
 
@@ -160,13 +160,13 @@ class CpGalleryPhotosController extends UiBaseController
             $galleries->addPhoto($photo);
 
             if (!empty($this->keep_gallery_polymorphic) && !is_null($galleries->galleryable)) {
-                $galleries->galleryable->photos()->save($photo);
+                $galleries->galleryable->videos()->save($photo);
             }
 
         }
 
-        return view('photos::photo-grid')
-            ->with('photos', $galleries->photos)
+        return view('videos::photo-grid')
+            ->with('videos', $galleries->videos)
             ->with('gallery', $galleries);
 
     }
