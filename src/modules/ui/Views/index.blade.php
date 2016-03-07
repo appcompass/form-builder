@@ -13,6 +13,10 @@
             </div>
         </div>
         <div class="space15"></div>
+
+        @if(isset($meta->index->filter_view))
+            @include($meta->index->filter_view)
+        @endif
         <table class="table table-hover general-table dataTable" id="dynamic-table">
             <thead>
                 <tr>
@@ -96,6 +100,11 @@
                 @endforeach
             </tbody>
         </table>
+        @if(method_exists($records , 'links'))
+        <div class="dataTables_paginate paging_bootstrap pagination">
+            {!! $records->links() !!}
+        </div>
+        @endif
     </div>
 </section>
 
@@ -105,12 +114,23 @@
 <script>
     $(document).ready(function() {
 
-        /*
-         * Initialize DataTable
-         */
-        $('#dynamic-table').dataTable( {
+        @if(!isset($meta->index->filter_view))
+            /*
+             * Initialize DataTable
+             */
+            $('#dynamic-table').dataTable( {
 
-        } );
+            } );
+            /*
+             * Initialse DataTables, with no sorting on the 'details' column
+             */
+            var oTable = $('#hidden-table-info').dataTable( {
+                "aoColumnDefs": [
+                    { "bSortable": false, "aTargets": [ 0 ] }
+                ],
+                "aaSorting": [[1, 'asc']]
+            });
+        @endif
 
         /*
          * Insert a 'details' column to the table
@@ -127,16 +147,6 @@
         $('#hidden-table-info tbody tr').each( function () {
             this.insertBefore(  nCloneTd.cloneNode( true ), this.childNodes[0] );
         } );
-
-        /*
-         * Initialse DataTables, with no sorting on the 'details' column
-         */
-        var oTable = $('#hidden-table-info').dataTable( {
-            "aoColumnDefs": [
-                { "bSortable": false, "aTargets": [ 0 ] }
-            ],
-            "aaSorting": [[1, 'asc']]
-        });
 
         /* Add event listener for opening and closing details
          * Note that the indicator for showing which row is open is not controlled by DataTables,

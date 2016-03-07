@@ -129,7 +129,7 @@ class CpGalleryPhotosController extends UiBaseController
             $this->bulk($items, $request->bulk, $request->has('attributes') ? $request->get('attributes') : []);
 
             // we add this only when there is a bulk update for now till we sort out how to avoid it, if possible.
-            $gallery = Gallery::findOrFail($galleries->id)->load('items', 'photos.user');
+            $galleries = Gallery::findOrFail($galleries->id)->load('items', 'photos.user');
 
         }
 

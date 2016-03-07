@@ -46,8 +46,8 @@
                     <option value="pending">Pending</option>
                     <option value="approved">Approved</option>
                 </select>
-                <a class="btn btn-primary no-link" href="javascript:;" data-bulk-update="/galleries/{{ $gallery->id }}/photos" data-action="update" data-with=".bulk_update" data-target="#gallery_{{ $gallery->id }}"><i class="fa fa-save"></i> Update Selected</a>
-                <a class="btn btn-danger no-link" href="javascript:;" data-bulk-update="/galleries/{{ $gallery->id }}/photos" data-action="delete" data-target="#gallery_{{ $gallery->id }}"><i class="fa fa-times"></i> Delete Selected</a>
+                <a class="btn btn-primary no-link" href="javascript:;" data-bulk-update="{{$meta->base_url}}" data-action="update" data-with=".bulk_update" data-target="#gallery_{{ $gallery->id }}"><i class="fa fa-save"></i> Update Selected</a>
+                <a class="btn btn-danger no-link" href="javascript:;" data-bulk-update="{{$meta->base_url}}" data-action="delete" data-target="#gallery_{{ $gallery->id }}"><i class="fa fa-times"></i> Delete Selected</a>
             </div>
             <div class="col-sm-6">
                 <h4>Filter By Type:</h4>
@@ -234,7 +234,7 @@
             update: function(event, ui) {
                 var sortData = $container.sortable('serialize');
                 $.ajax({
-                    url: '/galleries/{{ $gallery->id }}/photos',
+                    url: '{{$meta->base_url}}',
                     data: sortData,
                     type: 'POST',
                     error: function(err){
