@@ -69,6 +69,11 @@ class Photo extends Model implements GalleryItemInterface
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 
     /**
+     * Attributes appendend by default
+     */
+    protected $appends = ['dimensions', 'resolution'];
+
+    /**
     *   Allow multiple owners through polymorphic
     *
     */
@@ -211,6 +216,33 @@ class Photo extends Model implements GalleryItemInterface
         $photo->save();
 
         return $photo;
+    }
+
+    /**
+     * Destroy a photo
+     */
+    public function unlink()
+    {
+
+        if (in_array($this->storage, array_keys(config('filesystems.disks')))) {
+
+            $disk = \Storage::disk($this->storage);
+
+            if ( $disk->delete($this->getOriginal('path')) ) {
+
+                return $this->delete();
+
+            } else {
+
+                throw new \Exception("Unable to unlink file.");
+
+            }
+
+        }
+
+        // @TODO We don't treat the case where storage is different. For now at least.
+
+        return false;
     }
 
     /**

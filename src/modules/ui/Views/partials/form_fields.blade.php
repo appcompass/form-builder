@@ -180,7 +180,7 @@
             </div>
             <div class="modal-body message media-gal isotope">
                 <ul class="image-selector " style="float: left; margin-top: 20px; width: 100%">
-                    @if(isset($website) && $website->gallery->photos->count()))
+                    @if(isset($website) && $website->gallery->photos->count())
                         @include('photos::photo-grid', ['photos' => $website->gallery->photos, 'is_modal' => true])
                     @else
                         <h4 class="align-center page-header">There are no images in this gallery yet.</h4>
