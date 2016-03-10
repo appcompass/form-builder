@@ -20,7 +20,6 @@ abstract class UiBaseResourceController extends Controller
     public function index(Request $request)
     {
         $this->template = 'ui::resourceful.index';
-        $this->model = $this->model->getModel();
         return $this->output($request, [
             'records' => $this->model->get(),
         ]);

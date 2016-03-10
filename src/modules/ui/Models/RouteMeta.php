@@ -39,7 +39,9 @@ class RouteMeta extends ModularBaseModel
     public function getCombinedAttribute()
     {
         $config = $this->config;
-        $config->form = $this->form;
+        if ($config) {
+            $config->form = $this->form;
+        }
         return $config;
     }
 }
