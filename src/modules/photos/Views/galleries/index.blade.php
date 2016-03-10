@@ -44,7 +44,7 @@
                 <select name="attributes[status]" class="form-control bulk_update">
                     <option value="">Change Status</option>
                     <option value="pending">Pending</option>
-                    <option value="approved">Approved</option>
+                    <option value="active">Active</option>
                 </select>
                 <a class="btn btn-primary no-link" href="javascript:;" data-bulk-update="{{$meta->base_url}}" data-action="update" data-with=".bulk_update" data-target="#gallery_{{ $gallery->id }}"><i class="fa fa-save"></i> Update Selected</a>
                 <a class="btn btn-danger no-link" href="javascript:;" data-bulk-update="{{$meta->base_url}}" data-action="delete" data-target="#gallery_{{ $gallery->id }}"><i class="fa fa-times"></i> Delete Selected</a>
@@ -53,7 +53,7 @@
                 <h4>Filter By Type:</h4>
                 <span class="filters">
                     <a class="btn btn-info btn-xs" href="javascript:;" data-filter="*">All</a>
-                    <a class="btn btn-info btn-xs" href="javascript:;" data-filter=".approved">Approved</a>
+                    <a class="btn btn-info btn-xs" href="javascript:;" data-filter=".active">Active</a>
                     <a class="btn btn-info btn-xs" href="javascript:;" data-filter=".pending">Pending</a>
                     @foreach($options as $option)
                         <a class="btn btn-info btn-xs" href="javascript:;" data-filter=".{{ str_slug($option->label, '_') }}">{{ str_plural($option->label) }}</a>
@@ -257,11 +257,11 @@
 
         $container.disableSelection();
 
-        $('.item-actions input[type=checkbox]').iCheck({
-            checkboxClass: 'icheckbox_square',
-            radioClass: 'iradio_square',
-            // increaseArea: '20%' // optional
-        });
+        // $('.item-actions input[type=checkbox]').iCheck({
+        //     checkboxClass: 'icheckbox_square',
+        //     radioClass: 'iradio_square',
+        //     // increaseArea: '20%' // optional
+        // });
 
 
         $(window).on('resize', function() {

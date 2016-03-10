@@ -128,9 +128,6 @@ class CpGalleryPhotosController extends UiBaseController
 
             $this->bulk($items, $request->bulk, $request->has('attributes') ? $request->get('attributes') : []);
 
-            // we add this only when there is a bulk update for now till we sort out how to avoid it, if possible.
-            $galleries = Gallery::findOrFail($galleries->id)->load('items', 'photos.user');
-
         }
 
         if ($request->hasFile('file')) {
@@ -164,6 +161,9 @@ class CpGalleryPhotosController extends UiBaseController
             }
 
         }
+
+        // we add this only when there is a bulk update for now till we sort out how to avoid it, if possible.
+        $galleries = Gallery::findOrFail($galleries->id)->load('items', 'photos.user');
 
         return view('photos::photo-grid')
             ->with('photos', $galleries->photos)

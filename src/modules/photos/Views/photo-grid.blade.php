@@ -48,3 +48,10 @@
     </div>
 
 @endforeach
+<script>
+        $('.item-actions input[type=checkbox]').iCheck({
+            checkboxClass: 'icheckbox_square',
+            radioClass: 'iradio_square',
+            // increaseArea: '20%' // optional
+        });
+</script>
