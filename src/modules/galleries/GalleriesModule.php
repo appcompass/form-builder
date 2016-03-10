@@ -51,10 +51,11 @@ Class GalleriesModule extends BaseModule
             $main_nav = Navmenu::byName('cp_main_nav');
             $main_nav_media =  Navmenu::byName('cp_main_nav_media', 'Media Manager');
 
-            $website->navmenus()->saveMany([$main_nav, $main_nav_media]);
+            // @TODO: Federico, more clean up.
+            // $website->navmenus()->saveMany([$main_nav, $main_nav_media]);
 
-            $main_nav_media->addItem($this->navItem, 0);
-            $main_nav->addChildren($main_nav_media, 5);
+            // $main_nav_media->addItem($this->navItem, 0);
+            // $main_nav->addChildren($main_nav_media, 5);
         }
 
     }

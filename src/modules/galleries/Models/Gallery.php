@@ -128,4 +128,14 @@ class Gallery extends Model
         return $query->where('galleryable_type', $class_name);
     }
 
+    public function scopeFromRoute($query, $params)
+    {
+        if (!empty($params)) {
+            return $params['galleries'];
+        }
+
+        return $query;
+    }
+
+
 }

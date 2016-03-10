@@ -5,6 +5,7 @@ namespace P3in\Modules\Providers;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider;
+use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 use P3in\Controllers\CpGalleriesController;
 use P3in\Models\Gallery;
@@ -51,10 +52,12 @@ class GalleriesServiceProvider extends ServiceProvider
      *
      *
      */
-    public function boot(Gate $gate)
+    public function boot(Gate $gate, Router $router)
     {
 
         $loader = AliasLoader::getInstance();
+
+        $router->model('galleries', Gallery::class);
 
         // $gate->define('create-galleries', function(User $user) {
         //     dd($user);

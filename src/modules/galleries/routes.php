@@ -2,7 +2,7 @@
 Route::group([
     // 'prefix' => 'cp',
     'namespace' => 'P3in\Controllers',
-    'middleware' => 'web',
+    'middleware' => ['web', 'auth'],
 ], function() {
 
     Route::resource('galleries', 'CpGalleriesController');

@@ -15,11 +15,13 @@ abstract class UiBaseResourceController extends Controller
     protected $model;
     protected $params;
     protected $user;
+    protected $template;
     public $meta;
 
     public function index(Request $request)
     {
-        $this->template = 'ui::resourceful.index';
+        $this->setTemplate('ui::resourceful.index');
+
         return $this->output($request, [
             'records' => $this->model->get(),
         ]);
@@ -27,7 +29,7 @@ abstract class UiBaseResourceController extends Controller
 
     public function edit(Request $request)
     {
-        $this->template = 'ui::resourceful.edit';
+        $this->setTemplate('ui::resourceful.edit');
 
         return $this->output($request, [
             'record' => $this->model,
@@ -36,21 +38,20 @@ abstract class UiBaseResourceController extends Controller
 
     public function create(Request $request)
     {
-        $this->template = 'ui::resourceful.create';
+        $this->setTemplate('ui::resourceful.create');
 
         return $this->output($request, [
         ]);
     }
 
-    public function store(Request $request)
-    {
-
-    }
-
     public function show(Request $request)
     {
-        $this->template = 'ui::resourceful.show';
-        $this->module_name = str_replace('.', '_', $request->route()->getName());
+        $this->setTemplate('ui::resourceful.show');
+
+        $routeName = $request->route()->getName();
+        // we take the route and convert it to a module name so something.else becomes something_else
+        // after we strip off the method component of the route.
+        $this->module_name = str_replace('.', '_', substr($routeName, 0, strrpos($routeName, '.')));
 
         return $this->output($request, [
             'record' => $this->model,
@@ -59,14 +60,29 @@ abstract class UiBaseResourceController extends Controller
         ]);
     }
 
+    public function store(Request $request)
+    {
+        $this->validate($request, [
+            'title' => 'required|unique|max:255',
+            'body' => 'required',
+        ]);
+
+        $this->model->create($request->only($this->model->fillable));
+        return $this->json('/'.$request->path());
+    }
+
     public function update(Request $request)
     {
+        $this->validate($request, $this->model->rules);
 
+        $this->model->update($request->only($this->model->fillable));
+        return $this->json('/'.$request->path());
     }
 
     public function destroy(Request $request)
     {
-
+        $this->model->delete();
+        return $this->json('/'.$request->path());
     }
 
     public function setBaseModel(Request $request, $model)
@@ -76,6 +92,12 @@ abstract class UiBaseResourceController extends Controller
         $this->model = $model->fromRoute($params);
     }
 
+    public function setTemplate($template_name, $force = false)
+    {
+        if (!$this->template || $force) {
+            $this->template = $template_name;
+        }
+    }
     public function output(Request $request, $data, $success = true, $message = '')
     {
         $data['meta'] = $this->getMeta($request->route()->getName());
