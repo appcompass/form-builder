@@ -11,12 +11,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use P3in\Controllers\ModularBaseController;
+use P3in\Traits\HasRouteMetaTrait;
 use P3in\Models\Navmenu;
 use P3in\Models\Website;
 use P3in\Module;
 use Modular;
 
 class UiBaseController extends ModularBaseController {
+    use HasRouteMetaTrait;
 
     public $records;
     public $record;
@@ -195,7 +197,9 @@ class UiBaseController extends ModularBaseController {
             array_walk($uriAry, function($v, $k) use ($both) { $both[$k % 2][] = $v; });
 
             // get url's route controller name and method (aka the route action)
-            $action = Route::getRoutes()->match(Request::create($parsedUrl['path']))->getActionName();
+            $route = Route::getRoutes()->match(Request::create($parsedUrl['path']));
+            $action = $route->getActionName();
+            $name = $route->getName();
 
             list($class, $method) = explode('@', $action);
 
@@ -207,11 +211,17 @@ class UiBaseController extends ModularBaseController {
                 $metaData = \App::make($class)->meta;
 
                 $rtn['message'] = 'The controller for this route needs target meta data.';
+                $tree = [];
                 if (!empty($metaData->$method) && !empty($metaData->$method->data_targets)) {
                     $rtn['success'] = true;
                     $rtn['message'] = '';
-                    $tree = [];
                     $rtn['data'] = $this->buildTree($tree, $metaData->$method->data_targets, $params, $query);
+                }elseif($metaData = $this->getMeta($name)) {
+                    if (!empty($metaData->data_targets)) {
+                        $rtn['success'] = true;
+                        $rtn['message'] = '';
+                        $rtn['data'] = $this->buildTree($tree, $metaData->data_targets, $params, $query);
+                    }
                 }
             }
 

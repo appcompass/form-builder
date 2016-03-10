@@ -5,11 +5,13 @@ namespace P3in\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use Illuminate\Http\Request;
-use P3in\Controllers\UiBaseController;
 use P3in\Models\Navmenu;
+use P3in\Traits\HasRouteMetaTrait;
 
 abstract class UiBaseResourceController extends Controller
 {
+    use HasRouteMetaTrait;
+
     protected $model;
     protected $params;
     protected $user;
@@ -17,30 +19,27 @@ abstract class UiBaseResourceController extends Controller
 
     public function index(Request $request)
     {
-        $this->template = 'ui::index';
-
+        $this->template = 'ui::resourceful.index';
+        $this->model = $this->model->getModel();
         return $this->output($request, [
-            'meta' => $this->meta,
             'records' => $this->model->get(),
         ]);
     }
 
     public function edit(Request $request)
     {
-        $this->template = 'ui::edit';
+        $this->template = 'ui::resourceful.edit';
 
         return $this->output($request, [
-            'meta' => $this->meta,
-            'record' => $this->record,
+            'record' => $this->model,
         ]);
     }
 
     public function create(Request $request)
     {
-        $this->template = 'ui::create';
+        $this->template = 'ui::resourceful.create';
 
         return $this->output($request, [
-            'meta' => $this->meta,
         ]);
     }
 
@@ -51,10 +50,10 @@ abstract class UiBaseResourceController extends Controller
 
     public function show(Request $request)
     {
-        $this->template = 'ui::show';
+        $this->template = 'ui::resourceful.show';
+        $this->module_name = str_replace('.', '_', $request->route()->getName());
 
         return $this->output($request, [
-            'meta' => $this->meta,
             'record' => $this->model,
             'nav' => $this->getCpSubNav(),
             'left_panels' => $this->getLeftPanels(),
@@ -71,14 +70,41 @@ abstract class UiBaseResourceController extends Controller
 
     }
 
-    private function output(Request $request, $data, $success = true, $message = '')
+    public function setBaseModel(Request $request, $model)
     {
+        $route = $request->route();
+        $params = $route ? $route->parameters() : [];
+        $this->model = $model->fromRoute($params);
+    }
+
+    public function output(Request $request, $data, $success = true, $message = '')
+    {
+        $data['meta'] = $this->getMeta($request->route()->getName());
+
+        // @TODO: The below to two attributes are here only for backwards compatibility. so kill it when we can.
+        if ($data['meta']) {
+            $data['meta']->classname = get_class($this->model);
+            $data['meta']->base_url = '/'.$request->path();
+        }
+
         if ($request->wantsJson()) {
             return $this->json($data, $success, $message);
         }else{
             return view($this->template, $data);
         }
     }
+
+    public function json($data, $success = true, $message = '')
+    {
+        $rtn = [
+            'success' => $success,
+            'data' => $data,
+            'message' => $message,
+        ];
+
+        return response()->json($rtn);
+    }
+
 
     private function getCpSubNav($id = null)
     {

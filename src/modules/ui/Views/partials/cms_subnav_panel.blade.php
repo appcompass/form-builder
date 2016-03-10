@@ -1,6 +1,6 @@
 <section class="panel">
     <div class="panel-body">
-        <h5>{{ $meta->show->sub_section_name }}</h5>
+        <h5>{{ $meta->sub_section_name or $meta->show->sub_section_name }}</h5>
         <ul class="nav nav-pills nav-stacked mail-nav">
 
             @foreach($nav->navitems as $i => $subnav_content)
