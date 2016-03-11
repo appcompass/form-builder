@@ -34,7 +34,7 @@
                         @if($row_data->type == 'link_by_id')
                             <td>
                                 @can('edit', $record)
-                                    <a href="{{ $meta->base_url }}/{{ $record->id }}/edit" data-click="{{ $meta->base_url }}/{{ $record->id }}" data-target="{{ $meta->data_target }}">
+                                    <a href="{{ $meta->base_url }}/{{ $record->getKey() }}/edit" data-click="{{ $meta->base_url }}/{{ $record->getKey() }}" data-target="{{ $meta->data_target }}">
                                 @endcan
                                     {{ $record->$row_key }}
                                 @can('edit', $record)
@@ -49,8 +49,8 @@
                                     @can('edit', $record)
                                         <a
                                             data-action="link"
-                                            href="{{ $meta->base_url }}/{{ $record->id }}/edit"
-                                            data-click="{{ $meta->base_url }}/{{ $record->id }}"
+                                            href="{{ $meta->base_url }}/{{ $record->getKey() }}/edit"
+                                            data-click="{{ $meta->base_url }}/{{ $record->getKey() }}"
                                             data-target="{{ $meta->data_target }}"
                                             class="btn btn-primary"
                                         >
@@ -63,7 +63,7 @@
                                             href=""
                                             data-click="/clone-resource"
                                             data-object-name="{{ get_class($record) }}"
-                                            data-object-id="{{ $record->id }}"
+                                            data-object-id="{{ $record->getKey() }}"
                                             data-object-redirect="{{ $meta->base_url }}"
                                             class="btn btn-info"
                                         >
@@ -74,7 +74,7 @@
                                             data-action="modal-delete"
                                             href="#modal-edit"
                                             data-toggle="modal"
-                                            data-delete="{{ $meta->base_url }}/{{ $record->id }}"
+                                            data-delete="{{ $meta->base_url }}/{{ $record->getKey() }}"
                                             data-click="/delete-modal"
                                             data-inject-area="#modal-body"
                                             class="btn btn-danger"
@@ -85,7 +85,7 @@
                                 @endforeach
                             </td>
                         @elseif($row_data->type == 'link_to_blank')
-                            <td><a href="{{ $record->$row_key }}" target="_blank" class="no-link">{{ $record->$row_key }}</a></td>
+                            <td><a href="http://{{ $record->$row_key }}" target="_blank" class="no-link">{{ $record->$row_key }}</a></td>
                         @elseif($row_data->type == 'datetime')
                             <td>{{ $record->$row_key }}</td>
                         @elseif($row_data->type == 'image')
