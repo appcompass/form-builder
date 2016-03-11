@@ -72,7 +72,7 @@ class CpGalleryPhotosController extends UiBaseController
         $this->middleware('auth');
 
         $this->controller_class = __CLASS__;
-        $this->module_name = 'photos';
+        $this->nav_name = 'cp_photos_subnav';
 
         $this->setControllerDefaults();
     }

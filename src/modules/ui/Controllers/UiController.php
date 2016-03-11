@@ -5,12 +5,14 @@ namespace P3in\Controllers;
 use App\Http\Controllers\Controller;
 use Auth;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Route;
 use Modular;
 use P3in\Models\Navmenu;
 use P3in\Models\User;
 use P3in\Models\Website;
+use P3in\Modules\UiModule;
 
 class UiController extends UiBaseController {
 
@@ -31,7 +33,7 @@ class UiController extends UiBaseController {
         $this->middleware('auth');
 
         $this->controller_class = __CLASS__;
-        $this->module_name = 'ui';
+        // $this->nav_name = 'cp_ui_subnav';
 
         $this->setControllerDefaults();
     }
@@ -43,26 +45,25 @@ class UiController extends UiBaseController {
 
     public function getLeftNav()
     {
-        $cpNavs = Modular::cpNav();
+        $nav = Cache::tags('cp_ui')->get('nav')->cp_main_nav;
 
-        $nav = Navmenu::byName('cp_main_nav');
-
-        return view('ui::sections/left-nav', compact('nav'));
+        return view('ui::sections.left-nav')
+            ->with('nav', $nav);
     }
 
     public function getLeftAlerts()
     {
-        return view('ui::sections/left-alerts');
+        return view('ui::sections.left-alerts');
     }
 
     public function getNotificationCenter()
     {
-        return view('ui::sections/notification-center');
+        return view('ui::sections.notification-center');
     }
 
     public function getDashboard()
     {
-        return view('ui::sections/dashboard');
+        return view('ui::sections.dashboard');
     }
 
     public function getUserFullName()
@@ -78,7 +79,7 @@ class UiController extends UiBaseController {
 
     public function getUserNav()
     {
-        return view('ui::sections/user-menu');
+        return view('ui::sections.user-menu');
     }
 
     public function postRequestMeta(Request $request)

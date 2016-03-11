@@ -2,7 +2,9 @@
 
 namespace P3in\Modules;
 
+use Illuminate\Support\Facades\Cache;
 use Modular;
+use Blade;
 use P3in\Models\Navmenu;
 use P3in\Models\Website;
 use P3in\Modules\BaseModule;
@@ -13,7 +15,7 @@ Class UiModule extends BaseModule
 
     use NavigatableTrait;
 
-    public $module_name = "ui";
+    public $module_name = 'ui';
 
     public function __construct()
     {
@@ -22,52 +24,93 @@ Class UiModule extends BaseModule
 
     public function bootstrap()
     {
+        // @TODO: For now we're we're flushing the cache on load till
+        // we make sure all of our modules have been updated.
+        // Once we've confirmed all is good, we'll uncomment this flush.
+        Cache::tags('cp_ui')->flush();
 
+        Cache::tags('cp_ui')->rememberForever('nav', function(){
+            return $this->buildCpNav();
+        });
     }
 
     public function register()
     {
-
-        if (Modular::isLoaded('websites') && Modular::isLoaded('navigation')) {
-            $control_panel = Website::admin();
-            $cp_main_nav = Navmenu::byName('cp_main_nav');
-
-            $control_panel->navmenus()->save($cp_main_nav);
-
-            $cp_main_nav->addItem($this->navItem, 0);
-
-            $cp_main_nav->addItem($this->navItem([
-                'label' => 'Control Pannel Settings',
-                'url' => '/ui/settings',
-                'props' => [
-                    'icon' => 'pencil',
-                    'link' => [
-                        'href' => '/ui/settings',
-                        'data-target' => '#main-content-out'
-                    ]
-                ]
-            ])->first(), 999);
-        }
 
     }
 
     /**
      *
      */
-    public function makeLink($overrides = [])
+    public function makeLink()
     {
-        return array_replace([
-            "label" => 'Dashboard',
-            "url" => '/',
-            "req_perms" => null,
-            "props" => [
-                'icon' => 'dashboard',
-                "link" => [
-                    'href' => '/dashboard',
-                    'data-target' => '#main-content-out'
+        return [
+            [
+                'label' => 'Dashboard',
+                'belongs_to' => ['cp_main_nav'],
+                'sub_nav' => '',
+                'req_perms' => 'cp-dashboard',
+                'order' => 1,
+                'props' => [
+                    'icon' => 'dashboard',
+                    'link' => [
+                        'href' => '/dashboard',
+                    ],
                 ],
-            ]
-        ], $overrides);
+            ],
+        ];
     }
 
+    public function buildCpNav()
+    {
+        $rawLinks = array_collapse(array_values(Modular::makeLink()));
+
+        $organized = $this->organizeNavItemsByNavName($rawLinks);
+
+        return json_decode(json_encode($organized));
+    }
+
+    private function organizeNavItemsByNavName($nav)
+    {
+        $rtn = [];
+
+        foreach ($nav as $row) {
+
+            if (!empty($row['sub_nav'])) {
+                $row['children'] = $this->buildChildNavs($row['sub_nav'], $nav);
+            }
+
+            foreach ($row['belongs_to'] as $belongs_to) {
+                $rtn[$belongs_to][] = $row;
+            }
+        }
+
+        array_walk($rtn, function(&$row, $key){
+            $row = array_values(array_sort($row, function ($val) {
+                return $val['order'];
+            }));
+        });
+
+        return $rtn;
+    }
+
+    private function buildChildNavs($name, $nav)
+    {
+        $rtn = [];
+
+        foreach ($nav as $row) {
+            if (in_array($name,$row['belongs_to'])) {
+
+                if (!empty($row['sub_nav'])) {
+                    $row['children'] = $this->buildChildNavs($row['sub_nav'], $nav);
+                }
+
+                $rtn[] = $row;
+            }
+        }
+
+        return array_values(array_sort($rtn, function ($val) {
+            return $val['order'];
+        }));
+    }
 }

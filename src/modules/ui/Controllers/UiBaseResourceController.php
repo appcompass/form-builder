@@ -5,6 +5,7 @@ namespace P3in\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use P3in\Models\Navmenu;
 use P3in\Traits\HasRouteMetaTrait;
 
@@ -49,9 +50,9 @@ abstract class UiBaseResourceController extends Controller
         $this->setTemplate('ui::resourceful.show');
 
         $routeName = $request->route()->getName();
-        // we take the route and convert it to a module name so something.else becomes something_else
+        // we take the route and convert it to a nav name so something.else becomes something_else
         // after we strip off the method component of the route.
-        $this->module_name = str_replace('.', '_', substr($routeName, 0, strrpos($routeName, '.')));
+        $this->nav_name = str_replace(['.','-'], '_', substr($routeName, 0, strrpos($routeName, '.')));
 
         return $this->output($request, [
             'record' => $this->model,
@@ -127,14 +128,13 @@ abstract class UiBaseResourceController extends Controller
     }
 
 
-    private function getCpSubNav($id = null)
+    public function getCpSubNav($id = null)
     {
-        $navmenu_name = 'cp_'.$this->module_name.'_subnav';
+        $menu = Cache::tags('cp_ui')->get('nav');
 
-        $navmenu = Navmenu::byName($navmenu_name);
-
-        return $navmenu;
+        return isset($menu->{$this->nav_name}) ? $menu->{$this->nav_name} : [];
     }
+
     private function getLeftPanels() {}
 
 }

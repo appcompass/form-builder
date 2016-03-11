@@ -71,7 +71,7 @@ class CpGalleryVideosController extends UiBaseController
         $this->middleware('auth');
 
         $this->controller_class = __CLASS__;
-        $this->module_name = 'gallery_videos';
+        $this->nav_name = 'cp_gallery_videos_subnav';
 
         $this->setControllerDefaults();
     }

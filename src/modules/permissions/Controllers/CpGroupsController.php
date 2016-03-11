@@ -124,7 +124,7 @@ class CpGroupsController extends UiBaseController
         $this->middleware('auth');
 
         $this->controller_class = __CLASS__;
-        $this->module_name = 'groups';
+        $this->nav_name = 'cp_groups_subnav';
 
         $this->setControllerDefaults();
 

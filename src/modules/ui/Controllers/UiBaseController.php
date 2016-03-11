@@ -9,13 +9,14 @@ use Event;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
+use Modular;
 use P3in\Controllers\ModularBaseController;
-use P3in\Traits\HasRouteMetaTrait;
 use P3in\Models\Navmenu;
 use P3in\Models\Website;
 use P3in\Module;
-use Modular;
+use P3in\Traits\HasRouteMetaTrait;
 
 class UiBaseController extends ModularBaseController {
     use HasRouteMetaTrait;
@@ -107,11 +108,9 @@ class UiBaseController extends ModularBaseController {
      */
     public function getCpSubNav($id = null)
     {
-        $navmenu_name = 'cp_'.$this->module_name.'_subnav';
+        $menu = Cache::tags('cp_ui')->get('nav');
 
-        $navmenu = Navmenu::byName($navmenu_name);
-
-        return $navmenu;
+        return isset($menu->{$this->nav_name}) ? $menu->{$this->nav_name} : [];
     }
 
     /**

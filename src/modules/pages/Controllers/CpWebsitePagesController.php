@@ -178,7 +178,7 @@ class CpWebsitePagesController extends UiBaseController
         $this->middleware('auth');
 
         $this->controller_class = __CLASS__;
-        $this->module_name = 'pages';
+        $this->nav_name = 'cp_pages_subnav';
 
         $this->setControllerDefaults();
 

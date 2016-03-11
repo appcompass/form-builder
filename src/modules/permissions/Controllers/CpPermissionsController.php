@@ -113,7 +113,7 @@ class CpPermissionsController extends UiBaseController
         $this->middleware('auth');
 
         $this->controller_class = __CLASS__;
-        $this->module_name = 'permissions';
+        $this->nav_name = 'cp_permissions_subnav';
 
         $this->setControllerDefaults();
 

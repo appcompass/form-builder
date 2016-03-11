@@ -43,34 +43,38 @@ Class GalleriesModule extends BaseModule
     {
         $this->checkRackspaceCdnPathConfig();
 
-        $this->checkOrSetUiConfig();
-
-        if (Modular::isLoaded('websites') &&Modular::isLoaded('navigation')) {
-            $website = Website::admin();
-
-            $main_nav = Navmenu::byName('cp_main_nav');
-            $main_nav_media =  Navmenu::byName('cp_main_nav_media', 'Media Manager');
-
-            // @TODO: Federico, more clean up.
-            // $website->navmenus()->saveMany([$main_nav, $main_nav_media]);
-
-            // $main_nav_media->addItem($this->navItem, 0);
-            // $main_nav->addChildren($main_nav_media, 5);
-        }
-
     }
 
     /**
      * Get Link data
      */
-    public function makeLink($overrides = [])
+    public function makeLink()
     {
 
-        return array_replace([
-            "label" => 'Galleries',
-            'url' => '/galleries',
-            "props" => ['icon' => 'camera'],
-        ], $overrides);
+        return [
+            [
+                "label" => 'Media Manager',
+                'belongs_to' => ['cp_main_nav'],
+                'sub_nav' => 'cp_main_nav_media',
+                "req_perms" => 'cp-media-manager',
+                'order' => 4,
+                "props" => [
+                    "icon" => "camera",
+                ],
+            ], [
+                "label" => 'Galleries',
+                'belongs_to' => ['cp_main_nav_media'],
+                'sub_nav' => '',
+                "req_perms" => 'cp-pages-manager',
+                'order' => 1,
+                "props" => [
+                    "icon" => "camera",
+                    "link" => [
+                        'href' => "/galleries",
+                    ],
+                ],
+            ],
+        ];
     }
 
     /**
@@ -101,15 +105,6 @@ Class GalleriesModule extends BaseModule
 
         }
 
-    }
-
-    public function checkOrSetUiConfig()
-    {
-
-        $module = Modular::get($this->module_name);
-
-        $module->config = [];
-        $module->save();
     }
 
     /**

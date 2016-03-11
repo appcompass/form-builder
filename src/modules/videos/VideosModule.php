@@ -34,18 +34,21 @@ class VideosModule extends BaseModule
      */
     public function makeLink($overrides = [])
     {
-        return array_replace([
-            "label" => 'Videos',
-            "url" => '/videos',
-            "req_perms" => null,
-            "props" => [
-                "icon" => "camera",
-                "link" => [
-                    'href' => "/videos",
-                    "data-target" => "#main-content-out",
-                ]
+        return [
+            [
+                "label" => 'Videos',
+                'belongs_to' => ['cp_main_nav_media'],
+                'sub_nav' => '',
+                "req_perms" => 'cp-media-videos-manager',
+                'order' => 2,
+                "props" => [
+                    "icon" => "camera",
+                    "link" => [
+                        'href' => "/videos",
+                    ],
+                ],
             ]
-        ], $overrides);
+        ];
     }
 
 }

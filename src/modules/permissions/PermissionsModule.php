@@ -26,34 +26,14 @@ Class PermissionsModule extends BaseModule
     public function register()
     {
 
-        // if (Modular::isLoaded('navigation')) {
-        //     $main_nav = Navmenu::byName('cp_main_nav');
-        //     $main_nav_sub_nav =  Navmenu::byName('cp_main_nav_users', 'Users Manager');
-
-        //     $main_nav_sub_nav->addItem($this->navItem, 2);
-        //     $main_nav->addChildren($main_nav_sub_nav, 1);
-        // }
-
     }
 
     /**
      *
      */
-    public function makeLink($overrides = [])
+    public function makeLink()
     {
-      return array_replace([
-          "label" => 'Permissions',
-          "url" => '',
-          "new_tab" => 'false',
-          "req_perms" => null,
-          "props" => [
-            "icon" => "user",
-            "link" => [
-                'href' => "/permissions",
-                "data-target" => "#main-content-out",
-            ]
-          ]
-      ], $overrides);
+        return [];
     }
 
 }
