@@ -26,47 +26,50 @@
         </div>
     </div>
 </section>
-<section class="panel">
-    <header class="panel-heading">
-        Photos in {{ $gallery->name }}
-    </header>
 
-    <div class="panel-body">
-        <div class="row">
-            <div class="col-sm-6">
-                <h4>Bulk Actions:</h4>
-                <select name="attributes[options][photo_of]" class="form-control bulk_update">
-                    <option value="">Change Type</option>
-                    @foreach ($options as $option)
-                        <option value="{{ $option->_id }}">{{ $option->label }}</option>
-                    @endforeach
-                </select>
-                <select name="attributes[status]" class="form-control bulk_update">
-                    <option value="">Change Status</option>
-                    <option value="pending">Pending</option>
-                    <option value="active">Active</option>
-                </select>
-                <a class="btn btn-primary no-link" href="javascript:;" data-bulk-update="{{$meta->base_url}}" data-action="update" data-with=".bulk_update" data-target="#gallery_{{ $gallery->id }}"><i class="fa fa-save"></i> Update Selected</a>
-                <a class="btn btn-danger no-link" href="javascript:;" data-bulk-update="{{$meta->base_url}}" data-action="delete" data-target="#gallery_{{ $gallery->id }}"><i class="fa fa-times"></i> Delete Selected</a>
+@if(!empty($photos->count()))
+    <section class="panel">
+        <header class="panel-heading">
+            Photos in {{ $gallery->name }}
+        </header>
+
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-sm-6">
+                    <h4>Bulk Actions:</h4>
+                    <select name="attributes[options][photo_of]" class="form-control bulk_update">
+                        <option value="">Change Type</option>
+                        @foreach ($options as $option)
+                            <option value="{{ $option->_id }}">{{ $option->label }}</option>
+                        @endforeach
+                    </select>
+                    <select name="attributes[status]" class="form-control bulk_update">
+                        <option value="">Change Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="active">Active</option>
+                    </select>
+                    <a class="btn btn-primary no-link" href="javascript:;" data-bulk-update="{{$meta->base_url}}" data-action="update" data-with=".bulk_update" data-target="#gallery_{{ $gallery->id }}"><i class="fa fa-save"></i> Update Selected</a>
+                    <a class="btn btn-danger no-link" href="javascript:;" data-bulk-update="{{$meta->base_url}}" data-action="delete" data-target="#gallery_{{ $gallery->id }}"><i class="fa fa-times"></i> Delete Selected</a>
+                </div>
+                <div class="col-sm-6">
+                    <h4>Filter By Type:</h4>
+                    <span class="filters">
+                        <a class="btn btn-info btn-xs" href="javascript:;" data-filter="*">All</a>
+                        <a class="btn btn-info btn-xs" href="javascript:;" data-filter=".active">Active</a>
+                        <a class="btn btn-info btn-xs" href="javascript:;" data-filter=".pending">Pending</a>
+                        @foreach($options as $option)
+                            <a class="btn btn-info btn-xs" href="javascript:;" data-filter=".{{ str_slug($option->label, '_') }}">{{ str_plural($option->label) }}</a>
+                        @endforeach
+                    </span>
+                </div>
             </div>
-            <div class="col-sm-6">
-                <h4>Filter By Type:</h4>
-                <span class="filters">
-                    <a class="btn btn-info btn-xs" href="javascript:;" data-filter="*">All</a>
-                    <a class="btn btn-info btn-xs" href="javascript:;" data-filter=".active">Active</a>
-                    <a class="btn btn-info btn-xs" href="javascript:;" data-filter=".pending">Pending</a>
-                    @foreach($options as $option)
-                        <a class="btn btn-info btn-xs" href="javascript:;" data-filter=".{{ str_slug($option->label, '_') }}">{{ str_plural($option->label) }}</a>
-                    @endforeach
-                </span>
+            <hr>
+            <div id="gallery_{{ $gallery->id }}" class="media-gal isotope sortable">
+                @include('photos::photo-grid', ['photos' => $photos, 'is_modal' => false])
             </div>
         </div>
-        <hr>
-        <div id="gallery_{{ $gallery->id }}" class="media-gal isotope sortable">
-            @include('photos::photo-grid', ['photos' => $photos, 'is_modal' => false])
-        </div>
-    </div>
-</section>
+    </section>
+@endif
 
 <link href="/assets/galleries/css/dropzone.css" rel="stylesheet">
 <script src="/assets/galleries/js/dropzone.js"></script>

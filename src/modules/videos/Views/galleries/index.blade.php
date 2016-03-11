@@ -5,7 +5,7 @@
         <span class="tools pull-right">
             <a href="javascript:;" class="fa fa-chevron-down"></a>
         </span>
-        Upload Photos
+        Upload Videos
     </header>
     <div class="panel-body">
         <div class="row">
@@ -26,47 +26,27 @@
         </div>
     </div>
 </section>
-<section class="panel">
-    <header class="panel-heading">
-        Photos in {{ $gallery->name }}
-    </header>
 
-    <div class="panel-body">
-        <div class="row">
-            <div class="col-sm-6">
-                <h4>Bulk Actions:</h4>
-                <select name="attributes[options][photo_of]" class="form-control bulk_update">
-                    <option value="">Change Type</option>
-                    @foreach ($options as $option)
-                        <option value="{{ $option->_id }}">{{ $option->label }}</option>
-                    @endforeach
-                </select>
-                <select name="attributes[status]" class="form-control bulk_update">
-                    <option value="">Change Status</option>
-                    <option value="pending">Pending</option>
-                    <option value="approved">Approved</option>
-                </select>
-                <a class="btn btn-primary no-link" href="javascript:;" data-bulk-update="/galleries/{{ $gallery->id }}/photos" data-action="update" data-with=".bulk_update" data-target="#gallery_{{ $gallery->id }}"><i class="fa fa-save"></i> Update Selected</a>
-                <a class="btn btn-danger no-link" href="javascript:;" data-bulk-update="/galleries/{{ $gallery->id }}/photos" data-action="delete" data-target="#gallery_{{ $gallery->id }}"><i class="fa fa-times"></i> Delete Selected</a>
+@if(!empty($videos->count()))
+    <section class="panel">
+        <header class="panel-heading">
+            Videos in {{ $gallery->name }}
+        </header>
+
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-sm-6">
+                    <h4>Bulk Actions:</h4>
+                    <a class="btn btn-danger no-link" href="javascript:;" data-bulk-update="/galleries/{{ $gallery->id }}/videos" data-action="delete" data-target="#gallery_{{ $gallery->id }}"><i class="fa fa-times"></i> Delete Selected</a>
+                </div>
             </div>
-            <div class="col-sm-6">
-                <h4>Filter By Type:</h4>
-                <span class="filters">
-                    <a class="btn btn-info btn-xs" href="javascript:;" data-filter="*">All</a>
-                    <a class="btn btn-info btn-xs" href="javascript:;" data-filter=".approved">Approved</a>
-                    <a class="btn btn-info btn-xs" href="javascript:;" data-filter=".pending">Pending</a>
-                    @foreach($options as $option)
-                        <a class="btn btn-info btn-xs" href="javascript:;" data-filter=".{{ str_slug($option->label, '_') }}">{{ str_plural($option->label) }}</a>
-                    @endforeach
-                </span>
+            <hr>
+            <div id="gallery_{{ $gallery->id }}" class="media-gal isotope sortable">
+                @include('videos::video-grid', ['videos' => $videos, 'is_modal' => false])
             </div>
         </div>
-        <hr>
-        <div id="gallery_{{ $gallery->id }}" class="media-gal isotope sortable">
-            @include('photos::photo-grid', ['photos' => $photos, 'is_modal' => false])
-        </div>
-    </div>
-</section>
+    </section>
+@endif
 
 <link href="/assets/galleries/css/dropzone.css" rel="stylesheet">
 <script src="/assets/galleries/js/dropzone.js"></script>
@@ -137,38 +117,12 @@
         vertical-align: middle;
     }
 
-    @media (min-width: 768px) {
-        .media-gal .item {
-            width: 230px;
-            margin-right: 10px;
-            margin-bottom: 10px;
-        }
-
-        .media-gal .item:nth-child(3n) {
-            margin-right: 0;
-        }
+    .media-gal .item {
+        width: 530px;
     }
-
-    @media (min-width: 992px) {
-        .media-gal .item {
-            width: 215px;
-            margin-right: 20px;
-            margin-bottom: 20px;
-        }
-
-        .media-gal .item:nth-child(3n) {
-            margin-right: 20px;
-        }
-
-        .media-gal .item:nth-child(4n) {
-            margin-right: 0;
-        }
-    }
-
-    @media (min-width: 1200px) {
-        .media-gal .item {
-            width: 265px;
-        }
+    .media-gal .item .wistia_embed {
+        width: 510px;
+        height: 510px;
     }
 </style>
 <script type="text/javascript">
@@ -234,7 +188,7 @@
             update: function(event, ui) {
                 var sortData = $container.sortable('serialize');
                 $.ajax({
-                    url: '/galleries/{{ $gallery->id }}/photos',
+                    url: '/galleries/{{ $gallery->id }}/videos',
                     data: sortData,
                     type: 'POST',
                     error: function(err){
@@ -273,6 +227,7 @@
 
     $(function() {
         var dz = new Dropzone('#dropzone_{{ $gallery->id }}', {
+            maxFilesize: 50000,
             dictDefaultMessage: 'Drop files here or click to upload.'
         });
 

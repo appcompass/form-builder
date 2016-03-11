@@ -19,6 +19,7 @@
         @if (!isset($is_modal) OR !$is_modal)
         <div class="item-actions text-right">
             <input type="checkbox" name="bulk_edit" value="{{ $photo->id }}">
+            {{--
             <a
                 href="#modal-edit"
                 class="btn btn-info  btn-sm"
@@ -31,6 +32,7 @@
                 <i class="fa fa-pencil"></i>
                 Edit
             </a>
+            --}}
             <a
                 data-action="modal-delete"
                 href="#modal-edit"
