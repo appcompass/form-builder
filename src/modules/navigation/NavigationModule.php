@@ -33,4 +33,27 @@ Class NavigationModule extends BaseModule
     {
         echo "Registering Nav Module";
     }
+
+    /**
+     *
+     */
+    public function makeLink($overrides = [])
+    {
+        return [
+            [
+                "label" => 'Navigation',
+                'belongs_to' => ['websites'],
+                'sub_nav' => '',
+                "req_perms" => 'websites.navigation',
+                'order' => 5,
+                "props" => [
+                    "icon" => "user",
+                    "link" => [
+                        'href' => "/navigation",
+                    ],
+                ],
+            ]
+        ];
+    }
+
 }
