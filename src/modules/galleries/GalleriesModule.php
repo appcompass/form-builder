@@ -65,12 +65,24 @@ Class GalleriesModule extends BaseModule
                 "label" => 'Galleries',
                 'belongs_to' => ['cp_main_nav_media'],
                 'sub_nav' => '',
-                "req_perms" => 'cp-pages-manager',
+                "req_perms" => 'galleries',
                 'order' => 1,
                 "props" => [
                     "icon" => "camera",
                     "link" => [
                         'href' => "/galleries",
+                    ],
+                ],
+            ], [
+                "label" => 'Gallery Info',
+                'belongs_to' => ['galleries'],
+                'sub_nav' => '',
+                "req_perms" => 'galleries',
+                'order' => 1,
+                "props" => [
+                    "icon" => "camera",
+                    "link" => [
+                        'href' => "/edit",
                     ],
                 ],
             ],

@@ -47,7 +47,19 @@ class PhotosModule extends BaseModule
                         'href' => "/photos",
                     ],
                 ],
-            ]
+            ],[
+                "label" => 'Photos',
+                'belongs_to' => ['galleries'],
+                'sub_nav' => '',
+                "req_perms" => 'galleries.photos',
+                'order' => 2,
+                "props" => [
+                    "icon" => "camera",
+                    "link" => [
+                        'href' => "/photos",
+                    ],
+                ],
+            ],
         ];
     }
 }

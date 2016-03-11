@@ -49,7 +49,7 @@ class CpWebsiteRedirectsController extends UiBaseController
         $this->middleware('auth');
 
         $this->controller_class = __CLASS__;
-        $this->nav_name = 'cp_websites_subnav';
+        $this->nav_name = 'websites';
 
         $this->setControllerDefaults();
     }

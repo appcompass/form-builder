@@ -61,7 +61,7 @@ Class WebsitesModule extends BaseModule
                 ],
             ],[
                 "label" => 'Setup',
-                'belongs_to' => ['cp_websites_subnav'],
+                'belongs_to' => ['websites'],
                 'sub_nav' => '',
                 "req_perms" => 'cp-websites-manager',
                 'order' => 1,
@@ -74,7 +74,7 @@ Class WebsitesModule extends BaseModule
                 ],
             ],[
                 "label" => 'Settings',
-                'belongs_to' => ['cp_websites_subnav'],
+                'belongs_to' => ['websites'],
                 'sub_nav' => '',
                 "req_perms" => 'cp-websites-settings',
                 'order' => 2,
@@ -87,7 +87,7 @@ Class WebsitesModule extends BaseModule
                 ],
             ],[
                 "label" => 'Manage Redirects',
-                'belongs_to' => ['cp_websites_subnav'],
+                'belongs_to' => ['websites'],
                 'sub_nav' => '',
                 "req_perms" => 'cp-websites-settings',
                 'order' => 3,

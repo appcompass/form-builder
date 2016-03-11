@@ -45,7 +45,8 @@ class UiController extends UiBaseController {
 
     public function getLeftNav()
     {
-        $nav = Cache::tags('cp_ui')->get('nav')->cp_main_nav;
+        $allNavs = Cache::tags('cp_ui')->get('nav');
+        $nav = isset($allNavs->cp_main_nav) ? $allNavs->cp_main_nav : [];
 
         return view('ui::sections.left-nav')
             ->with('nav', $nav);

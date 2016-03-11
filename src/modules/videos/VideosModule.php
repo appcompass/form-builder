@@ -47,7 +47,19 @@ class VideosModule extends BaseModule
                         'href' => "/videos",
                     ],
                 ],
-            ]
+            ],[
+                "label" => 'Videos',
+                'belongs_to' => ['galleries'],
+                'sub_nav' => '',
+                "req_perms" => 'galleries.videos',
+                'order' => 3,
+                "props" => [
+                    "icon" => "camera",
+                    "link" => [
+                        'href' => "/videos",
+                    ],
+                ],
+            ],
         ];
     }
 

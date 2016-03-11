@@ -27,7 +27,7 @@ Class PagesModule extends BaseModule
 
 
     /**
-     * Provides means for creating a NavigationItem item
+     * Cp Nav parts for this module.
      *
      */
     public function makeLink()
@@ -35,9 +35,9 @@ Class PagesModule extends BaseModule
         return [
             [
                 "label" => 'Pages',
-                'belongs_to' => ['cp_websites_subnav'],
+                'belongs_to' => ['websites'],
                 'sub_nav' => '',
-                "req_perms" => 'cp-pages-manager',
+                "req_perms" => 'websites.pages',
                 'order' => 3,
                 "props" => [
                     "icon" => "user",
@@ -49,12 +49,12 @@ Class PagesModule extends BaseModule
                 "label" => 'Page Info',
                 'belongs_to' => ['cp_pages_subnav'],
                 'sub_nav' => '',
-                "req_perms" => 'cp-pages-manager',
+                "req_perms" => 'websites.pages',
                 'order' => 3,
                 "props" => [
                     "icon" => "user",
                     "link" => [
-                        'href' => "edit",
+                        'href' => "/edit",
                     ],
                 ],
             ],
