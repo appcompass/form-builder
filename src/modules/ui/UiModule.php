@@ -24,11 +24,6 @@ Class UiModule extends BaseModule
 
     public function bootstrap()
     {
-        // @TODO: For now we're we're flushing the cache on load till
-        // we make sure all of our modules have been updated.
-        // Once we've confirmed all is good, we'll uncomment this flush.
-        Cache::tags('cp_ui')->flush();
-
         Cache::tags('cp_ui')->rememberForever('nav', function(){
             return $this->buildCpNav();
         });
