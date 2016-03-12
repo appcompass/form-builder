@@ -7,30 +7,53 @@ use P3in\Modules\BaseModule;
 Class NavigationModule extends BaseModule
 {
 
-	public $module_name = "navigation";
+    public $module_name = "navigation";
 
-	public function __construct( )
-	{
+    public function __construct( )
+    {
 
-	}
+    }
 
-	/**
-	*	Add navItem
-	*
-	*
-	*/
-	public function addNavItem(Link $item)
-	{
+    /**
+    *   Add navItem
+    *
+    *
+    */
+    public function addNavItem(Link $item)
+    {
 
-	}
+    }
 
-	public function bootstrap()
-	{
-		require_once('helpers/LinkClass.php');
-	}
+    public function bootstrap()
+    {
+        require_once('helpers/LinkClass.php');
+    }
 
-	public function register()
-	{
-		echo "Registering Nav Module";
-	}
+    public function register()
+    {
+        echo "Registering Nav Module";
+    }
+
+    /**
+     *
+     */
+    public function makeLink($overrides = [])
+    {
+        return [
+            [
+                "label" => 'Navigation',
+                'belongs_to' => ['websites'],
+                'sub_nav' => '',
+                "req_perms" => 'websites.navigation',
+                'order' => 5,
+                "props" => [
+                    "icon" => "user",
+                    "link" => [
+                        'href' => "/navigation",
+                    ],
+                ],
+            ]
+        ];
+    }
+
 }

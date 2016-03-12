@@ -13,8 +13,8 @@ use P3in\Models\Page;
 use P3in\Models\PageSection;
 use P3in\Models\Section;
 use P3in\Models\Website;
-use Response;
 use Photo;
+use Response;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class CpWebsitePageSectionsController extends UiBaseController
@@ -43,7 +43,7 @@ class CpWebsitePageSectionsController extends UiBaseController
         $this->middleware('auth');
 
         $this->controller_class = __CLASS__;
-        $this->module_name = 'pages';
+        $this->nav_name = 'cp_pages_subnav';
 
         $this->setControllerDefaults();
 
@@ -181,22 +181,47 @@ class CpWebsitePageSectionsController extends UiBaseController
 
         $existing_content = json_decode(json_encode($section->content), true);
 
+        if (isset($content['_selected_image'])) {
+
+            $photo = Photo::findOrFail($content['_selected_image']);
+
+            $section->photos()->save($photo);
+
+            $content['image'] = $photo->path;
+
+        }
+
+        // @TODO move this in a separate method. all it does is handling files scenarios
         foreach($request->file() as $field_name => $file) {
 
-            if ($file instanceof UploadedFile) {
+            if ($file instanceof UploadedFile && $file->getSize()) {
 
                 $photo = $section->addPhoto($file, Auth::user());
 
                 $content[$field_name] = $photo->path;
 
-            }elseif (is_array($file)) {
-
+            } elseif (is_array($file)) {
                 foreach($file as $idx => $single_file) {
 
                     if (empty($single_file['image'])) {
 
-                        // if not passed the image field comes back null, we don't want that
-                        $content[$field_name][$idx]['image'] = $existing_content[$field_name][$idx]['image'];
+                        $selected_field_name = '_selected_'.$field_name;
+
+                        // check if the user has selected an image
+                        if (isset($content[$selected_field_name]) AND isset($content[$selected_field_name][$idx])) {
+
+                            $photo = Photo::findOrFail($content['_selected_'.$field_name][$idx]['image']);
+
+                            $section->photos()->save($photo);
+
+                            $content[$field_name][$idx]['image'] = $photo->path;
+
+                        } else {
+
+                            // if not passed the image field comes back null, we don't want that
+                            $content[$field_name][$idx]['image'] = $existing_content[$field_name][$idx]['image'];
+
+                        }
 
                         continue;
 
@@ -208,6 +233,14 @@ class CpWebsitePageSectionsController extends UiBaseController
                 }
             }
         }
+
+        // There should be no instances of UploadedFile in the content array at this point.
+        foreach ($content as $k => $v) {
+           if ($v instanceof UploadedFile) {
+                unset($content[$k]);
+           }
+        }
+
         $section->content = array_replace($existing_content, $content);
 
         $section->save();

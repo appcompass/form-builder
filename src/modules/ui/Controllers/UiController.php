@@ -5,12 +5,14 @@ namespace P3in\Controllers;
 use App\Http\Controllers\Controller;
 use Auth;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Route;
 use Modular;
 use P3in\Models\Navmenu;
 use P3in\Models\User;
 use P3in\Models\Website;
+use P3in\Modules\UiModule;
 
 class UiController extends UiBaseController {
 
@@ -31,7 +33,7 @@ class UiController extends UiBaseController {
         $this->middleware('auth');
 
         $this->controller_class = __CLASS__;
-        $this->module_name = 'ui';
+        // $this->nav_name = 'cp_ui_subnav';
 
         $this->setControllerDefaults();
     }
@@ -43,26 +45,26 @@ class UiController extends UiBaseController {
 
     public function getLeftNav()
     {
-        $cpNavs = Modular::cpNav();
+        $allNavs = Cache::tags('cp_ui')->get('nav');
+        $nav = isset($allNavs->cp_main_nav) ? $allNavs->cp_main_nav : [];
 
-        $nav = Navmenu::byName('cp_main_nav');
-
-        return view('ui::sections/left-nav', compact('nav'));
+        return view('ui::sections.left-nav')
+            ->with('nav', $nav);
     }
 
     public function getLeftAlerts()
     {
-        return view('ui::sections/left-alerts');
+        return view('ui::sections.left-alerts');
     }
 
     public function getNotificationCenter()
     {
-        return view('ui::sections/notification-center');
+        return view('ui::sections.notification-center');
     }
 
     public function getDashboard()
     {
-        return view('ui::sections/dashboard');
+        return view('ui::sections.dashboard');
     }
 
     public function getUserFullName()
@@ -73,12 +75,12 @@ class UiController extends UiBaseController {
     public function getUserAvatar($size = 56)
     {
         $userEmail = \Auth::user()->email;
-        return "http://www.gravatar.com/avatar/".md5($userEmail)."?s={$size}";
+        return "//www.gravatar.com/avatar/".md5($userEmail)."?s={$size}";
     }
 
     public function getUserNav()
     {
-        return view('ui::sections/user-menu');
+        return view('ui::sections.user-menu');
     }
 
     public function postRequestMeta(Request $request)
@@ -99,11 +101,11 @@ class UiController extends UiBaseController {
     {
         if (class_exists($request->obj_name)) {
 
-            $obj = $request->obj_name::find($request->obj_id);
+            $obj = with(new $request->obj_name)->findOrFail($request->obj_id);
 
-            if (method_exists($obj , 'clone')) {
+            if (method_exists($obj , 'cloneRecord')) {
 
-                $rslt = $obj->clone();
+                $rslt = $obj->cloneRecord();
 
             }else{
                 return $this->json([],false, 'Class cannot be cloned.');

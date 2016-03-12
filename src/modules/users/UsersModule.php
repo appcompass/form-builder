@@ -4,6 +4,7 @@ namespace P3in\Modules;
 
 use Modular;
 use P3in\Models\Navmenu;
+use P3in\Models\Website;
 use P3in\Modules\BaseModule;
 use P3in\Traits\NavigatableTrait as Navigatable;
 
@@ -27,14 +28,6 @@ Class UsersModule extends BaseModule
     public function register()
     {
 
-        if (Modular::isLoaded('navigation')) {
-            $main_nav = Navmenu::byName('cp_main_nav');
-            $main_nav_sub_nav =  Navmenu::byName('cp_main_nav_users', 'Users Manager');
-
-            $main_nav_sub_nav->addItem($this->navItem, 1);
-            $main_nav->addChildren($main_nav_sub_nav, 1);
-        }
-
     }
 
     /**
@@ -42,19 +35,102 @@ Class UsersModule extends BaseModule
      */
     public function makeLink()
     {
-      return [
-          "label" => 'All Users',
-          "url" => '',
-          "new_tab" => 'false',
-          "req_perms" => null,
-          "props" => [
-            "icon" => "user",
-            "link" => [
-                'href' => "/users",
-                "data-target" => "#main-content-out",
-            ]
-          ]
-      ];
+        return [
+            [
+                "label" => 'Users Manager',
+                'belongs_to' => ['cp_main_nav'],
+                'sub_nav' => 'cp_main_nav_users',
+                "req_perms" => 'cp-users-manager',
+                'order' => 2,
+                "props" => [
+                    "icon" => "user",
+                ],
+            ], [
+                "label" => 'All Users',
+                'belongs_to' => ['cp_main_nav_users'],
+                'sub_nav' => '',
+                "req_perms" => 'cp-users-manager',
+                'order' => 1,
+                "props" => [
+                    "icon" => "user",
+                    "link" => [
+                        'href' => "/users",
+                    ],
+                ],
+            ], [
+                "label" => 'Groups Manager',
+                'belongs_to' => ['cp_main_nav_users'],
+                'sub_nav' => '',
+                "req_perms" => 'cp-groups-manager',
+                'order' => 2,
+                "props" => [
+                    "icon" => "user",
+                    "link" => [
+                        'href' => "/groups",
+                    ],
+                ],
+            ], [
+                "label" => 'Permissions Manager',
+                'belongs_to' => ['cp_main_nav_users'],
+                'sub_nav' => '',
+                "req_perms" => 'cp-permissions-manager',
+                'order' => 3,
+                "props" => [
+                    "icon" => "user",
+                    "link" => [
+                        'href' => "/permissions",
+                    ],
+                ],
+            ], [
+                "label" => 'Groups Details',
+                'belongs_to' => ['cp_groups_subnav'],
+                'sub_nav' => '',
+                "req_perms" => 'cp-groups-manager',
+                'order' => 1,
+                "props" => [
+                    "icon" => "user",
+                    "link" => [
+                        'href' => "/edit",
+                    ],
+                ],
+            ], [
+                "label" => 'Groups Permissions',
+                'belongs_to' => ['cp_groups_subnav'],
+                'sub_nav' => '',
+                "req_perms" => 'cp-groups-permissions-manager',
+                'order' => 2,
+                "props" => [
+                    "icon" => "user",
+                    "link" => [
+                        'href' => "/permissions",
+                    ],
+                ],
+            ], [
+                "label" => 'User Permissions',
+                'belongs_to' => ['cp_users_subnav'],
+                'sub_nav' => '',
+                "req_perms" => 'cp-users-permissions-manager',
+                'order' => 2,
+                "props" => [
+                    "icon" => "user",
+                    "link" => [
+                        'href' => "/permissions",
+                    ],
+                ],
+            ], [
+                "label" => 'User Groups',
+                'belongs_to' => ['cp_users_subnav'],
+                'sub_nav' => '',
+                "req_perms" => 'cp-users-groups-manager',
+                'order' => 3,
+                "props" => [
+                    "icon" => "user",
+                    "link" => [
+                        'href' => "/groups",
+                    ],
+                ],
+            ],
+        ];
     }
 
 }

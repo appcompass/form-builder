@@ -6,17 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
-use P3in\ModularBaseModel;
+use Illuminate\Support\Facades\URL;
 use P3in\Models\PageSection;
 use P3in\Models\Section;
 use P3in\Models\Website;
+use P3in\ModularBaseModel;
 use P3in\Traits\NavigatableTrait as Navigatable;
 use P3in\Traits\SettingsTrait;
+use P3in\Traits\HasPermissions;
 
 class Page extends ModularBaseModel
 {
 
-    use SettingsTrait, Navigatable;
+    use SettingsTrait, Navigatable, HasPermissions;
 
     /**
      * The database table used by the model.
@@ -35,10 +37,10 @@ class Page extends ModularBaseModel
         'title',
         'description',
         'slug',
+        'url',
         'order',
         'active',
         'layout',
-        'req_permission',
         'published_at',
     ];
 
@@ -48,6 +50,35 @@ class Page extends ModularBaseModel
     */
     protected $dates = ['published_at'];
 
+
+    public function parent()
+    {
+        return $this->belongsTo(Page::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Page::class, 'parent_id');
+    }
+
+    public function hasParent()
+    {
+        return !empty($this->parent->id);
+    }
+    public function getUrl()
+    {
+        $tree = $this->withParents()->orderBy('level', 'desc')->get();
+        $url = '';
+        foreach ($tree as $page) {
+            if (!empty($page->slug)) {
+                $url .= '/'.$page->slug;
+            }
+        }
+        if (!empty($this->settings->data->config->dynamic) && $this->settings->data->config->dynamic == true) {
+            $url .= '/([a-z0-9-]+)';
+        }
+        return trim($url,'/');
+    }
     /**
      *
      */
@@ -86,17 +117,13 @@ class Page extends ModularBaseModel
      */
     public function makeLink($overrides = [])
     {
+        $req_perm = $this->getRequiredPermission()->first();
+
         return array_replace([
             "label" => $this->title,
             "url" => $this->slug,
-            "req_perms" => null,
-            "props" => [
-                'icon' => 'list',
-                "link" => [
-                    'href' => $this->slug,
-                    'data-target' => '#main-content-out'
-                ],
-            ]
+            "req_perms" => $req_perm ? $req_perm->id : Permission::GUEST_PERMISSION,
+            "props" => ['icon' => 'list']
         ], $overrides);
     }
 
@@ -120,7 +147,7 @@ class Page extends ModularBaseModel
             ->save();
     }
 
-    public function clone()
+    public function cloneRecord()
     {
         $original = $this->load('content');
         $settings = $original->settings()->first();
@@ -130,6 +157,8 @@ class Page extends ModularBaseModel
         $new->title = $original->title.' (copy)';
 
         $new->slug = $original->slug.'-copy';
+
+        $new->url = $original->url.'-copy';
 
         $new->push();
 
@@ -176,8 +205,6 @@ class Page extends ModularBaseModel
         if ($code == 200) {
             $pageSections = $this->content()->with('template')->get();
 
-
-            // dd($pageSections);
             foreach($pageSections as $pageSection) {
                 $views[$pageSection->section][] = $pageSection->render();
             }
@@ -187,29 +214,26 @@ class Page extends ModularBaseModel
 
         $navmenus = $website->navmenus()
             ->whereNull('parent_id')
+            ->with('navitems')
             ->get();
 
-        foreach ($navmenus as $navmenu) {
-            $navmenu->load('items');
+        $views['navmenus'] = $navmenus;
 
-            $views['navmenus'][$navmenu->name] = $navmenu->toArray();
+        $views['navmenus']['main_nav'] = $navmenus->where('name', $website->getMachineName() . '_main_nav')->first();
 
-            $views['navmenus'][$navmenu->name]['children'] = [];
-
-            foreach($navmenu->children as $child) {
-
-                $views['navmenus'][$navmenu->name]['children'][$child->id] = $child;
-
-            }
-
-
-        }
-
-        $views['navmenus'] = json_decode(json_encode($views['navmenus']));
+        $views['navmenus']['footer'] = $navmenus->where('name', $website->getMachineName() . '_footer_nav')->first();
 
 
         return $views;
 
+    }
+
+    /**
+     * Matches passed type agai
+     */
+    public function type($type)
+    {
+        return preg_match('/'.$type.'/i', $this->name);
     }
 
     /**
@@ -268,6 +292,7 @@ class Page extends ModularBaseModel
     public function scopeOfWebsite($query, Website $website = null)
     {
         $website = $website ?: Website::current();
+
         if (is_null($website)) {
             throw new \Exception("Website not defined");
         }
@@ -281,14 +306,24 @@ class Page extends ModularBaseModel
     public function scopeByUrl($query, $url)
     {
         $escaped_url = DB::connection()->getPdo()->quote($url);
-        $escaped_slug = DB::raw($escaped_url);
+        $raw_url = DB::raw($escaped_url);
 
-        $query
+        return $query
             ->select(
                 "*",
-                DB::raw("NULLIF(substring($escaped_url from slug), slug) AS dynamic_segment")
+                DB::raw("NULLIF(substring($escaped_url from url), url) AS dynamic_segment")
             )
-            ->where($escaped_slug,'SIMILAR TO', DB::raw('slug'));
+            ->where($raw_url,'SIMILAR TO', DB::raw('url'));
+    }
+
+    public function scopeIsActive($query)
+    {
+        return $query->where('active', true);
+    }
+
+    public function scopeIsNot($query, $id)
+    {
+        return $query->where('id', '!=', $id);
     }
 
     /**
@@ -298,14 +333,36 @@ class Page extends ModularBaseModel
      */
     public function getFullUrlAttribute()
     {
-            $slug = $this->dynamic_segment ? str_replace('([a-z0-9-]+)', $this->dynamic_segment, $this->slug) : $this->slug;
-            return rtrim($this->website->site_url,'/').'/'.trim($slug,'/');
+        $url = $this->dynamic_segment ? str_replace('([a-z0-9-]+)', $this->dynamic_segment, $this->url) : $this->url;
+        return $this->website->site_url.'/'.$url;
     }
 
     public function getUrlAttribute()
     {
-            $slug = $this->dynamic_segment ? str_replace('([a-z0-9-]+)', $this->dynamic_segment, $this->slug) : $this->slug;
-            return '/'.trim($slug,'/');
+        return $this->dynamic_segment ? str_replace('([a-z0-9-]+)', $this->dynamic_segment, $this->attributes['url']) : $this->attributes['url'];
+    }
+
+    public function getImagesAttribute()
+    {
+        $images = [];
+        $page_title = $this->title;
+        $page = json_decode($this->toJson(),true);
+        array_walk_recursive($page, function($value, $key) use (&$images, $page_title){
+            if ($key == 'image') {
+                $images[] = ['url' => URL::to($value), 'title' => $page_title.' - '.$value];
+            }
+        });
+        return $images;
+    }
+
+    public function getUpdateFrequencyAttribute()
+    {
+        return 'daily'; //this needs to be dynamically set.
+    }
+
+    public function getPriorityAttribute()
+    {
+        return '1.0'; // this needs to be dynamically set.
     }
 
     /**
@@ -319,8 +376,6 @@ class Page extends ModularBaseModel
 
             $page = Page::findOrFail($path);
 
-            $this->checkPermissions($user);
-
         } catch (ModelNotFoundException $e ) {
 
             return false;
@@ -328,32 +383,4 @@ class Page extends ModularBaseModel
         }
 
     }
-
-    /**
-     * Check if User has permissions
-     *
-     *
-     */
-    public function checkPermissions(User $user = null)
-    {
-
-        $this->req_permission = is_array($this->req_permission) ? $this->req_permission : explode(",", $this->req_permission);
-
-
-        if (count($this->req_permission)) {
-
-            if (is_null($user)) {
-
-                return false;
-
-            }
-
-            return $user->hasPermissions($this->req_permission);
-
-        }
-
-        return true;
-
-    }
-
 }

@@ -19,16 +19,16 @@ Class WebsitesModule extends BaseModule
     /**
      * Module Name
      */
-	public $module_name = "websites";
+    public $module_name = "websites";
 
-	public function __construct() {}
+    public function __construct() {}
 
     /**
      * Bootstrap, runs every time
      *
      */
-	public function bootstrap()
-	{
+    public function bootstrap()
+    {
     }
 
     /**
@@ -37,41 +37,69 @@ Class WebsitesModule extends BaseModule
      */
     public function register()
     {
-        $this->setConfig();
 
-        if (Modular::isLoaded('navigation')) {
-            Navmenu::byName('cp_main_nav')->addItem($this->navItem, 2);
-        }
-	}
+    }
 
     /**
      *
      */
-    public function makeLink($overrides = [])
+    public function makeLink()
     {
-      return array_replace([
-        "label" => 'Websites Manager',
-        "url" => '',
-        "req_perms" => null,
-        "props" => [
-            'icon' => 'dashboard',
-            "link" => [
-                'href' => '/websites',
-                'data-target' => '#main-content-out'
+        return [
+            [
+                "label" => 'Websites Manager',
+                'belongs_to' => ['cp_main_nav'],
+                'sub_nav' => '',
+                "req_perms" => 'cp-websites-manager',
+                'order' => 3,
+                "props" => [
+                    'icon' => 'dashboard',
+                    "link" => [
+                        'href' => '/websites',
+                        // 'data-target' => '#main-content-out'
+                    ],
+                ],
+            ],[
+                "label" => 'Setup',
+                'belongs_to' => ['websites'],
+                'sub_nav' => '',
+                "req_perms" => 'cp-websites-manager',
+                'order' => 1,
+                "props" => [
+                    "icon" => "user",
+                    "link" => [
+                        'href' => "/edit",
+                        // "data-target" => "#main-content-out",
+                    ],
+                ],
+            ],[
+                "label" => 'Settings',
+                'belongs_to' => ['websites'],
+                'sub_nav' => '',
+                "req_perms" => 'cp-websites-settings',
+                'order' => 2,
+                "props" => [
+                    "icon" => "user",
+                    "link" => [
+                        'href' => "/settings",
+                        // "data-target" => "#main-content-out",
+                    ],
+                ],
+            ],[
+                "label" => 'Manage Redirects',
+                'belongs_to' => ['websites'],
+                'sub_nav' => '',
+                "req_perms" => 'cp-websites-settings',
+                'order' => 3,
+                "props" => [
+                    "icon" => "user",
+                    "link" => [
+                        'href' => "/redirects",
+                        // "data-target" => "#main-content-out",
+                    ],
+                ],
             ],
-        ]
-      ], $overrides);
-    }
-
-
-    public function setConfig()
-    {
-
-        $module = Modular::get($this->module_name);
-
-        $module->config = [];
-
-        $module->save();
+        ];
     }
 
 }

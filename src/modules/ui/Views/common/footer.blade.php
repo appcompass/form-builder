@@ -1,54 +1,57 @@
 @if(empty($login))
-	<!--Core js-->
+    <!--Core js-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
-	{{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script> --}}
-	<script src="/assets/ui/js/jquery.js"></script>
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script> --}}
+    <script src="/assets/ui/js/jquery.js"></script>
     <script src="/assets/ui/js/jquery-1.10.2.min.js"></script>
-	<script src="/assets/ui/bs3/js/bootstrap.min.js"></script>
-	<script src="/assets/ui/js/gritter/js/jquery.gritter.js" type="text/javascript"></script>
+    <script src="/assets/ui/bs3/js/bootstrap.min.js"></script>
+    <script src="/assets/ui/js/gritter/js/jquery.gritter.js" type="text/javascript"></script>
 
-	<!--script for this page-->
-	<script src="/assets/ui/js/gritter.js" type="text/javascript"></script>
-	<script src="/assets/ui/js/jquery.nicescroll.js"></script>
+    <!--script for this page-->
+    <script src="/assets/ui/js/gritter.js" type="text/javascript"></script>
+    <script src="/assets/ui/js/jquery.nicescroll.js"></script>
 
-	<script src="/assets/ui/js/jvector-map/jquery-jvectormap-1.2.2.min.js"></script>
-	<script src="/assets/ui/js/jvector-map/jquery-jvectormap-us-lcc-en.js"></script>
-	<script src="/assets/ui/js/gauge/gauge.js"></script>
-	<!--clock init-->
-	<script src="/assets/ui/js/css3clock/js/css3clock.js"></script>
-	<!--Easy Pie Chart-->
-	<script src="/assets/ui/js/easypiechart/jquery.easypiechart.js"></script>
-	<!--Sparkline Chart-->
-	<script src="/assets/ui/js/sparkline/jquery.sparkline.js"></script>
-	<!--Morris Chart-->
-	<script src="/assets/ui/js/morris-chart/morris.js"></script>
-	<script src="/assets/ui/js/morris-chart/raphael-min.js"></script>
-	<!--jQuery Flot Chart-->
-	<script src="/assets/ui/js/flot-chart/jquery.flot.js"></script>
-	<script src="/assets/ui/js/flot-chart/jquery.flot.tooltip.min.js"></script>
-	<script src="/assets/ui/js/flot-chart/jquery.flot.resize.js"></script>
-	<script src="/assets/ui/js/flot-chart/jquery.flot.pie.resize.js"></script>
-	<script src="/assets/ui/js/flot-chart/jquery.flot.animator.min.js"></script>
-	<script src="/assets/ui/js/flot-chart/jquery.flot.growraf.js"></script>
-	<script src="/assets/ui/js/jquery.customSelect.min.js" ></script>
-	<script src="/assets/ui/js/jquery.customSelect.min.js" ></script>
+    <script src="/assets/ui/js/jvector-map/jquery-jvectormap-1.2.2.min.js"></script>
+    <script src="/assets/ui/js/jvector-map/jquery-jvectormap-us-lcc-en.js"></script>
+    <script src="/assets/ui/js/gauge/gauge.js"></script>
+    <!--clock init-->
+    <script src="/assets/ui/js/css3clock/js/css3clock.js"></script>
+    <!--Easy Pie Chart-->
+    <script src="/assets/ui/js/easypiechart/jquery.easypiechart.js"></script>
+    <!--Sparkline Chart-->
+    <script src="/assets/ui/js/sparkline/jquery.sparkline.js"></script>
+    <!--Morris Chart-->
+    <script src="/assets/ui/js/morris-chart/morris.js"></script>
+    <script src="/assets/ui/js/morris-chart/raphael-min.js"></script>
+    <!--jQuery Flot Chart-->
+    <script src="/assets/ui/js/flot-chart/jquery.flot.js"></script>
+    <script src="/assets/ui/js/flot-chart/jquery.flot.tooltip.min.js"></script>
+    <script src="/assets/ui/js/flot-chart/jquery.flot.resize.js"></script>
+    <script src="/assets/ui/js/flot-chart/jquery.flot.pie.resize.js"></script>
+    <script src="/assets/ui/js/flot-chart/jquery.flot.animator.min.js"></script>
+    <script src="/assets/ui/js/flot-chart/jquery.flot.growraf.js"></script>
+    <script src="/assets/ui/js/jquery.customSelect.min.js" ></script>
+    <script src="/assets/ui/js/jquery.customSelect.min.js" ></script>
     <!-- wysiwyg editor  -->
     <script src="/assets/ui/js/bootstrap-wysihtml5/wysihtml5-0.3.0.js" type="text/javascript"></script>
     <script src="/assets/ui/js/bootstrap-wysihtml5/bootstrap-wysihtml5.js" type="text/javascript"></script>
-	<!-- iCheck -->
-	<script src="/assets/ui/js/iCheck/jquery.icheck.min.js" ></script>
+    <!-- iCheck -->
+    <script src="/assets/ui/js/iCheck/jquery.icheck.min.js" ></script>
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.10/vue.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/0.6.0/vue-resource.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/0.6.1/vue-resource.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
 
     <script src="/assets/ui/js/jquery-ui/jquery-ui-1.10.1.custom.min.js"></script>
 
     <script src="/assets/ui/js/simrou.min.js" ></script>
 
-	@yield('scripts.footer')
+    @yield('scripts.footer')
 
-	<script type="text/javascript">
+    <script type="text/javascript">
 
         // temp spot tille we include actual file.
         // examples/source https://gist.github.com/cowboy/1025817#file-jquery-ba-deparam-min-js
@@ -65,9 +68,9 @@
             }
         });
 
-		@if(empty($nolock))
-			// This is where we put the logic which handles auto redirecting the user to the /lock-screen when they have been idle for X seconds.
-		@endif
+        @if(empty($nolock))
+            // This is where we put the logic which handles auto redirecting the user to the /lock-screen when they have been idle for X seconds.
+        @endif
 
         function loadSourceToTarget(obj){
             var call = $.ajax({
@@ -99,10 +102,10 @@
             })
         }
 
-		function loadData(elm){
+        function loadData(elm){
 
 
-			$.each(elm.find('[data-load]'), function(i, e){
+            $.each(elm.find('[data-load]'), function(i, e){
 
                 var obj = {
                     target: e,
@@ -111,8 +114,8 @@
                 };
 
                 loadSourceToTarget(obj);
-			});
-		}
+            });
+        }
 
         function openModal(title, message, is_error){
             switch(title){
@@ -208,11 +211,11 @@
             });
         }
 
-		$(document).ready(function () {
+        $(document).ready(function () {
             var alertModal = $('#modal-alert');
 
             $(this).ajaxStart(function(){
-                openModal('Loading', 'Loading Please wait..');
+                // openModal('Loading', 'Loading Please wait..');
             });
 
             $(this).ajaxStop(function(){
@@ -268,58 +271,58 @@
 
 
 
-			if ($.fn.niceScroll) {
-				$('.sidebar-toggle-box .fa-bars').on('click',function (e) {
+            if ($.fn.niceScroll) {
+                $('.sidebar-toggle-box .fa-bars').on('click',function (e) {
 
-					$(".leftside-navigation").niceScroll({
-						cursorcolor: "#1FB5AD",
-						cursorborder: "0px solid #fff",
-						cursorborderradius: "0px",
-						cursorwidth: "3px"
-					});
+                    $(".leftside-navigation").niceScroll({
+                        cursorcolor: "#1FB5AD",
+                        cursorborder: "0px solid #fff",
+                        cursorborderradius: "0px",
+                        cursorwidth: "3px"
+                    });
 
-					$('#sidebar').toggleClass('hide-left-bar');
-					if ($('#sidebar').hasClass('hide-left-bar')) {
-						$(".leftside-navigation").getNiceScroll().hide();
-					}
-					$(".leftside-navigation").getNiceScroll().show();
-					$('#main-content').toggleClass('merge-left');
-					e.stopPropagation();
-					if ($('#container').hasClass('open-right-panel')) {
-						$('#container').removeClass('open-right-panel')
-					}
-					if ($('.right-sidebar').hasClass('open-right-bar')) {
-						$('.right-sidebar').removeClass('open-right-bar')
-					}
+                    $('#sidebar').toggleClass('hide-left-bar');
+                    if ($('#sidebar').hasClass('hide-left-bar')) {
+                        $(".leftside-navigation").getNiceScroll().hide();
+                    }
+                    $(".leftside-navigation").getNiceScroll().show();
+                    $('#main-content').toggleClass('merge-left');
+                    e.stopPropagation();
+                    if ($('#container').hasClass('open-right-panel')) {
+                        $('#container').removeClass('open-right-panel')
+                    }
+                    if ($('.right-sidebar').hasClass('open-right-bar')) {
+                        $('.right-sidebar').removeClass('open-right-bar')
+                    }
 
-					if ($('.header').hasClass('merge-header')) {
-						$('.header').removeClass('merge-header')
-					}
+                    if ($('.header').hasClass('merge-header')) {
+                        $('.header').removeClass('merge-header')
+                    }
 
 
-				});
-			};
+                });
+            };
 
-			$(document).on('click', '.toggle-right-box .fa-bars', function (e) {
-				$('#container').toggleClass('open-right-panel');
-				$('.right-sidebar').toggleClass('open-right-bar');
-				$('.header').toggleClass('merge-header');
+            $(document).on('click', '.toggle-right-box .fa-bars', function (e) {
+                $('#container').toggleClass('open-right-panel');
+                $('.right-sidebar').toggleClass('open-right-bar');
+                $('.header').toggleClass('merge-header');
 
-				e.stopPropagation();
-			});
+                e.stopPropagation();
+            });
 
-			$(document).on('click', '.header, #main-content, #sidebar', function () {
-				if ($('#container').hasClass('open-right-panel')) {
-					$('#container').removeClass('open-right-panel')
-				}
-				if ($('.right-sidebar').hasClass('open-right-bar')) {
-					$('.right-sidebar').removeClass('open-right-bar')
-				}
+            $(document).on('click', '.header, #main-content, #sidebar', function () {
+                if ($('#container').hasClass('open-right-panel')) {
+                    $('#container').removeClass('open-right-panel')
+                }
+                if ($('.right-sidebar').hasClass('open-right-bar')) {
+                    $('.right-sidebar').removeClass('open-right-bar')
+                }
 
-				if ($('.header').hasClass('merge-header')) {
-					$('.header').removeClass('merge-header')
-				}
-			});
+                if ($('.header').hasClass('merge-header')) {
+                    $('.header').removeClass('merge-header')
+                }
+            });
 
             $(document).on('click', '.panel .tools .fa', function () {
                 var el = $(this).parents(".panel").first().find('.panel-body');
@@ -331,11 +334,11 @@
                     el.slideDown(200); }
             });
 
-			$(document).on('click', '.panel .tools .fa-times', function () {
-				$(this).parents(".panel").parent().remove();
-			});
+            $(document).on('click', '.panel .tools .fa-times', function () {
+                $(this).parents(".panel").parent().remove();
+            });
 
-			loadData($(document));
+            loadData($(document));
 
             $(document).on('click', 'a[href]:not(.no-link)', function(e) {
                 e.preventDefault();
@@ -385,8 +388,8 @@
 
             });
 
-			// $(document).on('click', 'a[href]:not(.no-link)', function(e){
-			// 	e.preventDefault();
+            // $(document).on('click', 'a[href]:not(.no-link)', function(e){
+            //  e.preventDefault();
 
    //              var href = $(this).attr('href');
 
@@ -401,7 +404,7 @@
    //                      // window.history.pushState({"page":obj.url},"", '#'+obj.url);
    //                  };
    //              };
-			// });
+            // });
 
             $(document).on('click', '[data-bulk-update]', function(e){
                 e.preventDefault();
@@ -446,30 +449,30 @@
                 $(this).next('.input-error').remove();
             });
 
-			$(document).on('submit', '.ajax-form', function(e){
-				e.preventDefault();
+            $(document).on('submit', '.ajax-form', function(e){
+                e.preventDefault();
 
-				var form = $(this);
-				var target = form.attr('data-target');
-				var action = form.attr('action');
-				var formData = new FormData(form[0]);
+                var form = $(this);
+                var target = form.attr('data-target');
+                var action = form.attr('action');
+                var formData = new FormData(form[0]);
 
-				if (form.data('loading') === true) {
-					return;
-				}
+                if (form.data('loading') === true) {
+                    return;
+                }
 
-				form.data('loading', true);
+                form.data('loading', true);
 
                 form.find('.input-error').remove();
                 form.find('.form-group').removeClass('has-error');
 
-				$.ajax({
-					url: action,
-					type: 'POST',
-					data: formData,
-					processData: false,
-					contentType: false,
-					error: function(err){
+                $.ajax({
+                    url: action,
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    error: function(err){
                         if( err.status === 401)
                             router.navigate('/login');
                         if( err.status === 422) {
@@ -487,8 +490,8 @@
                             openModal('error', err, true);
                         }
                         form.data('loading', false);
-					},
-					success: function(res){
+                    },
+                    success: function(res){
                         form.data('loading', false);
 
                         if (res.success) {
@@ -499,14 +502,16 @@
                         }else{
                             openModal('error', res.message, true);
                         }
-					},
-					complete: function(xhr, status){
-						form.data('loading', false);
-					}
-				});
-			});
-		});
-	</script>
+                    },
+                    complete: function(xhr, status){
+                        form.data('loading', false);
+                    }
+                });
+            });
+        });
+    </script>
+@else
+    @yield('scripts.footer')
 @endif
 </body>
 </html>

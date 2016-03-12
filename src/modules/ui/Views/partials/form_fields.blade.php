@@ -17,7 +17,7 @@
             @endif
             <div class="col-lg-12">
     @else
-        <div class="form-group @if($field->type == 'repeatable') form-repeatable @endif ">
+        <div class="form-group @if($field->type == 'repeatable') form-repeatable @endif">
             {!! Form::label(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $field->label, ['class' => empty($repeatable) ? 'col-lg-3 control-label' : '']) !!}
             @if(empty($repeatable)) <div class="col-lg-6"> @endif
                 @if($field->type == 'text')
@@ -25,7 +25,9 @@
                 @elseif($field->type == 'slugify')
                     {!! Form::text(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, ['class' => 'form-control slugify' ,'data-source' => $field->field, 'placeholder' => $field->placeholder]) !!}
                 @elseif($field->type == 'password')
-                    {!! Form::password(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
+                    <div class="password">
+                        {!! Form::password(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
+                    </div>
                 @elseif($field->type == 'textarea')
                     {!! Form::textarea(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, ['class' => 'form-control', 'rows' => '6', 'placeholder' => $field->placeholder]) !!}
                 @elseif($field->type == 'wysiwyg')
@@ -62,11 +64,11 @@
                         @endforeach
                 @elseif($field->type == 'file')
                     {!! Form::file(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
+                     @if(isset($website) && $website->gallery) <button class="btn btn-sm pull-right btn-primary open-select-image-modal">Select Image</button> @endif
                     @if(isset($prefix) AND isset($index) AND isset($record->{$prefix}[$index]->{$field->name}))
-                        <b>Image Path: {{ $record->{$prefix}[$index]->{$field->name} }}</b>
+                        <b class="image-path"><img src="{{ $record->{$prefix}[$index]->{$field->name} }}" height="180" alt="" style="max-width: 250px"></b>
                     @elseif (!empty($record->{$field->name}))
-                        {{-- {{ dd($record) }} --}}
-                        <b>Image Path: {{ $record->{$field->name} }}</b>
+                        <b class="image-path"><img src="{{ $record->{$field->name} }}" height="180" alt="" style="max-width: 250px"></b>
                     @endif
                 @elseif($field->type == 'datepicker')
                     {!! Form::date('name', null, ['class' => 'form-control form-control-inline input-medium date-picker-default', 'placeholder' => $field->placeholder]) !!}
@@ -149,19 +151,98 @@
                     @else
                         @include('ui::partials.repeatable_block', ['prefix' => $field->name, 'records' => [[]]])
                     @endif
+                @elseif($field->type == 'multi_select')
+                    <select class="multi_select form-control" name="{{ $field->name }}[]" multiple>
+                        <optgroup label="Admin Permissions">
+                            <option value="create-users" @if(isset($record) && in_array('create-users', $record->{$field->name})) selected @endif>Create Users</option>
+                            <option value="cp-login" @if(isset($record) && in_array('cp-login', $record->{$field->name})) selected @endif>CP Login</option>
+                            <option value="create-galleries" @if(isset($record) && in_array('create-galleries', $record->{$field->name})) selected @endif>Create Galleries</option>
+                        </optgroup>
+                    </select>
                 @endif
                 @if ($field->help_block)
                     <small class="help-block">{{ $field->help_block }}</small>
                 @endif
             @if(empty($repeatable)) </div> @endif
+
         </div>
+
     @endif
 @endforeach
+
+@if(isset($website) && $website->gallery)
+<div class="modal fade" id="modal-photo-selector" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title"><span>Select an image</span></h4>
+            </div>
+            <div class="modal-body message media-gal isotope">
+                <ul class="image-selector " style="float: left; margin-top: 20px; width: 100%">
+                    @if(isset($website) && $website->gallery->photos->count())
+                        @include('photos::photo-grid', ['photos' => $website->gallery->photos, 'is_modal' => true])
+                    @else
+                        <h4 class="align-center page-header">There are no images in this gallery yet.</h4>
+                    @endif
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" type="button" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
 
 @if(empty($repeatable))
 {!! Form::submit('Save', ["class" => "btn btn-info"]) !!}
 
-<script type="text/javascript">
+<script>
+    (function photoSelector(w) {
+
+        $('.open-select-image-modal').on('click', function(e) { e.preventDefault(), photoSelector.openModal($(this)) });
+        $('.image-selector > div').on('click', function() { photoSelector.selectImage($(this)) } )
+
+        var photoSelector = {
+            selectedImage: undefined,
+            relatedFormInput: undefined,
+            pathLabels: [],
+            form: undefined,
+            modal: $('#modal-photo-selector'),
+            hidden: $('<input name="selected_files[]">').attr({
+                type: 'hidden',
+                value: undefined
+            }),
+            openModal: function(ele) {
+                this.relatedFormInput = ele.siblings('input[type="file"]');
+                this.pathLabels = ele.siblings('b.image-path');
+
+                this.form = ele.parents('form')[0];
+                this.modal.modal()
+            },
+            selectImage: function(item) {
+                var id = item.attr('data-id'),
+                    path = item.attr('data-path');
+
+                this.pathLabels.each(function(idx, label) {
+                    console.log(label);
+                    $(label).html('<b>Image Path: <b>' + path)
+                    $(label).html('<img src="' + path +'" height="180">')
+                })
+                $('<input type="hidden" name="_selected_'+this.relatedFormInput.attr('name')+'">').val(id).appendTo(this.form);
+                // this.hidden.val(id).appendTo(this.form);
+                this.relatedFormInput.val(''); // reset input value, for good measure
+                this.modal.modal('hide');
+            }
+        }
+
+
+    })(window)
+
+</script>
+
+<script>
     function slugify(text) {
       return text.toString().toLowerCase()
         .replace(/\s+/g, '-')           // Replace spaces with -
@@ -263,7 +344,15 @@
             $(this).parents('.repeatable-container').remove();
             reIndexRepeatables($('.repeatable-container'));
         });
+
+        $('.multi_select').select2({
+            // data: '' FETCH DATA USING VUE
+        });
     });
+</script>
+
+<script>
+
 </script>
 @endif
 

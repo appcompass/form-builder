@@ -9,14 +9,17 @@ use Event;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
+use Modular;
 use P3in\Controllers\ModularBaseController;
 use P3in\Models\Navmenu;
 use P3in\Models\Website;
 use P3in\Module;
-use Modular;
+use P3in\Traits\HasRouteMetaTrait;
 
 class UiBaseController extends ModularBaseController {
+    use HasRouteMetaTrait;
 
     public $records;
     public $record;
@@ -30,7 +33,6 @@ class UiBaseController extends ModularBaseController {
             return $this->json($data, $success, $message);
         }else{
             return view($this->template, $data);
-
         }
     }
     public function json($data, $success = true, $message = '')
@@ -106,17 +108,9 @@ class UiBaseController extends ModularBaseController {
      */
     public function getCpSubNav($id = null)
     {
-        if (!is_null($id)) {
+        $menu = Cache::tags('cp_ui')->get('nav');
 
-            // dd($id);
-
-        }
-
-        $navmenu_name = 'cp_'.$this->module_name.'_subnav';
-
-        $navmenu = Navmenu::byName($navmenu_name);
-        return $navmenu;
-
+        return isset($menu->{$this->nav_name}) ? $menu->{$this->nav_name} : [];
     }
 
     /**
@@ -191,7 +185,9 @@ class UiBaseController extends ModularBaseController {
         ];
         if ($url) {
             // default catch all.
-            $uriAry = explode('/',trim($url,'/'));
+            $parsedUrl = parse_url($url);
+            $query = !empty($parsedUrl['query']) ? $parsedUrl['query'] : '';
+            $uriAry = explode('/',trim($parsedUrl['path'],'/'));
             $target = $this->setDataTarget($uriAry);
             // now lets split the url up into the resources and it's params
             $resources = [];
@@ -200,7 +196,9 @@ class UiBaseController extends ModularBaseController {
             array_walk($uriAry, function($v, $k) use ($both) { $both[$k % 2][] = $v; });
 
             // get url's route controller name and method (aka the route action)
-            $action = Route::getRoutes()->match(Request::create($url))->getActionName();
+            $route = Route::getRoutes()->match(Request::create($parsedUrl['path']));
+            $action = $route->getActionName();
+            $name = $route->getName();
 
             list($class, $method) = explode('@', $action);
 
@@ -212,17 +210,23 @@ class UiBaseController extends ModularBaseController {
                 $metaData = \App::make($class)->meta;
 
                 $rtn['message'] = 'The controller for this route needs target meta data.';
+                $tree = [];
                 if (!empty($metaData->$method) && !empty($metaData->$method->data_targets)) {
                     $rtn['success'] = true;
                     $rtn['message'] = '';
-                    $tree = [];
-                    $rtn['data'] = $this->buildTree($tree, $metaData->$method->data_targets, $params);
+                    $rtn['data'] = $this->buildTree($tree, $metaData->$method->data_targets, $params, $query);
+                }elseif($metaData = $this->getMeta($name)) {
+                    if (!empty($metaData->data_targets)) {
+                        $rtn['success'] = true;
+                        $rtn['message'] = '';
+                        $rtn['data'] = $this->buildTree($tree, $metaData->data_targets, $params, $query);
+                    }
                 }
             }
 
             if (!$rtn['success']) {
                 $rtn['data'] = [
-                    'url' => $url,
+                    'url' => $parsedUrl['path'],
                     'target' => $target,
                 ];
             }
@@ -231,7 +235,7 @@ class UiBaseController extends ModularBaseController {
         return $rtn;
     }
 
-    public function buildTree(&$tree, $data, $params)
+    public function buildTree(&$tree, $data, $params, $query = '')
     {
         foreach ($data as $i => $row) {
             // lets find out how many params we are working with.
@@ -244,11 +248,11 @@ class UiBaseController extends ModularBaseController {
             $target = $row->target;
 
             unset($data[$i]);
-
+            $queryStr = $query ? '?'.$query : '';
             $tree = [
-                'url' => $url,
+                'url' => $url.$queryStr,
                 'target' => $target,
-                'next' => !empty($data) ? $this->buildTree($tree, $data, $params) : [],
+                'next' => !empty($data) ? $this->buildTree($tree, $data, $params, $query) : [],
             ];
             break;
         }

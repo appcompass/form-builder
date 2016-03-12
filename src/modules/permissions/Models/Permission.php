@@ -15,6 +15,8 @@ class Permission extends Model
      */
     protected $table = 'permissions';
 
+    const GUEST_PERMISSION = null;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -24,6 +26,14 @@ class Permission extends Model
         'type',
         'label',
         'description'
+    ];
+
+    /**
+     * Rules
+     */
+    public static $rules = [
+        'label' => 'required',
+        'type' => 'required'
     ];
 
     /**

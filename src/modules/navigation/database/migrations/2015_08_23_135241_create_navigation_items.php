@@ -18,14 +18,13 @@ class CreateNavigationItems extends Migration
 
             $table->string('url');
             $table->boolean('new_tab')->default(false);
-            $table->boolean('has_content')->default(false);
             $table->string('alt_text')->nullable();
 
             $table->morphs('navigatable');
 
-            $table->string('req_perms')->nullable();
+            $table->integer('req_perms')->unsigned()->nullable();
             $table->foreign('req_perms')
-                ->references('type')
+                ->references('id')
                 ->on('permissions');
 
             $table->json('props')->nullable();

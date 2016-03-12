@@ -1,31 +1,51 @@
 <!-- sidebar menu start-->
 <div class="leftside-navigation">
-	<ul class="sidebar-menu" id="nav-accordion">
+    <ul class="sidebar-menu" id="nav-accordion">
+        @foreach($nav as $item)
+            <li @if(!empty($item->children)) class="sub-menu" @endif >
+                <a {!! inlineAttrs($item->props, 'link') !!} >
+                    <i class="fa fa-{{ $item->props->icon or 'list' }}"></i> {{ $item->label }}
+                </a>
+                @if(!empty($item->children))
+                    <ul class="sub">
 
-		@foreach($nav->items as $item)
+                        @foreach($item->children as $sub_item)
+                            <li>
+                                <a {!! inlineAttrs($sub_item->props, 'link') !!}>
+                                    <i class="fa fa-{{ $sub_item->props->icon or "list" }}"> </i>
+                                    {{ $sub_item->label }}
+                                </a>
+                            </li>
+                        @endforeach
 
-			<li @if($item->has_content) class="sub-menu" @endif>
-				<a {!! inlineAttrs($item->props, 'link') !!}><i class="fa fa-{{ $item->props['icon'] or 'list' }}"></i>{{ $item->label }}</a>
+                    </ul>
+                @endif
+            </li>
+        @endforeach
 
-				@if ($item->has_content)
-					<ul class="sub">
+{{--     @foreach($nav->navitems as $item)
+        <li @if($nav->hasChildren($item->linked_id)) class="sub-menu" @endif>
+            <a href="{{ $item->url }}" {!! inlineAttrs($item->props, 'link') !!}>
+                <i class="fa fa-{{ $item->navitem->props['icon'] or 'list' }}"></i>{{ $item->label }}
+            </a>
 
-						@foreach($nav->children->find($item->navigatable_id)->items as $sub_item)
-							<li>
-								<a {!! inlineAttrs($sub_item->props, 'link') !!}><i class="fa fa-{{ $sub_item->props['icon'] or "list" }}"></i>{{ $sub_item->label }}</a>
-							</li>
-						@endforeach
+            @if ($nav->hasChildren($item->linked_id))
+                <ul class="sub">
 
-					</ul>
-				@endif
+                    @foreach($nav->children->find($item->linked_id)->navitems as $sub_item)
+                        <li>
+                            <a href="{{ $sub_item->url }}" {!! inlineAttrs($sub_item->navitem->props, 'link') !!}>
+                                <i class="fa fa-{{ $sub_item->navitem->props['icon'] or "list" }}"> </i>
+                                {{ $sub_item->label }}
+                            </a>
+                        </li>
+                    @endforeach
 
-			</li>
+                </ul>
+            @endif
 
-		@endforeach
-
-	</ul>
+        </li>
+    @endforeach
+ --}}
+    </ul>
 </div>
-{{-- <script class="include" type="text/javascript" src="/assets/ui/js/jquery.dcjqaccordion.2.7.js"></script> --}}
-{{-- <script src="/assets/ui/js/jquery.scrollTo.min.js"></script> --}}
-{{-- <script src="/assets/ui/js/jQuery-slimScroll-1.3.0/jquery.slimscroll.js"></script> --}}
-{{-- <script src="/assets/ui/js/jquery.nicescroll.js"></script> --}}

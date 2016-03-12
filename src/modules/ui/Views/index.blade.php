@@ -1,103 +1,136 @@
-                <section class="panel">
-                    <header class="panel-heading">
-                        {{ $meta->index->heading }}
-                    </header>
-                    <div class="panel-body">
-                        <div class="clearfix">
-                            <div class="btn-group">
-                                <a id="editable-sample_new" class="btn btn-primary" href="#{{ $meta->base_url }}/create" data-click="{{ $meta->base_url }}/create" data-target="{{ $meta->data_target }}">
-                                    Add New <i class="fa fa-plus"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="space15"></div>
-                        <table class="table table-hover general-table dataTable" id="dynamic-table">
-                            <thead>
-                            <tr>
-                                @foreach($meta->index->table->headers as $header)
-                                    <th>{{ $header }}
-                                        {{-- @if (in_array($header, $meta->index->table->sortables)) --}}
-                                            {{-- <a href="#" data-trigger="sort">V</a> --}}
-                                        {{-- @endif --}}
-                                    </th>
-                                @endforeach
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($records as $record)
-                            <tr>
-                                @foreach($meta->index->table->rows as $row_key => $row_data)
-                                    @if($row_data->type == 'link_by_id')
-                                        <td><a href="{{ $meta->base_url }}/{{ $record->id }}" data-click="{{ $meta->base_url }}/{{ $record->id }}" data-target="{{ $meta->data_target }}">{{ $record->$row_key }}</a></td>
-                                    @elseif($row_data->type == 'action_buttons')
-                                        <td>
-                                            @foreach($row_data->data as $action)
-                                                @if ($action == 'edit')
-                                                    <a
-                                                        data-action="link"
-                                                        href="{{ $meta->base_url }}/{{ $record->id }}"
-                                                        data-click="{{ $meta->base_url }}/{{ $record->id }}"
-                                                        data-target="{{ $meta->data_target }}"
-                                                        class="btn btn-primary"
-                                                    >
-                                                        Edit
-                                                    </a>
-                                                @elseif($action == 'clone')
-                                                    <a
-                                                        data-action="clone"
-                                                        href=""
-                                                        data-click="/clone-resource"
-                                                        data-object-name="{{ get_class($record) }}"
-                                                        data-object-id="{{ $record->id }}"
-                                                        data-object-redirect="{{ $meta->base_url }}"
-                                                        class="btn btn-info"
-                                                    >
-                                                        Clone
-                                                    </a>
-                                                @elseif($action == 'delete')
-                                                    <a
-                                                        data-action="modal-delete"
-                                                        href="#modal-edit"
-                                                        data-toggle="modal"
-                                                        data-delete="{{ $meta->base_url }}/{{ $record->id }}"
-                                                        data-click="/delete-modal"
-                                                        data-inject-area="#modal-body"
-                                                        class="btn btn-danger"
-                                                    >
-                                                        Delete
-                                                    </a>
-                                                @endif
-                                            @endforeach
-                                        </td>
-                                    @elseif($row_data->type == 'link_to_blank')
-                                        <td><a href="{{ $record->$row_key }}" target="_blank" class="no-link">{{ $record->$row_key }}</a></td>
-                                    @elseif($row_data->type == 'datetime')
-                                        <td>{{ $record->$row_key }}</td>
-                                    @elseif($row_data->type == 'image')
-                                        <td><img src="{{ $record->path }}" width="120" alt=""></td>
-                                    @elseif($row_data->type == 'option')
-                                        <td>{{ $record->getOption($row_key, $row_data->option_name) }}</td>
-                                    @else
-                                        <td>{{ $record->$row_key }}</td>
+<section class="panel">
+    <header class="panel-heading">
+        {{ $meta->index->heading }}
+    </header>
+    <div class="panel-body">
+        <div class="clearfix">
+            <div class="btn-group">
+                @can('edit', $meta->classname)
+                <a id="editable-sample_new" class="btn btn-primary" href="#{{ $meta->base_url }}/create" data-click="{{ $meta->base_url }}/create" data-target="{{ $meta->data_target }}">
+                    Add New <i class="fa fa-plus"></i>
+                </a>
+                @endcan
+            </div>
+        </div>
+        <div class="space15"></div>
+
+        @if(isset($meta->index->filter_view))
+            @include($meta->index->filter_view)
+        @endif
+        <table class="table table-hover general-table dataTable" id="dynamic-table">
+            <thead>
+                <tr>
+                    @foreach($meta->index->table->headers as $header)
+                        <th>{{ $header }}</th>
+                    @endforeach
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach($records as $record)
+                <tr>
+                    @foreach($meta->index->table->rows as $row_key => $row_data)
+
+                        @if($row_data->type == 'link_by_id')
+                            <td>
+                                @can('edit', $record)
+                                    <a href="{{ $meta->base_url }}/{{ $record->getKey() }}/edit" data-click="{{ $meta->base_url }}/{{ $record->getKey() }}" data-target="{{ $meta->data_target }}">
+                                @endcan
+                                    {{ $record->$row_key }}
+                                @can('edit', $record)
+                                    </a>
+                                @endcan
+                            </td>
+
+                        @elseif($row_data->type == 'action_buttons')
+                            <td>
+                                @foreach($row_data->data as $action)
+                                    @if ($action == 'edit')
+                                    @can('edit', $record)
+                                        <a
+                                            data-action="link"
+                                            href="{{ $meta->base_url }}/{{ $record->getKey() }}/edit"
+                                            data-click="{{ $meta->base_url }}/{{ $record->getKey() }}"
+                                            data-target="{{ $meta->data_target }}"
+                                            class="btn btn-primary"
+                                        >
+                                            Edit
+                                        </a>
+                                    @endcan
+                                    @elseif($action == 'clone')
+                                        <a
+                                            data-action="clone"
+                                            href=""
+                                            data-click="/clone-resource"
+                                            data-object-name="{{ get_class($record) }}"
+                                            data-object-id="{{ $record->getKey() }}"
+                                            data-object-redirect="{{ $meta->base_url }}"
+                                            class="btn btn-info"
+                                        >
+                                            Clone
+                                        </a>
+                                    @elseif($action == 'delete')
+                                        <a
+                                            data-action="modal-delete"
+                                            href="#modal-edit"
+                                            data-toggle="modal"
+                                            data-delete="{{ $meta->base_url }}/{{ $record->getKey() }}"
+                                            data-click="/delete-modal"
+                                            data-inject-area="#modal-body"
+                                            class="btn btn-danger"
+                                        >
+                                            Delete
+                                        </a>
                                     @endif
                                 @endforeach
-                            </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
+                            </td>
+                        @elseif($row_data->type == 'link_to_blank')
+                            <td><a href="http://{{ $record->$row_key }}" target="_blank" class="no-link">{{ $record->$row_key }}</a></td>
+                        @elseif($row_data->type == 'datetime')
+                            <td>{{ $record->$row_key }}</td>
+                        @elseif($row_data->type == 'image')
+                            <td><img src="{{ $record->path }}" width="120" alt=""></td>
+                        @elseif($row_data->type == 'option')
+                            <td>{{ $record->getOption($row_key, $row_data->option_name) }}</td>
+                        @else
+                            <td>{{ $record->$row_key }}</td>
+                        @endif
+                    @endforeach
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+        @if(method_exists($records , 'links'))
+        <div class="dataTables_paginate paging_bootstrap pagination">
+            {!! $records->links() !!}
+        </div>
+        @endif
+    </div>
+</section>
 
-    <script type="text/javascript" language="javascript" src="/assets/ui/js/advanced-datatable/js/jquery.dataTables.js"></script>
-    <script type="text/javascript" src="/assets/ui/js/data-tables/DT_bootstrap.js"></script>
+<script type="text/javascript" language="javascript" src="/assets/ui/js/advanced-datatable/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="/assets/ui/js/data-tables/DT_bootstrap.js"></script>
 
-    <script>
-
+<script>
     $(document).ready(function() {
 
-        $('#dynamic-table').dataTable( {
-            "aaSorting": [[ 4, "desc" ]]
-        } );
+        @if(!isset($meta->index->filter_view))
+            /*
+             * Initialize DataTable
+             */
+            $('#dynamic-table').dataTable( {
+
+            } );
+            /*
+             * Initialse DataTables, with no sorting on the 'details' column
+             */
+            var oTable = $('#hidden-table-info').dataTable( {
+                "aoColumnDefs": [
+                    { "bSortable": false, "aTargets": [ 0 ] }
+                ],
+                "aaSorting": [[1, 'asc']]
+            });
+        @endif
 
         /*
          * Insert a 'details' column to the table
@@ -114,16 +147,6 @@
         $('#hidden-table-info tbody tr').each( function () {
             this.insertBefore(  nCloneTd.cloneNode( true ), this.childNodes[0] );
         } );
-
-        /*
-         * Initialse DataTables, with no sorting on the 'details' column
-         */
-        var oTable = $('#hidden-table-info').dataTable( {
-            "aoColumnDefs": [
-                { "bSortable": false, "aTargets": [ 0 ] }
-            ],
-            "aaSorting": [[1, 'asc']]
-        });
 
         /* Add event listener for opening and closing details
          * Note that the indicator for showing which row is open is not controlled by DataTables,
@@ -143,6 +166,6 @@
                 this.src = "images/details_close.png";
                 oTable.fnOpen( nTr, fnFormatDetails(oTable, nTr), 'details' );
             }
-        } );
-    } );
-    </script>
+        });
+    });
+</script>

@@ -12,6 +12,7 @@ class CpUsersController extends UiBaseController
 {
 
     public $meta_install = [
+        'classname' => User::class,
         'index' => [
             'data_targets' => [
                 [
@@ -85,7 +86,7 @@ class CpUsersController extends UiBaseController
                 ],
             ],
             'heading' => 'Create a User',
-            'route' => '/users/store'
+            'route' => 'users.store'
         ],
         'form' => [
             'fields' => [
@@ -129,7 +130,7 @@ class CpUsersController extends UiBaseController
         $this->middleware('auth');
 
         $this->controller_class = __CLASS__;
-        $this->module_name = 'users';
+        $this->nav_name = 'cp_users_subnav';
 
         $this->setControllerDefaults();
     }
@@ -160,7 +161,7 @@ class CpUsersController extends UiBaseController
      */
     public function store(Request $request)
     {
-        $this->validate($request, User::$validator_rules);
+        $this->validate($request, User::$rules);
 
         $data = $request->all();
 

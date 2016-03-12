@@ -17,6 +17,18 @@ class PermissionsTableSeeder extends Seeder
     {
     	DB::table('permissions')->delete();
 
+        // Permission::create([
+        //     'type' => '',
+        //     'label' => '',
+        //     'description' => ''
+        // ]);
+
+        Permission::create([
+            'type' => 'cp-login',
+            'label' => 'Basic Admin',
+            'description' => 'Grants basic Control Panel access'
+        ]);
+
     	Permission::create([
     		'type' => 'create-galleries',
     		'label' => 'Create Galleries',

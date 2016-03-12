@@ -87,7 +87,6 @@
             data-id="menuItem_{{ $util->navItem->id }}"
             href="/websites/{{ $website->id }}/navigation"
             class="draggable"
-            <?php /* data-has-content="{{ $util->navItem->has_content === true ?: 'false' }}" */ ?>
           >
             <div>
               <i class="handle fa fa-arrows"> </i>

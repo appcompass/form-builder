@@ -23,33 +23,42 @@ Class PagesModule extends BaseModule
     public function register()
     {
 
-        $this->checkOrSetUiConfig();
-
     }
 
 
     /**
-     * Provides means for creating a NavigationItem item
+     * Cp Nav parts for this module.
      *
      */
-    public function makeLink($overrides = [])
+    public function makeLink()
     {
-        return array_replace([
-
-        ], $overrides);
+        return [
+            [
+                "label" => 'Pages',
+                'belongs_to' => ['websites'],
+                'sub_nav' => '',
+                "req_perms" => 'websites.pages',
+                'order' => 3,
+                "props" => [
+                    "icon" => "user",
+                    "link" => [
+                        'href' => "/pages",
+                    ],
+                ],
+            ], [
+                "label" => 'Page Info',
+                'belongs_to' => ['cp_pages_subnav'],
+                'sub_nav' => '',
+                "req_perms" => 'websites.pages',
+                'order' => 3,
+                "props" => [
+                    "icon" => "user",
+                    "link" => [
+                        'href' => "/edit",
+                    ],
+                ],
+            ],
+        ];
     }
-
-    /**
-     *  Set CMS module's config
-     *
-     */
-    public function checkOrSetUiConfig() {
-
-        $module = Modular::get($this->module_name);
-
-            $module->config = [];
-        return $module->save();
-    }
-
 
 }

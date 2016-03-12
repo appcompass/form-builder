@@ -28,14 +28,14 @@ class Navmenu extends Model
     protected $fillable = [
         'name',
         'label',
-        'req_permission',
+        'req_perms',
         'parent_id',
         'website_id',
         'max_depth',
         'temp'
     ];
 
-    protected $with = ['children.items', 'items'];
+    protected $with = ['children.navitems', 'navitems'];
 
     /**
      *  Get a navmenu by name
@@ -78,20 +78,12 @@ class Navmenu extends Model
      *  Add a child nav
      *
      */
-    public function addChildren(Navmenu $navmenu, $order = null, $overrides = [], $pretend = false)
+    public function addChildren(Navmenu $navmenu, $order = null, $overrides = [])
     {
 
-        if ($pretend) {
+        $this->children()->save($navmenu);
 
-            $this->children->push($navmenu);
-
-        } else {
-
-            $this->children()->save($navmenu);
-
-        }
-
-        $this->addItem($navmenu, $order, $overrides, $pretend);
+        $this->addItem($navmenu, $order, $overrides);
 
         return;
     }
@@ -104,41 +96,45 @@ class Navmenu extends Model
     {
         if ($delete) {
 
-            $navmenu->delete();
+            return $navmenu->delete();
 
         } else {
 
           $navmenu->parent_id = null;
 
+          return $navmenu->save();
+
         }
 
-      return $navmenu->save();
-    }
-  /**
-   *
-   *
-   *
-   */
-    public function item()
-    {
-        return $this->item();
     }
 
     /**
-     *  Link items to Navigation Items
+     *  Link navmenu to NavitemNavmenu items
      *
+     *  NavitemNavmenu is the pivot table that links an instance of a NavigationItem to a specific Navmenu
      */
-    public function items()
+    public function navitems()
     {
 
-        return $this->belongsToMany(NavigationItem::class)
-            ->withPivot('id', 'order', 'label', 'url', 'new_tab')
-            ->orderBy('pivot_order');
+        $user_perms = [];
 
+        if (\Auth::check()) {
+
+            $user_perms = \Auth::user()->allPermissions()->toArray();
+
+        }
+
+        return $this->hasMany(NavitemNavmenu::class)
+            ->whereHas('navitem', function($q) use ($user_perms) {
+                $q->whereNull('req_perms');
+                $q->orWhereIn('req_perms', array_keys($user_perms));
+        })->orderBy('order');
     }
 
     /**
-     *  Keep data consistent
+     *  Clean
+     *  Keep data consistent by cleaning up the navmenus structure
+     *  @param boolean delete true = delete all children false = unlink the children
      */
     public function clean($delete = false)
     {
@@ -157,9 +153,9 @@ class Navmenu extends Model
 
         }
 
-        $this->items()->detach();
+        $this->navitems()->delete();
 
-        $this->load('items');
+        $this->load('navitems');
 
         return $this;
 
@@ -170,7 +166,21 @@ class Navmenu extends Model
      */
     public function hasParent()
     {
-        return (bool)count($this->parent);
+        return (bool) count($this->parent);
+    }
+
+    /**
+     *
+     */
+    public function hasChildren($id = null)
+    {
+        if (!is_null($id)) {
+
+            return (bool) $this->children->find($id);
+
+        }
+
+        return (bool) $this->children->count();
     }
 
     /**
@@ -204,22 +214,32 @@ class Navmenu extends Model
      *
      *  @param mixed $navItem either an instance of NavigationItem or an object which navItem's method returns an instance of NavigationItem
      */
-    public function addItem($navItem, $order = null, $overrides = [], $pretend = false)
+    public function addItem($navItem, $order = null, $overrides = [])
     {
 
         if (method_exists($navItem, 'navItem')) {
-
-            return $this->addItem($navItem->navItem($overrides, $pretend)->first(), $order, $overrides, $pretend);
-
+            return $this->addItem($navItem->navItem($overrides)->first(), $order, $overrides);
         }
 
         if (! $navItem instanceof NavigationItem) {
-
             throw new Exception("Can't add item to {$this->name}.");
-
         }
 
-        if (! $this->items->contains($navItem)) {
+        $navitem_navmenu = NavitemNavmenu::firstOrNew([
+            'navmenu_id' => $this->id,
+            'navigation_item_id' => $navItem->id,
+            'label' => isset($overrides['label']) ? $overrides['label'] : $navItem['label'],
+            'url' => isset($overrides['url']) ? $overrides['url'] : $navItem['url'],
+            'new_tab' => isset($overrides['new_tab']) ? $overrides['new_tab'] : $navItem['new_tab']
+        ]);
+
+        if (!is_null($order)) {
+            $navitem_navmenu->order = $order;
+        }
+
+        $navitem_navmenu->save();
+
+        if (! $this->navitems->contains($navitem_navmenu)) {
 
             if (is_null($order)) {
 
@@ -227,25 +247,9 @@ class Navmenu extends Model
                     ->where('navmenu_id', '=', $this->id)
                     ->max('order') ) + 1;
 
-            }
+                $navitem_navmenu->order = $order;
 
-            if ($pretend) {
-
-                $navItem['pivot'] = $overrides;
-
-                $this->items->push($navItem);
-
-            } else {
-
-                // $navItem->save();
-
-                $this->items()->attach($navItem, [
-                    'order' => $order,
-                    'label' => isset($overrides['label']) ? $overrides['label'] : $navItem['label'],
-                    'url' => isset($overrides['url']) ? $overrides['url'] : $navItem['url'],
-                    'new_tab' => isset($overrides['new_tab']) ? $overrides['new_tab'] : $navItem['new_tab']
-                ]);
-
+                $navitem_navmenu->save();
             }
 
         }
@@ -254,11 +258,18 @@ class Navmenu extends Model
 
     }
 
+    public function addItems($items)
+    {
+        foreach ($items as $i => $item) {
+            $this->addItem($item, $i);
+        }
+    }
+
     /**
      *  Get or create navigation menu by name
      *
      */
-    public function scopeByName($query, $name, $label = null, $pretend = false)
+    public function scopeByName($query, $name, $label = null)
     {
 
         $navmenu = Navmenu::where('name', '=', $name)->first();
@@ -276,13 +287,7 @@ class Navmenu extends Model
                 'label' => $label
             ]);
 
-            if (!$pretend) {
-
-                $navmenu->save();
-
-            }
-
-            $navmenu->load('items', 'children.items');
+            $navmenu->load('navitems', 'children.navitems');
 
         }
 
@@ -311,7 +316,6 @@ class Navmenu extends Model
         return array_replace([
             "label" => $this->label,
             "url" => '',
-            "has_content" => false,
             "req_perms" => null,
             "props" => []
         ], $overrides);

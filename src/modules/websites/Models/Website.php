@@ -3,9 +3,9 @@
 namespace P3in\Models;
 
 use Auth;
-use BostonPads\Models\Photo;
+use P3in\Models\Photo;
 use Carbon\Carbon;
-use HasGallery;
+use P3in\Traits\HasGallery;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -18,6 +18,8 @@ use P3in\Module;
 use P3in\Traits\NavigatableTrait;
 use P3in\Traits\SettingsTrait;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Imagick;
+use ImagickPixel;
 
 class Website extends Model
 {
@@ -75,7 +77,8 @@ class Website extends Model
         'site_url' => 'required',
         'config.host' => 'required:ip',
         'config.username' => 'required',
-        'config.password' => 'required',
+        'config.privateKey' => 'required_without:config.password',
+        'config.password' => 'required_without:config.privateKey',
         'config.root' => 'required',
         'config' => 'site_connection',
     ];
@@ -201,7 +204,7 @@ class Website extends Model
     }
 
     /**
-     *
+     *  @TODO deployment shouldn't really be a Website responsibility
      */
     public function deploy()
     {
@@ -287,7 +290,7 @@ class Website extends Model
           $disk->getAdapter()->getConnection();
 
         } catch (\LogicException $e) {
-
+            // dd($e->getMessage());
           return false;
 
         }
@@ -345,13 +348,42 @@ class Website extends Model
 
         Config::set('filesystems.disks.'.config('app.default_storage'), $connection_info);
 
-        $photo = Photo::store($file, Auth::user(), [], '/images/');
+        $photo = Photo::store($file, Auth::user(), [
+            'storage' => $this->site_url,
+            'file_path' => 'images/',
+            'name' => 'logo',
+        ], $this->getDiskInstance());
+
+        if (!config('app.skip_alt_logo')) {
+            $photo_original_path = $connection_info['root'].$photo->attributes['path'];
+
+            // Now lets create the alternate png version.
+            // get file size.
+            $sizeCheck = new Imagick($photo_original_path);
+            $size = $sizeCheck->getImageGeometry();
+
+            // lets create the png version
+            $image = new Imagick();
+            $image->setResolution(4096, 4096);
+            $image->setBackgroundColor(new ImagickPixel('transparent'));
+            $image->readImageBlob(file_get_contents($photo_original_path));
+            $image->setImageFormat("png32");
+            $image->writeImage($connection_info['root'].str_replace('.svg', '.png', $photo->attributes['path']));
+        }
+
 
         $this->logo()->delete();
 
         return $this->logo()->save($photo);
     }
 
+    /**
+     * Check if current website has a logo
+     */
+    public function hasLogo()
+    {
+        return $this->logo()->exists();
+    }
 
     /**
      * as per hasGallery Trait

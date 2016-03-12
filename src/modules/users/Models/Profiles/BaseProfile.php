@@ -8,19 +8,19 @@ use P3in\Models\User;
 class BaseProfile extends Model
 {
 
-  public $table = 'profiles';
+    public $table = 'profiles';
 
-  public $fillable = [
-    'id',
-    'model',
-    'active',
-    'data',
-    'user_id'
-  ];
+    public $fillable = [
+    ];
 
-  public function user()
-  {
-    return $this->belongsTo(User::class);
-  }
+    public function profileable()
+    {
+        return $this->morphTo();
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
 }

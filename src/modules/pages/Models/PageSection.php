@@ -2,7 +2,7 @@
 
 namespace P3in\Models;
 
-use BostonPads\Models\Photo;
+use P3in\Models\Photo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Support\Facades\Config;
@@ -70,11 +70,14 @@ class PageSection extends ModularBaseModel
      */
     public function addPhoto(UploadedFile $file, User $user)
     {
-        Config::set('filesystems.disks.'.config('app.default_storage').'.root', $this->website->config->root);
+
+        $disk = $this->website->getDiskInstance();
 
         $photo = Photo::store($file, $user, [
-            'status' => Photo::STATUSES_ACTIVE
-        ], 'images/');
+            'status' => Photo::STATUSES_ACTIVE,
+            'storage' => $this->website->site_url,
+            'file_path' => 'images/',
+        ], $disk);
 
         $this->website
             ->gallery

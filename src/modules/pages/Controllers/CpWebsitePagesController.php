@@ -17,6 +17,7 @@ class CpWebsitePagesController extends UiBaseController
 {
 
     public $meta_install = [
+        'classname' => Page::class,
         'index' => [
             'data_targets' => [
                 [
@@ -102,7 +103,7 @@ class CpWebsitePagesController extends UiBaseController
                 ],
             ],
             'heading' => 'Add a page to this website',
-            'route' => '/pages/store'
+            'route' => 'websites.pages.store'
         ],
         'form' => [
             'fields' => [
@@ -113,12 +114,36 @@ class CpWebsitePagesController extends UiBaseController
                     'type' => 'text',
                     'help_block' => 'The title of the page.',
                 ],[
-                    'label' => 'Page URL',
+                    'label' => 'Page Slug',
                     'name' => 'slug',
                     'placeholder' => '',
                     'type' => 'slugify',
                     'field' => 'title',
                     'help_block' => 'This field is set automatically.  But if you need to override it, do so AFTER you set the Title above.',
+                ],[
+                    'label' => 'Page Parent',
+                    'name' => 'parent',
+                    'type' => 'filtered_selectlist',
+                    'data' => 'page_list',
+                    'help_block' => 'Select a parent for this page.',
+                ],[
+                    'label' => 'Active',
+                    'name' => 'active',
+                    'placeholder' => '',
+                    'type' => 'checkbox',
+                    'help_block' => 'is the page live?',
+                ],[
+                    'label' => 'Dynamic Page',
+                    'name' => 'settings[config][dynamic]',
+                    'placeholder' => '',
+                    'type' => 'checkbox',
+                    'help_block' => 'This is used only for dynamic segment pages taht get their content from other, non page module sources. For example: a single blog entry.',
+                ],[
+                    'label' => 'Layout Type',
+                    'name' => 'layout',
+                    'placeholder' => '',
+                    'type' => 'layout_selector',
+                    'help_block' => 'Select the page\'s layout.',
                 ],[
                     'label' => 'Description',
                     'name' => 'description',
@@ -143,91 +168,93 @@ class CpWebsitePagesController extends UiBaseController
                     'placeholder' => 'Meta Keywords',
                     'type' => 'text',
                     'help_block' => 'The meta keywords of the page.',
-                ],[
-                    'label' => 'Active',
-                    'name' => 'active',
-                    'placeholder' => '',
-                    'type' => 'checkbox',
-                    'help_block' => 'is the page published?',
-                ],[
-                    'label' => 'Layout Type',
-                    'name' => 'layout',
-                    'placeholder' => '',
-                    'type' => 'layout_selector',
-                    'help_block' => 'Select the page\'s layout.',
                 ]
             ]
         ]
     ];
 
-	public function __construct()
-	{
+    public function __construct()
+    {
         $this->middleware('auth');
 
         $this->controller_class = __CLASS__;
-        $this->module_name = 'pages';
+        $this->nav_name = 'cp_pages_subnav';
 
         $this->setControllerDefaults();
 
-        // $sections = Section::whereNotIn('fits', ['*', 'utils'])->groupBy('fits')->lists('fits');
-
-        $this->meta->available_layouts = [
-            'full' => 'Full Width',
-            'aside:main' => 'Left Sidenav',
-            'main:aside' => 'Right Sidenav',
-            'list_listings' => 'Listings Page',
-        ];
+        $this->meta->available_layouts = config('app.available_layouts');
 
     }
 
     /**
      * Display a listing of the resource.
      *
+     * @param  Website  P3in\Models\Website
      * @return Response
      */
-    public function index($website_id)
+    public function index(Website $websites)
     {
-        $this->records = Website::managedById($website_id)->pages;
+        $this->records = $websites->pages;
 
-        return $this->build('index', ['websites', $website_id, 'pages']);
+        return $this->build('index', ['websites', $websites->id, 'pages']);
     }
 
     /**
      * Show the form for creating a new resource.
      *
+     * @param  Website  P3in\Models\Website
      * @return Response
      */
-    public function create($website_id)
+    public function create(Website $websites)
     {
+        $this->meta->create->route = [$this->meta->create->route, $websites->id];
 
-        return $this->build('create', ['websites', $website_id, 'pages']);
+        $this->meta->page_list = Page::ofWebsite($websites)->isActive()->lists('title', 'id')->put('' , 'No Parent')->reverse();
 
+        return $this->build('create', ['websites', $websites->id, 'pages']);
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  Request  $request
+     * @param  Website  P3in\Models\Website
      * @return Response
      */
-    public function store(Request $request, $website_id)
+    public function store(Request $request, Website $websites)
     {
+
         $page = new Page($request->all());
 
         $page->name = strtolower(str_replace(' ', '_', trim($page->title)));
 
         $page->published_at = Carbon::now();
 
-        Website::managedById($website_id)->pages()
-            ->save($page);
+        $page->website()->associate($websites);
+
+        $page->save();
+
+        if ($request->has('parent')) {
+
+            $parent = Page::ofWebsite($websites)->findOrFail($request->get('parent'));
+
+            $page->parent()->associate($parent);
+
+        }
+
+        $page->url = $page->getUrl();
+
+        $page->save();
 
         if ($request->has('settings')) {
+
             $page->settings($request->settings);
+
         }
 
         $this->record = $page;
 
-        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $this->record->id, 'edit']));
+        return $this->json($this->setBaseUrl(['websites', $websites->id, 'pages', $this->record->id, 'edit']));
     }
 
     /**
@@ -237,19 +264,16 @@ class CpWebsitePagesController extends UiBaseController
      * @param  int  $page_id
      * @return Response
      */
-    public function show($website_id, $page_id)
+    public function show(Website $websites, Page $pages)
     {
+        $this->record = $pages->load('sections');
 
-        $website = Website::managedById($website_id);
-
-        $this->record = Page::ofWebsite($website)->findOrFail($page_id)->load('sections');
-
-        $this->setBaseUrl(['websites', $website_id, 'pages', $page_id]);
+        $this->setBaseUrl(['websites', $websites->id, 'pages', $pages->id]);
 
         $this->meta->data_target = '#content-edit';
 
         return view('pages::show')
-            ->with('website', $website)
+            ->with('website', $websites)
             ->with('page', $this->record)
             ->with('meta', $this->meta)
             ->with('nav', $this->getCpSubNav())
@@ -263,18 +287,26 @@ class CpWebsitePagesController extends UiBaseController
      * @param  int  $id
      * @return Response
      */
-    public function edit($website_id, $page_id)
+    public function edit(Website $websites, Page $pages)
     {
+        $this->meta->page_list = Page::ofWebsite($websites)->isNot($pages->id)
+            ->isActive()
+            ->lists('title', 'id')
+            ->put('' , 'No Parent')
+            ->reverse();
 
-        $website = Website::managedById($website_id);
+        $this->record = $pages;
 
-        $this->record = Page::ofWebsite($website)->findOrFail($page_id);
+        if (!empty($this->record->parent->id)) {
 
+            $this->record->parent = $this->record->parent->id;
+
+        }
         $this->record->settings = $this->record->settings->data;
 
         $this->meta->data_target = '#content-edit';
 
-        return $this->build('edit', ['websites', $website_id, 'pages', $page_id]);
+        return $this->build('edit', ['websites', $websites->id, 'pages', $pages->id]);
     }
 
     /**
@@ -284,20 +316,25 @@ class CpWebsitePagesController extends UiBaseController
      * @param  int  $id
      * @return Response
      */
-    public function update(Request $request, $website_id, $page_id)
+    public function update(Request $request, Website $websites, Page $pages)
     {
 
-        $website = Website::managedById($website_id);
-
-        $page = Page::ofWebsite($website)->findOrFail($page_id);
-
-        $page->update($request->except(['settings']));
-
-        if ($request->has('settings')) {
-            $page->settings($request->settings);
+        if ($request->has('parent')) {
+            $parent = Page::ofWebsite($websites)->findOrFail($request->get('parent'));
+            $pages->parent()->associate($parent);
         }
 
-        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $page_id, 'edit']));
+        if ($request->has('settings')) {
+
+            $pages->settings($request->settings);
+
+        }
+
+        $pages->url = $pages->getUrl();
+
+        $pages->update($request->except(['settings', 'parent']));
+
+        return $this->json($this->setBaseUrl(['websites', $websites->id, 'pages', $pages->id, 'edit']));
     }
 
 
@@ -307,16 +344,14 @@ class CpWebsitePagesController extends UiBaseController
      * @param  int  $id
      * @return Response
      */
-    public function destroy($website_id, $id)
+    public function destroy(Website $websites, Page $pages)
     {
 
-        $website = Website::managedById($website_id);
-
-        $this->record = Page::ofWebsite($website)->findOrFail($id);
+        $this->record = $pages;
 
         $this->record->delete();
 
-        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages']));
+        return $this->json($this->setBaseUrl(['websites', $websites->id, 'pages']));
     }
 
     /**
@@ -334,8 +369,7 @@ class CpWebsitePagesController extends UiBaseController
         ];
 
         foreach(explode(':', $page->layout) as $layout_part) {
-
-            $current_nav = $sections['page'][$layout_part] = new Navmenu(['label' => 'Current Template']);
+            $current_nav = $sections['page'][$layout_part] = Navmenu::byName('tmp_current_template', 'Current Template');
 
             foreach ($page->sections()->where('section', $layout_part)->get() as $section) {
 
@@ -346,20 +380,19 @@ class CpWebsitePagesController extends UiBaseController
 
                 $nav_item->id = $section->pivot->id;
 
-                $current_nav->items->push($nav_item);
+                $current_nav->navitems->push($nav_item);
 
             }
 
-            $current_templates_nav = $sections['available'][$layout_part] = new Navmenu(['label' => ucfirst($layout_part).' Templates']);
+            $current_templates_nav = $sections['available'][$layout_part] = Navmenu::byName('tmp_'.strtolower($layout_part).'_template', ucfirst($layout_part).' Template');
 
             foreach (Section::where('fits', $layout_part)->get() as $section) {
-
                 $nav_item = $section->getNavigationItem([
                     'url' => '',
                     'props' => ['id' => $section->id]
                 ]);
 
-                $current_templates_nav->items->push($nav_item);
+                $current_templates_nav->navitems->push($nav_item);
 
             }
 
