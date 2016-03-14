@@ -49,9 +49,32 @@
 
     <script src="/assets/ui/js/simrou.min.js" ></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+
     @yield('scripts.footer')
 
+    <script>
+        (function(xhrOpen) {
+            /**
+            *   XHR Interceptor
+            */
+            XMLHttpRequest.prototype.open = function(method, url, async, user, pass) {
+                this.addEventListener("readystatechange", function() {
+                    if (this.status === 403) {
+                       sweetAlert("Unauthorized", "You are not authorized to view this resource", "error");
+                       this.abort();
+                    }
+                }, false);
+                xhrOpen.call(this, method, url, async, user, pass);
+            };
+
+        })(XMLHttpRequest.prototype.open);
+
+    </script>
+
     <script type="text/javascript">
+
+
 
         // temp spot tille we include actual file.
         // examples/source https://gist.github.com/cowboy/1025817#file-jquery-ba-deparam-min-js
@@ -77,7 +100,8 @@
                 url: obj.url,
                 type: 'GET',
                 error: function(err){
-                    openModal('error', err, true);
+                    // Hijacked by the xhr interceptor
+                    // openModal('error', err, true);
                 },
                 success: function(data){
                     if (obj.attribute) {

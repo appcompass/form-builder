@@ -9,6 +9,7 @@ use P3in\Models\Website;
 class CpWebsiteSettingsController extends UiBaseController
 {
     public $meta_install = [
+        'classname' => Website::class,
         'index' => [
             'data_targets' => [
                 [
@@ -195,6 +196,36 @@ class CpWebsiteSettingsController extends UiBaseController
                     'label' => 'Facebook Page URL',
                     'name' => 'facebook_page_url',
                     'placeholder' => 'https://www.facebook.com/facebook',
+                    'type' => 'text',
+                    'help_block' => '',
+                ],[
+                    'label' => 'Twitter Page URL',
+                    'name' => 'twitter_page_url',
+                    'placeholder' => 'https://twitter.com/twitter',
+                    'type' => 'text',
+                    'help_block' => '',
+                ],[
+                    'label' => 'LinkedIn Page URL',
+                    'name' => 'linkedin_page_url',
+                    'placeholder' => 'https://www.linkedin.com/company/linkedin',
+                    'type' => 'text',
+                    'help_block' => '',
+                ],[
+                    'label' => 'Google+ Page URL',
+                    'name' => 'google_plus_page_url',
+                    'placeholder' => 'https://plus.google.com/+google',
+                    'type' => 'text',
+                    'help_block' => '',
+                ],[
+                    'label' => 'Instagram Page URL',
+                    'name' => 'instagram_page_url',
+                    'placeholder' => 'https://www.instagram.com/instagram',
+                    'type' => 'text',
+                    'help_block' => '',
+                ],[
+                    'label' => 'Site Phone Number',
+                    'name' => 'site_phone_number',
+                    'placeholder' => 'https://www.instagram.com/instagram',
                     'type' => 'text',
                     'help_block' => '',
                 ],

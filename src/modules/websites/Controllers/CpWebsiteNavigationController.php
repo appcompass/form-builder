@@ -14,6 +14,7 @@ use P3in\Models\Website;
 class CpWebsiteNavigationController extends UiBaseController
 {
     public $meta_install = [
+        'classname' => Navmenu::class,
         'index' => [
             'data_targets' => [
                 [
