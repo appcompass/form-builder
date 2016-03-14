@@ -2,47 +2,90 @@
 
 namespace P3in\Modules\Providers;
 
+use BostonPads\Models\BpFieldUpload;
+use BostonPads\Models\BpUnit;
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
-use Illuminate\Support\ServiceProvider;
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Routing\Router;
+use P3in\Middleware\CallIsAuthorized;
+use P3in\Models\BlogCategory;
+use P3in\Models\BlogPost;
+use P3in\Models\BlogTag;
+use P3in\Models\Gallery;
+use P3in\Models\Group;
+use P3in\Models\Page;
+use P3in\Models\Permission;
+use P3in\Models\User;
+use P3in\Models\Website;
+use P3in\Policies\ResourcesPolicy;
 
 class PermissionsServiceProvider extends ServiceProvider
 {
 
 
-  /**
-   * Indicates if loading of the provider is deferred.
-   *
-   * @var bool
-   */
-  protected $defer = true;
+    /**
+     * Indicates if loading of the provider is deferred.
+     *
+     * @var bool
+     */
+    protected $defer = true;
 
-  /**
-   *   Register bindings in the container
-   *
-   *
-   *
-   */
-  public function register()
-  {
+    /**
+     * Laravel
+     */
+    protected $app;
 
-    // if (Modular::isLoaded('permissions')) {
-    //     $main_nav = Navmenu::byName('cp_main_nav');
-    //     $main_nav_permissions =  Navmenu::byName('cp_main_nav_permissions', 'GroupsPermissions Manager');
+    public function __construct(Application $app)
+    {
 
-    //     $main_nav_media->addItem($this->navItem, 0);
-    //     $main_nav->addChildren($main_nav_media, 5);
-    // }
+        // @TODO p3ServiceProivder to inherit from, which could make available some common methods i.e. getting middleware etc...
 
-}
+        $this->app = $app;
 
-  /**
-   * Bootstrap services
-   *
-   *
-   *
-   */
-  public function boot(GateContract $gate)
-  {
+    }
 
-  }
+    /**
+     * The policy mappings for the application.
+     *
+     * @var array
+     */
+    protected $policies = [
+        Website::class => ResourcesPolicy::class,
+        Gallery::class => ResourcesPolicy::class,
+        Page::class => ResourcesPolicy::class,
+        BlogPost::class => ResourcesPolicy::class,
+        BlogCategory::class => ResourcesPolicy::class,
+        BlogTag::class => ResourcesPolicy::class,
+        User::class => ResourcesPolicy::class,
+        Permission::class => ResourcesPolicy::class,
+        Group::class => ResourcesPolicy::class,
+        BpFieldUpload::class => ResourcesPolicy::class,
+        BpUnit::class => ResourcesPolicy::class,
+        P3in\Controllers\UiBaseController::class => ResourcesPolicy::class
+    ];
+
+    /**
+     *   Register bindings in the container
+     *
+     *
+     *
+     */
+    public function register()
+    {
+
+
+    }
+
+    /**
+     * Bootstrap services
+     *
+     *
+     *
+     */
+    public function boot(GateContract $gate)
+    {
+        $this->app->router->pushMiddlewareToGroup('web', CallIsAuthorized::class);
+        parent::registerPolicies($gate);
+    }
 }

@@ -21,6 +21,8 @@ abstract class UiBaseResourceController extends Controller
 
     public function index(Request $request)
     {
+        $this->gateCheck(get_class($this->model));
+
         $this->setTemplate('ui::resourceful.index');
 
         return $this->output($request, [
@@ -30,6 +32,8 @@ abstract class UiBaseResourceController extends Controller
 
     public function edit(Request $request)
     {
+        $this->gateCheck(get_class($this->model));
+
         $this->setTemplate('ui::resourceful.edit');
 
         return $this->output($request, [
@@ -39,6 +43,8 @@ abstract class UiBaseResourceController extends Controller
 
     public function create(Request $request)
     {
+        $this->gateCheck(get_class($this->model));
+
         $this->setTemplate('ui::resourceful.create');
 
         return $this->output($request, [
@@ -47,6 +53,8 @@ abstract class UiBaseResourceController extends Controller
 
     public function show(Request $request)
     {
+        $this->gateCheck(get_class($this->model));
+
         $this->setTemplate('ui::resourceful.show');
 
         $routeName = $request->route()->getName();
@@ -63,6 +71,8 @@ abstract class UiBaseResourceController extends Controller
 
     public function store(Request $request)
     {
+        $this->gateCheck(get_class($this->model));
+
         $this->validate($request, [
             'title' => 'required|unique|max:255',
             'body' => 'required',
@@ -74,6 +84,8 @@ abstract class UiBaseResourceController extends Controller
 
     public function update(Request $request)
     {
+        $this->gateCheck(get_class($this->model));
+
         $this->validate($request, $this->model->rules);
 
         $this->model->update($request->only($this->model->fillable));
@@ -82,8 +94,20 @@ abstract class UiBaseResourceController extends Controller
 
     public function destroy(Request $request)
     {
+        $this->gateCheck(get_class($this->model));
+
         $this->model->delete();
         return $this->json('/'.$request->path());
+    }
+
+    /**
+     *  Gate Check
+     */
+    public function gateCheck($type)
+    {
+        if (\Gate::denies($type, get_class($this->model->getModel()))) {
+            abort(403);
+        }
     }
 
     public function setBaseModel(Request $request, $model)

@@ -5,6 +5,7 @@ namespace P3in\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use Auth;
+use Gate;
 use Event;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -48,6 +49,15 @@ class UiBaseController extends ModularBaseController {
 
     public function build($type, $root = [])
     {
+
+        $model_class = $this->records ? get_class($this->records[0]) : get_class($this->record);
+
+        if (Gate::denies($type, $model_class)) {
+
+            abort(403);
+
+        }
+
         $method = 'view'.$type;
 
         $this->setBaseUrl($root);
@@ -73,6 +83,7 @@ class UiBaseController extends ModularBaseController {
 
     private function viewCreate()
     {
+
         $this->template = 'ui::create';
 
         return $this->output([
