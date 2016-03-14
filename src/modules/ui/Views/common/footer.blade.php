@@ -53,6 +53,25 @@
 
     @yield('scripts.footer')
 
+    <script>
+        (function(xhrOpen) {
+            /**
+            *   XHR Interceptor
+            */
+            XMLHttpRequest.prototype.open = function(method, url, async, user, pass) {
+                this.addEventListener("readystatechange", function() {
+                    if (this.status === 403) {
+                       sweetAlert("Unauthorized", "You are not authorized to view this resource", "error");
+                       this.abort();
+                    }
+                }, false);
+                xhrOpen.call(this, method, url, async, user, pass);
+            };
+
+        })(XMLHttpRequest.prototype.open);
+
+    </script>
+
     <script type="text/javascript">
 
 
@@ -81,7 +100,8 @@
                 url: obj.url,
                 type: 'GET',
                 error: function(err){
-                    openModal('error', err, true);
+                    // Hijacked by the xhr interceptor
+                    // openModal('error', err, true);
                 },
                 success: function(data){
                     if (obj.attribute) {
