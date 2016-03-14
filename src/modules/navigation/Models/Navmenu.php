@@ -109,6 +109,46 @@ class Navmenu extends Model
     }
 
     /**
+        (obj)
+            <navmenu>  -> (obj)
+            <navmenu>  -> (obj)
+
+     */
+    public static function fromCache($tag, $key)
+    {
+
+        // @TODO quick temp solution, to be refactored using proper nav structure
+
+        $items = \Cache::tags($tag)->get($key);
+
+        $user_perms = [];
+
+        if (\Auth::check()) {
+
+            $user_perms = array_values(\Auth::user()->allPermissions()->toArray());
+
+        }
+
+        foreach($items as $nav => $content) {
+
+            foreach($content as $idx => $item) {
+
+                if ($item->req_perms) {
+
+                    if (!in_array($item->req_perms, $user_perms)) {
+
+                        unset($items->$nav[$idx]);
+
+                    }
+
+                }
+            }
+        }
+
+        return $items;
+    }
+
+    /**
      *  Link navmenu to NavitemNavmenu items
      *
      *  NavitemNavmenu is the pivot table that links an instance of a NavigationItem to a specific Navmenu

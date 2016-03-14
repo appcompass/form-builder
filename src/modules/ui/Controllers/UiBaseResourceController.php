@@ -160,7 +160,9 @@ abstract class UiBaseResourceController extends Controller
 
     public function getCpSubNav($id = null)
     {
-        $menu = Cache::tags('cp_ui')->get('nav');
+        // $menu = Cache::tags('cp_ui')->get('nav');
+
+        $menu = Navmenu::fromCache('cp_ui', 'nav');
 
         return isset($menu->{$this->nav_name}) ? $menu->{$this->nav_name} : [];
     }
