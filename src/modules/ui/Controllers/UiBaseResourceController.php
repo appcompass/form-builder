@@ -21,8 +21,6 @@ abstract class UiBaseResourceController extends Controller
 
     public function index(Request $request)
     {
-        $this->setTemplate('ui::resourceful.index');
-
         return $this->output($request, [
             'records' => $this->model->get(),
         ]);
@@ -30,8 +28,6 @@ abstract class UiBaseResourceController extends Controller
 
     public function edit(Request $request)
     {
-        $this->setTemplate('ui::resourceful.edit');
-
         return $this->output($request, [
             'record' => $this->model,
         ]);
@@ -39,21 +35,12 @@ abstract class UiBaseResourceController extends Controller
 
     public function create(Request $request)
     {
-        $this->setTemplate('ui::resourceful.create');
-
         return $this->output($request, [
         ]);
     }
 
     public function show(Request $request)
     {
-        $this->setTemplate('ui::resourceful.show');
-
-        $routeName = $request->route()->getName();
-        // we take the route and convert it to a nav name so something.else becomes something_else
-        // after we strip off the method component of the route.
-        $this->nav_name = str_replace(['.','-'], '_', substr($routeName, 0, strrpos($routeName, '.')));
-
         return $this->output($request, [
             'record' => $this->model,
             'nav' => $this->getCpSubNav(),
@@ -63,10 +50,7 @@ abstract class UiBaseResourceController extends Controller
 
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'title' => 'required|unique|max:255',
-            'body' => 'required',
-        ]);
+        $this->validate($request, $this->model->rules);
 
         $this->model->create($request->only($this->model->fillable));
         return $this->json('/'.$request->path());
@@ -96,13 +80,47 @@ abstract class UiBaseResourceController extends Controller
         }
     }
 
-    public function setBaseModel(Request $request, $model)
-    {
-        $route = $request->route();
-        $params = $route ? $route->parameters() : [];
-        $this->model = $model->fromRoute($params);
 
-        $this->gateCheck(get_class($this->model));
+    public function init(Request $request, $model)
+    {
+        $route = $this->explainRoute($request);
+
+        $this->model = $model->fromRoute($route->params);
+
+
+        if ($route->name) {
+            // Check permissions
+            $this->gateCheck(get_class($this->model));
+
+            // we take the route and convert it to a nav name so something.else becomes something_else
+            $this->nav_name = str_replace(['.','-'], '_', $route->route_root);
+
+            if (in_array($route->method_name, ['index', 'edit', 'create', 'show'])) {
+                $this->setTemplate('ui::resourceful.'.$route->method_name);
+            }
+        }
+    }
+
+    public function explainRoute(Request $request)
+    {
+        $rtn = new \stdClass();
+        $rtn->params = [];
+        $rtn->name = null;
+        $rtn->route_root = null;
+        $rtn->method_name = null;
+
+        $route = $request->route();
+
+        if ($route) {
+            $n = $route->getName();
+
+            $rtn->params = $route->parameters();
+            $rtn->name = $n;
+            $rtn->route_root = substr($n, 0, strrpos($n, '.'));
+            $rtn->method_name = substr($n, strrpos($n, '.')+1);
+        }
+
+        return $rtn;
     }
 
     public function setTemplate($template_name, $force = false)

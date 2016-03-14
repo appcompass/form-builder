@@ -10,7 +10,7 @@ class CpGalleriesController extends UiBaseResourceController
 {
     public function __construct(Request $request, Gallery $galleries)
     {
-        $this->setBaseModel($request, $galleries);
+        $this->init($request, $galleries);
     }
 
     // /**
