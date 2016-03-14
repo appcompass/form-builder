@@ -187,7 +187,19 @@ class Page extends ModularBaseModel
 
         $views['website'] = $website;
         $views['page'] = $this;
-        $view['breadcrumbs'] = $this->breadcrumbs();
+        $views['breadcrumbs'] = $this->breadcrumbs();
+
+        if (!empty($website->settings->data->meta_data)) {
+            foreach ($website->settings->data->meta_data as $key => $val) {
+                $views['meta_data'][$key] = $val;
+            }
+        }
+
+        if (!empty($this->settings->data->meta_data)) {
+            foreach ($this->settings->data->meta_data as $key => $val) {
+                $views['meta_data'][$key] = $val;
+            }
+        }
 
         $views['settings'] = $this->settings->data;
 
