@@ -49,9 +49,13 @@
 
     <script src="/assets/ui/js/simrou.min.js" ></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+
     @yield('scripts.footer')
 
     <script type="text/javascript">
+
+
 
         // temp spot tille we include actual file.
         // examples/source https://gist.github.com/cowboy/1025817#file-jquery-ba-deparam-min-js

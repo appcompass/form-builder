@@ -48,6 +48,8 @@
     <link rel="stylesheet" type="text/css" href="/assets/ui/css/style.css">
     <link rel="stylesheet" type="text/css" href="/assets/ui/css/style-responsive.css"/>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
+
     <!-- Just for debugging purposes. Don't actually copy this line! -->
     <!--[if lt IE 9]>
     <script src="/js/ie8-responsive-file-warning.js"></script><![endif]-->
