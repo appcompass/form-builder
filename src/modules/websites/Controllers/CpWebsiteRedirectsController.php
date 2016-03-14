@@ -9,6 +9,7 @@ class CpWebsiteRedirectsController extends UiBaseController
 {
 
     public $meta_install = [
+        'classname' => Redirect::class,
         'index' => [
             'data_targets' => [
                 [
