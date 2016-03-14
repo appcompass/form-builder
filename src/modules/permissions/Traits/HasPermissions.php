@@ -2,10 +2,10 @@
 
 namespace P3in\Traits;
 
-use Illuminate\Database\Eloquent\Model;
 use P3in\Models\Permission;
 use P3in\Models\PermissionsRequired;
 use P3in\Models\PermissionsRequired\PermissionItems\Element;
+use P3in\Models\PermissionsRequired\PermissionItems\Model;
 
 trait HasPermissions
 {
@@ -13,39 +13,60 @@ trait HasPermissions
     /**
      * get the required permission
      */
-    public function getRequiredPermission()
+    public function getRequiredPermission($action = null)
     {
-        if ($this instanceof Model) {
+        return PermissionsRequired::retrieve($this->getElementPointer($action));
 
-            return PermissionsRequired::retrieve($this->getElementPointer());
+    }
 
-        }
+    /**
+     *
+     */
+    public static function getStaticRequiredPermission($action = null)
+    {
 
-        return;
+        return PermissionsRequired::retrieve((new self)->getElementPointer($action));
+
     }
 
     /**
      * set a required permission for the owner
      */
-    public function setRequiredPermission(Permission $permission)
+    public function setRequiredPermission(Permission $permission, $action = null)
     {
-        if ($this instanceof Model) {
 
-            return PermissionsRequired::requirePermission($this->getElementPointer(), $permission);
+        return PermissionsRequired::requirePermission($this->getElementPointer($action), $permission);
 
-        }
+    }
+
+    /**
+     * set a required permission for the owner
+     */
+    public static function setStaticRequiredPermission(Permission $permission, $action = null)
+    {
+
+        return PermissionsRequired::requirePermission((new static())->getElementPointer($action), $permission);
 
     }
 
     //////////// PRIVATE
 
-    private function getElementPointer()
+    private function getElementPointer($action = null)
     {
-        $class = get_class($this);
 
-        $id = $this->id;
+        $class = __CLASS__;
 
-        return new Element($class . '@' . $id);
+        if (null !== $this->getAttribute('id')) {
+
+            $class = $class . '@' . $this->getAttribute('id');
+
+        }
+
+        $action = is_null($action) ? '' : '@' . $action;
+
+        \Log::info($class);
+
+        return new Model($class . $action);
     }
 
 }

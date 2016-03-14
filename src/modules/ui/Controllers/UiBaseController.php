@@ -50,9 +50,7 @@ class UiBaseController extends ModularBaseController {
     public function build($type, $root = [])
     {
 
-        $model_class = $this->records ? get_class($this->records[0]) : get_class($this->record);
-
-        if (Gate::denies($type, $model_class)) {
+        if (Gate::denies($type, $this->meta->classname)) {
 
             abort(403);
 

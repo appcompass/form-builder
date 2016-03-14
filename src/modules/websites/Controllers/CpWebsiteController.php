@@ -251,7 +251,7 @@ class CpWebsiteController extends UiBaseController
     {
         $this->record = $websites;
 
-        $this->authorize('edit', $this->record);
+        // $this->authorize('edit', $this->record);
 
         return $this->build('edit', ['websites', $websites->id]);
     }

@@ -6,6 +6,7 @@ use Auth;
 use P3in\Models\Photo;
 use Carbon\Carbon;
 use P3in\Traits\HasGallery;
+use P3in\Traits\HasPermissions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -24,7 +25,7 @@ use ImagickPixel;
 class Website extends Model
 {
 
-    use SettingsTrait, NavigatableTrait, HasGallery;
+    use SettingsTrait, NavigatableTrait, HasGallery, HasPermissions;
 
     /**
      * The database table used by the model.
@@ -154,7 +155,7 @@ class Website extends Model
      */
     public static function current(Request $request = null)
     {
-        return static::$current;
+        return static::$current ?: Website::admin();
     }
 
     /**
