@@ -31,6 +31,7 @@ class GroupsTableSeeder extends Seeder
 		$bp_agent->grantPermissions([
 			'unit-field-upload-galleries',
 			'units',
+			'units_photos',
 			'resmet-manager'
 		]);
 
@@ -46,6 +47,7 @@ class GroupsTableSeeder extends Seeder
 
 		$bp_manager->grantPermissions([
 			'units',
+			'units_photos',
 			'unit-field-upload-galleries',
 			'cp-resmet-manager',
 			'resmet-manager'

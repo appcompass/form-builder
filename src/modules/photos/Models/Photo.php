@@ -13,12 +13,13 @@ use P3in\Traits\AlertableTrait;
 use P3in\Traits\NavigatableTrait;
 use P3in\Traits\OptionableTrait;
 use P3in\Traits\SettingsTrait;
+use P3in\Traits\HasPermissions;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class Photo extends Model implements GalleryItemInterface
 {
 
-    use OptionableTrait, SettingsTrait, AlertableTrait, NavigatableTrait, SoftDeletes;
+    use OptionableTrait, SettingsTrait, AlertableTrait, NavigatableTrait, SoftDeletes, HasPermissions;
 
     const DEFAULT_STATUS = Photo::STATUSES_PENDING;
     const TYPE_ATTRIBUTE_NAME = 'photo_of';

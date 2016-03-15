@@ -33,6 +33,7 @@
                 Edit
             </a>
             --}}
+            @can('destroy', $photo)
             <a
                 data-action="modal-delete"
                 href="#modal-edit"
@@ -45,6 +46,7 @@
                 <i class="fa fa-times"></i>
                 Delete
             </a>
+            @endcan
         </div>
         @endif
     </div>

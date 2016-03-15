@@ -32,9 +32,10 @@ class PermissionsTableSeeder extends Seeder
         Permission::create(['type' => 'unit-field-upload-galleries', 'label' => 'Create Own Galleries', 'description' => 'Allow to create/edit only owned galleries']);
 
         // UNITS/RESMET
-        Permission::create(['type' => 'units', 'label' => 'Can Browse Units from CP', 'description' => 'Can browse Units']);
         Permission::create(['type' => 'cp-resmet-manager', 'label' => 'Browse Units', 'description' => 'Resmet Manager can browse and delete/sort photos']);
         Permission::create(['type' => 'resmet-manager', 'label' => 'Browse Units', 'description' => 'Resmet Manager can browse and delete/sort photos']);
+        Permission::create(['type' => 'units', 'label' => 'Can Browse Units from CP', 'description' => 'Can browse Units']);
+        Permission::create(['type' => 'units_photos', 'label' => 'Can see unit photos', 'description' => 'Allowed to see Unit Photos']);
 
     }
 }
