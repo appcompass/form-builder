@@ -24,7 +24,6 @@ class PagesController extends Controller
         $page = Page::byUrl($url)->ofWebsite()->firstOrFail();
 
         $data = $page->render();
-
         return view('layouts.master.'.str_replace(':', '_', $page->layout), $data)
             ->with('page', $page);
 

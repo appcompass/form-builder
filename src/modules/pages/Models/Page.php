@@ -183,7 +183,9 @@ class Page extends ModularBaseModel
 
         $globals = Section::whereIn('id',[$website->settings('header'), $website->settings('footer')])->get();
 
-        $this->load('settings');
+        $this->with('settings');
+
+        $page_meta_data = $this->settings('meta_data');
 
         $views['website'] = $website;
         $views['page'] = $this;
@@ -195,8 +197,8 @@ class Page extends ModularBaseModel
             }
         }
 
-        if (!empty($this->settings->data->meta_data)) {
-            foreach ($this->settings->data->meta_data as $key => $val) {
+        if (!empty($page_meta_data)) {
+            foreach ($page_meta_data as $key => $val) {
                 $views['meta_data'][$key] = $val;
             }
         }
