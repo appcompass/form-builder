@@ -58,6 +58,8 @@ class ResourcesPolicy
     public function __call($method, $arguments)
     {
 
+        $this->action = '@' . $method;
+
         $this->parseArgs($arguments);
 
         return $this->evaluate($this->user, PermissionsRequired::retrieve($this->permission_item));
@@ -73,8 +75,6 @@ class ResourcesPolicy
         $this->user = $arguments[0];
 
         $name = is_object($arguments[1]) ? get_class($arguments[1]) : $arguments[1];
-
-        \Log::info($name);
 
         $this->permission_item = new Model($name . $this->action);
 

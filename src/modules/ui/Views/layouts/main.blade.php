@@ -7,7 +7,7 @@
             <div class="brand">
 
                 <a href="index.html" class="logo">
-                    <img src="/path/to/logo.png" alt="{{env('ADMIN_WEBSITE_NAME', 'Plus 3 CMS')}}">
+                    <img alt="{{env('ADMIN_WEBSITE_NAME', 'Plus 3 CMS')}}">
                 </a>
                 <div class="sidebar-toggle-box">
                     <div class="fa fa-bars"></div>

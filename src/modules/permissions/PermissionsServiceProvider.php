@@ -16,6 +16,7 @@ use P3in\Models\Gallery;
 use P3in\Models\Group;
 use P3in\Models\Page;
 use P3in\Models\Permission;
+use P3in\Models\Photo;
 use P3in\Models\User;
 use P3in\Models\Website;
 use P3in\Policies\ResourcesPolicy;
@@ -52,6 +53,7 @@ class PermissionsServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
+        Photo::class => ResourcesPolicy::class,
         Website::class => ResourcesPolicy::class,
         Gallery::class => ResourcesPolicy::class,
         Page::class => ResourcesPolicy::class,
@@ -63,9 +65,7 @@ class PermissionsServiceProvider extends ServiceProvider
         Group::class => ResourcesPolicy::class,
         BpFieldUpload::class => ResourcesPolicy::class,
         BpUnit::class => ResourcesPolicy::class,
-        P3in\Models\Photo::class => ResourcesPolicy::class,
         \BostonPads\Models\BpFieldUpload::class => UnitsPolicy::class,
-        P3in\Controllers\UiBaseController::class => ResourcesPolicy::class
     ];
 
     /**

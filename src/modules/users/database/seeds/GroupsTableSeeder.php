@@ -18,6 +18,9 @@ class GroupsTableSeeder extends Seeder
 	{
 		DB::table('groups')->delete();
 
+		// Clone me
+		// Group::create(['name' => '', 'label' => '', 'description' => '', 'active' => true]);
+
 		//
 		//	BOSTONPADS AGENT
 		//
@@ -76,5 +79,25 @@ class GroupsTableSeeder extends Seeder
 		]);
 
 		$group->grantPermissions(['logged-user']);
+
+		Group::create(['name' => 'debug', 'label' => 'Debug', 'description' => 'Debug BAS Group', 'active' => true]);
+		Group::create(['name' => 'ra-lm', 'label' => 'RA LM', 'description' => 'RA LM Bas Group', 'active' => true]);
+		Group::create(['name' => 'ra-media', 'label' => 'RA Media', 'description' => 'RA Media Bas Group', 'active' => true]);
+		Group::create(['name' => 'classes', 'label' => 'Classes', 'description' => 'Classes Bas Group', 'active' => true]);
+		Group::create(['name' => 'static', 'label' => 'Static', 'description' => 'Static BAS Group', 'active' => true]);
+		Group::create(['name' => 'emails', 'label' => 'Emails', 'description' => 'Emails Bas Group', 'active' => true]);
+		Group::create(['name' => 'media', 'label' => 'Media', 'description' => 'Media Bas Group', 'active' => true]);
+		Group::create(['name' => 'media-admin', 'label' => 'Media Admin', 'description' => 'MediaAdmin Bas Group', 'active' => true]);
+		Group::create(['name' => 'cl-poster', 'label' => 'CLPoster', 'description' => 'CLPoster BAS Group', 'active' => true]);
+		Group::create(['name' => 'fd-manager', 'label' => 'FD Manager', 'description' => 'FD Manager BAS Group', 'active' => true]);
+		Group::create(['name' => 'nofreeze', 'label' => 'No Freeze', 'description' => 'No Freeze Bas Group', 'active' => true]);
+		Group::create(['name' => 'sm', 'label' => 'SM', 'description' => 'SM Bas Group', 'active' => true]);
+		Group::create(['name' => 'sa', 'label' => 'SA', 'description' => 'SA Bas Group', 'active' => true]);
+		Group::create(['name' => 'keys', 'label' => 'Keys', 'description' => 'Keys Bas Group', 'active' => true]);
+		Group::create(['name' => 'training-manager', 'label' => 'Training Manager', 'description' => 'Training Manager Bas Group', 'active' => true]);
+		Group::create(['name' => 'lm', 'label' => 'LM', 'description' => 'LM Bas Group', 'active' => true]);
+		Group::create(['name' => 'resmet', 'label' => 'Resmet', 'description' => 'Resmet BAS Group', 'active' => true]);
+		Group::create(['name' => 'tech', 'label' => 'Tech', 'description' => 'Tech BAS Group', 'active' => true]);
+		Group::create(['name' => 'resmet-r', 'label' => 'ResmetR', 'description' => 'ResmetR BAS Group', 'active' => true]);
 	}
 }

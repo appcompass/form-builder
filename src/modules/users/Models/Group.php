@@ -52,7 +52,7 @@ class Group extends Model
 	 */
 	public function scopeByName(Builder $query, $name)
 	{
-		return $query->where('name', $name);
+		return $query->where('name', str_replace(' ', '-', strtolower($name)));
 	}
 
 	/**
@@ -77,7 +77,14 @@ class Group extends Model
 	  */
 	public function addUser(User $user)
 	{
-	  	return $this->users()->attach($user);
+
+		if (!$this->users->contains($user->id)) {
+
+		  	return $this->users()->attach($user);
+
+		}
+
+		return false;
 	}
 
 	/**
