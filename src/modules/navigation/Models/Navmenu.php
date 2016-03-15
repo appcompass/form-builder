@@ -118,6 +118,7 @@ class Navmenu extends Model
     {
 
         // @TODO quick temp solution, to be refactored using proper nav structure
+        // @TODO root check has to be moved into the ofBefore policy
 
         $items = \Cache::tags($tag)->get($key);
 
@@ -126,6 +127,12 @@ class Navmenu extends Model
         if (\Auth::check()) {
 
             $user_perms = array_values(\Auth::user()->allPermissions()->toArray());
+
+        }
+
+        if (\Auth::check() AND \Auth::user()->isRoot()) {
+
+            return $items;
 
         }
 

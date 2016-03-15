@@ -18,31 +18,61 @@ class GroupsTableSeeder extends Seeder
 	{
 		DB::table('groups')->delete();
 
+		//
+		//	BOSTONPADS AGENT
+		//
+		$bp_agent = Group::create([
+			'name' => 'bostonpads-agents',
+			'label' => 'BostonPads Agents',
+			'description' => 'User is a BostonPads Agent',
+			'active' => true
+		]);
+
+		$bp_agent->grantPermissions([
+			'unit-field-upload-galleries',
+			'units',
+			'resmet-manager'
+		]);
+
+		//
+		//	BOSTONPADS MANAGER
+		//
+		$bp_manager = Group::create([
+			'name' => 'bostonpads-managers',
+			'label' => 'BostonPads managers',
+			'description' => 'User is a BostonPads Manager',
+			'active' => true
+		]);
+
+		$bp_manager->grantPermissions([
+			'units',
+			'unit-field-upload-galleries',
+			'cp-resmet-manager',
+			'resmet-manager'
+		]);
+
+		//
+		//	CP ADMINISTRATOR
+		//
+		$cp_manager = Group::create([
+			'name' => 'cp-admin',
+			'label' => 'Control Panel Administrator',
+			'description' => "User is allowed to do everything (super-user)",
+			'active' => true
+		]);
+
+		$cp_manager->grantPermissions([]); // GateBefore instead of perms
+
+		//
+		//	USER
+		//
 		$group = Group::create([
 			'name' => 'users',
 			'label' => 'Users',
 			'description' => 'Generic user group',
 			'active' => true
-		])
-			->permissions()
-			->attach(Permission::first());
+		]);
 
-		$group = Group::create([
-			'name' => 'admin',
-			'label' => 'Administrators',
-			'description' => 'Allows basic Control Panel access',
-			'active' => true
-		])
-			->permissions()
-			->attach(Permission::first());
-
-		$group = Group::create([
-			'name' => 'agents',
-			'label' => 'Agents',
-			'description' => 'Encompasses all the agents specific permissions',
-			'active' => true
-		])
-			->permissions()
-			->attach(Permission::first());
+		$group->grantPermissions(['logged-user']);
 	}
 }

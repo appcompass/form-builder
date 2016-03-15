@@ -238,6 +238,12 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     }
 
+    public function isRoot()
+    {
+        return Group::administrators()->users
+            ->contains($this->id);
+    }
+
     /**
      *  Get/Set user's Avatar
      *
