@@ -9,8 +9,6 @@ use P3in\Models\PermissionsRequired\PermissionItems\Model;
 
 trait HasPermissions
 {
-
-
     //
     //  @TODO Better naming convention
     //  SET

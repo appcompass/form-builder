@@ -21,6 +21,8 @@ class PermissionsTableSeeder extends Seeder
 
         // USER
         Permission::create(['type' => 'logged-user', 'label' => 'User', 'description' => 'The user can log into the application frontend (websites)']);
+        Permission::create(['type' => 'guest', 'label' => 'Guest', 'description' => 'Guest Permission']);
+        // And we also have the null permissions
 
         // CP
         Permission::create(['type' => 'cp-user', 'label' => 'Basic Admin', 'description' => 'Grants basic Control Panel access']);
