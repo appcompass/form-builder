@@ -46,6 +46,20 @@ class Permission extends Model
     	return $query->where('type', '=', $type);
     }
 
+    public static function createCpRoutePerm($type, $label = null)
+    {
+        $perm = static::firstOrNew([
+            'type' => $type,
+        ]);
+        $perm->label = $label ?: ucwords(str_replace(['.','-'], ' ', $type));
+        $perm->description = 'Permission for the route: '.$type;
+        $perm->locked = true;
+
+        $perm->save();
+
+        return $perm->type;
+    }
+
     /**
     *	 Get groups having this permission
     *

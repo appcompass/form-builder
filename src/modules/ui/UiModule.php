@@ -2,10 +2,11 @@
 
 namespace P3in\Modules;
 
+use Blade;
 use Illuminate\Support\Facades\Cache;
 use Modular;
-use Blade;
 use P3in\Models\Navmenu;
+use P3in\Models\Permission;
 use P3in\Models\Website;
 use P3in\Modules\BaseModule;
 use P3in\Traits\NavigatableTrait;
@@ -44,7 +45,7 @@ Class UiModule extends BaseModule
                 'label' => 'Dashboard',
                 'belongs_to' => ['cp_main_nav'],
                 'sub_nav' => '',
-                'req_perms' => 'cp-dashboard',
+                'req_perms' => Permission::createCpRoutePerm('dashboard', 'Dashboard'),
                 'order' => 1,
                 'props' => [
                     'icon' => 'dashboard',

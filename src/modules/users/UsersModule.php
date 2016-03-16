@@ -4,6 +4,7 @@ namespace P3in\Modules;
 
 use Modular;
 use P3in\Models\Navmenu;
+use P3in\Models\Permission;
 use P3in\Models\Website;
 use P3in\Modules\BaseModule;
 use P3in\Traits\NavigatableTrait as Navigatable;
@@ -13,7 +14,7 @@ Class UsersModule extends BaseModule
 
     use Navigatable;
 
-    public $module_name = "users";
+    public $module_name = 'users';
 
     public function __construct()
     {
@@ -22,7 +23,7 @@ Class UsersModule extends BaseModule
 
     public function bootstrap()
     {
-        // echo "Bootstrapping UsersModule!";
+        // echo 'Bootstrapping UsersModule!';
     }
 
     public function register()
@@ -37,96 +38,96 @@ Class UsersModule extends BaseModule
     {
         return [
             [
-                "label" => 'Users Manager',
+                'label' => 'Users Manager',
                 'belongs_to' => ['cp_main_nav'],
                 'sub_nav' => 'cp_main_nav_users',
-                "req_perms" => 'cp-users-manager',
+                'req_perms' => null,
                 'order' => 2,
-                "props" => [
-                    "icon" => "user",
+                'props' => [
+                    'icon' => 'users',
                 ],
             ], [
-                "label" => 'All Users',
+                'label' => 'All Users',
                 'belongs_to' => ['cp_main_nav_users'],
                 'sub_nav' => '',
-                "req_perms" => 'cp-users-manager',
+                'req_perms' => Permission::createCpRoutePerm('user.index', 'All Users'),
                 'order' => 1,
-                "props" => [
-                    "icon" => "user",
-                    "link" => [
-                        'href' => "/users",
+                'props' => [
+                    'icon' => 'user',
+                    'link' => [
+                        'href' => '/users',
                     ],
                 ],
             ], [
-                "label" => 'Groups Manager',
+                'label' => 'Groups Manager',
                 'belongs_to' => ['cp_main_nav_users'],
                 'sub_nav' => '',
-                "req_perms" => 'cp-groups-manager',
+                'req_perms' => Permission::createCpRoutePerm('groups.index', 'Groups Manager'),
                 'order' => 2,
-                "props" => [
-                    "icon" => "user",
-                    "link" => [
-                        'href' => "/groups",
+                'props' => [
+                    'icon' => 'group',
+                    'link' => [
+                        'href' => '/groups',
                     ],
                 ],
             ], [
-                "label" => 'Permissions Manager',
+                'label' => 'Permissions Manager',
                 'belongs_to' => ['cp_main_nav_users'],
                 'sub_nav' => '',
-                "req_perms" => 'cp-permissions-manager',
+                'req_perms' => Permission::createCpRoutePerm('permissions.index', 'Permissions Manager'),
                 'order' => 3,
-                "props" => [
-                    "icon" => "user",
-                    "link" => [
-                        'href' => "/permissions",
+                'props' => [
+                    'icon' => 'key',
+                    'link' => [
+                        'href' => '/permissions',
                     ],
                 ],
             ], [
-                "label" => 'Groups Details',
+                'label' => 'Group Details',
                 'belongs_to' => ['cp_groups_subnav'],
                 'sub_nav' => '',
-                "req_perms" => 'cp-groups-manager',
+                'req_perms' => Permission::createCpRoutePerm('groups.edit', 'Group Details'),
                 'order' => 1,
-                "props" => [
-                    "icon" => "user",
-                    "link" => [
-                        'href' => "/edit",
+                'props' => [
+                    'icon' => 'info-circle',
+                    'link' => [
+                        'href' => '/edit',
                     ],
                 ],
             ], [
-                "label" => 'Groups Permissions',
+                'label' => 'Group Permissions',
                 'belongs_to' => ['cp_groups_subnav'],
                 'sub_nav' => '',
-                "req_perms" => 'cp-groups-permissions-manager',
+                'req_perms' => Permission::createCpRoutePerm('groups.permissions.index', 'Group Permissions'),
                 'order' => 2,
-                "props" => [
-                    "icon" => "user",
-                    "link" => [
-                        'href' => "/permissions",
+                'props' => [
+                    'icon' => 'key',
+                    'link' => [
+                        'href' => '/permissions',
                     ],
                 ],
             ], [
-                "label" => 'User Permissions',
+                'label' => 'User Permissions',
                 'belongs_to' => ['cp_users_subnav'],
                 'sub_nav' => '',
-                "req_perms" => 'cp-users-permissions-manager',
+                'req_perms' => Permission::createCpRoutePerm('users.permissions.index', 'User Permissions'),
                 'order' => 2,
-                "props" => [
-                    "icon" => "user",
-                    "link" => [
-                        'href' => "/permissions",
+                'props' => [
+                    'icon' => 'key',
+                    'link' => [
+                        'href' => '/permissions',
                     ],
                 ],
             ], [
-                "label" => 'User Groups',
+                'label' => 'User Groups',
                 'belongs_to' => ['cp_users_subnav'],
                 'sub_nav' => '',
-                "req_perms" => 'cp-users-groups-manager',
+                'req_perms' => Permission::createCpRoutePerm('users.groups.index', 'User Groups'),
                 'order' => 3,
-                "props" => [
-                    "icon" => "user",
-                    "link" => [
-                        'href' => "/groups",
+                'props' => [
+                    'icon' => 'group',
+                    'link' => [
+                        'href' => '/groups',
                     ],
                 ],
             ],

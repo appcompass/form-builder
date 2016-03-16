@@ -7,7 +7,7 @@
 
             <li>
                 <a href="{{ $meta->base_url.$subnav_content->props->link->href }}" data-click="{{ $meta->base_url.$subnav_content->props->link->href }}" {!! inlineAttrs($subnav_content->props, 'link') !!} >
-                    <i class="fa {{ $subnav_content->props->icon }}"></i>
+                    <i class="fa fa-{{ $subnav_content->props->icon or 'list' }}"> </i>
                     <span>{{ $subnav_content->label }}</span>
                 </a>
             </li>
