@@ -9,7 +9,7 @@ use P3in\Interfaces\GalleryItemInterface;
 use P3in\Models\GalleryItem;
 use P3in\Models\User;
 use P3in\Models\Video;
-use Photo;
+use P3in\Models\Photo;
 
 
 class Gallery extends Model

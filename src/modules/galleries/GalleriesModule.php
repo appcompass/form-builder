@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Filesystem\Filesystem;
 use Modular;
 use P3in\Models\Navmenu;
+use P3in\Models\Permission;
 use P3in\Models\User;
 use P3in\Models\Website;
 use P3in\Module;
@@ -19,7 +20,7 @@ Class GalleriesModule extends BaseModule
 
     use Navigatable;
 
-    public $module_name = "galleries";
+    public $module_name = 'galleries';
 
     public function __construct()
     {
@@ -53,36 +54,36 @@ Class GalleriesModule extends BaseModule
 
         return [
             [
-                "label" => 'Media Manager',
+                'label' => 'Media Manager',
                 'belongs_to' => ['cp_main_nav'],
                 'sub_nav' => 'cp_main_nav_media',
-                "req_perms" => 'cp-media-manager',
+                'req_perms' => null,
                 'order' => 4,
-                "props" => [
-                    "icon" => "camera",
+                'props' => [
+                    'icon' => 'camera',
                 ],
             ], [
-                "label" => 'Galleries',
+                'label' => 'Galleries',
                 'belongs_to' => ['cp_main_nav_media'],
                 'sub_nav' => '',
-                "req_perms" => 'galleries',
+                'req_perms' => Permission::createCpRoutePerm('galleries.index', 'Galleries'),
                 'order' => 1,
-                "props" => [
-                    "icon" => "camera",
-                    "link" => [
-                        'href' => "/galleries",
+                'props' => [
+                    'icon' => 'table',
+                    'link' => [
+                        'href' => '/galleries',
                     ],
                 ],
             ], [
-                "label" => 'Gallery Info',
+                'label' => 'Gallery Info',
                 'belongs_to' => ['galleries'],
                 'sub_nav' => '',
-                "req_perms" => 'galleries',
+                'req_perms' => Permission::createCpRoutePerm('galleries.edit', 'Gallery Info'),
                 'order' => 1,
-                "props" => [
-                    "icon" => "camera",
-                    "link" => [
-                        'href' => "/edit",
+                'props' => [
+                    'icon' => 'info-circle',
+                    'link' => [
+                        'href' => '/edit',
                     ],
                 ],
             ],
