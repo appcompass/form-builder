@@ -32,7 +32,7 @@ class PhotosModule extends BaseModule
     /**
      *
      */
-    public function makeLink($overrides = [])
+    public function makeLink()
     {
         return [
             [
