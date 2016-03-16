@@ -3,8 +3,9 @@
 namespace P3in\Modules;
 
 use Modular;
-use P3in\Models\Navmenu;
 use P3in\Models\NavigationItem;
+use P3in\Models\Navmenu;
+use P3in\Models\Permission;
 use P3in\Models\Website;
 use P3in\Modules\BaseModule;
 use P3in\Traits\NavigatableTrait as Navigatable;
@@ -14,7 +15,7 @@ Class PagesModule extends BaseModule
 
     use Navigatable;
 
-    public $module_name = "pages";
+    public $module_name = 'pages';
 
     public function __construct() {}
 
@@ -34,27 +35,27 @@ Class PagesModule extends BaseModule
     {
         return [
             [
-                "label" => 'Pages',
+                'label' => 'Pages',
                 'belongs_to' => ['websites'],
                 'sub_nav' => '',
-                "req_perms" => 'websites.pages',
+                'req_perms' => Permission::createCpRoutePerm('websites.pages.index', 'All Photos'),
                 'order' => 3,
-                "props" => [
-                    "icon" => "user",
-                    "link" => [
-                        'href' => "/pages",
+                'props' => [
+                    'icon' => 'book',
+                    'link' => [
+                        'href' => '/pages',
                     ],
                 ],
             ], [
-                "label" => 'Page Info',
+                'label' => 'Page Info',
                 'belongs_to' => ['cp_pages_subnav'],
                 'sub_nav' => '',
-                "req_perms" => 'websites.pages',
+                'req_perms' => Permission::createCpRoutePerm('websites.pages.edit', 'All Photos'),
                 'order' => 3,
-                "props" => [
-                    "icon" => "user",
-                    "link" => [
-                        'href' => "/edit",
+                'props' => [
+                    'icon' => 'info-circle',
+                    'link' => [
+                        'href' => '/edit',
                     ],
                 ],
             ],
