@@ -2,12 +2,13 @@
 
 namespace P3in\Modules;
 
+use P3in\Models\Permission;
 use P3in\Modules\BaseModule;
 
 Class NavigationModule extends BaseModule
 {
 
-    public $module_name = "navigation";
+    public $module_name = 'navigation';
 
     public function __construct( )
     {
@@ -31,25 +32,25 @@ Class NavigationModule extends BaseModule
 
     public function register()
     {
-        echo "Registering Nav Module";
+        echo 'Registering Nav Module';
     }
 
     /**
      *
      */
-    public function makeLink($overrides = [])
+    public function makeLink()
     {
         return [
             [
-                "label" => 'Navigation',
+                'label' => 'Navigation',
                 'belongs_to' => ['websites'],
                 'sub_nav' => '',
-                "req_perms" => 'websites.navigation',
+                'req_perms' => Permission::createCpRoutePerm('websites.navigation.index', 'All Photos'),
                 'order' => 5,
-                "props" => [
-                    "icon" => "user",
-                    "link" => [
-                        'href' => "/navigation",
+                'props' => [
+                    'icon' => 'bars',
+                    'link' => [
+                        'href' => '/navigation',
                     ],
                 ],
             ]

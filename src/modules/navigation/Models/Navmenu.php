@@ -118,8 +118,9 @@ class Navmenu extends Model
     {
 
         // @TODO quick temp solution, to be refactored using proper nav structure
+        // @TODO root check has to be moved into the ofBefore policy
 
-        $items = \Cache::tags($tag)->get($key);
+        $nav = \Cache::tags($tag)->get($key);
 
         $user_perms = [];
 
@@ -129,23 +130,39 @@ class Navmenu extends Model
 
         }
 
-        foreach($items as $nav => $content) {
+        if (\Auth::check() AND \Auth::user()->isRoot()) {
 
-            foreach($content as $idx => $item) {
+            return $nav;
 
-                if ($item->req_perms) {
+        }
 
-                    if (!in_array($item->req_perms, $user_perms)) {
+        foreach ($nav as $name => $items) {
+            static::filterNav($nav->$name, $user_perms);
+        }
 
-                        unset($items->$nav[$idx]);
+        return $nav;
+    }
+    private static function filterNav(&$nav, $perms)
+    {
+            foreach ($nav as $i => $item) {
+
+                if ($item->req_perms && !in_array($item->req_perms, $perms)) {
+                    unset($nav[$i]);
+                }else{
+
+                    if (!empty($item->children)) {
+
+                        static::filterNav($item->children, $perms);
+
+                        if (empty($item->children)) {
+                            unset($nav[$i]);
+                        }
 
                     }
 
                 }
-            }
-        }
 
-        return $items;
+            }
     }
 
     /**

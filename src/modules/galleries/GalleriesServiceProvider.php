@@ -30,7 +30,7 @@ class GalleriesServiceProvider extends ServiceProvider
      */
     protected $policies = [
 
-        Gallery::class => ControllersPolicy::class,
+        // Gallery::class => ControllersPolicy::class,
         // CpGalleriesController::class => GalleriesPolicy::class
         // "P3in\Models\Gallery" => "P3in\Policies\GalleriesPolicy"
 
@@ -73,10 +73,10 @@ class GalleriesServiceProvider extends ServiceProvider
      * @param  \Illuminate\Contracts\Auth\Access\Gate  $gate
      * @return void
      */
-    public function registerPolicies(Gate $gate)
-    {
-        foreach ($this->policies as $key => $value) {
-            $gate->policy($key, $value);
-        }
-    }
+    // public function registerPolicies(Gate $gate)
+    // {
+    //     foreach ($this->policies as $key => $value) {
+    //         $gate->policy($key, $value);
+    //     }
+    // }
 }

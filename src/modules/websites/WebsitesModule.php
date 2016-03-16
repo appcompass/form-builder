@@ -4,6 +4,7 @@ namespace P3in\Modules;
 
 use Modular;
 use P3in\Models\Navmenu;
+use P3in\Models\Permission;
 use P3in\Models\Website;
 use P3in\Module;
 use P3in\Modules\BaseModule;
@@ -19,7 +20,7 @@ Class WebsitesModule extends BaseModule
     /**
      * Module Name
      */
-    public $module_name = "websites";
+    public $module_name = 'websites';
 
     public function __construct() {}
 
@@ -47,55 +48,51 @@ Class WebsitesModule extends BaseModule
     {
         return [
             [
-                "label" => 'Websites Manager',
+                'label' => 'Websites Manager',
                 'belongs_to' => ['cp_main_nav'],
                 'sub_nav' => '',
-                "req_perms" => 'cp-websites-manager',
+                'req_perms' => Permission::createCpRoutePerm('websites.index', 'Websites Manager'),
                 'order' => 3,
-                "props" => [
-                    'icon' => 'dashboard',
-                    "link" => [
+                'props' => [
+                    'icon' => 'desktop',
+                    'link' => [
                         'href' => '/websites',
-                        // 'data-target' => '#main-content-out'
                     ],
                 ],
             ],[
-                "label" => 'Setup',
+                'label' => 'Setup',
                 'belongs_to' => ['websites'],
                 'sub_nav' => '',
-                "req_perms" => 'cp-websites-manager',
+                'req_perms' => Permission::createCpRoutePerm('websites.edit', 'Website Setup'),
                 'order' => 1,
-                "props" => [
-                    "icon" => "user",
-                    "link" => [
-                        'href' => "/edit",
-                        // "data-target" => "#main-content-out",
+                'props' => [
+                    'icon' => 'gears',
+                    'link' => [
+                        'href' => '/edit',
                     ],
                 ],
             ],[
-                "label" => 'Settings',
+                'label' => 'Settings',
                 'belongs_to' => ['websites'],
                 'sub_nav' => '',
-                "req_perms" => 'cp-websites-settings',
+                'req_perms' => Permission::createCpRoutePerm('websites.settings.index', 'Website Settings'),
                 'order' => 2,
-                "props" => [
-                    "icon" => "user",
-                    "link" => [
-                        'href' => "/settings",
-                        // "data-target" => "#main-content-out",
+                'props' => [
+                    'icon' => 'pencil-square-o',
+                    'link' => [
+                        'href' => '/settings',
                     ],
                 ],
             ],[
-                "label" => 'Manage Redirects',
+                'label' => 'Manage Redirects',
                 'belongs_to' => ['websites'],
                 'sub_nav' => '',
-                "req_perms" => 'cp-websites-settings',
+                'req_perms' => Permission::createCpRoutePerm('websites.redirects.index', 'Website Redirects'),
                 'order' => 3,
-                "props" => [
-                    "icon" => "user",
-                    "link" => [
-                        'href' => "/redirects",
-                        // "data-target" => "#main-content-out",
+                'props' => [
+                    'icon' => 'mail-reply',
+                    'link' => [
+                        'href' => '/redirects',
                     ],
                 ],
             ],

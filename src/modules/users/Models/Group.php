@@ -2,6 +2,7 @@
 
 namespace P3in\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use P3in\Models\Permission;
 use P3in\Models\User;
@@ -18,6 +19,11 @@ class Group extends Model
 	 * @var string
 	 */
 	protected $table = 'groups';
+
+	/**
+	 * Administrators Name
+	 */
+	const ADMINISTRATORS_NAME = 'cp-admin';
 
 	/**
 	 * The attributes that are mass assignable.
@@ -42,13 +48,28 @@ class Group extends Model
 	protected $hidden = ['password', 'remember_token'];
 
 	/**
+	 * Get a group by name
+	 */
+	public function scopeByName(Builder $query, $name)
+	{
+		return $query->where('name', str_replace(' ', '-', strtolower($name)));
+	}
+
+	/**
+	 *
+	 */
+	public function scopeAdministrators(Builder $query)
+	{
+	  	return $query->where('name', Group::ADMINISTRATORS_NAME)->first();
+	}
+
+	/**
 	*	Link groups and users
-	*
 	*
 	*/
 	public function users()
 	{
-		return $this->belongsToMany('P3in\Models\User')->withTimestamps();
+		return $this->belongsToMany(User::class)->withTimestamps();
 	}
 
 	/**
@@ -56,7 +77,14 @@ class Group extends Model
 	  */
 	public function addUser(User $user)
 	{
-	  	return $this->users()->attach($user);
+
+		if (!$this->users->contains($user->id)) {
+
+		  	return $this->users()->attach($user);
+
+		}
+
+		return false;
 	}
 
 	/**
@@ -88,6 +116,7 @@ class Group extends Model
 	  */
 	public function grantPermissions($perm)
 	{
+
 		if (is_null($perm)) {
 
 			return;
@@ -109,6 +138,14 @@ class Group extends Model
 			}
 
 		}
+	}
+
+	/**
+	 *
+	 */
+	public function hasUser(User $user)
+	{
+	  	return $this->users()->has($user->id);
 	}
 
 	/**

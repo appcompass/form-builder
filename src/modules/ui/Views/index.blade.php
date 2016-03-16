@@ -70,6 +70,7 @@
                                             Clone
                                         </a>
                                     @elseif($action == 'delete')
+                                        @can('destroy', $record)
                                         <a
                                             data-action="modal-delete"
                                             href="#modal-edit"
@@ -81,6 +82,7 @@
                                         >
                                             Delete
                                         </a>
+                                        @endcan
                                     @endif
                                 @endforeach
                             </td>

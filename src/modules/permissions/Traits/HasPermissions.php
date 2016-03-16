@@ -9,6 +9,19 @@ use P3in\Models\PermissionsRequired\PermissionItems\Model;
 
 trait HasPermissions
 {
+    //
+    //  @TODO Better naming convention
+    //  SET
+    //      - setCollectionPerms
+    //      - setRecordPerms
+    //
+    //  GET
+    //      - getCollectionPerms
+    //      - getRecordPerms
+    //
+    //  User::setCollectionPerms(Permission::byName('cp-users-manager'), 'index')
+    //  User::find(6)->getRecordRequires('index')
+    //
 
     /**
      * get the required permission

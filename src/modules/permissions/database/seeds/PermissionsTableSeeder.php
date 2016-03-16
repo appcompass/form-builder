@@ -17,22 +17,37 @@ class PermissionsTableSeeder extends Seeder
     {
     	DB::table('permissions')->delete();
 
-        // Permission::create([
-        //     'type' => '',
-        //     'label' => '',
-        //     'description' => ''
-        // ]);
+        // Permission::create(['type' => '', 'label' => '', 'description' => '']);
 
+        // USER
         Permission::create([
-            'type' => 'cp-login',
-            'label' => 'Basic Admin',
-            'description' => 'Grants basic Control Panel access'
+            'type' => 'logged-user',
+            'label' => 'User',
+            'description' => 'The user can log into the application frontend (websites)',
+            'locked' => true,
         ]);
+        Permission::create([
+            'type' => 'guest',
+            'label' => 'Guest',
+            'description' => 'Guest Permission',
+            'locked' => true,
+        ]);
+        // And we also have the null permissions
 
-    	Permission::create([
-    		'type' => 'create-galleries',
-    		'label' => 'Create Galleries',
-    		'description' => 'User is able to create galleries'
-    	]);
+        // // CP
+        // Permission::create(['type' => 'cp-user', 'label' => 'Basic Admin', 'description' => 'Grants basic Control Panel access']);
+        // Permission::create(['type' => 'cp-websites-manager', 'label' => 'Manage Websites', 'description' => 'Can manage existing websites']);
+        // Permission::create(['type' => 'cp-users-manager', 'label' => 'Manage Users', 'description' => 'Ability to manage App Users']);
+        // Permission::create(['type' => 'cp-galleries-manager', 'label' => 'Galleries Manager', 'description' => 'User is allowed to manage Unit Galleries']);
+
+        // // FIELD UPLOAD
+        // Permission::create(['type' => 'unit-field-upload-galleries', 'label' => 'Create Own Galleries', 'description' => 'Allow to create/edit only owned galleries']);
+
+        // // UNITS/RESMET
+        // Permission::create(['type' => 'cp-resmet-manager', 'label' => 'Browse Units', 'description' => 'Resmet Manager can browse and delete/sort photos']);
+        // Permission::create(['type' => 'resmet-manager', 'label' => 'Browse Units', 'description' => 'Resmet Manager can browse and delete/sort photos']);
+        // Permission::create(['type' => 'units', 'label' => 'Can Browse Units from CP', 'description' => 'Can browse Units']);
+        // Permission::create(['type' => 'units_photos', 'label' => 'Can see unit photos', 'description' => 'Allowed to see Unit Photos']);
+
     }
 }

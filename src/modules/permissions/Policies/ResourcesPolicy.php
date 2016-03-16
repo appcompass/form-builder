@@ -39,11 +39,27 @@ class ResourcesPolicy
     }
 
     /**
+     *  Check for root
+     */
+    public function before($user, $perm) {
+
+        if ($user->isRoot()) {
+
+            return true;
+
+        }
+
+    }
+
+    /**
      *  @param method
      *  @param mixed arguments [ User, $model [string|object] ]
      */
     public function __call($method, $arguments)
     {
+
+        $this->action = '@' . $method;
+
         $this->parseArgs($arguments);
 
         return $this->evaluate($this->user, PermissionsRequired::retrieve($this->permission_item));
@@ -76,8 +92,6 @@ class ResourcesPolicy
 
         } else if (get_class($perm) === Permission::class) {
 
-            \Log::info($perm->type);
-
             return $user->hasPermission($perm->type);
 
         }
@@ -86,70 +100,5 @@ class ResourcesPolicy
 
 
     }
-
-    /**
-     *  Applies to index method
-     */
-    // public function index(User $user, $model)
-    // {
-
-    //     if (is_object($model)) {
-
-    //         $name = get_class($model) . '@'. $this->action;
-
-    //     } else {
-
-    //         $name = (string) $model;
-
-    //     }
-
-    //     $permission_item = new Model(get_class($model). '@' . $this->action);
-
-    //     return $this->evaluate($user, PermissionsRequired::retrieve($permission_item));
-
-    // }
-
-    // /**
-    //  *  Applies to the store
-    //  */
-    // public function store(User $user, $model)
-    // {
-    //     // \Log::info($model);
-
-    //     return $this->evaluate($user, PermissionsRequired::retrieve(new Model(get_class($model)) . $this->action));
-
-    // }
-
-    // /**
-    //  *
-    //  */
-    // public function edit(User $user, $model)
-    // {
-
-    //     if (is_object($model)) {
-
-    //         $name = get_class($model) . '@'. $this->action;
-
-    //     } else {
-
-    //         $name = (string) $model;
-
-    //     }
-
-    //     $m = new Model($name);
-
-    //     return $this->evaluate($user, PermissionsRequired::retrieve(new Model($name)));
-
-    // }
-
-    // /**
-    //  *
-    //  */
-    // public function update(User $user, $model)
-    // {
-
-    //     return $this->evaluate($user, PermissionsRequired::retrieve(new Model(get_class($model)) . $this->action));
-
-    // }
 
 }

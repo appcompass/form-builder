@@ -18,7 +18,6 @@ class PermissionsModuleDatabaseSeeder extends Seeder
         Model::unguard();
 
         $this->call('P3in\Seeders\PermissionsTableSeeder');
-        $this->call('P3in\Seeders\CpPermissionsNavSeeder');
 
         Model::reguard();
     }

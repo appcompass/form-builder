@@ -11,6 +11,9 @@ use P3in\Interfaces\PermissionRequiredItemInterface as PermissionItemContract;
 class PermissionsRequired extends Model
 {
 
+    /**
+     * Table
+     */
     protected $table = 'permissions_required';
 
     protected $fillable = ['pointer', 'permission_id'];
