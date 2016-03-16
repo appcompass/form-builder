@@ -96,6 +96,7 @@ class CpGalleryPhotosController extends UiBaseController
 
         return view('photos::galleries.index', compact('photos', 'options'))
             ->with('gallery', $galleries)
+            ->with('alternative_actions', isset($this->alternative_actions) ? $this->alternative_actions : null)
             ->with('meta', $this->meta)
             ->with('options', Option::byLabel(Photo::TYPE_ATTRIBUTE_NAME)->content);
     }

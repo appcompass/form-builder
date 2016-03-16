@@ -7,9 +7,13 @@
         data-path="{{ $photo->path }}"
     >
         {{-- <a href="#photoModal" data-toggle="modal" data-click="/photos/{{ $photo->id }}" data-target="#photoModalContent"> --}}
+        @if(!$alternative_actions)
         <a href="#photoModal" data-click="/photos/{{ $photo->id }}" data-target="#photoModal" data-toggle="modal" class="item-image no-link">
+        @endif
             <img src="{{ $photo->path }}" alt="">
+        @if(!$alternative_actions)
         </a>
+        @endif
         <ul class="item-meta nav nav-pills nav-stacked">
             <li><strong>Status:</strong> <span class="pull-right">{{ $photo->status or 'N/A' }}</span></li>
             <li><strong>Photo Type:</strong> <span class="pull-right">{{ $photo->type or 'N/A' }}</span></li>
@@ -33,20 +37,22 @@
                 Edit
             </a>
             --}}
-            @can('destroy', $photo)
-            <a
-                data-action="modal-delete"
-                href="#modal-edit"
-                data-toggle="modal"
-                data-delete="/photos/{{ $photo->id }}"
-                data-click="/delete-modal"
-                data-inject-area="#modal-body"
-                class="btn btn-danger"
-            >
-                <i class="fa fa-times"></i>
-                Delete
-            </a>
-            @endcan
+            @if(!$alternative_actions)
+                @can('destroy', $photo)
+                <a
+                    data-action="modal-delete"
+                    href="#modal-edit"
+                    data-toggle="modal"
+                    data-delete="/photos/{{ $photo->id }}"
+                    data-click="/delete-modal"
+                    data-inject-area="#modal-body"
+                    class="btn btn-danger"
+                >
+                    <i class="fa fa-times"></i>
+                    Delete
+                </a>
+                @endcan
+            @endif
         </div>
         @endif
     </div>
