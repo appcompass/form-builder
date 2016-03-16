@@ -97,7 +97,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
         // @TODO  add getCacheKey or something, the id is overly non-specific. should return class_name . id . updated_at_timestamp
 
-        return Cache::remember($this->id, 1, function() {
+        return Cache::tags('user_permissions')->remember('user_'.$this->id.'_'.$this->updated_at, 1, function() {
 
             // $this->load(['groups.permissions' => function($query) { $query->where('active', true); }])
             $this->load('groups.permissions')
@@ -163,8 +163,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     public function hasPermissions($permissions)
     {
-
-        $permissions = explode(",", $permissions);
+        if (is_string($permissions)) {
+            $permissions = explode(",", $permissions);
+        }
 
         if (count($permissions) == 0) {
             return true;

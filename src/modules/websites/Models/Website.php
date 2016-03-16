@@ -176,6 +176,11 @@ class Website extends Model
         return $query->where('site_name', '!=', env('ADMIN_WEBSITE_NAME', 'CMS Admin CP'));
     }
 
+    public static function isManaged()
+    {
+        return Website::current()->id !== Website::admin()->id;
+    }
+
     /**
       *
       *

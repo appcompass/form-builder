@@ -7,9 +7,17 @@ use P3in\Models\User;
 class UnitsPolicy
 {
 
+    private $base_perms = [
+        'unit-field-upload-galleries.index',
+        'units.index',
+    ];
+
+    private $manager_perms = [
+        'units.edit',
+    ];
+
     public function before(User $user, $ability)
     {
-
         if ($user->isRoot()) {
 
             return true;
@@ -19,37 +27,32 @@ class UnitsPolicy
 
     public function show(User $user, $ability)
     {
-        foreach(\Request::route()->parameters('unit_field_upload_galleries') as $val) {
+        $model = \Request::route()->parameter('unit_field_upload_galleries');
 
-            return $val->user_id == $user->id;
-
-        }
+        return $user->id == $model->user_id;
     }
 
     public function index(User $user, $ability)
     {
-        return true;
-    }
-
-    public function destroy(User $user, $ability)
-    {
-
-        return $user->isRoot();
-
+            return $user->hasPermissions($this->base_perms);
     }
 
     public function edit(User $user, $ability)
     {
-
         if (is_object($ability)) {
 
             return $user->id == $ability->user_id;
 
         } else {
 
-            return true;
+            return $user->hasPermissions(array_merge($this->base_perms, $this->manager_perms));
 
         }
+    }
+
+    public function destroy(User $user, $ability)
+    {
+        return $this->edit($user, $ability);
 
     }
 
