@@ -40,7 +40,7 @@ class VideosModule extends BaseModule
                 'label' => 'All Videos',
                 'belongs_to' => ['cp_main_nav_media'],
                 'sub_nav' => '',
-                'req_perms' => Permission::createCpRoutePerm('videos.index', 'All Videos'),
+                'req_perms' => Permission::createCpRoutePerm('videos.index'),
                 'order' => 2,
                 'props' => [
                     'icon' => 'film',
@@ -52,7 +52,7 @@ class VideosModule extends BaseModule
                 'label' => 'Videos',
                 'belongs_to' => ['galleries'],
                 'sub_nav' => '',
-                'req_perms' => Permission::createCpRoutePerm('galleries.videos.index', 'Gallery Videos'),
+                'req_perms' => Permission::createCpRoutePerm('galleries.videos.index'),
                 'order' => 3,
                 'props' => [
                     'icon' => 'film',

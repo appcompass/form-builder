@@ -50,7 +50,7 @@ Class UsersModule extends BaseModule
                 'label' => 'All Users',
                 'belongs_to' => ['cp_main_nav_users'],
                 'sub_nav' => '',
-                'req_perms' => Permission::createCpRoutePerm('user.index', 'All Users'),
+                'req_perms' => Permission::createCpRoutePerm('user.index'),
                 'order' => 1,
                 'props' => [
                     'icon' => 'user',
@@ -62,7 +62,7 @@ Class UsersModule extends BaseModule
                 'label' => 'Groups Manager',
                 'belongs_to' => ['cp_main_nav_users'],
                 'sub_nav' => '',
-                'req_perms' => Permission::createCpRoutePerm('groups.index', 'Groups Manager'),
+                'req_perms' => Permission::createCpRoutePerm('groups.index'),
                 'order' => 2,
                 'props' => [
                     'icon' => 'group',
@@ -74,7 +74,7 @@ Class UsersModule extends BaseModule
                 'label' => 'Permissions Manager',
                 'belongs_to' => ['cp_main_nav_users'],
                 'sub_nav' => '',
-                'req_perms' => Permission::createCpRoutePerm('permissions.index', 'Permissions Manager'),
+                'req_perms' => Permission::createCpRoutePerm('permissions.index'),
                 'order' => 3,
                 'props' => [
                     'icon' => 'key',
@@ -86,7 +86,7 @@ Class UsersModule extends BaseModule
                 'label' => 'Group Details',
                 'belongs_to' => ['cp_groups_subnav'],
                 'sub_nav' => '',
-                'req_perms' => Permission::createCpRoutePerm('groups.edit', 'Group Details'),
+                'req_perms' => Permission::createCpRoutePerm('groups.edit'),
                 'order' => 1,
                 'props' => [
                     'icon' => 'info-circle',
@@ -98,7 +98,7 @@ Class UsersModule extends BaseModule
                 'label' => 'Group Permissions',
                 'belongs_to' => ['cp_groups_subnav'],
                 'sub_nav' => '',
-                'req_perms' => Permission::createCpRoutePerm('groups.permissions.index', 'Group Permissions'),
+                'req_perms' => Permission::createCpRoutePerm('groups.permissions.index'),
                 'order' => 2,
                 'props' => [
                     'icon' => 'key',
@@ -110,7 +110,7 @@ Class UsersModule extends BaseModule
                 'label' => 'User Permissions',
                 'belongs_to' => ['cp_users_subnav'],
                 'sub_nav' => '',
-                'req_perms' => Permission::createCpRoutePerm('users.permissions.index', 'User Permissions'),
+                'req_perms' => Permission::createCpRoutePerm('users.permissions.index'),
                 'order' => 2,
                 'props' => [
                     'icon' => 'key',
@@ -122,7 +122,7 @@ Class UsersModule extends BaseModule
                 'label' => 'User Groups',
                 'belongs_to' => ['cp_users_subnav'],
                 'sub_nav' => '',
-                'req_perms' => Permission::createCpRoutePerm('users.groups.index', 'User Groups'),
+                'req_perms' => Permission::createCpRoutePerm('users.groups.index'),
                 'order' => 3,
                 'props' => [
                     'icon' => 'group',

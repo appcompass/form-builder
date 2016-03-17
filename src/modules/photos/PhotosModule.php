@@ -40,7 +40,7 @@ class PhotosModule extends BaseModule
                 'label' => 'All Photos',
                 'belongs_to' => ['cp_main_nav_media'],
                 'sub_nav' => '',
-                'req_perms' => Permission::createCpRoutePerm('photos.index', 'All Photos'),
+                'req_perms' => Permission::createCpRoutePerm('photos.index'),
                 'order' => 1,
                 'props' => [
                     'icon' => 'picture-o',
@@ -52,7 +52,7 @@ class PhotosModule extends BaseModule
                 'label' => 'Photos',
                 'belongs_to' => ['galleries'],
                 'sub_nav' => '',
-                'req_perms' => Permission::createCpRoutePerm('galleries.photos.index', 'Gallery Photos'),
+                'req_perms' => Permission::createCpRoutePerm('galleries.photos.index'),
                 'order' => 2,
                 'props' => [
                     'icon' => 'picture-o',
