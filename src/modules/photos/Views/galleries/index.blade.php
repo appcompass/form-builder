@@ -1,6 +1,4 @@
 <div class="modal fade in" id="photoModal"></div>
-
-@if(!$alternative_actions)
 <section class="panel">
     <header class="panel-heading">
         <span class="tools pull-right">
@@ -27,7 +25,6 @@
         </div>
     </div>
 </section>
-@endif
 
 @if(!empty($photos->count()))
     <section class="panel">
@@ -36,47 +33,39 @@
         </header>
 
         <div class="panel-body">
-            @if(!$alternative_actions)
-                <div class="row">
-                    <div class="col-sm-6">
-                        <h4>Bulk Actions:</h4>
-                        <select name="attributes[options][photo_of]" class="form-control bulk_update">
-                            <option value="">Change Type</option>
-                            @foreach ($options as $option)
-                                <option value="{{ $option->_id }}">{{ $option->label }}</option>
-                            @endforeach
-                        </select>
-                        <select name="attributes[status]" class="form-control bulk_update">
-                            <option value="">Change Status</option>
-                            <option value="pending">Pending</option>
-                            <option value="active">Active</option>
-                        </select>
-                        <a class="btn btn-primary no-link" href="javascript:;" data-bulk-update="{{$meta->base_url}}" data-action="update" data-with=".bulk_update" data-target="#gallery_{{ $gallery->id }}"><i class="fa fa-save"></i> Update Selected</a>
-                        <a class="btn btn-danger no-link" href="javascript:;" data-bulk-update="{{$meta->base_url}}" data-action="delete" data-target="#gallery_{{ $gallery->id }}"><i class="fa fa-times"></i> Delete Selected</a>
-                    </div>
-                    <div class="col-sm-6">
-                        <h4>Filter By Type:</h4>
-                        <span class="filters">
-                            <a class="btn btn-info btn-xs" href="javascript:;" data-filter="*">All</a>
-                            <a class="btn btn-info btn-xs" href="javascript:;" data-filter=".active">Active</a>
-                            <a class="btn btn-info btn-xs" href="javascript:;" data-filter=".pending">Pending</a>
-                            @foreach($options as $option)
-                                <a class="btn btn-info btn-xs" href="javascript:;" data-filter=".{{ str_slug($option->label, '_') }}">{{ str_plural($option->label) }}</a>
-                            @endforeach
-                        </span>
-                    </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <h4>Bulk Actions:</h4>
+                    <select name="attributes[options][photo_of]" class="form-control bulk_update">
+                        <option value="">Change Type</option>
+                        @foreach ($options as $option)
+                            <option value="{{ $option->_id }}">{{ $option->label }}</option>
+                        @endforeach
+                    </select>
+                    <select name="attributes[status]" class="form-control bulk_update">
+                        <option value="">Change Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="active">Active</option>
+                    </select>
+                    <a class="btn btn-primary no-link" href="javascript:;" data-bulk-update="{{$meta->base_url}}" data-action="update" data-with=".bulk_update" data-target="#gallery_{{ $gallery->id }}"><i class="fa fa-save"></i> Update Selected</a>
+                    <a class="btn btn-danger no-link" href="javascript:;" data-bulk-update="{{$meta->base_url}}" data-action="delete" data-target="#gallery_{{ $gallery->id }}"><i class="fa fa-times"></i> Delete Selected</a>
                 </div>
-            <hr>
-            @endif
-            <div id="gallery_{{ $gallery->id }}" class="media-gal isotope sortable">
-                @include('photos::photo-grid', ['photos' => $photos, 'is_modal' => false, 'alternative_actions' => $alternative_actions])
+                <div class="col-sm-6">
+                    <h4>Filter By Type:</h4>
+                    <span class="filters">
+                        <a class="btn btn-info btn-xs" href="javascript:;" data-filter="*">All</a>
+                        <a class="btn btn-info btn-xs" href="javascript:;" data-filter=".active">Active</a>
+                        <a class="btn btn-info btn-xs" href="javascript:;" data-filter=".pending">Pending</a>
+                        @foreach($options as $option)
+                            <a class="btn btn-info btn-xs" href="javascript:;" data-filter=".{{ str_slug($option->label, '_') }}">{{ str_plural($option->label) }}</a>
+                        @endforeach
+                    </span>
+                </div>
             </div>
-            @if($alternative_actions)
-                <div class="row">
-                    <hr>
-                    @include($alternative_actions['view'], ['data' => $alternative_actions['data']])
-                </div>
-            @endif
+            <hr>
+            <div id="gallery_{{ $gallery->id }}" class="media-gal isotope sortable">
+                @include('photos::photo-grid', ['photos' => $photos, 'is_modal' => false])
+            </div>
         </div>
     </section>
 @endif
@@ -122,12 +111,10 @@
         width: 100%;
     }
 
-    @if(!$alternative_actions)
     .media-gal .item:hover {
         background-color: #f8f8f8;
         cursor: move;
     }
-    @endif
 
     .media-gal .item-image {
         display: block;
@@ -188,113 +175,110 @@
 </style>
 <script type="text/javascript">
     $(function() {
-        @if($alternative_actions)
-        @else
-            var $container = $('#gallery_{{ $gallery->id }}');
+        var $container = $('#gallery_{{ $gallery->id }}');
 
-            $container.isotope({
-                transformsEnabled: false,
-                itemSelector: '.isotope-item',
-                onLayout: function(){
-                    $container.css('overflow', 'visible');
-                },
-                animationOptions: {
-                    duration: 750,
-                    easing: 'linear',
-                    queue: false
-                }
-            });
-
-            // filter items when filter link is clicked
-            $('.filters a').click(function() {
-                var selector = $(this).attr('data-filter');
-                $container.isotope({filter: selector});
-                return false;
-            });
-
-            $container.sortable({
-                items: ".item",
-                opacity: 0.8,
-                coneHelperSize: true,
-                forcePlaceholderSize: true,
-                cursor: 'move',
-                tolerance: "pointer", //intersection
-                start: function(event, ui) {
-                    ui.item.addClass('grabbing moving').removeClass('isotope-item');
-                    ui.placeholder.addClass('starting')
-                        .removeClass('moving')
-                        .css({
-                            top: ui.originalPosition.top,
-                            left: ui.originalPosition.left
-                        })
-
-                    $container.isotope('reloadItems');
-                },
-                change: function(event, ui) {
-                    ui.placeholder.removeClass('starting');
-                    $container.isotope('reloadItems')
-                        .isotope({ sortBy: 'original-order'});
-                },
-                beforeStop: function(event, ui) {
-                    ui.placeholder.after(ui.item);
-                },
-                stop: function(event, ui) {
-                    ui.item.removeClass('grabbing').addClass('isotope-item');
-                    $container.isotope('reloadItems')
-                        .isotope({ sortBy: 'original-order' }, function(){
-                            if (!ui.item.is('.grabbing')) {
-                                ui.item.removeClass('moving');
-                            }
-                        });
-                },
-                update: function(event, ui) {
-                    var sortData = $container.sortable('serialize');
-                    $.ajax({
-                        url: '{{$meta->base_url}}',
-                        data: sortData,
-                        type: 'POST',
-                        error: function(err){
-                            console.log(err);
-                        },
-                        success: function(data){
-                            // console.log(data);
-                        },
-                        complete: function(xhr, status){
-                            if (status =='success') {
-                                console.log('sort success!');
-                            }else{
-                                console.log(status);
-                            }
-                        }
-                    });
-
-                }
-            });
-
-            $container.disableSelection();
-
-            // $('.item-actions input[type=checkbox]').iCheck({
-            //     checkboxClass: 'icheckbox_square',
-            //     radioClass: 'iradio_square',
-            //     // increaseArea: '20%' // optional
-            // });
-
-
-            $(window).on('resize', function() {
-                $container.isotope('reLayout');
-            })
+        $container.isotope({
+            transformsEnabled: false,
+            itemSelector: '.isotope-item',
+            onLayout: function(){
+                $container.css('overflow', 'visible');
+            },
+            animationOptions: {
+                duration: 750,
+                easing: 'linear',
+                queue: false
+            }
         });
 
-        Dropzone.autoDiscover = false;
+        // filter items when filter link is clicked
+        $('.filters a').click(function() {
+            var selector = $(this).attr('data-filter');
+            $container.isotope({filter: selector});
+            return false;
+        });
 
-        $(function() {
-            var dz = new Dropzone('#dropzone_{{ $gallery->id }}', {
-                dictDefaultMessage: 'Drop files here or click to upload.'
-            });
+        $container.sortable({
+            items: ".item",
+            opacity: 0.8,
+            coneHelperSize: true,
+            forcePlaceholderSize: true,
+            cursor: 'move',
+            tolerance: "pointer", //intersection
+            start: function(event, ui) {
+                ui.item.addClass('grabbing moving').removeClass('isotope-item');
+                ui.placeholder.addClass('starting')
+                    .removeClass('moving')
+                    .css({
+                        top: ui.originalPosition.top,
+                        left: ui.originalPosition.left
+                    })
 
-            dz.on('queuecomplete', function(file) {
-                // window.location.reload();
-            });
-        @endif
+                $container.isotope('reloadItems');
+            },
+            change: function(event, ui) {
+                ui.placeholder.removeClass('starting');
+                $container.isotope('reloadItems')
+                    .isotope({ sortBy: 'original-order'});
+            },
+            beforeStop: function(event, ui) {
+                ui.placeholder.after(ui.item);
+            },
+            stop: function(event, ui) {
+                ui.item.removeClass('grabbing').addClass('isotope-item');
+                $container.isotope('reloadItems')
+                    .isotope({ sortBy: 'original-order' }, function(){
+                        if (!ui.item.is('.grabbing')) {
+                            ui.item.removeClass('moving');
+                        }
+                    });
+            },
+            update: function(event, ui) {
+                var sortData = $container.sortable('serialize');
+                $.ajax({
+                    url: '{{$meta->base_url}}',
+                    data: sortData,
+                    type: 'POST',
+                    error: function(err){
+                        console.log(err);
+                    },
+                    success: function(data){
+                        // console.log(data);
+                    },
+                    complete: function(xhr, status){
+                        if (status =='success') {
+                            console.log('sort success!');
+                        }else{
+                            console.log(status);
+                        }
+                    }
+                });
+
+            }
+        });
+
+        $container.disableSelection();
+
+        // $('.item-actions input[type=checkbox]').iCheck({
+        //     checkboxClass: 'icheckbox_square',
+        //     radioClass: 'iradio_square',
+        //     // increaseArea: '20%' // optional
+        // });
+
+
+        $(window).on('resize', function() {
+            $container.isotope('reLayout');
+        })
+    });
+
+    Dropzone.autoDiscover = false;
+
+    $(function() {
+        var dz = new Dropzone('#dropzone_{{ $gallery->id }}', {
+            dictDefaultMessage: 'Drop files here or click to upload.'
+        });
+
+        dz.on('queuecomplete', function(file) {
+            // window.location.reload();
+        });
     });
 </script>

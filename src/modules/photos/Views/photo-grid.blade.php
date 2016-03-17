@@ -7,13 +7,9 @@
         data-path="{{ $photo->path }}"
     >
         {{-- <a href="#photoModal" data-toggle="modal" data-click="/photos/{{ $photo->id }}" data-target="#photoModalContent"> --}}
-        @if(!$alternative_actions)
         <a href="#photoModal" data-click="/photos/{{ $photo->id }}" data-target="#photoModal" data-toggle="modal" class="item-image no-link">
-        @endif
             <img src="{{ $photo->path }}" alt="">
-        @if(!$alternative_actions)
         </a>
-        @endif
         <ul class="item-meta nav nav-pills nav-stacked">
             <li><strong>Status:</strong> <span class="pull-right">{{ $photo->status or 'N/A' }}</span></li>
             <li><strong>Photo Type:</strong> <span class="pull-right">{{ $photo->type or 'N/A' }}</span></li>
@@ -23,21 +19,23 @@
         @if (!isset($is_modal) OR !$is_modal)
         <div class="item-actions text-right">
             <input type="checkbox" name="bulk_edit" value="{{ $photo->id }}">
-            {{--
-            <a
-                href="#modal-edit"
-                class="btn btn-info  btn-sm"
-                title="Add subnav"
-                data-action="modal-edit"
-                data-toggle="modal"
-                data-inject-area="#modal-body"
-                data-click="/photos/{{ $photo->id }}"
-            >
-                <i class="fa fa-pencil"></i>
-                Edit
-            </a>
-            --}}
-            @if(!$alternative_actions)
+            @if(empty($no_actions))
+                {{--
+                @can('edit', $photo)
+                    <a
+                        href="#modal-edit"
+                        class="btn btn-info  btn-sm"
+                        title="Add subnav"
+                        data-action="modal-edit"
+                        data-toggle="modal"
+                        data-inject-area="#modal-body"
+                        data-click="/photos/{{ $photo->id }}"
+                    >
+                        <i class="fa fa-pencil"></i>
+                        Edit
+                    </a>
+                @endcan
+                --}}
                 @can('destroy', $photo)
                 <a
                     data-action="modal-delete"
