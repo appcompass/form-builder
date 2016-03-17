@@ -5,11 +5,16 @@
         class="item isotope-item {{ str_slug($photo->type, '_') }} {{ $photo->status }}"
         data-id="{{ $photo->id }}"
         data-path="{{ $photo->path }}"
+         v-bind:class="{selected: isselected('photos', {{ $photo->id }})}"
     >
         {{-- <a href="#photoModal" data-toggle="modal" data-click="/photos/{{ $photo->id }}" data-target="#photoModalContent"> --}}
+        @if(empty($no_actions))
         <a href="#photoModal" data-click="/photos/{{ $photo->id }}" data-target="#photoModal" data-toggle="modal" class="item-image no-link">
-            <img src="{{ $photo->path }}" alt="">
+        @endif
+            <img src="{{ $photo->path }}" alt="" id="{{ $photo->id }}" v-on:click="toggle('photos', {{ $photo->id }})">
+        @if(empty($no_actions))
         </a>
+        @endif
         <ul class="item-meta nav nav-pills nav-stacked">
             <li><strong>Status:</strong> <span class="pull-right">{{ $photo->status or 'N/A' }}</span></li>
             <li><strong>Photo Type:</strong> <span class="pull-right">{{ $photo->type or 'N/A' }}</span></li>
@@ -18,8 +23,8 @@
         </ul>
         @if (!isset($is_modal) OR !$is_modal)
         <div class="item-actions text-right">
-            <input type="checkbox" name="bulk_edit" value="{{ $photo->id }}">
             @if(empty($no_actions))
+            <input type="checkbox" name="bulk_edit" value="{{ $photo->id }}">
                 {{--
                 @can('edit', $photo)
                     <a
@@ -61,5 +66,5 @@
             checkboxClass: 'icheckbox_square',
             radioClass: 'iradio_square',
             // increaseArea: '20%' // optional
-        });
+        }).on;
 </script>
