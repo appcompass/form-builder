@@ -1,35 +1,55 @@
-<!-- sidebar menu start-->
 <div class="leftside-navigation">
     <ul class="sidebar-menu" id="nav-accordion">
-        @foreach($nav as $item)
-            <li class="collapsable" @if(!empty($item->children)) sub-menu @endif">
-                <a {!! inlineAttrs($item->props, 'link') !!} >
-                    <i class="fa fa-{{ $item->props->icon or 'list' }}"></i> {{ $item->label }}
-                </a>
-                @if(!empty($item->children))
-                    <ul class="sub" v-bind:class="{'toggled': isHidden}">
+        <li
+            v-for="item in nav"
+            v-bind:class="{'sub-menu': item.children}"
+        >
+            <a v-bind:href="item.props.link.href" v-on:click="toggle($index)">
+                <i class="fa fa-@{{ item.props.icon }}"> </i> @{{ item.label }}
+            </a>
 
-                        @foreach($item->children as $sub_item)
-                            <li>
-                                <a {!! inlineAttrs($sub_item->props, 'link') !!}>
-                                    <i class="fa fa-{{ $sub_item->props->icon or "list" }}"> </i>
-                                    {{ $sub_item->label }}
-                                </a>
-                            </li>
-                        @endforeach
-
-                    </ul>
-                @endif
-            </li>
-        @endforeach
-
+            <ul class="sub" v-bind:class="{ 'collapsed': visible($index) }" v-if="item.children">
+                <li v-for="sub_item in item.children">
+                    <a v-bind:href="sub_item.props.link.href"> <i class="fa fa-@{{ sub_item.props.icon }}"> </i> @{{ sub_item.label }} </a>
+                </li>
+            </ul>
+        </li>
     </ul>
+
 </div>
 
 <script>
-    (function() {
-        $('.collapsable').on('click', function() {
-            $(this).find('ul').first().toggleClass('hidden')
+
+    (function(Vue) {
+
+        var data = {
+            nav: {!! json_encode($nav) !!}
+        }
+
+        new Vue({
+            el: '#nav-accordion',
+            data: {
+                nav: data.nav,
+                sections: []
+            },
+            methods: {
+                toggle: function(index) {
+                    if (this.sections.indexOf(index) === -1) {
+                        this.sections.push(index);
+                    } else {
+                        this.sections.$remove(index);
+                    }
+                },
+                visible: function(index) {
+                    return this.sections.indexOf(index) > -1;
+                }
+            },
+
         })
-    })()
+    })(Vue)
+
 </script>
+
+<style>
+    .collapsed {display: none; }
+</style>
