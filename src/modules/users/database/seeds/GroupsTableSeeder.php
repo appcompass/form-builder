@@ -20,7 +20,7 @@ class GroupsTableSeeder extends Seeder
         //
         //  CP ADMINISTRATOR
         //
-        $cp_manager = Group::create([
+        $cp_manager = Group::firstOrCreate([
             'name' => 'cp-admin',
             'label' => 'Control Panel Administrator',
             'description' => "User is allowed to do everything (super-user)",
@@ -32,7 +32,7 @@ class GroupsTableSeeder extends Seeder
         //
         //  USER
         //
-        $group = Group::create([
+        $group = Group::firstOrCreate([
             'name' => 'users',
             'label' => 'Users',
             'description' => 'Generic user group',
