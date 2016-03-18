@@ -52,4 +52,7 @@
 
 <style>
     .collapsed {display: none; }
+    ul.sidebar-menu a {
+        cursor: pointer;
+    }
 </style>
