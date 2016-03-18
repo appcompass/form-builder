@@ -5,7 +5,7 @@ namespace P3in\Traits;
 use P3in\Models\User;
 use P3in\Profiles\BaseProfile;
 
-trait hasProfileTrait
+trait HasProfileTrait
 {
 
     public function user()
@@ -16,6 +16,11 @@ trait hasProfileTrait
     public function profile()
     {
         return $this->morphOne(BaseProfile::class, 'profileable');
+    }
+
+    public function scopeIncludeUsers($query)
+    {
+        return $query->leftJoin('users', 'users.id', '=', $this->table.'.user_id');
     }
 
 }
