@@ -87,6 +87,8 @@ abstract class UiBaseResourceController extends Controller
 
         $this->model = $model->fromRoute($route->params);
 
+        // put in to allow controllers to inject/overide metas.
+        $this->meta = new \stdClass();
 
         if ($route->name) {
             // Check permissions
@@ -137,6 +139,13 @@ abstract class UiBaseResourceController extends Controller
         if ($data['meta']) {
             $data['meta']->classname = get_class($this->model);
             $data['meta']->base_url = '/'.$request->path();
+        }
+
+        // we do this to allow injection/overide on a per controller basis.
+        if (!empty($this->meta)) {
+            foreach ($this->meta as $key => $val) {
+                $data['meta']->$key = $val;
+            }
         }
 
         if ($request->wantsJson()) {
