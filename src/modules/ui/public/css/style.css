@@ -214,6 +214,12 @@ ul.sidebar-menu {
     padding-top:80px;
 
 }
+.collapsed {
+    display: none;
+}
+ul.sidebar-menu a {
+    cursor: pointer;
+}
 #sidebar>ul>li>ul.sub {
     display:none;
 }
@@ -346,7 +352,7 @@ a.logo {
     font-size:21px;
     color:#2e2e2e;
     float:left;
-    margin:20px 0 0 25px;
+    margin:10px 0 0 25px;
     text-transform:uppercase;
 }
 a.logo:hover,a.logo:focus {

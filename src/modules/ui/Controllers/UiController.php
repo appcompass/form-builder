@@ -49,8 +49,7 @@ class UiController extends UiBaseController {
 
         $nav = isset($allNavs->cp_main_nav) ? $allNavs->cp_main_nav : [];
 
-        return view('ui::sections.left-nav')
-            ->with('nav', $nav);
+        return response()->json($nav);
     }
 
     public function getLeftAlerts()

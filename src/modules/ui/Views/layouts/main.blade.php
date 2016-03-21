@@ -7,7 +7,7 @@
             <div class="brand">
 
                 <a href="index.html" class="logo">
-                    <img alt="{{env('ADMIN_WEBSITE_NAME', 'Plus 3 CMS')}}">
+                    <img height="60px" alt="{{env('ADMIN_WEBSITE_NAME', 'Plus 3 CMS')}}" src="{{env('ADMIN_WEBSITE_LOGO', '/assets/ui/images/logo.svg')}}">
                 </a>
                 <div class="sidebar-toggle-box">
                     <div class="fa fa-bars"></div>
@@ -45,7 +45,10 @@
         </header>
         <!--header end-->
         <aside>
-            <div id="sidebar" class="nav-collapse" data-load="/left-nav">
+            <div id="sidebar" class="nav-collapse">
+                <div class="leftside-navigation">
+                    <leftnav :items="nav"></leftnav>
+                </div>
             </div>
         </aside>
         <!--sidebar end-->
@@ -89,12 +92,85 @@
         </div>
     </div>
 
-  {{-- Generic modal injection point --}}
-  <div class="modal fade" id="modal-edit" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content" id="modal-body">
-      </div>
+    {{-- Generic modal injection point --}}
+    <div class="modal fade" id="modal-edit" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="modal-body">
+            </div>
+        </div>
     </div>
-  </div>
 
+
+    {{-- Vue Templates --}}
+    <template id="leftnav-template">
+        <ul class="sidebar-menu" id="nav-accordion">
+            <li
+                v-for="item in items"
+                v-bind:class="{'sub-menu': item.children}"
+            >
+                <a v-bind:href="buildLink(item.props)" v-on:click="toggle($index)">
+                    <i class="fa fa-@{{ item.props.icon }}"> </i> @{{ item.label }}
+                </a>
+
+                <ul class="sub" v-bind:class="{ 'collapsed': visible($index) }" v-if="item.children">
+                    <li v-for="sub_item in item.children">
+                        <a v-bind:href="buildLink(sub_item.props)"> <i class="fa fa-@{{ sub_item.props.icon }}"> </i> @{{ sub_item.label }} </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </template>
+
+    @section('scripts.footer')
+    <script>
+        (function(Vue) {
+            Vue.config.debug = true;
+
+            Vue.component('leftnav', {
+                props: ['items'],
+                template: '#leftnav-template',
+                data: function() {
+                    return {
+                        nav: [],
+                        sections: []
+                    }
+                },
+                methods: {
+                    buildLink: function(props) {
+                        return typeof props.link !== 'undefined' ? props.link.href : false;
+                    },
+                    toggle: function(index) {
+                        if (this.sections.indexOf(index) === -1) {
+                            this.sections.push(index);
+                        } else {
+                            this.sections.$remove(index);
+                        }
+                    },
+                    visible: function(index) {
+                        return this.sections.indexOf(index) > -1;
+                    }
+                },
+            });
+
+            new Vue({
+                el: '#container',
+                data: {
+                    nav: [],
+                    sections: []
+                },
+                created: function() {
+                    this.fetchNav();
+                },
+                methods: {
+                    fetchNav: function() {
+                        this.$http.get('/left-nav', function(data,status,request) {
+                            this.nav = data;
+                        });
+                    }
+                },
+
+            })
+        })(Vue)
+    </script>
+    @stop
 @include("ui::common.footer")
