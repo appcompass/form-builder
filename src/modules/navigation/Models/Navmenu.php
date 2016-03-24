@@ -118,7 +118,6 @@ class Navmenu extends Model
     {
 
         // @TODO quick temp solution, to be refactored using proper nav structure
-        // @TODO root check has to be moved into the ofBefore policy
 
         $nav = \Cache::tags($tag)->get($key);
 

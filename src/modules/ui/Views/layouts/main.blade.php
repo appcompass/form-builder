@@ -1,6 +1,6 @@
 @include("ui::common.header")
 
-    <section id="container">
+    <section>
         <!--header start-->
         <header class="header fixed-top clearfix">
             <!--logo start-->
@@ -44,8 +44,8 @@
             </div>
         </header>
         <!--header end-->
-        <aside>
-            <div id="sidebar" class="nav-collapse">
+        <aside id="sidebar">
+            <div class="nav-collapse">
                 <div class="leftside-navigation">
                     <leftnav :items="nav"></leftnav>
                 </div>
@@ -124,9 +124,8 @@
     @section('scripts.footer')
     <script>
         (function(Vue) {
-            Vue.config.debug = true;
 
-            Vue.component('leftnav', {
+            var leftnav = Vue.extend({
                 props: ['items'],
                 template: '#leftnav-template',
                 data: function() {
@@ -152,8 +151,8 @@
                 },
             });
 
-            new Vue({
-                el: '#container',
+            var Sidebar = new Vue({
+                el: '#sidebar',
                 data: {
                     nav: [],
                     sections: []
@@ -168,6 +167,9 @@
                         });
                     }
                 },
+                components: {
+                    leftnav: leftnav
+                }
 
             })
         })(Vue)
