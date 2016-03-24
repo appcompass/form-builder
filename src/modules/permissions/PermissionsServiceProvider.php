@@ -64,6 +64,7 @@ class PermissionsServiceProvider extends ServiceProvider
         Permission::class => ResourcesPolicy::class,
         Group::class => ResourcesPolicy::class,
         BpUnit::class => ResourcesPolicy::class,
+        ResmetUnit::class => ResourcesPolicy::class,
         BpFieldUpload::class => UnitsPolicy::class,
     ];
 
