@@ -4,6 +4,7 @@ namespace P3in\Modules\Providers;
 
 use BostonPads\Models\BpFieldUpload;
 use BostonPads\Models\BpUnit;
+use BostonPads\Models\ResmetUnit;
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
