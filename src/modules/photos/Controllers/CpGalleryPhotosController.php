@@ -88,10 +88,13 @@ class CpGalleryPhotosController extends UiBaseController
             $this->setBaseUrl(['galleries', $galleries->id, 'photos']);
         }
         $template = !empty($this->template_overide) ? $this->template_overide : 'photos::galleries.index';
+
         $photos = $galleries->photos
             ->each(function($photo) {
                 $photo->type = $photo->getOption(Photo::TYPE_ATTRIBUTE_NAME, 'label');
-                $photo->item_id = $photo->galleryItem->id;
+                if (!empty($photo->galleryItem->id)) {
+                    $photo->item_id = $photo->galleryItem->id;
+                }
             });
 
         return view($template, compact('photos', 'options'))
