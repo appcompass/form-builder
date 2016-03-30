@@ -70,33 +70,23 @@ class Gallery extends Model
 
     /**
      *  Get Photos Count
-     *  @TODO This is weird but works fine and performs times better and doesn't braeak
+     *
      */
     public function getPhotoCountAttribute()
     {
 
-        return $this->photos()->count();
-
-        $items = $this->items()
-            ->byType('P3in\Models\Photo')
-            ->lists('itemable_id');
-
-        return Photo::whereIn('id', $items)->count();
+        return count($this->photos);
 
     }
 
     /**
      * Get Videos Count
-     *  @TODO This is weird but works fine and performs times better and doesn't braeak
+     *
      */
     public function getVideoCountAttribute()
     {
 
-        $items = $this->items()
-            ->byType('P3in\Models\Video')
-            ->lists('itemable_id');
-
-        return Photo::whereIn('id', $items)->count();
+        return count($this->videos);
 
     }
 
