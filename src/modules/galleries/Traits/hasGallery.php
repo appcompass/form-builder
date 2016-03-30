@@ -24,9 +24,12 @@ trait HasGallery
 
     /**
      *  galleries
+     *
+     *  @WARNING => THIS DOESN"T WORK WITH EAGER LOADING!!!!!
      */
     public function gallery()
     {
+
         $rel = $this->morphOne(Gallery::class, 'galleryable');
 
         if (!$rel->get()->count()) {

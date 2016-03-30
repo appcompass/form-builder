@@ -209,6 +209,8 @@ class UiBaseController extends ModularBaseController {
             $action = $route->getActionName();
             $name = $route->getName();
 
+            // @TODO Warning: route->getName only works with named routes or resourceful routing
+
             list($class, $method) = explode('@', $action);
 
             $rtn['message'] = 'The url must have a defined route.';

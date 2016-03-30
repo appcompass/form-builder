@@ -27,6 +27,7 @@ class Gallery extends Model
 
     protected $dates = [];
 
+    protected $appends = ['photoCount', 'videoCount'];
 
     /**
      *  Relationship with users
@@ -53,15 +54,10 @@ class Gallery extends Model
     public function photos()
     {
 
-        // $items = $this->items()
-        //  ->byType('P3in\Models\Photo')
-        //  ->lists('itemable_id');
-
-        // return Photo::whereIn('id', $items)->get();
-
-        // return
-        return $this->hasManyThrough(Photo::class, GalleryItem::class, 'gallery_id', 'id')
-            ->orderBy('order', 'asc');
+        // @WARNING orderBy makes laravel go crazy on units fetching: it throws an error that eats up all memory
+        // removing it for now
+        return $this->hasManyThrough(Photo::class, GalleryItem::class, 'gallery_id', 'id');
+            // ->orderBy('order', 'asc');
     }
 
     /**
@@ -71,8 +67,41 @@ class Gallery extends Model
     public function videos()
     {
         return $this->hasManyThrough(Video::class, GalleryItem::class, 'gallery_id', 'id')
-            ->orderBy('order', 'asc');
+            ->orderBy('gallery_items.order', 'asc');
     }
+
+    /**
+     *  Get Photos Count
+     *  @TODO This is weird but works fine and performs times better and doesn't braeak
+     */
+    public function getPhotoCountAttribute()
+    {
+
+        return $this->photos()->count();
+
+        $items = $this->items()
+            ->byType('P3in\Models\Photo')
+            ->lists('itemable_id');
+
+        return Photo::whereIn('id', $items)->count();
+
+    }
+
+    /**
+     * Get Videos Count
+     *  @TODO This is weird but works fine and performs times better and doesn't braeak
+     */
+    public function getVideoCountAttribute()
+    {
+
+        $items = $this->items()
+            ->byType('P3in\Models\Video')
+            ->lists('itemable_id');
+
+        return Photo::whereIn('id', $items)->count();
+
+    }
+
 
     /**
      *  Relation with galleryItems
@@ -80,7 +109,9 @@ class Gallery extends Model
      */
     public function galleryItems()
     {
-      return $this->hasMany(GalleryItem::class);
+
+        return $this->hasMany(GalleryItem::class);
+
     }
 
     /**
