@@ -54,10 +54,8 @@ class Gallery extends Model
     public function photos()
     {
 
-        // @WARNING orderBy makes laravel go crazy on units fetching: it throws an error that eats up all memory
-        // removing it for now
-        return $this->hasManyThrough(Photo::class, GalleryItem::class, 'gallery_id', 'id');
-            // ->orderBy('order', 'asc');
+        return $this->hasManyThrough(Photo::class, GalleryItem::class, 'gallery_id', 'id')
+            ->orderBy('order', 'asc');
     }
 
     /**
