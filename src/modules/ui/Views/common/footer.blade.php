@@ -64,6 +64,10 @@
                        sweetAlert("Unauthorized", "You are not authorized to view this resource", "error");
                        this.abort();
                     }
+                    if (this.status === 422) {
+                       sweetAlert("Unable to continue", "The input was malformed, request is being ignored", "warning");
+                       this.abort();
+                    }
                 }, false);
                 xhrOpen.call(this, method, url, async, user, pass);
             };
