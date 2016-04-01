@@ -5,6 +5,7 @@ namespace P3in\Modules\Middleware;
 use App;
 use Closure;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Intervention\Image\Exception\NotFoundException;
 use P3in\Models\Website;
 
 class ValidateAndSetWebsite
@@ -18,28 +19,26 @@ class ValidateAndSetWebsite
      */
     public function handle($request, Closure $next)
     {
-        // try {
+        try {
 
             if (is_null(Website::getCurrent())) {
 
                 $site_name = $request->header('site-name');
 
-                Website::setCurrent(Website::where('site_name', '=', $site_name)->firstOrFail());
+                $current = Website::setCurrent(Website::where('site_name', '=', $site_name)->firstOrFail());
 
             }
 
             return $next($request);
 
-        // } catch (Exception $e) {
+        } catch (NotFoundException $e) {
 
-        //     App::abort(401, trans('websites::accessnotauthorized'));
+            App::abort(401, 'Unauthorized');
 
-        // } catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
 
-        //     dd($e->getMessage());
+            App::abort(401, 'Unauthorized');
 
-        //     App::abort(401, trans('websites::accessnotauthorized'));
-
-        // }
+        }
     }
 }
