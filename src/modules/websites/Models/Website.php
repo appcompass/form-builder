@@ -3,29 +3,31 @@
 namespace P3in\Models;
 
 use Auth;
-use P3in\Models\Photo;
 use Carbon\Carbon;
 use P3in\Traits\HasGallery;
 use P3in\Traits\HasPermissions;
+use P3in\Traits\NavigatableTrait;
+use P3in\Traits\SettingsTrait;
+use P3in\Traits\OptionableTrait;
+use P3in\Traits\AlertableTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use League\Flysystem\Sftp\SftpAdapter;
 use Less_Parser;
 use Log;
-use P3in\Models\Page;
 use P3in\Module;
-use P3in\Traits\NavigatableTrait;
-use P3in\Traits\SettingsTrait;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use P3in\Models\Photo;
+use P3in\Models\Page;
 use Imagick;
 use ImagickPixel;
 
 class Website extends Model
 {
 
-    use SettingsTrait, NavigatableTrait, HasGallery, HasPermissions;
+    use AlertableTrait, OptionableTrait, SettingsTrait, NavigatableTrait, HasGallery, HasPermissions;
 
     /**
      * The database table used by the model.
@@ -68,7 +70,7 @@ class Website extends Model
     /**
      *
      */
-    protected $with = [];
+    protected $with = ['options'];
 
     /**
      * Model's rules
