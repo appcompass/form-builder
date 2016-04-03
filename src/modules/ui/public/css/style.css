@@ -342,7 +342,6 @@ ul.sidebar-menu li a.active i {
 
 }
 .brand {
-    background:#1fb5ad;
     float:left;
     width:240px;
     height:80px;
@@ -702,7 +701,7 @@ ul.top-menu>li>a:hover,ul.top-menu>li>a:focus {
     float:left;
     margin-top:23px;
     margin-left:-15px;
-    background:#32d2c9;
+    background:#F6F6F6;
     border-radius:50%;
     -webkit-border-radius:50%;
     width:32px;
@@ -718,7 +717,7 @@ ul.top-menu>li>a:hover,ul.top-menu>li>a:focus {
     color:rgba(0,0,0,.3);
 }
 .sidebar-toggle-box:hover {
-    background:#F6F6F6;
+    background:#32d2c9;
 }
 .hide-left-bar {
     margin-left:-240px !important;
