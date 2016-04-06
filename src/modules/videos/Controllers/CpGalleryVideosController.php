@@ -81,14 +81,22 @@ class CpGalleryVideosController extends UiBaseController
     public function index(Gallery $galleries)
     {
 
-        $galleries->load('videos.galleryItem', 'videos.user');
+        // dd($galleries->load('videos'));
+
+        $galleries->load('videos', 'videos.itemable.user');
+
+        $videos = [];
+
+        foreach($galleries->videos as $item) {
+            $videos[] = $item->itemable;
+        }
 
         if (empty($this->meta->base_url)) {
             $this->setBaseUrl(['galleries', $galleries->id, 'videos']);
         }
 
         return view('videos::galleries.index')
-            ->with('videos', $galleries->videos)
+            ->with('videos', $videos)
             ->with('gallery', $galleries)
             ->with('meta', $this->meta);
     }
