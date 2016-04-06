@@ -95,6 +95,20 @@
             }
         });
 
+        /**
+        *   Maps an array by the specified property
+        *
+        */
+        function mapBy(array, prop) {
+            var map = {};
+            if (array && array.length) {
+                for (var i=0; i < array.length; i++) {
+                    map[ array[i][prop] ] = array[i];
+                }
+            }
+            return map;
+        }
+
         @if(empty($nolock))
             // This is where we put the logic which handles auto redirecting the user to the /lock-screen when they have been idle for X seconds.
         @endif
