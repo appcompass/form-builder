@@ -27,7 +27,7 @@
     </div>
 </section>
 
-@if(!empty($videos))
+@if(!empty($videos->count()))
     <section class="panel">
         <header class="panel-heading">
             Videos in {{ $gallery->name }}

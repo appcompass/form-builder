@@ -56,6 +56,7 @@ class Gallery extends Model
 
         return $this->hasManyThrough(Photo::class, GalleryItem::class, 'gallery_id', 'id')
             ->orderBy('order', 'asc');
+
     }
 
     /**
@@ -64,8 +65,12 @@ class Gallery extends Model
      */
     public function videos()
     {
-        return $this->hasMany(GalleryItem::class)
-            ->where('itemable_type', Video::class);
+
+        return $this->hasManyThrough(Video::class, GalleryItem::class, 'gallery_id', 'id')
+            ->orderBy('gallery_items.order', 'asc');
+
+        // return $this->hasMany(GalleryItem::class)
+            // ->where('itemable_type', Video::class);
     }
 
     /**
