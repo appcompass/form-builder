@@ -1,6 +1,6 @@
 {!! Form::open([
-    'route' => $meta->route,
-    'data-target' => $meta->data_target,
+    'url' => $meta->base_url,
+    'data-target' => '#record-detail',
     'class' => 'form-horizontal bucket-form ajax-form'])
 !!}
     <section class="panel">

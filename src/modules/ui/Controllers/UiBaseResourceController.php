@@ -50,24 +50,24 @@ abstract class UiBaseResourceController extends Controller
 
     public function store(Request $request)
     {
-        $this->validate($request, $this->model->rules);
+        $this->validate($request, $this->model->getRules());
 
-        $this->model->create($request->only($this->model->fillable));
-        return $this->json('/'.$request->path());
+        $newRecord = $this->model->create($request->only($this->model->getFillable()));
+        return $this->json('/'.$request->path().'/'.$newRecord->getKey().'/edit');
     }
 
     public function update(Request $request)
     {
-        $this->validate($request, $this->model->rules);
+        $this->validate($request, $this->model->getRules());
 
-        $this->model->update($request->only($this->model->fillable));
+        $this->model->update($request->only($this->model->getFillable()));
         return $this->json('/'.$request->path());
     }
 
     public function destroy(Request $request)
     {
         $this->model->delete();
-        return $this->json('/'.$request->path());
+        return $this->json($this->base_url);
     }
 
     /**
@@ -75,7 +75,7 @@ abstract class UiBaseResourceController extends Controller
      */
     public function gateCheck($type)
     {
-        if (\Gate::denies($type, get_class($this->model->getModel()))) {
+        if (\Gate::denies($type, get_class($this->model))) {
             abort(403);
         }
     }
@@ -85,21 +85,36 @@ abstract class UiBaseResourceController extends Controller
     {
         $route = $this->explainRoute($request);
 
-        $this->model = $model->fromRoute($route->params);
+        $this->model = $model->fromRoute($route->params)->getModel();
+        $model_name = get_class($this->model);
 
         // put in to allow controllers to inject/overide metas.
         $this->meta = new \stdClass();
 
         if ($route->name) {
+
+            $this->base_url = $route->base_url;
+            $this->meta->classname = $model_name;
+
             // Check permissions
-            $this->gateCheck(get_class($this->model));
+            $this->gateCheck($model_name);
 
             // we take the route and convert it to a nav name so something.else becomes something_else
             $this->nav_name = str_replace(['.','-'], '_', $route->route_root);
 
-            if (in_array($route->method_name, ['index', 'edit', 'create', 'show'])) {
-                $this->setTemplate('ui::resourceful.'.$route->method_name);
+            switch ($route->method_name) {
+                case 'create':
+                case 'edit':
+                    $this->meta->base_url = $this->base_url;
+                case 'index':
+                case 'show':
+                    $this->setTemplate('ui::resourceful.'.$route->method_name);
+                break;
             }
+
+            // if (in_array($route->method_name, ['index', 'edit', 'create', 'show'])) {
+            //     $this->setTemplate('ui::resourceful.'.$route->method_name);
+            // }
         }
     }
 
@@ -110,16 +125,20 @@ abstract class UiBaseResourceController extends Controller
         $rtn->name = null;
         $rtn->route_root = null;
         $rtn->method_name = null;
+        $rtn->base_url = null;
 
         $route = $request->route();
 
         if ($route) {
             $n = $route->getName();
-
+            $url = $request->path();
             $rtn->params = $route->parameters();
             $rtn->name = $n;
+            $rtn->url = $url;
+
             $rtn->route_root = substr($n, 0, strrpos($n, '.'));
             $rtn->method_name = substr($n, strrpos($n, '.')+1);
+            $rtn->base_url = '/'.substr($url, 0, strrpos($url, '/'));
         }
 
         return $rtn;
@@ -137,7 +156,6 @@ abstract class UiBaseResourceController extends Controller
 
         // @TODO: The below to two attributes are here only for backwards compatibility. so kill it when we can.
         if ($data['meta']) {
-            $data['meta']->classname = get_class($this->model);
             $data['meta']->base_url = '/'.$request->path();
         }
 
