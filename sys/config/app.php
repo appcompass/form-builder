@@ -2,6 +2,13 @@
 
 return [
 
+    // user defined.
+    'trusted_proxies' => ['127.0.0.1'],
+    'default_storage' => 'local',
+    'skip_alt_logo' => true,
+    'available_layouts' => [
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
@@ -52,7 +59,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => env('APP_TIMEZONE', 'UTC'),
 
     /*
     |--------------------------------------------------------------------------
@@ -108,7 +115,7 @@ return [
     |
     */
 
-    'log' => env('APP_LOG', 'single'),
+    'log' => env('APP_LOG', 'daily'),
 
     /*
     |--------------------------------------------------------------------------
@@ -156,6 +163,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        P3in\Providers\ModuleServiceProvider::class,
     ],
 
     /*
@@ -202,6 +210,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        'Modular'   => P3in\Facades\Modules::class,
     ],
 
 ];

@@ -15,6 +15,13 @@ $app = new Illuminate\Foundation\Application(
     realpath(__DIR__.'/../')
 );
 
+// set the public path to this directory
+$app->bind('path.public', function() {
+    return realpath(__DIR__.'/../../www');
+});
+
+// set the locale mainly used with money format
+setlocale(LC_MONETARY, 'en_US.UTF-8');
 /*
 |--------------------------------------------------------------------------
 | Bind Important Interfaces
