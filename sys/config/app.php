@@ -9,6 +9,7 @@ return [
     'available_layouts' => [
     ],
 
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
