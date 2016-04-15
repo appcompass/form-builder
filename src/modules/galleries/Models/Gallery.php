@@ -143,7 +143,7 @@ class Gallery extends Model
      */
     private function addItem(GalleryItemInterface $item)
     {
-        return GalleryItem::create([
+        return GalleryItem::firstOrCreate([
             'gallery_id' => $this->id,
             'itemable_type' => get_class($item),
             'itemable_id' => $item->id
