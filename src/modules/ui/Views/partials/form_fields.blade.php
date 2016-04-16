@@ -21,19 +21,19 @@
             {!! Form::label(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $field->label, ['class' => empty($repeatable) ? 'col-lg-3 control-label' : '']) !!}
             @if(empty($repeatable)) <div class="col-lg-6"> @endif
                 @if($field->type == 'text')
-                    {!! Form::text(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
+                    {!! Form::text(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, array_merge(['class' => 'form-control', 'placeholder' => $field->placeholder], !empty($field->attributes) ? (array) $field->attributes : [])) !!}
                 @elseif($field->type == 'slugify')
-                    {!! Form::text(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, ['class' => 'form-control slugify' ,'data-source' => $field->field, 'placeholder' => $field->placeholder]) !!}
+                    {!! Form::text(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, array_merge(['class' => 'form-control slugify' ,'data-source' => $field->field, 'placeholder' => $field->placeholder], !empty($field->attributes) ? (array) $field->attributes : [])) !!}
                 @elseif($field->type == 'password')
                     <div class="password">
-                        {!! Form::password(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
+                        {!! Form::password(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, array_merge(['class' => 'form-control', 'placeholder' => $field->placeholder], !empty($field->attributes) ? (array) $field->attributes : [])) !!}
                     </div>
                 @elseif($field->type == 'textarea')
-                    {!! Form::textarea(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, ['class' => 'form-control', 'rows' => '6', 'placeholder' => $field->placeholder]) !!}
+                    {!! Form::textarea(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, array_merge(['class' => 'form-control', 'rows' => '6', 'placeholder' => $field->placeholder], !empty($field->attributes) ? (array) $field->attributes : [])) !!}
                 @elseif($field->type == 'wysiwyg')
-                    {!! Form::textarea(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, ['class' => 'wysihtml5 form-control', 'rows' => '9', 'placeholder' => $field->placeholder]) !!}
+                    {!! Form::textarea(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, array_merge(['class' => 'wysihtml5 form-control', 'rows' => '9', 'placeholder' => $field->placeholder], !empty($field->attributes) ? (array) $field->attributes : [])) !!}
                 @elseif($field->type == 'selectlist')
-                    {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $field->data, null, ['class' => 'form-control']) !!}
+                    {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $field->data, null, array_merge(['class' => 'form-control'], !empty($field->attributes) ? (array) $field->attributes : [])) !!}
                 @elseif($field->type == 'checkbox')
                     @if(!empty($field->data))
                         <div class="checkbox">
@@ -49,7 +49,7 @@
                     @else
                         <div class="checkbox">
                             <label>
-                                {!! Form::checkbox(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, 'true', null, ['class' => '']) !!}
+                                {!! Form::checkbox(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, 'true', null, array_merge(['class' => ''], !empty($field->attributes) ? (array) $field->attributes : [])) !!}
                             </label>
                         </div>
                     @endif
@@ -57,7 +57,7 @@
                         @foreach($field->data as $label => $value)
                         <div class="radio">
                             <label>
-                                {!! Form::radio(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $value, ['class' => 'form-control']) !!}
+                                {!! Form::radio(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $value, array_merge(['class' => 'form-control'], !empty($field->attributes) ? (array) $field->attributes : [])) !!}
                                {{ $label }}
                             </label>
                         </div>

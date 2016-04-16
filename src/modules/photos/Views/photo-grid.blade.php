@@ -46,7 +46,11 @@
                     data-action="modal-delete"
                     href="#modal-edit"
                     data-toggle="modal"
+                    @if(!empty($meta->base_url))
+                    data-delete="{{$meta->base_url}}/{{ $photo->id }}"
+                    @else
                     data-delete="/photos/{{ $photo->id }}"
+                    @endif
                     data-click="/delete-modal"
                     data-inject-area="#modal-body"
                     class="btn btn-danger"

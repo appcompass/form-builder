@@ -49,19 +49,18 @@ trait HasGallery
     public function getOrCreateGallery($name)
     {
         try {
-
-            if (!\Auth::check()) {
-
-                throw new \Exception('User must be logged in order to create a gallery.');
-
-            }
-
             // return Gallery::where('name', '=', $name)->firstOrFail();
             return Gallery::where('galleryable_id', $this->{$this->primaryKey})
                 ->where('galleryable_type', get_class($this))
                 ->firstOrFail();
 
         } catch (ModelNotFoundException $e) {
+
+            if (!\Auth::check()) {
+
+                throw new \Exception('User must be logged in order to create a gallery.');
+
+            }
 
             return Gallery::create([
                 'name' => $name,

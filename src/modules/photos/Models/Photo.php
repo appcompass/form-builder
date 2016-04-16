@@ -45,6 +45,8 @@ class Photo extends Model implements GalleryItemInterface
         'user_id',
         'status',
         'storage',
+        'created_at',
+        'updated_at',
         'options'
     ];
 

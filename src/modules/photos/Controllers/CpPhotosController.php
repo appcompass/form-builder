@@ -129,6 +129,7 @@ class CpPhotosController extends UiBaseController
      */
     public function destroy($id)
     {
-        //
+        Photo::destroy($id);
+        // return $this->json($this->setBaseUrl(['photos']));
     }
 }

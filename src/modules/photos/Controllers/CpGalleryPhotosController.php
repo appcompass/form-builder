@@ -174,4 +174,10 @@ class CpGalleryPhotosController extends UiBaseController
             ->with('gallery', $galleries);
 
     }
+
+    public function destroy(Gallery $galleries, Photo $photos)
+    {
+        $photos->delete();
+        return $this->json($this->setBaseUrl(['galleries', $galleries->id, 'photos']));
+    }
 }
