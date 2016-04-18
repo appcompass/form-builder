@@ -9,7 +9,14 @@
     >
         {{-- <a href="#photoModal" data-toggle="modal" data-click="/photos/{{ $photo->id }}" data-target="#photoModalContent"> --}}
         @if(empty($no_actions))
-        <a href="#photoModal" data-click="/photos/{{ $photo->id }}" data-target="#photoModal" data-toggle="modal" class="item-image no-link">
+        <a
+            href="#modal-edit"
+            data-click="/photos/{{ $photo->id }}"
+            data-inject-area="#modal-body"
+            data-action="modal-edit"
+            data-toggle="modal"
+            class="item-image"
+        >
         @endif
             <img src="{{ $photo->path }}" alt="" id="{{ $photo->id }}" v-on:click="toggle('photos', {{ $photo->id }})">
         @if(empty($no_actions))
