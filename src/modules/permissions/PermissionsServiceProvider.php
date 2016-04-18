@@ -2,8 +2,8 @@
 
 namespace P3in\Modules\Providers;
 
-use BostonPads\Models\BpFieldUpload;
-use BostonPads\Models\BpUnit;
+use BostonPads\Models\Remotes\BpFieldUpload;
+use BostonPads\Models\Remotes\BpUnit;
 use BostonPads\Models\ResmetUnit;
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Foundation\Application;
