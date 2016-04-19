@@ -288,4 +288,9 @@ class CpWebsiteController extends UiBaseController
 
     }
 
+    public function list()
+    {
+        return Website::where('id', '!=', Website::admin()->id)->get()->toJson();
+    }
+
 }

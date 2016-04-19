@@ -54,6 +54,46 @@
     @yield('scripts.footer')
 
     <script>
+        // i really hope to find a way to move this away from here
+          (function(d, s, id){
+             var js, fjs = d.getElementsByTagName(s)[0];
+             if (d.getElementById(id)) {return;}
+             js = d.createElement(s); js.id = id;
+             js.src = "//connect.facebook.net/en_US/sdk.js";
+             fjs.parentNode.insertBefore(js, fjs);
+           }(document, 'script', 'facebook-jssdk'));
+
+        window.fbAsyncInit = function() {
+            FB.init({
+              appId     : '1308812039134793', // public info
+              xfbml     : true,
+              status    : true,
+              version   : 'v2.5',
+              cookie    : true,
+              oauth     : true
+            });
+        };
+    </script>
+
+
+    <script>
+        window.pAsyncInit = function() {
+            PDK.init({
+                appId: "4826197593923006330", // public info
+                cookie: true
+            });
+        };
+
+        (function(d, s, id){
+            var js, pjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement(s); js.id = id;
+            js.src = "//assets.pinterest.com/sdk/sdk.js";
+            pjs.parentNode.insertBefore(js, pjs);
+        }(document, 'script', 'pinterest-jssdk'));
+    </script>
+
+    <script>
         (function(xhrOpen) {
             /**
             *   XHR Interceptor
