@@ -34,7 +34,7 @@ class UnitsPolicy
 
     public function index(User $user, $ability)
     {
-            return $user->hasPermissions($this->base_perms);
+        return $user->hasPermissions($this->base_perms);
     }
 
     public function edit(User $user, $ability)
