@@ -127,7 +127,13 @@ class Group extends Model
 
 		} else if ($perm instanceof Permission) {
 
-		  	return $this->permissions()->attach($perm);
+			if (!$this->permissions->contains($perm->id)) {
+
+			  	return $this->permissions()->attach($perm);
+
+			}
+
+			return false;
 
 		} else if (is_array($perm)) {
 

@@ -125,7 +125,13 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     public function grantPermission(Permission $perm)
     {
-        return $this->permissions()->attach($perm);
+        if (!$this->permissions->contains($perm->id)) {
+
+            return $this->permissions()->attach($perm);
+
+        }
+
+        return false;
     }
 
     /**
