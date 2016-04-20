@@ -35,7 +35,11 @@
                 data-action="modal-delete"
                 href="#modal-edit"
                 data-toggle="modal"
+                @if(!empty($meta->base_url))
+                data-delete="{{$meta->base_url}}/{{ $video->id }}"
+                @else
                 data-delete="/videos/{{ $video->id }}"
+                @endif
                 data-click="/delete-modal"
                 data-inject-area="#modal-body"
                 class="btn btn-danger"

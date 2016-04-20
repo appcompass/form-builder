@@ -18,7 +18,7 @@
             class="item-image"
         >
         @endif
-            <img src="{{ $photo->path }}" alt="" id="{{ $photo->id }}" v-on:click="toggle('photos', {{ $photo->id }})">
+            <img src="{{ $photo->path }}?w=250" alt="" id="{{ $photo->id }}" v-on:click="toggle('photos', {{ $photo->id }})">
         @if(empty($no_actions))
         </a>
         @endif

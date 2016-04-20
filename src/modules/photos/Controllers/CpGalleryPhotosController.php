@@ -168,14 +168,18 @@ class CpGalleryPhotosController extends UiBaseController
 
         // we add this only when there is a bulk update for now till we sort out how to avoid it, if possible.
         $galleries = Gallery::findOrFail($galleries->id)->load('items', 'photos.user');
+        if (!empty($this->meta->base_url)) {
+            return $this->json($this->meta->base_url);
+        }else{
+            return view('photos::photo-grid')
+                ->with('photos', $galleries->photos)
+                ->with('gallery', $galleries);
 
-        return view('photos::photo-grid')
-            ->with('photos', $galleries->photos)
-            ->with('gallery', $galleries);
+        }
 
     }
 
-    public function destroy(Gallery $galleries, Photo $photos)
+    public function destroy(Request $request, Gallery $galleries, Photo $photos)
     {
         $photos->delete();
         return $this->json($this->setBaseUrl(['galleries', $galleries->id, 'photos']));

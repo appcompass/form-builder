@@ -297,7 +297,7 @@
             var alertModal = $('#modal-alert');
 
             $(this).ajaxStart(function(){
-                // openModal('Loading', 'Loading Please wait..');
+                openModal('Loading', 'Loading Please wait..');
             });
 
             $(this).ajaxStop(function(){
@@ -513,15 +513,21 @@
                     error: function(err){
                         openModal('error', err, true);
                     },
-                    success: function(data){
-                        $(target).html(data);
+                    success: function(res){
+                        if (res.success) {
+                            console.log(res);
+                            router.navigate(res.data);
+                        }else{
+                            openModal('error', res.message, true);
+                        }
+                        // $(target).html(data);
                     },
                     complete: function(xhr, status){
-                        if (status =='success') {
-                            loadData($(target));
-                        }else{
-                            openModal('error', status, true);
-                        }
+                        // if (status =='success') {
+                        //     loadData($(target));
+                        // }else{
+                        //     openModal('error', status, true);
+                        // }
                     }
                 });
             });
