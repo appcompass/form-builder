@@ -2,16 +2,25 @@
 
 namespace P3in\Modules\Providers;
 
+use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Foundation\AliasLoader;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\ServiceProvider;
 use P3in\Models\Website;
+use P3in\Policies\ControllersPolicy;
 
-Class WebsitesServiceProvider extends ServiceProvider {
+Class WebsitesServiceProvider extends AuthServiceProvider {
 
-    public function boot()
+    protected $policies = [
+        Website::class => ControllersPolicy::class,
+
+    ];
+
+    public function boot(Gate $gate)
     {
+        $this->registerPolicies($gate);
+
         // Register Middleware
         $kernel = $this->app->make('Illuminate\Contracts\Http\Kernel');
         $kernel->prependMiddleware('P3in\Modules\Middleware\ValidateAndSetWebsite');
@@ -57,4 +66,5 @@ Class WebsitesServiceProvider extends ServiceProvider {
     {
         //
     }
+
 }

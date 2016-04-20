@@ -6,14 +6,13 @@ use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider;
 use Illuminate\Routing\Router;
-use Illuminate\Support\ServiceProvider;
-use P3in\Controllers\CpGalleriesController;
 use P3in\Models\Gallery;
 use P3in\Models\User;
 use P3in\Policies\GalleriesPolicy;
+use P3in\Policies\ControllersPolicy;
 use P3in\Traits\HasGallery;
 
-class GalleriesServiceProvider extends ServiceProvider
+class GalleriesServiceProvider extends AuthServiceProvider
 {
 
 
@@ -30,9 +29,7 @@ class GalleriesServiceProvider extends ServiceProvider
      */
     protected $policies = [
 
-        // Gallery::class => ControllersPolicy::class,
-        // CpGalleriesController::class => GalleriesPolicy::class
-        // "P3in\Models\Gallery" => "P3in\Policies\GalleriesPolicy"
+        Gallery::class => ControllersPolicy::class,
 
     ];
 
@@ -55,6 +52,7 @@ class GalleriesServiceProvider extends ServiceProvider
     public function boot(Gate $gate, Router $router)
     {
 
+        $this->registerPolicies($gate);
         $loader = AliasLoader::getInstance();
 
         $router->model('galleries', Gallery::class);
