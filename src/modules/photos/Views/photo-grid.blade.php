@@ -25,6 +25,7 @@
         <ul class="item-meta nav nav-pills nav-stacked">
             <li><strong>Status:</strong> <span class="pull-right">{{ $photo->status or 'N/A' }}</span></li>
             <li><strong>Photo Type:</strong> <span class="pull-right">{{ $photo->type or 'N/A' }}</span></li>
+            <li><strong>Photo Dimensions:</strong> <span class="pull-right">{{ $photo->dimensions or 'N/A' }}</span></li>
             <li><strong>Uploaded By:</strong> <span class="pull-right">{{ $photo->user->full_name or 'N/A' }}</span></li>
             <li><strong>Uploaded On:</strong> <span class="pull-right">{{ $photo->created_at or 'N/A' }}</span></li>
         </ul>
