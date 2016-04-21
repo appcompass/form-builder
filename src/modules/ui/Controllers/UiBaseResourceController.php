@@ -52,7 +52,9 @@ abstract class UiBaseResourceController extends Controller
     {
         $this->validate($request, $this->model->getRules());
 
-        $newRecord = $this->model->create($request->only($this->model->getFillable()));
+        $newRecord = $this->model->fill($request->only($this->model->getFillable()));
+        $newRecord->save();
+
         return $this->json('/'.$request->path().'/'.$newRecord->getKey().'/edit');
     }
 
@@ -92,7 +94,7 @@ abstract class UiBaseResourceController extends Controller
         $this->meta = new \stdClass();
 
         if ($route->name) {
-
+            $this->params = $route->params;
             $this->base_url = $route->base_url;
             $this->meta->method_name = $route->method_name;
             $this->meta->classname = $model_name;
