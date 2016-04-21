@@ -8,12 +8,12 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Validator;
 use P3in\Models\Website;
-use P3in\Policies\ControllersPolicy;
+use P3in\Policies\ResourcesPolicy;
 
 Class WebsitesServiceProvider extends AuthServiceProvider {
 
     protected $policies = [
-        Website::class => ControllersPolicy::class,
+        Website::class => ResourcesPolicy::class,
 
     ];
 

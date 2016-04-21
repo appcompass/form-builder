@@ -2,9 +2,6 @@
 
 namespace P3in\Modules\Providers;
 
-use BostonPads\Models\BpFieldUpload;
-use BostonPads\Models\Remotes\BpUnit;
-use BostonPads\Models\ResmetUnit;
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -54,19 +51,7 @@ class PermissionsServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        Photo::class => ResourcesPolicy::class,
-        Website::class => ResourcesPolicy::class,
-        Gallery::class => ResourcesPolicy::class,
-        Page::class => ResourcesPolicy::class,
-        BlogPost::class => ResourcesPolicy::class,
-        BlogCategory::class => ResourcesPolicy::class,
-        BlogTag::class => ResourcesPolicy::class,
-        User::class => ResourcesPolicy::class,
         Permission::class => ResourcesPolicy::class,
-        Group::class => ResourcesPolicy::class,
-        BpUnit::class => ResourcesPolicy::class,
-        ResmetUnit::class => ResourcesPolicy::class,
-        BpFieldUpload::class => UnitsPolicy::class,
     ];
 
     /**

@@ -8,13 +8,13 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Validator;
 use P3in\Models\Page;
-use P3in\Policies\ControllersPolicy;
+use P3in\Policies\ResourcesPolicy;
 use Roumen\Sitemap\SitemapServiceProvider;
 
 Class PagesServiceProvider extends AuthServiceProvider {
 
     protected $policies = [
-        Page::class => ControllersPolicy::class,
+        Page::class => ResourcesPolicy::class,
     ];
 
     public function boot(Gate $gate)

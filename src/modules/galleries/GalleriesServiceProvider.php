@@ -9,7 +9,7 @@ use Illuminate\Routing\Router;
 use P3in\Models\Gallery;
 use P3in\Models\User;
 use P3in\Policies\GalleriesPolicy;
-use P3in\Policies\ControllersPolicy;
+use P3in\Policies\ResourcesPolicy;
 use P3in\Traits\HasGallery;
 
 class GalleriesServiceProvider extends AuthServiceProvider
@@ -29,7 +29,7 @@ class GalleriesServiceProvider extends AuthServiceProvider
      */
     protected $policies = [
 
-        Gallery::class => ControllersPolicy::class,
+        Gallery::class => ResourcesPolicy::class,
 
     ];
 

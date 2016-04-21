@@ -2,19 +2,22 @@
 
 namespace P3in\Modules\Providers;
 
-use Illuminate\Foundation\AliasLoader;
 use Illuminate\Contracts\Auth\Access\Gate;
+use Illuminate\Foundation\AliasLoader;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Validator;
 use P3in\Commands\AddUserCommand;
-use P3in\Models\Website;
+use P3in\Models\Group;
+use P3in\Models\User;
 use P3in\Policies\ControllersPolicy;
+use P3in\Policies\ResourcesPolicy;
 
 Class UsersServiceProvider extends AuthServiceProvider {
 
     protected $policies = [
-        User::class => ControllersPolicy::class,
+        User::class => ResourcesPolicy::class,
+        Group::class => ResourcesPolicy::class,
     ];
 
     protected $commands = [
