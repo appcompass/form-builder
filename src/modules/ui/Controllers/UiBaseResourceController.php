@@ -22,7 +22,7 @@ abstract class UiBaseResourceController extends Controller
     public function index(Request $request)
     {
         return $this->output($request, [
-            'records' => $this->model->get(),
+            'records' => $this->builder->paginate($request->has('per_page') ? $request->per_page : 20),
         ]);
     }
 
@@ -84,8 +84,8 @@ abstract class UiBaseResourceController extends Controller
     public function init(Request $request, $model)
     {
         $route = $this->explainRoute($request);
-
-        $this->model = $model->fromRoute($route->params)->getModel();
+        $this->builder = $model->fromRoute($route->params);
+        $this->model = $this->builder->getModel();
         $model_name = get_class($this->model);
 
         // put in to allow controllers to inject/overide metas.
