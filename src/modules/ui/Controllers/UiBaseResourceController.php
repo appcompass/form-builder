@@ -94,6 +94,7 @@ abstract class UiBaseResourceController extends Controller
         if ($route->name) {
 
             $this->base_url = $route->base_url;
+            $this->meta->method_name = $route->method_name;
             $this->meta->classname = $model_name;
 
             // Check permissions
