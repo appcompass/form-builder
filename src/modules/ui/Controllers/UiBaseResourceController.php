@@ -4,6 +4,8 @@ namespace P3in\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
+use Closure;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use P3in\Models\Navmenu;
@@ -21,8 +23,11 @@ abstract class UiBaseResourceController extends Controller
 
     public function index(Request $request)
     {
+        $records = $this->builder->paginate($request->has('per_page') ? $request->per_page : 20);
+        // $records->setPath('https://' . $request->getHttpHost() . '/' . $request->path());
+
         return $this->output($request, [
-            'records' => $this->builder->paginate($request->has('per_page') ? $request->per_page : 20),
+            'records' => $records,
         ]);
     }
 
@@ -83,17 +88,18 @@ abstract class UiBaseResourceController extends Controller
     }
 
 
-    public function init(Request $request, $model)
+    public function init(Request $request, Closure $cb)
     {
         $route = $this->explainRoute($request);
-        $this->builder = $model->fromRoute($route->params);
-        $this->model = $this->builder->getModel();
-        $model_name = get_class($this->model);
-
         // put in to allow controllers to inject/overide metas.
         $this->meta = new \stdClass();
 
         if ($route->name) {
+
+            $this->builder = $cb($route);
+            $this->model = $this->builder->getModel();
+            $model_name = get_class($this->model);
+
             $this->params = $route->params;
             $this->base_url = $route->base_url;
             $this->meta->method_name = $route->method_name;
