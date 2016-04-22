@@ -99,13 +99,23 @@
             *   XHR Interceptor
             */
             XMLHttpRequest.prototype.open = function(method, url, async, user, pass) {
+                this.addEventListener("progress", function() {
+                });
                 this.addEventListener("readystatechange", function() {
                     if (this.status === 403) {
                        sweetAlert("Unauthorized", "You are not authorized to view this resource", "error");
                        this.abort();
                     }
+                    if (this.status === 404) {
+                       sweetAlert("Resource Not Found", "The Resource you are looking for isn't there!", "error");
+                       this.abort();
+                    }
                     if (this.status === 422) {
                        sweetAlert("Unable to continue", "The input was malformed, request is being ignored", "warning");
+                       this.abort();
+                    }
+                    if (this.status === 500) {
+                       sweetAlert("Internal Error", this.response, "error");
                        this.abort();
                     }
                 }, false);
@@ -297,6 +307,7 @@
             var alertModal = $('#modal-alert');
 
             $(this).ajaxStart(function(){
+                // sweetAlert("Loading", "Loading Please wait..", "info");
                 openModal('Loading', 'Loading Please wait..');
             });
 
