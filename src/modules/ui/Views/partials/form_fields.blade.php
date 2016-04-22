@@ -1,4 +1,5 @@
 @foreach($fields as $field)
+@if(!isset($field->allowed_methods) || (isset($field->allowed_methods) && in_array($meta->method_name,$field->allowed_methods)))
     @if($field->type == 'fieldset_break')
             </div>
         </div>
@@ -75,13 +76,14 @@
                 @elseif($field->type == 'from_to_input')
                     <div class="input-group input-large">
                         @foreach($field->data as $i => $from_to)
+                            {!! Form::label(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, $from_to->label, []) !!}
                             @if($i == 1) <span class="input-group-addon">{{ $field->operator }}</span> @endif
                             @if($field->type == 'text')
-                                {!! Form::text($from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
+                                {!! Form::text(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
                             @elseif($from_to->type == 'password')
-                                {!! Form::password($from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
+                                {!! Form::password(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
                             @elseif($from_to->type == 'datepicker')
-                                {!! Form::date($from_to->name, null, ['class' => 'form-control date-picker-default', 'placeholder' => $from_to->placeholder]) !!}
+                                {!! Form::date(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, null, ['class' => 'form-control date-picker-default', 'placeholder' => $from_to->placeholder]) !!}
                             @endif
                         @endforeach
                     </div>
@@ -90,7 +92,8 @@
                         @foreach($field->data as $i => $from_to)
                             @if($from_to->type == 'selectlist')
                                 <div class="col-lg-6">
-                                    {!! Form::select($from_to->name, $from_to->data, null, ['class' => 'form-control']) !!}
+                                    {!! Form::label(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, $from_to->label, []) !!}
+                                    {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, $from_to->data, null, ['class' => 'form-control']) !!}
                                 </div>
                             @endif
                         @endforeach
@@ -98,23 +101,18 @@
                 @elseif($field->type == 'from_to_mixed')
                     <div class="row">
                         @foreach($field->data as $i => $from_to)
+                            <div class="col-lg-6">
+                            {!! Form::label(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, $from_to->label, []) !!}
                             @if($from_to->type == 'selectlist')
-                                <div class="col-lg-6">
-                                    {!! Form::select($from_to->name, $from_to->data, null, ['class' => 'form-control']) !!}
-                                </div>
+                                    {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, $from_to->data, null, ['class' => 'form-control']) !!}
                             @elseif($field->type == 'text')
-                                <div class="col-lg-6">
-                                    {!! Form::text($from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
-                                </div>
+                                    {!! Form::text(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
                             @elseif($from_to->type == 'password')
-                                <div class="col-lg-6">
-                                    {!! Form::password($from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
-                                </div>
+                                    {!! Form::password(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
                             @elseif($from_to->type == 'datepicker')
-                                <div class="col-lg-6">
-                                    {!! Form::date($from_to->name, null, ['class' => 'form-control date-picker-default', 'placeholder' => $from_to->placeholder]) !!}
-                                </div>
+                                    {!! Form::date(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, null, ['class' => 'form-control date-picker-default', 'placeholder' => $from_to->placeholder]) !!}
                             @endif
+                            </div>
                         @endforeach
                     </div>
                 @elseif($field->type == 'model_selectlist')
@@ -168,6 +166,7 @@
         </div>
 
     @endif
+@endif
 @endforeach
 
 @if(isset($website) && $website->gallery)
@@ -226,7 +225,6 @@
                     path = item.attr('data-path');
 
                 this.pathLabels.each(function(idx, label) {
-                    console.log(label);
                     $(label).html('<b>Image Path: <b>' + path)
                     $(label).html('<img src="' + path +'" height="180">')
                 })
@@ -501,7 +499,7 @@ The below is the example array of all possibilities.
             ],
         ],
         'help_block' => '',
-    ],,[
+    ],[
         'label' => 'From To Mixed',
         'type' => 'from_to_mixed',
         'name' => 'this_is_not_used',

@@ -24,7 +24,7 @@ abstract class UiBaseResourceController extends Controller
     public function index(Request $request)
     {
         $records = $this->builder->paginate($request->has('per_page') ? $request->per_page : 20);
-        // $records->setPath('https://' . $request->getHttpHost() . '/' . $request->path());
+        $records->setPath($this->url);
 
         return $this->output($request, [
             'records' => $records,
@@ -102,6 +102,7 @@ abstract class UiBaseResourceController extends Controller
 
             $this->params = $route->params;
             $this->base_url = $route->base_url;
+            $this->url = $route->url;
             $this->meta->method_name = $route->method_name;
             $this->meta->classname = $model_name;
 
@@ -143,7 +144,7 @@ abstract class UiBaseResourceController extends Controller
             $url = $request->path();
             $rtn->params = $route->parameters();
             $rtn->name = $n;
-            $rtn->url = $url;
+            $rtn->url = '/'.$url;
 
             $rtn->route_root = substr($n, 0, strrpos($n, '.'));
             $rtn->method_name = substr($n, strrpos($n, '.')+1);
@@ -159,6 +160,7 @@ abstract class UiBaseResourceController extends Controller
             $this->template = $template_name;
         }
     }
+
     public function output(Request $request, $data, $success = true, $message = '')
     {
         $data['meta'] = $this->getMeta($request->route()->getName());
