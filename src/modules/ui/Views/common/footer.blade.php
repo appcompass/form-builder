@@ -115,8 +115,14 @@
                        this.abort();
                     }
                     if (this.status === 500) {
-                       sweetAlert("Internal Error", this.response, "error");
-                       this.abort();
+                        console.log(this.responseText)
+                        sweetAlert({
+                            title: this.statusText,
+                            text: 'An Unkown Error Occured', //this.responseText
+                            type: 'error',
+                            html: true,
+                        });
+                       // this.abort();
                     }
                 }, false);
                 xhrOpen.call(this, method, url, async, user, pass);
