@@ -72,7 +72,7 @@
                         <b class="image-path"><img src="{{ $record->{$field->name} }}" height="180" alt="" style="max-width: 250px"></b>
                     @endif
                 @elseif($field->type == 'datepicker')
-                    {!! Form::date('name', null, ['class' => 'form-control form-control-inline input-medium date-picker-default', 'placeholder' => $field->placeholder]) !!}
+                    {!! Form::date(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, ['class' => 'form-control form-control-inline input-medium date-picker-default', 'placeholder' => $field->placeholder]) !!}
                 @elseif($field->type == 'from_to_input')
                     <div class="input-group input-large">
                         @foreach($field->data as $i => $from_to)

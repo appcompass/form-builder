@@ -115,13 +115,15 @@
                        this.abort();
                     }
                     if (this.status === 500) {
-                        console.log(this.responseText)
+
                         sweetAlert({
                             title: this.statusText,
                             text: 'An Unkown Error Occured', //this.responseText
                             type: 'error',
                             html: true,
                         });
+
+                        openModal('error', this.responseText, true);
                        // this.abort();
                     }
                 }, false);
@@ -216,6 +218,7 @@
         }
 
         function openModal(title, message, is_error){
+            var raw = false;
             switch(title){
                 case 'success':
                     title = 'Success!';
@@ -228,6 +231,7 @@
                 break;
                 case 'error':
                     title = 'Failure!';
+                    raw = true;
                 break;
 
             }
@@ -342,8 +346,6 @@
                 req.done(function(data){
                     if (data.success) {
                         loadSourceToTarget(data.data);
-                    }else{
-                        openModal('error', data.message, true);
                     }
 
                 });
