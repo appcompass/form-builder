@@ -106,6 +106,13 @@ class CpWebsiteSettingsController extends UiBaseController
                     'data' => 'footer_list',
                     'help_block' => 'Select the footer style for this website.',
                 ],[
+                    //this is a hot fix for BP since we're updating how fields are handled to allow modules to inject their own fields into other base modules
+                    //example: listings module injecting this field into the websites module.
+                    'label' => 'Hide Listing Related Elements',
+                    'name' => 'hide_listing_elements',
+                    'type' => 'checkbox',
+                    'help_block' => 'Check this if the website shouldn\'t include listing elements in the header and nav.',
+                ],[
                     'type' => 'fieldset_break',
                     'window_title' => 'Website Default Header/Meta Data',
                     'window_header' => '',
