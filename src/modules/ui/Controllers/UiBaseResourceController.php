@@ -10,10 +10,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use P3in\Models\Navmenu;
 use P3in\Traits\HasRouteMetaTrait;
+use P3in\Traits\HasFormTrait;
 
 abstract class UiBaseResourceController extends Controller
 {
-    use HasRouteMetaTrait;
+    use HasRouteMetaTrait, HasFormTrait;
 
     protected $model;
     protected $params;
@@ -95,7 +96,6 @@ abstract class UiBaseResourceController extends Controller
         $this->meta = new \stdClass();
 
         if ($route->name) {
-
             $this->builder = $cb($route);
             $this->model = $this->builder->getModel();
             $model_name = get_class($this->model);
@@ -103,6 +103,7 @@ abstract class UiBaseResourceController extends Controller
             $this->params = $route->params;
             $this->base_url = $route->base_url;
             $this->url = $route->url;
+            $this->meta->route_root = $route->route_root;
             $this->meta->method_name = $route->method_name;
             $this->meta->classname = $model_name;
 
@@ -164,7 +165,7 @@ abstract class UiBaseResourceController extends Controller
     public function output(Request $request, $data, $success = true, $message = '')
     {
         $data['meta'] = $this->getMeta($request->route()->getName());
-
+        $this->meta->form = $this->getForm($this->meta->route_root);
         // @TODO: The below to two attributes are here only for backwards compatibility. so kill it when we can.
         if ($data['meta']) {
             $data['meta']->base_url = '/'.$request->path();

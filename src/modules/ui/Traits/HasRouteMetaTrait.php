@@ -10,7 +10,7 @@ trait HasRouteMetaTrait
     // we're simply using the RouteMeta model directly.
     public function getMeta($key)
     {
-        $rslt = RouteMeta::byName($key)->withForm($key)->first();
+        $rslt = RouteMeta::byName($key)->first();
         return $rslt ? $rslt->combined : null;
     }
 

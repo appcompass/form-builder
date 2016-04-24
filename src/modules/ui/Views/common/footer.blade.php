@@ -123,7 +123,7 @@
                             html: true,
                         });
 
-                        openModal('error', this.responseText, true);
+                        openModal('error', this.responseText, true, 1000);
                        // this.abort();
                     }
                 }, false);
@@ -217,7 +217,7 @@
             });
         }
 
-        function openModal(title, message, is_error){
+        function openModal(title, message, is_error, width_overide){
             var raw = false;
             switch(title){
                 case 'success':
@@ -241,6 +241,9 @@
             $('#modal-alert').find('h4 span').text(title);
             $('#modal-alert').find('.message').html(message);
 
+            if (width_overide) {
+                $('#modal-alert').find('.modal-dialog').width(width_overide);
+            }
             if (is_error) {
                 $('#modal-alert').addClass('error-modal')
             };
