@@ -19,6 +19,7 @@ class CreateFieldsTable extends Migration
             // we use this for any fields like select lists that
             // need to fetch their records from Model.  Products, or Pages for example.
             $table->string("source")->nullable();
+            $table->json('data')->nullable();
             $table->json('config')->nullable();
             $table->timestamps();
         });
@@ -28,6 +29,7 @@ class CreateFieldsTable extends Migration
             $table->increments('id');
             $table->integer("field_id")->unsigned();
             $table->integer("sub_field_id")->unsigned();
+            $table->integer("order")->default(0);
 
             $table->foreign("field_id")
                 ->references("id")

@@ -1,5 +1,5 @@
 @foreach($fields as $field)
-@if(!isset($field->allowed_methods) || (isset($field->allowed_methods) && in_array($meta->method_name,$field->allowed_methods)))
+@if(!isset($field->config->allowed_methods) || (isset($field->config->allowed_methods) && in_array($meta->method_name,$field->config->allowed_methods)))
     @if($field->type == 'fieldset_break')
             </div>
         </div>
