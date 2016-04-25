@@ -3,7 +3,8 @@
 namespace P3in\Models;
 
 use Auth;
-use Illuminate\Database\Eloquent\Collection;
+// use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use P3in\Interfaces\GalleryItemInterface;
 use P3in\Models\GalleryItem;
@@ -136,6 +137,71 @@ class Gallery extends Model
     {
         return $this->addItem($photo);
     }
+
+    /**
+     *
+     */
+    public function sync(\Illuminate\Database\Eloquent\Collection $items, $type = null)
+    {
+
+        $syncMap = [
+            Photo::class => 'syncPhotos',
+            Video::class => 'syncVideos'
+        ];
+
+        if (!is_null($type)) {
+
+            switch($type) {
+                case 'videos':
+                    $this->syncVideos($items);
+                    break;
+                case 'photos':
+                    $this->syncPhotos($items);
+                    break;
+            }
+
+        } else if ($items instanceof \Illuminate\Database\Eloquent\Collection) {
+
+            $acc = [];
+
+            foreach($items as $item) {
+
+                $acc[get_class($item)][] = $item->id;
+
+            }
+
+            foreach($acc as $class => $items) {
+
+                return call_user_func_array([$this, $syncMap[$class]], [collect($items)]);
+
+            }
+
+        }
+
+    }
+
+    public function syncPhotos(Collection $photos)
+    {
+        $owned = $this->photos->pluck('id');
+
+        $keep = $owned->intersect($photos);
+
+        $add = $photos->diff($owned);
+
+        $delete = $owned->diff($keep);
+
+        \DB::table('gallery_items')->where('gallery_id', $this->id)->whereIn('itemable_id', $delete->toArray())->delete();
+
+        foreach(Photo::whereIn('id', $add)->get() as $photo) {
+
+            $this->addPhoto($photo);
+
+        }
+
+        // dd($photos, $owned, 'Add: ' . $add->toJson(), 'Delete: ' . $delete->toJson(), 'Keep: ' . $keep->toJson());
+
+    }
+
 
     /**
      *
