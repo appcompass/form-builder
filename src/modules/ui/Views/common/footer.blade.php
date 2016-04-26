@@ -94,6 +94,20 @@
     </script>
 
     <script>
+        var Photo = function(photo) {
+            this.id = photo.id;
+            this.path = photo.path;
+            this.caption = '';
+        }
+
+        var Video = function(video) {
+            this.id = video.id;
+            this.url = video.url;
+            this.caption = '';
+        }
+    </script>
+
+    <script>
         (function(xhrOpen) {
             /**
             *   XHR Interceptor
@@ -111,7 +125,8 @@
                        this.abort();
                     }
                     if (this.status === 422) {
-                       sweetAlert("Unable to continue", "The input was malformed, request is being ignored", "warning");
+                       sweetAlert("Unable to continue", this.responseText, "warning");
+                       // sweetAlert("Unable to continue", "The input was malformed, request is being ignored", "warning");
                        this.abort();
                     }
                     if (this.status === 500) {
