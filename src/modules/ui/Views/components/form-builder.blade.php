@@ -20,6 +20,7 @@
     <textarea
         v-bind:name="field.name"
         v-model="field.value"
+        rows="10"
         class="form-control"
         v-bind:placeholder="field.placeholder"
     ></textarea>
