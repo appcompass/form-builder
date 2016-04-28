@@ -10,11 +10,13 @@ trait HasFormTrait
     // we're simply using the RouteMeta model directly.
     public function getForm($key)
     {
-        $rslt = Form::byName($key)->firstOrFail();
+        $rslt = Form::byName($key)->first();
 
-        $rtn = $rslt->build();
+        if ($rslt) {
+            return $rslt->build();
+        }
 
-        return $rtn;
+        return null;
     }
 
     public function setForm($array)
