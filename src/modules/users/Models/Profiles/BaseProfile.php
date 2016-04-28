@@ -2,15 +2,17 @@
 
 namespace P3in\Profiles;
 
-use Illuminate\Database\Eloquent\Model;
 use P3in\Models\User;
+use P3in\ModularBaseModel;
 
-class BaseProfile extends Model
+class BaseProfile extends ModularBaseModel
 {
 
     public $table = 'profiles';
 
     public $fillable = [
+        'profileable_id',
+        'profileable_type'
     ];
 
     public function profileable()
@@ -22,5 +24,4 @@ class BaseProfile extends Model
     {
         return $this->belongsTo(User::class);
     }
-
 }

@@ -2,10 +2,8 @@
 
 namespace P3in\Models;
 
-use P3in\Models\Gallery;
-use P3in\Models\Photo;
-use Exception;
 use Cache;
+use Exception;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -15,14 +13,17 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Support\Collection;
 use Modular;
+use P3in\Models\Gallery;
 use P3in\Models\Group;
 use P3in\Models\Permission;
+use P3in\Models\Photo;
+use P3in\ModularBaseModel;
 use P3in\Profiles\BaseProfile;
 use P3in\Traits\AlertableTrait as Alertable;
-use P3in\Traits\OptionableTrait;
 use P3in\Traits\HasPermissions;
+use P3in\Traits\OptionableTrait;
 
-class User extends Model implements AuthenticatableContract, CanResetPasswordContract
+class User extends ModularBaseModel implements AuthenticatableContract, CanResetPasswordContract
 {
 
     use Authenticatable, CanResetPassword, Alertable, Authorizable, OptionableTrait, HasPermissions;
@@ -229,10 +230,27 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
       return $this->hasMany(Gallery::class);
     }
 
+    public function linkProfile(Model $model)
+    {
+        $profile = $this->profiles()->firstOrNew([
+            'profileable_id' => $model->getKey(),
+            'profileable_type' => get_class($model),
+        ]);
+        $profile->save();
+    }
+
+    public function profile($model_name)
+    {
+        $base_profile = $this->profiles()->where('profileable_type', $model_name)->first();
+        return $base_profile ? $base_profile->profileable : null;
+    }
+
+
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = bcrypt($value);
     }
+
 
     /**
      *  Get user's full name
