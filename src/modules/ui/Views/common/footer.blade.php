@@ -98,6 +98,7 @@
             this.id = photo.id;
             this.path = photo.path;
             this.caption = '';
+            this.label = '';
         }
 
         var Video = function(video) {
