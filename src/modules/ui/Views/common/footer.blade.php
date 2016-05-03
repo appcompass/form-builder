@@ -97,8 +97,12 @@
         var Photo = function(photo) {
             this.id = photo.id;
             this.path = photo.path;
-            this.caption = '';
-            this.label = '';
+            this.meta = {
+                caption: photo.meta.caption || '',
+                label: photo.meta.label || '',
+                width: photo.meta.width || '',
+                height: photo.meta.height || '',
+            }
         }
 
         var Video = function(video) {
