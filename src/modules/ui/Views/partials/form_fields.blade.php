@@ -76,7 +76,7 @@
                 @elseif($field->type == 'from_to_input')
                     <div class="input-group input-large">
                         @foreach($field->data as $i => $from_to)
-                            {!! Form::label(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, $from_to->label, []) !!}
+                            {!! Form::label(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, !empty($from_to->label) ? $from_to->label : null, []) !!}
                             @if($i == 1) <span class="input-group-addon">{{ $field->operator }}</span> @endif
                             @if($field->type == 'text')
                                 {!! Form::text(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
@@ -92,7 +92,7 @@
                         @foreach($field->data as $i => $from_to)
                             @if($from_to->type == 'selectlist')
                                 <div class="col-lg-6">
-                                    {!! Form::label(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, $from_to->label, []) !!}
+                                    {!! Form::label(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, !empty($from_to->label) ? $from_to->label : null, []) !!}
                                     {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, $from_to->data, null, ['class' => 'form-control']) !!}
                                 </div>
                             @endif
@@ -102,7 +102,7 @@
                     <div class="row">
                         @foreach($field->data as $i => $from_to)
                             <div class="col-lg-6">
-                            {!! Form::label(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, $from_to->label, []) !!}
+                            {!! Form::label(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, !empty($from_to->label) ? $from_to->label : null, []) !!}
                             @if($from_to->type == 'selectlist')
                                     {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, $from_to->data, null, ['class' => 'form-control']) !!}
                             @elseif($field->type == 'text')
