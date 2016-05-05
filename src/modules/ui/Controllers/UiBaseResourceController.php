@@ -59,6 +59,7 @@ abstract class UiBaseResourceController extends Controller
         $this->validate($request, $this->model->getRules());
 
         $newRecord = $this->model->fill($request->only($this->model->getFillable()));
+
         $newRecord->save();
 
         return $this->json('/'.$request->path().'/'.$newRecord->getKey().'/edit');
