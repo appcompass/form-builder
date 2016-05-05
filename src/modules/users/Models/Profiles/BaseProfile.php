@@ -24,4 +24,9 @@ class BaseProfile extends ModularBaseModel
     {
         return $this->belongsTo(User::class);
     }
+
+    public function scopeOfType($query, $class_name)
+    {
+        return $query->where('profileable_type', $class_name);
+    }
 }
