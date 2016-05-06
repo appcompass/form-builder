@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use P3in\Models\Permission;
 use P3in\Models\User;
 use P3in\Traits\AlertableTrait;
+use Illuminate\Database\Eloquent\Collection;
 
 class Group extends Model
 {
@@ -112,7 +113,7 @@ class Group extends Model
 	/**
 	  * Grant Permission(s)
 	  *
-	  *	@param mixed $perm  (string) Permission Type | (Permission) Permission Instance | (array)
+	  *	@param mixed $perm  (string) Permission Type | (Permission) Permission Instance | Collection eleoquent collection of perms to sync | (array)
 	  */
 	public function grantPermissions($perm)
 	{
@@ -121,7 +122,11 @@ class Group extends Model
 
 			return;
 
-		} else 	if ( is_string($perm)) {
+		} else if ($perm instanceof \Illuminate\Database\Eloquent\Collection) {
+
+			return $this->permissions()->sync($perm);
+
+		} else if (is_string($perm)) {
 
 			return $this->grantPermissions(Permission::byType($perm)->firstOrFail());
 
