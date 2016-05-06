@@ -245,12 +245,10 @@ class User extends ModularBaseModel implements AuthenticatableContract, CanReset
         return $base_profile ? $base_profile->profileable : null;
     }
 
-
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = bcrypt($value);
     }
-
 
     /**
      *  Get user's full name
