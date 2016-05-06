@@ -186,7 +186,7 @@ abstract class UiBaseResourceController extends Controller
         }
     }
 
-    public function json($data, $success = true, $message = '')
+    public function json($data, $success = true, $message = '', $code = 200)
     {
         $rtn = [
             'success' => $success,
@@ -194,7 +194,7 @@ abstract class UiBaseResourceController extends Controller
             'message' => $message,
         ];
 
-        return response()->json($rtn);
+        return response()->json($rtn, $code);
     }
 
 
