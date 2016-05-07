@@ -60,7 +60,7 @@
         methods: {},
         components: {
             text: Vue.component('text', {template: '#text', props: ['field'] }),
-            'admaker-content-textare': Vue.component('text-area', {template: '#textarea', props: ['field'] }),
+            'admaker-content-textarea': Vue.component('text-area', {template: '#textarea', props: ['field'] }),
             dropdown: Vue.component('dropdown', {template: '#dropdown', props: ['field'] }),
             textarea: Vue.component('text-area', {
                 template: '#textarea',

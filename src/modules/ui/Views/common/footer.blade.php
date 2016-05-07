@@ -132,9 +132,17 @@
                        this.abort();
                     }
                     if (this.status === 422) {
-                       sweetAlert("Unable to continue", this.responseText, "warning");
+                        response = JSON.parse(this.responseText).data;
+                        error_string = '';
+                        for (var prop in response) {
+                            if (Object.prototype.hasOwnProperty.call(response, prop)) {
+                                error_string += response[prop].join('<br>');
+                            }
+                        }
+                        error_string += '<br>';
+                        openModal('Validation Error!', error_string, true);
                        // sweetAlert("Unable to continue", "The input was malformed, request is being ignored", "warning");
-                       this.abort();
+                       // this.abort();
                     }
                     if (this.status === 500) {
 
@@ -559,7 +567,6 @@
                     },
                     success: function(res){
                         if (res.success) {
-                            console.log(res);
                             router.navigate(res.data);
                         }else{
                             openModal('error', res.message, true);
