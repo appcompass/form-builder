@@ -67,10 +67,23 @@
                 props: ['field'],
                 methods: {
                     verify: function(value) {
-                        this.$http.post('/ad-maker-listings/validate-ad', { content: value })
-                            .then(function(data) {
-                                sweetAlert('Response', JSON.stringify(data.data.sucess), 'info');
-                            })
+                        $.ajax({
+                            url: '/ad-maker-listings/validate-ad',
+                            data: { content: value },
+                            type: 'POST'
+                            // ,
+                            // error: function(err){
+                            // },
+                            // success: function(data){
+                            // },
+                            // complete: function(xhr, status){
+                            // }
+                        });
+
+                        // this.$http.post('/ad-maker-listings/validate-ad', { content: value })
+                        //     .then(function(data) {
+                        //         sweetAlert('Response', JSON.stringify(data.data.sucess), 'info');
+                        //     })
                     }
                 }
             }),

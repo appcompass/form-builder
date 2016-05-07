@@ -114,55 +114,6 @@
         }
     </script>
 
-    <script>
-        (function(xhrOpen) {
-            /**
-            *   XHR Interceptor
-            */
-            XMLHttpRequest.prototype.open = function(method, url, async, user, pass) {
-                this.addEventListener("progress", function() {
-                });
-                this.addEventListener("readystatechange", function() {
-                    if (this.status === 403) {
-                       sweetAlert("Unauthorized", "You are not authorized to view this resource", "error");
-                       this.abort();
-                    }
-                    if (this.status === 404) {
-                       sweetAlert("Resource Not Found", "The Resource you are looking for isn't there!", "error");
-                       this.abort();
-                    }
-                    if (this.status === 422) {
-                        response = JSON.parse(this.responseText).data;
-                        error_string = '';
-                        for (var prop in response) {
-                            if (Object.prototype.hasOwnProperty.call(response, prop)) {
-                                error_string += response[prop].join('<br>');
-                            }
-                        }
-                        error_string += '<br>';
-                        openModal('Validation Error!', error_string, true);
-                       // sweetAlert("Unable to continue", "The input was malformed, request is being ignored", "warning");
-                       // this.abort();
-                    }
-                    if (this.status === 500) {
-
-                        sweetAlert({
-                            title: this.statusText,
-                            text: 'An Unkown Error Occured', //this.responseText
-                            type: 'error',
-                            html: true,
-                        });
-
-                        openModal('error', this.responseText, true, 1000);
-                       // this.abort();
-                    }
-                }, false);
-                xhrOpen.call(this, method, url, async, user, pass);
-            };
-
-        })(XMLHttpRequest.prototype.open);
-
-    </script>
 
     <script type="text/javascript">
 
@@ -350,7 +301,6 @@
             var alertModal = $('#modal-alert');
 
             $(this).ajaxStart(function(){
-                // sweetAlert("Loading", "Loading Please wait..", "info");
                 openModal('Loading', 'Loading Please wait..');
             });
 
@@ -358,6 +308,41 @@
                 if (!alertModal.hasClass('error-modal')) {
                     alertModal.modal('hide');
                 };
+            });
+            // Added this replacing the native XMLHttpRequest XHR Interceptor since it's not as stable/consistent as jquery's handling of ajax events.
+            // The downside is though that we can't use vue-resource, and instead have to use jquery's ajax methods.  It's unfortunate but jQuery actually has
+            // better support for handling consecutive ajax events (i.e. do something on the first request, and do something else when the very last request is finished)
+            $(this).ajaxError(function(event, xhr, settings, error){
+                switch (xhr.status) {
+                    case 403:
+                       sweetAlert("Unauthorized", "You are not authorized to view this resource", "error");
+                        break;
+                    case 404:
+                       sweetAlert("Resource Not Found", "The Resource you are looking for isn't there!", "error");
+                        break;
+                    case 422:
+                        response = JSON.parse(xhr.responseText);
+                        data = response.data;
+                        error_string = '';
+                        for (var prop in data) {
+                            if (Object.prototype.hasOwnProperty.call(data, prop)) {
+                                error_string += data[prop].join('<br>');
+                            }
+                        }
+                        error_string += '<br>';
+                        openModal('Validation Error!', error_string, true);
+                        break;
+                    case 500:
+                        sweetAlert({
+                            title: xhr.statusText,
+                            text: error, //xhr.responseText
+                            type: 'error',
+                            html: true,
+                        });
+
+                        openModal('error', xhr.responseText, true, 1000);
+                        break;
+                }
             });
 
             alertModal.on('hidden.bs.modal', function (e) {
@@ -393,16 +378,6 @@
             //         router.navigate(url);
             //     };
             // });
-
-
-
-
-
-
-
-
-
-
 
 
             if ($.fn.niceScroll) {
