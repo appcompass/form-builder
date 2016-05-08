@@ -330,7 +330,7 @@
                             }
                         }
                         error_string += '<br>';
-                        openModal('Validation Error!', error_string, true);
+                        openModal(error, error_string, true);
                         break;
                     case 500:
                         sweetAlert({
@@ -537,9 +537,6 @@
                     url: source,
                     type: 'POST',
                     data: selectedObjects,
-                    error: function(err){
-                        openModal('error', err, true);
-                    },
                     success: function(res){
                         if (res.success) {
                             router.navigate(res.data);
@@ -547,13 +544,6 @@
                             openModal('error', res.message, true);
                         }
                         // $(target).html(data);
-                    },
-                    complete: function(xhr, status){
-                        // if (status =='success') {
-                        //     loadData($(target));
-                        // }else{
-                        //     openModal('error', status, true);
-                        // }
                     }
                 });
             });

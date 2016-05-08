@@ -164,8 +164,9 @@
                 },
                 methods: {
                     fetchNav: function() {
-                        this.$http.get('/left-nav', function(data,status,request) {
-                            this.nav = data;
+                        vm = this;
+                        $.get('/left-nav', function(response){
+                            vm.nav = response;
                         });
                     }
                 },
