@@ -296,61 +296,60 @@
                 helper: "clone",
             });
         }
+        var alertModal = $('#modal-alert');
+
+        $(document).ajaxStart(function(){
+            openModal('Loading', 'Loading Please wait..');
+        });
+
+        $(document).ajaxStop(function(){
+            if (!alertModal.hasClass('error-modal')) {
+                alertModal.modal('hide');
+            };
+        });
+        // Added this replacing the native XMLHttpRequest XHR Interceptor since it's not as stable/consistent as jquery's handling of ajax events.
+        // The downside is though that we can't use vue-resource, and instead have to use jquery's ajax methods.  It's unfortunate but jQuery actually has
+        // better support for handling consecutive ajax events (i.e. do something on the first request, and do something else when the very last request is finished)
+        $(document).ajaxError(function(event, xhr, settings, error){
+            switch (xhr.status) {
+                case 403:
+                   sweetAlert("Unauthorized", "You are not authorized to view this resource", "error");
+                    break;
+                case 404:
+                   sweetAlert("Resource Not Found", "The Resource you are looking for isn't there!", "error");
+                    break;
+                case 422:
+                    response = JSON.parse(xhr.responseText);
+                    data = response.data;
+                    error_string = '';
+                    for (var prop in data) {
+                        if (Object.prototype.hasOwnProperty.call(data, prop)) {
+                            error_string += data[prop].join('<br>');
+                        }
+                    }
+                    error_string += '<br>';
+                    openModal(error, error_string, true);
+                    break;
+                case 500:
+                    sweetAlert({
+                        title: xhr.statusText,
+                        text: error, //xhr.responseText
+                        type: 'error',
+                        html: true,
+                    });
+
+                    openModal('error', xhr.responseText, true, 1000);
+                    break;
+            }
+        });
+
+        alertModal.on('hidden.bs.modal', function (e) {
+            alertModal.removeClass('error-modal');
+            alertModal.find('h4 span').text('');
+            alertModal.find('.message').text('');
+        });
 
         $(document).ready(function () {
-            var alertModal = $('#modal-alert');
-
-            $(this).ajaxStart(function(){
-                openModal('Loading', 'Loading Please wait..');
-            });
-
-            $(this).ajaxStop(function(){
-                if (!alertModal.hasClass('error-modal')) {
-                    alertModal.modal('hide');
-                };
-            });
-            // Added this replacing the native XMLHttpRequest XHR Interceptor since it's not as stable/consistent as jquery's handling of ajax events.
-            // The downside is though that we can't use vue-resource, and instead have to use jquery's ajax methods.  It's unfortunate but jQuery actually has
-            // better support for handling consecutive ajax events (i.e. do something on the first request, and do something else when the very last request is finished)
-            $(this).ajaxError(function(event, xhr, settings, error){
-                switch (xhr.status) {
-                    case 403:
-                       sweetAlert("Unauthorized", "You are not authorized to view this resource", "error");
-                        break;
-                    case 404:
-                       sweetAlert("Resource Not Found", "The Resource you are looking for isn't there!", "error");
-                        break;
-                    case 422:
-                        response = JSON.parse(xhr.responseText);
-                        data = response.data;
-                        error_string = '';
-                        for (var prop in data) {
-                            if (Object.prototype.hasOwnProperty.call(data, prop)) {
-                                error_string += data[prop].join('<br>');
-                            }
-                        }
-                        error_string += '<br>';
-                        openModal(error, error_string, true);
-                        break;
-                    case 500:
-                        sweetAlert({
-                            title: xhr.statusText,
-                            text: error, //xhr.responseText
-                            type: 'error',
-                            html: true,
-                        });
-
-                        openModal('error', xhr.responseText, true, 1000);
-                        break;
-                }
-            });
-
-            alertModal.on('hidden.bs.modal', function (e) {
-                alertModal.removeClass('error-modal');
-                alertModal.find('h4 span').text('');
-                alertModal.find('.message').text('');
-            });
-
             var router = new Simrou();
 
             router.addRoute('*sp').get(function(e, params){
