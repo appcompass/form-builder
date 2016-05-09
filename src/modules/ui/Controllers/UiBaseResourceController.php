@@ -24,9 +24,9 @@ abstract class UiBaseResourceController extends Controller
 
     public function index(Request $request)
     {
+        // dd($this->builder);
         $records = $this->builder->paginate($request->has('per_page') ? $request->per_page : 20);
         $records->setPath($this->url);
-
         return $this->output($request, [
             'records' => $records,
         ]);

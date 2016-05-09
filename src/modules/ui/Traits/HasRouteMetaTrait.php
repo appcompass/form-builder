@@ -11,7 +11,7 @@ trait HasRouteMetaTrait
     public function getMeta($key)
     {
         $rslt = RouteMeta::byName($key)->first();
-        return $rslt ? $rslt->combined : null;
+        return $rslt ? $rslt->combined : new \stdClass();
     }
 
     public function setMeta($array)
