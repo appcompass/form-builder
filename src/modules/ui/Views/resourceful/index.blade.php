@@ -95,7 +95,7 @@
                         @elseif($row_data->type == 'option')
                             <td>{{ $record->getOption($row_key, $row_data->option_name) }}</td>
                         @else
-                            <td>{{ $record->$row_key }}</td>
+                            <td>{!! $record->$row_key !!}</td>
                         @endif
                     @endforeach
                 </tr>

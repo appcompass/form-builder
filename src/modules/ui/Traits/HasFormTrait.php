@@ -10,7 +10,7 @@ trait HasFormTrait
     // we're simply using the RouteMeta model directly.
     public function getForm($key)
     {
-        $rslt = Form::byName($key)->first();
+        $rslt = Form::byName($key)->with('fields')->first();
 
         if ($rslt) {
             return $rslt->build();

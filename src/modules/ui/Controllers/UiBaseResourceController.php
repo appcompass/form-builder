@@ -167,6 +167,7 @@ abstract class UiBaseResourceController extends Controller
     {
         $data['meta'] = $this->getMeta($request->route()->getName());
         $this->meta->form = $this->getForm($this->meta->route_root);
+
         // @TODO: The below to two attributes are here only for backwards compatibility. so kill it when we can.
         if ($data['meta']) {
             $data['meta']->base_url = '/'.$request->path();
@@ -182,6 +183,7 @@ abstract class UiBaseResourceController extends Controller
         if ($request->wantsJson()) {
             return $this->json($data, $success, $message);
         }else{
+
             return view($this->template, $data);
         }
     }
