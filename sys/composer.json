@@ -63,6 +63,7 @@
             "composer dump-autoload -o",
             "php artisan optimize",
             "php artisan cache:clear",
+            "cd ../source && gulp build",
             "cd ../sys && php artisan vendor:publish"
         ]
     },
