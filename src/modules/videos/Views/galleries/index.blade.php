@@ -5,7 +5,7 @@
         <span class="tools pull-right">
             <a href="javascript:;" class="fa fa-chevron-down"></a>
         </span>
-        Upload Videos
+        {{ $meta->create->heading }}
     </header>
     <div class="panel-body">
         <div class="row">

@@ -61,7 +61,7 @@ class CpGalleryPhotosController extends UiBaseController
                     'target' => '#main-content-out',
                 ],
             ],
-            'heading' => 'Add a page to this website',
+            'heading' => 'Upload Photos',
             'route' => 'galleries.photos.store'
         ],
         'form' => [],
