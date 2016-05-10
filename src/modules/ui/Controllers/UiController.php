@@ -86,8 +86,8 @@ class UiController extends UiBaseController {
     public function postRequestMeta(Request $request)
     {
         $rtn = $this->requestMeta($request->url);
-
-        return response()->json($rtn);
+        $code = $rtn['success'] ? 200 : 404;
+        return response()->json($rtn, $code);
     }
 
     public function postDeleteModal(Request $request)
