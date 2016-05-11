@@ -76,7 +76,7 @@ class CpGroupPermissionsController extends UiBaseController
 
         $groups->load('permissions');
 
-        $permissions = Permission::all();
+        $permissions = Permission::orderBy('label')->get();
 
         $this->meta->base_url = "/groups/" . $groups->id . "/permissions/";
 
