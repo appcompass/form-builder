@@ -109,8 +109,12 @@
 
         var Video = function(video) {
             this.id = video.id;
-            this.url = video.url;
-            this.caption = '';
+            this.url = video.name;
+            this.meta = {
+                caption: video.meta.caption || '',
+                label: video.meta.label || '',
+                thumbnail: video.meta.thumbnail || ''
+            }
         }
     </script>
 

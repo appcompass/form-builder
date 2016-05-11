@@ -198,7 +198,29 @@ class Gallery extends Model
 
         }
 
-        // dd($photos, $owned, 'Add: ' . $add->toJson(), 'Delete: ' . $delete->toJson(), 'Keep: ' . $keep->toJson());
+    }
+
+    public function syncVideos(Collection $videos)
+    {
+        // currently owned
+        $owned = $this->videos->pluck('id');
+
+        // the ones we keep
+        $keep = $owned->intersect($videos);
+
+        // the oned we add
+        $add = $videos->diff($owned);
+
+        // the oned we delete
+        $delete = $owned->diff($keep);
+
+        \DB::table('gallery_items')->where('gallery_id', $this->id)->whereIn('itemable_id', $delete->toArray())->delete();
+
+        foreach(Video::whereIn('id', $add)->get() as $video) {
+
+            $this->addVideo($video);
+
+        }
 
     }
 
