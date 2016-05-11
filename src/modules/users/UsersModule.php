@@ -38,7 +38,7 @@ Class UsersModule extends BaseModule
     {
         return [
             [
-                'label' => 'Users Manager',
+                'label' => 'User Manager',
                 'belongs_to' => ['cp_main_nav'],
                 'sub_nav' => 'cp_main_nav_users',
                 'req_perms' => null,
@@ -59,7 +59,7 @@ Class UsersModule extends BaseModule
                     ],
                 ],
             ], [
-                'label' => 'Groups Manager',
+                'label' => 'Group Manager',
                 'belongs_to' => ['cp_main_nav_users'],
                 'sub_nav' => '',
                 'req_perms' => Permission::createCpRoutePerm('groups.index'),

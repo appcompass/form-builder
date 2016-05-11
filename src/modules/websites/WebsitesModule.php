@@ -48,7 +48,7 @@ Class WebsitesModule extends BaseModule
     {
         return [
             [
-                'label' => 'Websites Manager',
+                'label' => 'Website Manager',
                 'belongs_to' => ['cp_main_nav'],
                 'sub_nav' => '',
                 'req_perms' => Permission::createCpRoutePerm('websites.index'),
