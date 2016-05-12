@@ -6,13 +6,13 @@
     </section>
     <section class="panel">
         <header class="panel-heading">
-            {{ $field->window_title or '' }}
+            {{ $field->label or '' }}
         </header>
         <div class="panel-body row">
-            @if(!empty($field->window_header) || !empty($field->window_sub_header))
+            @if(!empty($field->config->window_header) || !empty($field->config->window_sub_header))
             <div class="col-lg-12">
-                 @if(!empty($field->window_header)) <h4>{{ $field->window_header }}</h4> @endif
-                @if(!empty($field->window_sub_header)) <p>{{ $field->window_sub_header }}</p> @endif
+                 @if(!empty($field->config->window_header)) <h4>{{ $field->config->window_header }}</h4> @endif
+                @if(!empty($field->config->window_sub_header)) <p>{{ $field->config->window_sub_header }}</p> @endif
                 <br>
             </div>
             @endif

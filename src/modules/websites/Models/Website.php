@@ -211,6 +211,23 @@ class Website extends Model
         ], $overrides);
     }
 
+
+    public function populateField($field_name)
+    {
+        switch ($field_name) {
+            case 'website_header_list':
+                return Section::headers()->orderBy('name')->lists('name', 'id');
+                break;
+            case 'website_footer_list':
+                return Section::footers()->orderBy('name')->lists('name', 'id');
+                break;
+            default:
+                return [];
+                break;
+        }
+    }
+
+
     /**
      *  @TODO deployment shouldn't really be a Website responsibility
      */

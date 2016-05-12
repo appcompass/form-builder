@@ -234,7 +234,6 @@ class UiBaseController extends ModularBaseController {
                     }
                 }
             }
-
             if (!$rtn['success']) {
                 $rtn['data'] = [
                     'url' => $parsedUrl['path'],

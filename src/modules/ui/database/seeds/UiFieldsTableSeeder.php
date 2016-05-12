@@ -78,6 +78,12 @@ class UiFieldsTableSeeder extends Seeder
         ]);
         $datepicker_field->save();
 
+        $fieldset_break_field = Field::firstOrNew([
+            'type' => 'fieldset_break',
+            'name' => 'fieldset_break',
+        ]);
+        $fieldset_break_field->save();
+
         // The repeatable type is usually module/form specific so this comment here is just for reference,
         // since the UI does have the capability of handling repeatables already.
         // $repeatable_field = Field::firstOrNew([
