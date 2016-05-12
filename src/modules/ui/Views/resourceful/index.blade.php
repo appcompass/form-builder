@@ -54,7 +54,7 @@
                                             href="{{ $meta->base_url }}/{{ $record->id }}/edit"
                                             data-click="{{ $meta->base_url }}/{{ $record->id }}"
                                             data-target="#main-content-out"
-                                            class="btn btn-primary"
+                                            class="btn btn-xs btn-primary"
                                         >
                                             Edit
                                         </a>
@@ -67,22 +67,24 @@
                                             data-object-name="{{ get_class($record) }}"
                                             data-object-id="{{ $record->id }}"
                                             data-object-redirect="{{ $meta->base_url }}"
-                                            class="btn btn-info"
+                                            class="btn btn-xs btn-info"
                                         >
                                             Clone
                                         </a>
                                     @elseif($action == 'delete')
-                                        <a
-                                            data-action="modal-delete"
-                                            href="#modal-edit"
-                                            data-toggle="modal"
-                                            data-delete="{{ $meta->base_url }}/{{ $record->id }}"
-                                            data-click="/delete-modal"
-                                            data-inject-area="#modal-body"
-                                            class="btn btn-danger"
-                                        >
-                                            Delete
-                                        </a>
+                                        @can('destroy', $record)
+                                            <a
+                                                data-action="modal-delete"
+                                                href="#modal-edit"
+                                                data-toggle="modal"
+                                                data-delete="{{ $meta->base_url }}/{{ $record->id }}"
+                                                data-click="/delete-modal"
+                                                data-inject-area="#modal-body"
+                                                class="btn btn-xs btn-danger"
+                                            >
+                                                Delete
+                                            </a>
+                                        @endcan
                                     @endif
                                 @endforeach
                             </td>
