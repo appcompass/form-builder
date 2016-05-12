@@ -267,6 +267,13 @@ class User extends ModularBaseModel implements AuthenticatableContract, CanReset
             ->contains($this->id);
     }
 
+    public function isManager()
+    {
+        return Group::managers()->users
+            ->contains($this->id);
+
+    }
+
     /**
      *  Get/Set user's Avatar
      *

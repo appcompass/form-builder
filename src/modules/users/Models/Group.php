@@ -25,6 +25,7 @@ class Group extends Model
      * Administrators Name
      */
     const ADMINISTRATORS_NAME = 'cp-admin';
+    const MANAGERS_NAME = 'bostonpads-managers';
 
     /**
      * The attributes that are mass assignable.
@@ -62,6 +63,14 @@ class Group extends Model
     public function scopeAdministrators(Builder $query)
     {
         return $query->where('name', Group::ADMINISTRATORS_NAME)->first();
+    }
+
+    /**
+     *
+     */
+    public function scopeManagers(Builder $query)
+    {
+        return $query->where('name', Group::MANAGERS_NAME)->first();
     }
 
     /**
