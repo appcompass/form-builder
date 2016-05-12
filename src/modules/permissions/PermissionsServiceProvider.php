@@ -18,7 +18,6 @@ use P3in\Models\Photo;
 use P3in\Models\User;
 use P3in\Models\Website;
 use P3in\Policies\ResourcesPolicy;
-use P3in\Policies\UnitsPolicy;
 
 class PermissionsServiceProvider extends ServiceProvider
 {

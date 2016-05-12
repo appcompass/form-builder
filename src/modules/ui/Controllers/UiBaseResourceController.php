@@ -109,7 +109,7 @@ abstract class UiBaseResourceController extends Controller
             $this->meta->classname = $model_name;
 
             // Check permissions
-            $this->gateCheck($model_name);
+            $this->gateCheck($route->method_name);
 
             // we take the route and convert it to a nav name so something.else becomes something_else
             $this->nav_name = str_replace(['.','-'], '_', $route->route_root);

@@ -35,7 +35,7 @@ class ResourcesPolicy
             $this->action = '@' . $action;
 
         }
-
+        // dd($this);
     }
 
     /**
