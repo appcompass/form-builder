@@ -5,6 +5,7 @@ namespace P3in\Modules\Providers;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider;
+use Illuminate\Support\Facades\Config;
 use Intervention\Image\Facades\Image;
 use Intervention\Image\ImageServiceProvider;
 use P3in\Models\Photo;
@@ -26,6 +27,8 @@ class PhotosServiceProvider extends AuthServiceProvider
         // Intervetion
         $this->app->register(ImageServiceProvider::class);
         $loader->alias('Image', Image::class);
+
+        Config::set(['image' => ['driver' => 'imagick']]);
     }
 
     public function register()
