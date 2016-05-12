@@ -65,7 +65,6 @@ class CpWebsiteNavigationController extends UiBaseController
         $navmenus = $websites->navmenus()->whereNull('parent_id')->get();
 
         foreach($websites->pages as $page) {
-
           $navitems[] = $page->navItem()
             ->first()
             ->toArray();

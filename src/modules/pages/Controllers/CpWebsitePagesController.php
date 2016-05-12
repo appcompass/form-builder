@@ -332,6 +332,11 @@ class CpWebsitePagesController extends UiBaseController
 
         $pages->url = $pages->getUrl();
 
+        if ($pages->navItem) {
+            $pages->navItem->url = $pages->url;
+            $pages->navItem->save();
+        }
+
         $pages->update($request->except(['settings', 'parent']));
 
         return $this->json($this->setBaseUrl(['websites', $websites->id, 'pages', $pages->id, 'edit']));

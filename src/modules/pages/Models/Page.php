@@ -121,7 +121,7 @@ class Page extends ModularBaseModel
 
         return array_replace([
             "label" => $this->title,
-            "url" => $this->slug,
+            "url" => $this->url,
             "req_perms" => $req_perm ? $req_perm->id : Permission::GUEST_PERMISSION,
             "props" => ['icon' => 'list']
         ], $overrides);
