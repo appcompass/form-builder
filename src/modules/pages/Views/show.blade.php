@@ -37,7 +37,7 @@
                             data-inject-area="#modal-body"
                             class="btn btn-danger btn-xs"
                         >
-                            Delete
+                            <i class="fa fa-times"> </i>
                         </a>
                     </div>
                 </li>
