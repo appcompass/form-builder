@@ -84,7 +84,7 @@ abstract class UiBaseResourceController extends Controller
      */
     public function gateCheck($type)
     {
-        if (\Gate::denies($type, get_class($this->model))) {
+        if (\Gate::denies($type, $this->model)) {
             abort(403);
         }
     }

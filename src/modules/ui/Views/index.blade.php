@@ -5,7 +5,7 @@
     <div class="panel-body">
         <div class="clearfix">
             <div class="btn-group">
-                @can('edit', $meta->classname)
+                @can('create', $meta->classname)
                     @if(empty($meta->no_create))
                         <a id="editable-sample_new" class="btn btn-primary" href="#{{ $meta->base_url }}/create" data-click="{{ $meta->base_url }}/create" data-target="{{ $meta->data_target }}">
                             Add New <i class="fa fa-plus"></i>
