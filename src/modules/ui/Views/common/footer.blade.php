@@ -92,36 +92,11 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
 
+    <script src="assets/bplistings/js/bostonpads_classes.vue.js"></script>
+
     @yield('scripts.footer')
 
-
-    <script>
-        var Photo = function(photo) {
-            this.id = photo.id;
-            this.path = photo.path;
-            this.meta = {
-                caption: photo.meta.caption || '',
-                label: photo.meta.label || '',
-                width: photo.meta.width || '',
-                height: photo.meta.height || '',
-            }
-        }
-
-        var Video = function(video) {
-            this.id = video.id;
-            this.url = video.name;
-            this.meta = {
-                caption: video.meta.caption || '',
-                label: video.meta.label || '',
-                thumbnail: video.meta.thumbnail || ''
-            }
-        }
-    </script>
-
-
     <script type="text/javascript">
-
-
 
         // temp spot tille we include actual file.
         // examples/source https://gist.github.com/cowboy/1025817#file-jquery-ba-deparam-min-js
