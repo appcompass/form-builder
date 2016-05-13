@@ -11,10 +11,10 @@
 
         window.fbAsyncInit = function() {
             FB.init({
-              appId     : '1308812039134793', // public info
+              appId     : {{ env('FB_APP_ID') }}, // public info
               xfbml     : true,
               status    : true,
-              version   : 'v2.5',
+              version   : 'v2.6',
               cookie    : true,
               oauth     : true
             });
