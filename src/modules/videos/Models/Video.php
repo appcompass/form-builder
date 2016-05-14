@@ -132,10 +132,34 @@ class Video extends Model implements GalleryItemInterface
         $ext = $file->getClientOriginalExtension();
         $name = $file->getClientOriginalName();
 
-        $client = new GuzzleClient();
-
         try {
-            $response = $client->request('POST', env('WISTIA_UPLOAD_URL'), [
+
+            $video = static::uploadToWistia($name, $file->getRealpath(), $user);
+            $video->save();
+
+            return $video;
+
+        } catch (RequestException $e) {
+
+            dd($e);
+
+        }
+    }
+
+    public static function uploadToWistia($name, $real_path, User $user, $url = false)
+    {
+        $client = new GuzzleClient();
+        if ($url) {
+            $payload = [
+                'form_params' => [
+                    'api_password' => env('WISTIA_API_PASSWORD'),
+                    'project_id' => env('WISTIA_PROJECT_ID'),
+                    'name' => $name,
+                    'url' => $real_path,
+                ]
+            ];
+        }else{
+            $payload = [
                 'multipart' => [
                     [
                         'name'     => 'api_password',
@@ -148,36 +172,28 @@ class Video extends Model implements GalleryItemInterface
                         'contents' => $name
                     ],[
                         'name'     => 'file',
-                        'contents' => fopen($file->getRealpath(), 'r')
+                        'contents' => fopen($real_path, 'r')
                     ]
                 ]
-            ]);
-
-            $rtn = json_decode((string) $response->getBody());
-
-            $video = new Video([
-                'name' => $rtn->name,
-                'storage' => 'wistia'
-            ]);
-
-            $video->meta = [
-                'thumbnail' => $rtn->thumbnail->url,
-                'id' => $rtn->id,
-                'hashed_id' => $rtn->hashed_id,
-                'duration' => $rtn->duration,
             ];
-
-            $video->user()->associate($user);
-
-            $video->save();
-
-            return $video;
-
-        } catch (RequestException $e) {
-
-            dd($e);
-
         }
-    }
+        $response = $client->request('POST', env('WISTIA_UPLOAD_URL'), $payload);
 
+        $rtn = json_decode((string) $response->getBody());
+
+        $video = new Video([
+            'name' => $name,
+            'storage' => 'wistia'
+        ]);
+
+        $video->meta = [
+            'thumbnail' => $rtn->thumbnail->url,
+            'id' => $rtn->id,
+            'hashed_id' => $rtn->hashed_id,
+        ];
+
+        $video->user()->associate($user);
+
+        return $video;
+    }
 }
