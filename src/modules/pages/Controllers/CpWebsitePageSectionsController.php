@@ -146,6 +146,8 @@ class CpWebsitePageSectionsController extends UiBaseController
 
         $this->setBaseUrl(['websites', $websites->id, 'pages', $page_id, 'section', $section_id]);
 
+        $this->meta->heading = 'Edit the '.$websites->site_name.' '.$page->title.' page '.$section->template->name.' section';
+
         return view($edit_view, [
             'meta' => $this->meta,
             'website' => $websites,

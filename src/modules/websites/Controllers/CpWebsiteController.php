@@ -246,6 +246,7 @@ class CpWebsiteController extends UiBaseController
      */
     public function show(Website $websites)
     {
+        $this->meta->show->sub_section_name = $websites->site_name.' '.$this->meta->show->sub_section_name;
         return $this->build('show', ['websites', $websites->id]);
     }
 
@@ -255,6 +256,7 @@ class CpWebsiteController extends UiBaseController
     public function edit(Website $websites)
     {
         $this->record = $websites;
+        $this->meta->edit->heading = $websites->site_name.' '.$this->meta->edit->heading;
 
         // $this->authorize('edit', $this->record);
 

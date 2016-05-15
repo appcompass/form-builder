@@ -38,6 +38,7 @@ class CpWebsiteSettingsController extends UiBaseResourceController
         if (isset($this->model->logo) AND !$this->params['websites']->hasLogo()) {
             $this->model->logo = '';
         }
+        $this->meta->heading = 'Manage '.$this->params['websites']->site_name. ' Website Settings';
         return parent::edit($request);
     }
 
