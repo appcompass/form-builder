@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Http\Request;
 use P3in\Models\PageSection;
 use P3in\Models\Section;
 use P3in\Models\Website;
@@ -348,7 +349,9 @@ class Page extends ModularBaseModel
     public function getFullUrlAttribute()
     {
         $url = $this->dynamic_segment ? str_replace('([a-z0-9-]+)', $this->dynamic_segment, $this->url) : $this->url;
-        return $this->website->site_url.'/'.$url;
+        $schema = Request::capture()->secure() ? 'https' : 'http';
+
+        return $schema.'://'.$this->website->site_url.'/'.$url;
     }
 
     public function getUrlAttribute()
@@ -361,11 +364,13 @@ class Page extends ModularBaseModel
         $images = [];
         $page_title = $this->title;
         $page = json_decode($this->toJson(),true);
+
         array_walk_recursive($page, function($value, $key) use (&$images, $page_title){
             if ($key == 'image') {
                 $images[] = ['url' => URL::to($value), 'title' => $page_title.' - '.$value];
             }
         });
+
         return $images;
     }
 
