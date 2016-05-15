@@ -54,7 +54,7 @@
                                             href="{{ $meta->base_url }}/{{ $record->getKey() }}/edit"
                                             data-click="{{ $meta->base_url }}/{{ $record->getKey() }}"
                                             data-target="{{ $meta->data_target }}"
-                                            class="btn btn-primary"
+                                            class="btn btn-xs btn-primary"
                                         >
                                             Edit
                                         </a>
@@ -67,7 +67,7 @@
                                             data-object-name="{{ get_class($record) }}"
                                             data-object-id="{{ $record->getKey() }}"
                                             data-object-redirect="{{ $meta->base_url }}"
-                                            class="btn btn-info"
+                                            class="btn btn-xs btn-info"
                                         >
                                             Clone
                                         </a>
@@ -80,7 +80,7 @@
                                             data-delete="{{ $meta->base_url }}/{{ $record->getKey() }}"
                                             data-click="/delete-modal"
                                             data-inject-area="#modal-body"
-                                            class="btn btn-danger"
+                                            class="btn btn-xs btn-danger"
                                         >
                                             Delete
                                         </a>

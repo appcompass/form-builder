@@ -6,6 +6,7 @@
         'url' => $meta->base_url
     ])
 !!}
+
     <section class="panel">
         <header class="panel-heading">
             {{ $meta->heading or '' }}

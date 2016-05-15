@@ -97,7 +97,7 @@ class CpWebsitePageSectionsController extends UiBaseController
 
             $this->record->save();
 
-            $redirect = $this->setBaseUrl(['websites', $website_id, 'pages', $page_id]);
+            $redirect = $this->setBaseUrl(['websites', $websites->id, 'pages', $page_id]);
 
         }
 

@@ -64,8 +64,20 @@
                         </div>
                         @endforeach
                 @elseif($field->type == 'file')
+                    @if(isset($website) && $website->gallery)
+                        <div class="row">
+                            <div class="col-lg-8">
+                    @endif
                     {!! Form::file(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
-                     @if(isset($website) && $website->gallery) <button class="btn btn-sm pull-right btn-primary open-select-image-modal">Select Image</button> @endif
+                    @if(isset($website) && $website->gallery)
+                            </div>
+                    @endif
+                     @if(isset($website) && $website->gallery)
+                            <div class="col-lg-4">
+                                <button class="btn btn-sm pull-right btn-primary open-select-image-modal">Or Select Image</button>
+                            </div>
+                        </div>
+                    @endif
                     @if(isset($prefix) AND isset($index) AND isset($record->{$prefix}[$index]->{$field->name}))
                         <b class="image-path"><img src="{{ $record->{$prefix}[$index]->{$field->name} }}" height="180" alt="" style="max-width: 250px"></b>
                     @elseif (!empty($record->{$field->name}))

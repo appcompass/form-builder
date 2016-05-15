@@ -31,6 +31,7 @@
                         </div>
                     </div>
                 @endif
+
                 @include('ui::partials.form_fields', ['fields' => $meta->form->fields])
 
             </div>
