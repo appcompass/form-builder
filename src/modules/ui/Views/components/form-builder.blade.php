@@ -16,16 +16,6 @@
     >
 </template>
 
-<template id="admaker-content-textarea">
-    <textarea
-        v-bind:name="field.name"
-        v-model="field.value"
-        rows="10"
-        class="form-control"
-        v-bind:placeholder="field.placeholder"
-    ></textarea>
-</template>
-
 <template id="textarea">
     <textarea
         v-bind:name="field.name"
@@ -33,8 +23,6 @@
         rows="10"
         class="form-control"
         v-bind:placeholder="field.placeholder"
-        debounce="500"
-        v-on:change="verify(field.value)"
     ></textarea>
 </template>
 
@@ -60,31 +48,11 @@
         methods: {},
         components: {
             text: Vue.component('text', {template: '#text', props: ['field'] }),
-            'admaker-content-textarea': Vue.component('text-area', {template: '#textarea', props: ['field'] }),
             dropdown: Vue.component('dropdown', {template: '#dropdown', props: ['field'] }),
             textarea: Vue.component('text-area', {
                 template: '#textarea',
                 props: ['field'],
                 methods: {
-                    verify: function(value) {
-                        $.ajax({
-                            url: '/ad-maker-listings/validate-ad',
-                            data: { content: value },
-                            type: 'POST'
-                            // ,
-                            // error: function(err){
-                            // },
-                            // success: function(data){
-                            // },
-                            // complete: function(xhr, status){
-                            // }
-                        });
-
-                        // this.$http.post('/ad-maker-listings/validate-ad', { content: value })
-                        //     .then(function(data) {
-                        //         sweetAlert('Response', JSON.stringify(data.data.sucess), 'info');
-                        //     })
-                    }
                 }
             }),
         }
