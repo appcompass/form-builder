@@ -11,7 +11,7 @@
 
         window.fbAsyncInit = function() {
             FB.init({
-              appId     : {{ env('FB_APP_ID') }}, // public info
+              appId     : {{ env('FB_APP_ID') }},
               xfbml     : true,
               status    : true,
               version   : 'v2.6',
@@ -24,7 +24,7 @@
     <script>
         window.pAsyncInit = function() {
             PDK.init({
-                appId: "4826197593923006330", // public info
+                appId: {{ env('PINTEREST_APP_ID') }},
                 cookie: true
             });
         };
