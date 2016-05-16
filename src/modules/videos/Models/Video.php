@@ -3,19 +3,20 @@
 namespace P3in\Models;
 
 use Carbon\Carbon;
+use GuzzleHttp\Client as GuzzleClient;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OpenCloud\Rackspace;
 use P3in\Interfaces\GalleryItemInterface;
-use GuzzleHttp\Client as GuzzleClient;
 use P3in\Models\User as User;
+use P3in\ModularBaseModel;
 use P3in\Traits\AlertableTrait;
 use P3in\Traits\NavigatableTrait;
 use P3in\Traits\OptionableTrait;
 use P3in\Traits\SettingsTrait;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class Video extends Model implements GalleryItemInterface
+class Video extends ModularBaseModel implements GalleryItemInterface
 {
 
     use OptionableTrait, SettingsTrait, AlertableTrait, NavigatableTrait, SoftDeletes;
@@ -144,6 +145,33 @@ class Video extends Model implements GalleryItemInterface
             dd($e);
 
         }
+    }
+
+    public function refreshWistiaInfo()
+    {
+        if (empty($this->meta->status) || $this->meta->status != 'ready') {
+            $client = new GuzzleClient();
+            $response = $client->request('GET', "https://api.wistia.com/v1/medias/{$this->meta->hashed_id}.json", [
+                'form_params' => [
+                    'api_password' => env('WISTIA_API_PASSWORD'),
+                    'project_id' => env('WISTIA_PROJECT_ID'),
+                ]
+            ]);
+            $rtn = json_decode((string) $response->getBody());
+
+            if (!empty($rtn->hashed_id)) {
+                $this->meta = [
+                    'thumbnail' => $rtn->thumbnail->url,
+                    'id' => $rtn->id,
+                    'hashed_id' => $rtn->hashed_id,
+                    'status' => $rtn->status,
+                    'assets' => $rtn->assets,
+                ];
+                $this->save();
+                return $this;
+            }
+        }
+        return $this;
     }
 
     public static function uploadToWistia($name, $real_path, User $user, $url = false)

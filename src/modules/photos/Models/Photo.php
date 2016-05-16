@@ -2,21 +2,22 @@
 
 namespace P3in\Models;
 
-use Image;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Image;
 use OpenCloud\Rackspace;
 use P3in\Interfaces\GalleryItemInterface;
 use P3in\Models\User as User;
+use P3in\ModularBaseModel;
 use P3in\Traits\AlertableTrait;
+use P3in\Traits\HasPermissions;
 use P3in\Traits\NavigatableTrait;
 use P3in\Traits\OptionableTrait;
 use P3in\Traits\SettingsTrait;
-use P3in\Traits\HasPermissions;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class Photo extends Model implements GalleryItemInterface
+class Photo extends ModularBaseModel implements GalleryItemInterface
 {
 
     use OptionableTrait, SettingsTrait, AlertableTrait, NavigatableTrait, SoftDeletes, HasPermissions;
