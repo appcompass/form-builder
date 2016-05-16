@@ -157,7 +157,7 @@
                     </div>
                 </div>
  -->
-                <div class="form-group" v-if="navitem.props.canHaveContent">
+                <div class="form-group" v-if="navitem.props && navitem.props.canHaveContent">
                     <div class="col-sm-12">
                         <textarea v-model="navitem.content" class="form-control" rows="10" cols="30"></textarea>
                         <small class="help-block">HTML content of the item.</small>
