@@ -11,7 +11,7 @@ class NavitemNavmenu extends Model
 
     protected $table = 'navigation_item_navmenu';
 
-    protected $fillable = ['order', 'label', 'navmenu_id', 'navigation_item_id', 'url', 'new_tab'];
+    protected $fillable = ['order', 'label', 'navmenu_id', 'navigation_item_id', 'url', 'new_tab', 'content', 'props'];
 
     protected $with = ['navitem'];
 
@@ -20,6 +20,8 @@ class NavitemNavmenu extends Model
     public $timestamps = [];
 
     protected $appends = ['linked_id', 'linked_model', 'req_perms'];
+
+    protected $casts = ['props' => 'array'];
 
     public function navitem()
     {
