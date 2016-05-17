@@ -92,8 +92,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
 
-    <script src="assets/bplistings/js/bostonpads_classes.vue.js"></script>
-
     @yield('scripts.footer')
 
     <script type="text/javascript">
