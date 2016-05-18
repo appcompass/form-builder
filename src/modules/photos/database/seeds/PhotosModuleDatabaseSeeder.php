@@ -2,13 +2,14 @@
 
 namespace P3in\Seeders;
 
-use P3in\Models\Photo;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 use P3in\Models\Navmenu;
 use P3in\Models\Option;
 use P3in\Models\Page;
+use P3in\Models\Permission;
+use P3in\Models\Photo;
 use P3in\Models\Website;
 
 class PhotosModuleDatabaseSeeder extends Seeder
@@ -34,6 +35,16 @@ class PhotosModuleDatabaseSeeder extends Seeder
             ['label' => 'Master Bathroom', 'order' => 6 ],
             ['label' => 'Bathroom', 'order' => 7 ]
         ]);
+
+        // Lets create permissions for the route.
+        Permission::createCpRoutePerm('photos.index');
+        Permission::createCpRoutePerm('photos.create');
+        Permission::createCpRoutePerm('photos.edit');
+        Permission::createCpRoutePerm('photos.destroy');
+        Permission::createCpRoutePerm('galleries.photos.index');
+        Permission::createCpRoutePerm('galleries.photos.create');
+        Permission::createCpRoutePerm('galleries.photos.edit');
+        Permission::createCpRoutePerm('galleries.photos.destroy');
 
         if (\Modular::isLoaded('websites')) {
 

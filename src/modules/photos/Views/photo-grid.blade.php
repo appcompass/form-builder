@@ -1,5 +1,4 @@
 @foreach ($photos as $photo)
-
     <div
         id="reorder_{{ $photo->item_id }}"
         class="item isotope-item {{ str_slug($photo->type, '_') }} {{ $photo->status }}"
@@ -32,7 +31,9 @@
         @if (!isset($is_modal) OR !$is_modal)
         <div class="item-actions text-right">
             @if(empty($no_actions))
+            @can('edit', $photo)
             <input type="checkbox" name="bulk_edit" value="{{ $photo->id }}">
+            @endcan
                 {{--
                 @can('edit', $photo)
                     <a
