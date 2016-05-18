@@ -121,7 +121,6 @@ class CpGalleryPhotosController extends UiBaseController
         $galleries->load('items', 'photos.user');
 
         if ($request->has('reorder')) {
-
             $this->sort($galleries->items, $request->reorder);
 
         }

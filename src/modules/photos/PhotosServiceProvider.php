@@ -31,6 +31,11 @@ class PhotosServiceProvider extends AuthServiceProvider
         $loader->alias('Image', Image::class);
 
         Config::set(['image' => ['driver' => 'imagick']]);
+
+        Photo::deleted(function ($photo) {
+            $photo->galleryItem->delete();
+        });
+
     }
 
     public function register()
