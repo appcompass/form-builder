@@ -24,7 +24,7 @@
     <script>
         window.pAsyncInit = function() {
             PDK.init({
-                appId: {{ env('PINTEREST_APP_ID') }},
+                appId: '{{ env('PINTEREST_APP_ID') }}',
                 cookie: true
             });
         };
@@ -294,6 +294,9 @@
                     break;
                 case 404:
                    sweetAlert("Resource Not Found", "The Resource you are looking for isn't there!", "error");
+                    break;
+                case 400: // Bad Request
+                   sweetAlert("Bad Request", xhr.responseText, "error");
                     break;
                 case 422:
                     response = JSON.parse(xhr.responseText);

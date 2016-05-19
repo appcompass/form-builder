@@ -283,6 +283,8 @@ class CpWebsiteController extends UiBaseController
 
             $websites->update($data);
 
+            $websites->touch(); // make sure we trigger the ::updated event
+
             return $this->json($this->setBaseUrl(['websites', $websites->id, 'edit']));
         }
 

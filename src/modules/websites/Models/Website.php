@@ -83,7 +83,7 @@ class Website extends Model
         'config.privateKey' => 'required_without:config.password',
         'config.password' => 'required_without:config.privateKey',
         'config.root' => 'required',
-        'config' => 'site_connection',
+        'config' => 'site_connection', // in WebsitesServiceProvider.php:
     ];
 
     /**
