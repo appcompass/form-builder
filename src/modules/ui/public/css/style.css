@@ -143,8 +143,11 @@ a,a:hover,a:focus {
 /*sidebar navigation*/
 #sidebar {
     width:240px;
-    height:100%;
     position:fixed;
+    top: 0;
+    bottom: 0;
+    overflow-y: auto;
+    overflow-x:hidden;
     background:#32323a;
     -webkit-transition:all .3s ease-in-out;
     -moz-transition:all .3s ease-in-out;

@@ -6,7 +6,7 @@
             <!--logo start-->
             <div class="brand">
 
-                <a href="index.html" class="logo">
+                <a href="/" class="logo">
                     <img height="60px" alt="{{env('ADMIN_WEBSITE_NAME', 'Plus 3 CMS')}}" src="{{env('ADMIN_WEBSITE_LOGO', '/assets/ui/images/logo.svg')}}">
                 </a>
                 <div class="sidebar-toggle-box">
