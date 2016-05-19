@@ -344,8 +344,9 @@
 
                 });
             });
-
-            router.start('/dashboard');
+            @if(empty($main_content))
+                router.start('/dashboard');
+            @endif
 
             // $(document).on('click', 'a', function(e){
             //     e.preventDefault();

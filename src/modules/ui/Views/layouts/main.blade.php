@@ -60,6 +60,9 @@
                 <!-- page start-->
                     <div class="row">
                         <div class="col-sm-12" id="main-content-out">
+                        @if(isset($main_content))
+                            {!! $main_content !!}
+                        @endif
                         </div>
                     </div>
                 </section>

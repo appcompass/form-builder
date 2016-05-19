@@ -215,7 +215,6 @@ class UiBaseController extends ModularBaseController {
 
             $rtn['message'] = 'The url must have a defined route.';
             if ($class && $method) {
-
                 // lets get the meta data for this controller.
                 // $metaData = with(new $class)->meta;
                 $metaData = \App::make($class)->meta;
