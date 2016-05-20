@@ -11,4 +11,10 @@ trait IsProfileTrait
     {
         return $this->belongsTo(User::class);
     }
+
+    public function scopeIncludeUsers($query)
+    {
+        return $query->leftJoin('users', 'users.id', '=', $this->table.'.user_id');
+    }
+
 }
