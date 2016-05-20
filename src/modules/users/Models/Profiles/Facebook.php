@@ -2,8 +2,12 @@
 
 namespace P3in\Profiles;
 
-class Facebook
+use P3in\ModularBaseModel;
+use P3in\Traits\IsProfileTrait;
+
+class Facebook extends ModularBaseModel
 {
+    use IsProfileTrait;
 
   public function __construct($data)
   {

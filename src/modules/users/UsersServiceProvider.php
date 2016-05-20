@@ -5,6 +5,7 @@ namespace P3in\Modules\Providers;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Validator;
 use P3in\Commands\AddUserCommand;
@@ -12,6 +13,7 @@ use P3in\Models\Group;
 use P3in\Models\User;
 use P3in\Policies\ControllersPolicy;
 use P3in\Policies\ResourcesPolicy;
+use P3in\Profiles\Profile;
 
 Class UsersServiceProvider extends AuthServiceProvider {
 
@@ -28,6 +30,14 @@ Class UsersServiceProvider extends AuthServiceProvider {
     {
         $this->registerPolicies($gate);
         $this->commands($this->commands);
+
+        // we clear the profile cache when the Profile Model either saves to, or deletes from it's records.
+        $clearCache = function($profile){
+            Cache::forget('profile_types');
+        };
+
+        Profile::saved($clearCache);
+        Profile::deleted($clearCache);
     }
 
     public function register()

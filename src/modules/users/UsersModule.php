@@ -7,6 +7,8 @@ use P3in\Models\Navmenu;
 use P3in\Models\Permission;
 use P3in\Models\Website;
 use P3in\Modules\BaseModule;
+use P3in\Profiles\Facebook;
+use P3in\Profiles\Profile;
 use P3in\Traits\NavigatableTrait as Navigatable;
 
 Class UsersModule extends BaseModule
@@ -15,6 +17,11 @@ Class UsersModule extends BaseModule
     use Navigatable;
 
     public $module_name = 'users';
+
+
+    protected $profiles = [
+        'facebook_profile' => Facebook::class,
+    ];
 
     public function __construct()
     {
@@ -28,7 +35,7 @@ Class UsersModule extends BaseModule
 
     public function register()
     {
-
+        Profile::registerProfiles($this->profiles);
     }
 
     /**

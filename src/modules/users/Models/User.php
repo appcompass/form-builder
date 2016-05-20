@@ -21,12 +21,13 @@ use P3in\ModularBaseModel;
 use P3in\Profiles\BaseProfile;
 use P3in\Traits\AlertableTrait as Alertable;
 use P3in\Traits\HasPermissions;
+use P3in\Traits\HasProfileTrait;
 use P3in\Traits\OptionableTrait;
 
 class User extends ModularBaseModel implements AuthenticatableContract, CanResetPasswordContract
 {
 
-    use Authenticatable, CanResetPassword, Alertable, Authorizable, OptionableTrait, HasPermissions;
+    use Authenticatable, CanResetPassword, Alertable, Authorizable, OptionableTrait, HasPermissions, HasProfileTrait;
 
     /**
      * The database table used by the model.
