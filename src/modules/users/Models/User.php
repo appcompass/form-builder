@@ -18,7 +18,6 @@ use P3in\Models\Group;
 use P3in\Models\Permission;
 use P3in\Models\Photo;
 use P3in\ModularBaseModel;
-use P3in\Profiles\BaseProfile;
 use P3in\Traits\AlertableTrait as Alertable;
 use P3in\Traits\HasPermissions;
 use P3in\Traits\HasProfileTrait;
@@ -217,10 +216,7 @@ class User extends ModularBaseModel implements AuthenticatableContract, CanReset
      *
      *  TODO: this needs to be refactored a little
      */
-    public function profiles()
-    {
-        return $this->hasMany(BaseProfile::class);
-    }
+
 
     public function photos()
     {

@@ -9,7 +9,7 @@ trait HasProfileTrait
 {
 
     public $profiles = [];
-    public function __construct($attributes)
+    public function __construct($attributes = [])
     {
         // we do this because profiles are loaded once on module install,
         // and we don't want to keep querying for the profiles on every request to
@@ -33,7 +33,7 @@ trait HasProfileTrait
     public function __get($name)
     {
         if ($profile = $this->profiles->where('name', $name)->first()) {
-            return $this->getRelationshipFromMethod($profile->class_name);
+            return $this->getRelationshipFromMethod($name);
         }else{
             return parent::__get($name);
         }
