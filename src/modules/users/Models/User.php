@@ -245,6 +245,19 @@ class User extends ModularBaseModel implements AuthenticatableContract, CanReset
         return $base_profile ? $base_profile->profileable : null;
     }
 
+    public function populateField($field_name)
+    {
+        switch ($field_name) {
+            case 'users_list':
+                $users = User::select(\DB::raw("concat(first_name,' ',last_name) as name"),'id')->get();
+                return $users->pluck('name','id');
+                break;
+            default:
+                return [];
+                break;
+        }
+    }
+
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = bcrypt($value);

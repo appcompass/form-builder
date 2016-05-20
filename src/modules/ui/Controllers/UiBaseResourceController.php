@@ -70,7 +70,7 @@ abstract class UiBaseResourceController extends Controller
         $this->validate($request, $this->model->getRules());
 
         $this->model->update($request->only($this->model->getFillable()));
-        return $this->json('/'.$request->path());
+        return $this->json('/'.$request->path().'/edit');
     }
 
     public function destroy(Request $request)

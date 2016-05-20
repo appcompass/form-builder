@@ -17,8 +17,9 @@ class UsersModuleDatabaseSeeder extends Seeder
     {
         Model::unguard();
 
-        $this->call('P3in\Seeders\GroupsTableSeeder');
-        $this->call('P3in\Seeders\UsersTableSeeder');
+        $this->call(GroupsTableSeeder::class);
+        $this->call(UsersTableSeeder::class);
+        $this->call(UserUiFieldsSeeder::class);
 
         Model::reguard();
     }

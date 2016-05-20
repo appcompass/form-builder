@@ -31,9 +31,9 @@
                         </div>
                     </div>
                 @endif
-
-                @include('ui::partials.form_fields', ['fields' => $meta->form->fields])
-
+                @if(!empty($meta->form->fields))
+                    @include('ui::partials.form_fields', ['fields' => $meta->form->fields])
+                @endif
             </div>
         </div>
     </section>
