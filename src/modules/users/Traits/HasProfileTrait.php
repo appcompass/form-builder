@@ -9,7 +9,7 @@ trait HasProfileTrait
 {
 
     public $profiles = [];
-    public function __construct()
+    public function __construct($attributes)
     {
         // we do this because profiles are loaded once on module install,
         // and we don't want to keep querying for the profiles on every request to
@@ -17,6 +17,8 @@ trait HasProfileTrait
         $this->profiles = Cache::rememberForever('profile_types', function() {
             return Profile::get();
         });
+
+        parent::__construct($attributes);
     }
 
     public function __call($name, $args)
