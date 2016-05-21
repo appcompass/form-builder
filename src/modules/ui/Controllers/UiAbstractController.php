@@ -29,6 +29,7 @@ abstract class UiAbstractController extends Controller
     {
         $this->meta = json_decode(json_encode($this->meta));
         $this->explainRoute($request);
+
     }
 
     protected function setTemplate($template_name, $force = false)
@@ -85,6 +86,7 @@ abstract class UiAbstractController extends Controller
             $url = $request->path();
             $method_name = substr($n, strrpos($n, '.')+1);
 
+            $this->per_page = $request->has('per_page') ? $request->per_page : 20;
             $this->params = $route->parameters();
             $this->base_url = '/'.substr($url, 0, strrpos($url, '/'));
             $this->url = '/'.$url;

@@ -120,24 +120,6 @@
 <script>
     $(document).ready(function() {
 
-        @if(!isset($meta->filter_view))
-            /*
-             * Initialize DataTable
-             */
-            $('#dynamic-table').dataTable( {
-
-            } );
-            /*
-             * Initialse DataTables, with no sorting on the 'details' column
-             */
-            var oTable = $('#hidden-table-info').dataTable( {
-                "aoColumnDefs": [
-                    { "bSortable": false, "aTargets": [ 0 ] }
-                ],
-                "aaSorting": [[1, 'asc']]
-            });
-        @endif
-
         /*
          * Insert a 'details' column to the table
          */
