@@ -110,15 +110,15 @@ class UiFieldsTableSeeder extends Seeder
         ];
         $time_field->save();
 
-        $from_to_mixed_field = Field::firstOrNew([
+        $date_and_time_field = Field::firstOrNew([
             'type' => 'from_to_mixed',
             'name' => 'date_and_time',
         ]);
-        $from_to_mixed_field->save();
-        $from_to_mixed_field->fields()->detach();
+        $date_and_time_field->save();
+        $date_and_time_field->fields()->detach();
 
-        $from_to_mixed_field->fields()->save($datepicker_field, ['order' => 1]);
-        $from_to_mixed_field->fields()->save($time_field, ['order' => 2]);
+        $date_and_time_field->fields()->save($datepicker_field, ['order' => 1]);
+        $date_and_time_field->fields()->save($time_field, ['order' => 2]);
 
 
         $fieldset_break_field = Field::firstOrNew([

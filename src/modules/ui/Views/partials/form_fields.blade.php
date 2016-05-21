@@ -117,7 +117,7 @@
                             {!! Form::label(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, !empty($from_to->label) ? $from_to->label : null, []) !!}
                             @if($from_to->type == 'selectlist')
                                     {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, $from_to->data, null, ['class' => 'form-control']) !!}
-                            @elseif($field->type == 'text')
+                            @elseif($from_to->type == 'text')
                                     {!! Form::text(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
                             @elseif($from_to->type == 'password')
                                     {!! Form::password(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
