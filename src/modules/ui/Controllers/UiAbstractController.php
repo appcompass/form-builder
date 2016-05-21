@@ -37,7 +37,7 @@ abstract class UiAbstractController extends Controller
         }
     }
 
-    protected function output(Request $request, $data, $success = true, $message = '')
+    protected function output(Request $request, $data = [], $success = true, $message = '')
     {
         $data['meta'] = $this->getMeta($request->route()->getName());
         $this->meta->form = isset($this->meta->form_name) ? $this->getForm($this->meta->form_name) : null;
