@@ -1,6 +1,7 @@
 @if(empty($login))
     <script>
         // i really hope to find a way to move this away from here
+        @if(env('FB_APP_ID'))
           (function(d, s, id){
              var js, fjs = d.getElementsByTagName(s)[0];
              if (d.getElementById(id)) {return;}
@@ -8,7 +9,6 @@
              js.src = "//connect.facebook.net/en_US/sdk.js";
              fjs.parentNode.insertBefore(js, fjs);
            }(document, 'script', 'facebook-jssdk'));
-
         window.fbAsyncInit = function() {
             FB.init({
               appId     : {{ env('FB_APP_ID') }},
@@ -19,9 +19,11 @@
               oauth     : true
             });
         };
+        @endif
     </script>
 
     <script>
+        @if(env('PINTEREST_APP_ID'))
         window.pAsyncInit = function() {
             PDK.init({
                 appId: '{{ env('PINTEREST_APP_ID') }}',
@@ -36,6 +38,7 @@
             js.src = "//assets.pinterest.com/sdk/sdk.js";
             pjs.parentNode.insertBefore(js, pjs);
         }(document, 'script', 'pinterest-jssdk'));
+        @endif
     </script>
 
     <!--Core js-->
