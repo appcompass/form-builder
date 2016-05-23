@@ -27,7 +27,7 @@ abstract class UiAbstractController extends Controller
 
     public function __construct(Request $request)
     {
-        $this->meta = json_decode(json_encode($this->meta));
+        $this->meta = $this->meta ? json_decode(json_encode($this->meta)) : new \stdClass;
         $this->explainRoute($request);
 
     }
