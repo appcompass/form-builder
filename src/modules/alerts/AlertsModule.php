@@ -17,20 +17,15 @@ Class AlertsModule extends BaseModule
 
     public function fire()
     {
-        return "Firing from {$this->module_name}";
     }
 
 
     public function bootstrap()
     {
-        return [
-            "message" => "Bootstrapping AlertsModule!"
-        ];
     }
 
     public function register()
     {
-        echo "Registering Alerts Module";
     }
 
 }

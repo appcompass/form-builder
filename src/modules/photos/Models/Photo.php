@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Image;
-use OpenCloud\Rackspace;
 use P3in\Interfaces\GalleryItemInterface;
 use P3in\Models\User as User;
 use P3in\ModularBaseModel;

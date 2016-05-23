@@ -5,7 +5,7 @@ namespace P3in\Modules\Providers;
 use Collective\Html\FormFacade;
 use Collective\Html\HtmlFacade;
 use Illuminate\Foundation\AliasLoader;
-use Illuminate\Support\ServiceProvider;
+use P3in\Providers\BaseServiceProvider as ServiceProvider;
 
 Class UiServiceProvider extends ServiceProvider
 {

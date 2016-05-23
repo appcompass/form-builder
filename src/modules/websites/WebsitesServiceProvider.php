@@ -4,7 +4,7 @@ namespace P3in\Modules\Providers;
 
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Foundation\AliasLoader;
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider;
+use P3in\Providers\BaseServiceProvider as ServiceProvider;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Validator;
@@ -12,7 +12,8 @@ use P3in\Models\Settings;
 use P3in\Models\Website;
 use P3in\Policies\ResourcesPolicy;
 
-Class WebsitesServiceProvider extends AuthServiceProvider {
+Class WebsitesServiceProvider extends ServiceProvider
+{
 
     protected $policies = [
         Website::class => ResourcesPolicy::class,
@@ -21,8 +22,6 @@ Class WebsitesServiceProvider extends AuthServiceProvider {
 
     public function boot(Gate $gate, Router $router)
     {
-        $this->registerPolicies($gate);
-
         $router->model('websites', Website::class);
 
         // Register Middleware

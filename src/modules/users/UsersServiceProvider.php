@@ -4,7 +4,7 @@ namespace P3in\Modules\Providers;
 
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Foundation\AliasLoader;
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider;
+use P3in\Providers\BaseServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Validator;
@@ -15,7 +15,7 @@ use P3in\Policies\ControllersPolicy;
 use P3in\Policies\ResourcesPolicy;
 use P3in\Profiles\Profile;
 
-Class UsersServiceProvider extends AuthServiceProvider {
+Class UsersServiceProvider extends ServiceProvider {
 
     protected $policies = [
         User::class => ResourcesPolicy::class,
@@ -28,7 +28,6 @@ Class UsersServiceProvider extends AuthServiceProvider {
 
     public function boot(Gate $gate)
     {
-        $this->registerPolicies($gate);
         $this->commands($this->commands);
 
         // we clear the profile cache when the Profile Model either saves to, or deletes from it's records.

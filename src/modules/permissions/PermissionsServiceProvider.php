@@ -4,7 +4,7 @@ namespace P3in\Modules\Providers;
 
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use P3in\Providers\BaseServiceProvider as ServiceProvider;
 use Illuminate\Routing\Router;
 use P3in\Middleware\CallIsAuthorized;
 use P3in\Models\BlogCategory;
@@ -22,6 +22,14 @@ use P3in\Policies\ResourcesPolicy;
 class PermissionsServiceProvider extends ServiceProvider
 {
 
+    /**
+     * The policy mappings for the application.
+     *
+     * @var array
+     */
+    protected $policies = [
+        Permission::class => ResourcesPolicy::class,
+    ];
 
     /**
      * Indicates if loading of the provider is deferred.
@@ -33,30 +41,26 @@ class PermissionsServiceProvider extends ServiceProvider
     /**
      * Laravel
      */
-    protected $app;
+    // protected $app;
 
-    public function __construct(Application $app)
+    // public function __construct(Application $app)
+    // {
+
+    //     $this->app = $app;
+
+    // }
+
+    /**
+     * Bootstrap services
+     *
+     */
+    public function boot(GateContract $gate)
     {
-
-        // @TODO p3ServiceProivder to inherit from, which could make available some common methods i.e. getting middleware etc...
-
-        $this->app = $app;
-
+        $this->app->router->pushMiddlewareToGroup('web', CallIsAuthorized::class);
     }
 
     /**
-     * The policy mappings for the application.
-     *
-     * @var array
-     */
-    protected $policies = [
-        Permission::class => ResourcesPolicy::class,
-    ];
-
-    /**
      *   Register bindings in the container
-     *
-     *
      *
      */
     public function register()
@@ -65,15 +69,4 @@ class PermissionsServiceProvider extends ServiceProvider
 
     }
 
-    /**
-     * Bootstrap services
-     *
-     *
-     *
-     */
-    public function boot(GateContract $gate)
-    {
-        $this->app->router->pushMiddlewareToGroup('web', CallIsAuthorized::class);
-        parent::registerPolicies($gate);
-    }
 }
