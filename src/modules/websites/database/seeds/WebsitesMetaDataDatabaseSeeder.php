@@ -34,8 +34,7 @@ class WebsitesMetaDataDatabaseSeeder extends Seeder
         $file_field = Field::byName('file');
         $header_list_field = Field::byName('website_header_list');
         $footer_list_field = Field::byName('website_footer_list');
-
-
+        $checkbox_field = Field::byName('checkbox');
 
 
         $form->fields()->detach();
@@ -85,6 +84,12 @@ class WebsitesMetaDataDatabaseSeeder extends Seeder
             'help_block' => 'Select the footer style for this website.',
             'order' => 6,
         ]);
+        $form->fields()->save($checkbox_field, [
+            'label' => 'Live',
+            'name' => 'live',
+            'help_block' => 'Check this box if the website is live.',
+            'order' => 7,
+        ]);
 
         $form->fields()->save($fieldset_break_field, [
             'label' => 'Website Default Header/Meta Data',
@@ -95,42 +100,42 @@ class WebsitesMetaDataDatabaseSeeder extends Seeder
             ]),
             'placeholder' => '',
             'help_block' => '',
-            'order' => 7,
+            'order' => 10,
         ]);
         $form->fields()->save($text_field, [
             'label' => 'Default Title',
             'name' => 'meta_data[title]',
             'placeholder' => 'Page Meta Title',
             'help_block' => 'Leave this blank if you wish to use the Page Title above as the title.',
-            'order' => 8,
+            'order' => 11,
         ]);
         $form->fields()->save($textarea_field, [
             'label' => 'Default Description',
             'name' => 'meta_data[description]',
             'placeholder' => 'Description Block',
             'help_block' => 'The title of the page.',
-            'order' => 9,
+            'order' => 12,
         ]);
         $form->fields()->save($text_field, [
             'label' => 'Default Keywords',
             'name' => 'meta_data[keywords]',
             'placeholder' => 'Meta Keywords',
             'help_block' => 'The meta keywords of the page.',
-            'order' => 10,
+            'order' => 13,
         ]);
         $form->fields()->save($textarea_field, [
             'label' => 'Custom Header HTML',
             'name' => 'custom_html_header',
             'placeholder' => '',
             'help_block' => '',
-            'order' => 11,
+            'order' => 14,
         ]);
         $form->fields()->save($textarea_field, [
             'label' => 'robots.txt Content',
             'name' => 'robots_txt',
             'placeholder' => '',
             'help_block' => '',
-            'order' => 12,
+            'order' => 15,
         ]);
         $form->fields()->save($fieldset_break_field, [
             'label' => 'Website Forms Settings',
@@ -141,42 +146,42 @@ class WebsitesMetaDataDatabaseSeeder extends Seeder
             ]),
             'placeholder' => '',
             'help_block' => '',
-            'order' => 13,
+            'order' => 20,
         ]);
         $form->fields()->save($text_field, [
             'label' => 'From Email Address',
             'name' => 'from_email',
             'placeholder' => 'website@website.com',
             'help_block' => '',
-            'order' => 14,
+            'order' => 21,
         ]);
         $form->fields()->save($text_field, [
             'label' => 'From Email Name',
             'name' => 'from_name',
             'placeholder' => 'Website Name',
             'help_block' => '',
-            'order' => 15,
+            'order' => 22,
         ]);
         $form->fields()->save($text_field, [
             'label' => 'To Email Address',
             'name' => 'to_email',
             'placeholder' => 'catchall@website.com',
             'help_block' => 'This is the default email to address where if a form doesn\'t have a recipient specified, this address will be used.',
-            'order' => 16,
+            'order' => 23,
         ]);
         $form->fields()->save($text_field, [
             'label' => 'reCAPTCHA Site Key',
             'name' => 'recaptcha_site_key',
             'placeholder' => '',
             'help_block' => 'Use this in the HTML code your site serves to users.',
-            'order' => 17,
+            'order' => 24,
         ]);
         $form->fields()->save($text_field, [
             'label' => 'reCAPTCHA Secret Key',
             'name' => 'recaptcha_secret_key',
             'placeholder' => '',
             'help_block' => 'Use this for communication between your site and Google. Be sure to keep it a secret.',
-            'order' => 18,
+            'order' => 25,
         ]);
         $form->fields()->save($fieldset_break_field, [
             'label' => 'Integrations',
@@ -187,63 +192,63 @@ class WebsitesMetaDataDatabaseSeeder extends Seeder
             ]),
             'placeholder' => '',
             'help_block' => '',
-            'order' => 19,
+            'order' => 30,
         ]);
         $form->fields()->save($text_field, [
             'label' => 'Google Analytics TRacking ID',
             'name' => 'ga_tracking_id',
             'placeholder' => 'UA-XXXXX-Y',
             'help_block' => '',
-            'order' => 20,
+            'order' => 31,
         ]);
         $form->fields()->save($text_field, [
             'label' => 'Facebook App ID',
             'name' => 'facebook_app_id',
             'placeholder' => 'XXXXXXXXXXXXX',
             'help_block' => '',
-            'order' => 21,
+            'order' => 32,
         ]);
         $form->fields()->save($text_field, [
             'label' => 'Facebook Page URL',
             'name' => 'facebook_page_url',
             'placeholder' => 'https://www.facebook.com/facebook',
             'help_block' => '',
-            'order' => 22,
+            'order' => 33,
         ]);
         $form->fields()->save($text_field, [
             'label' => 'Twitter Page URL',
             'name' => 'twitter_page_url',
             'placeholder' => 'https://twitter.com/twitter',
             'help_block' => '',
-            'order' => 23,
+            'order' => 34,
         ]);
         $form->fields()->save($text_field, [
             'label' => 'LinkedIn Page URL',
             'name' => 'linkedin_page_url',
             'placeholder' => 'https://www.linkedin.com/company/linkedin',
             'help_block' => '',
-            'order' => 24,
+            'order' => 35,
         ]);
         $form->fields()->save($text_field, [
             'label' => 'Google+ Page URL',
             'name' => 'google_plus_page_url',
             'placeholder' => 'https://plus.google.com/+google',
             'help_block' => '',
-            'order' => 25,
+            'order' => 36,
         ]);
         $form->fields()->save($text_field, [
             'label' => 'Instagram Page URL',
             'name' => 'instagram_page_url',
             'placeholder' => 'https://www.instagram.com/instagram',
             'help_block' => '',
-            'order' => 26,
+            'order' => 37,
         ]);
         $form->fields()->save($text_field, [
             'label' => 'Site Phone Number',
             'name' => 'site_phone_number',
             'placeholder' => 'https://www.instagram.com/instagram',
             'help_block' => '',
-            'order' => 27,
+            'order' => 38,
         ]);
 
 

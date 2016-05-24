@@ -58,6 +58,7 @@ class CpWebsiteSettingsController extends UiBaseResourceController
                 $data['logo'] = $logo->path;
             }
         }
+        $data['live'] = $request->has('live') ? true : false;
         $records = $this->params['websites']->settings($data);
 
         if (!empty($data['color_primary']) || !empty($data['color_secondary'])) {

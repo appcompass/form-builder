@@ -192,6 +192,18 @@ class Website extends Model
         return $query->managed()->findOrFail($id);
     }
 
+    public function scopeIsLive($query)
+    {
+        return $query->whereHas('settings', function($query){
+            $query->where("data->>'live'", 'true');
+        });
+    }
+
+    public function getIsLiveAttribute()
+    {
+        return $this->settings('live') ? 'Yes' : 'No';
+    }
+
     /**
      *
      *  @param bool $pages retunrns a link to website's pages index

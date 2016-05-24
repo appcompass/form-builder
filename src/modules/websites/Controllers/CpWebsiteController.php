@@ -20,6 +20,7 @@ class CpWebsiteController extends UiBaseController
                 'headers' => [
                     'Name',
                     'Site URL',
+                    'Is Site Live?',
                     'Created',
                     'Updated',
                 ],
@@ -30,6 +31,9 @@ class CpWebsiteController extends UiBaseController
                     ],
                     'site_url' => [
                         'type' => 'link_to_blank',
+                    ],
+                    'is_live' => [
+                        'type' => 'text',
                     ],
                     'created_at' => [
                         'type' => 'datetime',
@@ -294,7 +298,7 @@ class CpWebsiteController extends UiBaseController
 
     public function list()
     {
-        return Website::where('id', '!=', Website::admin()->id)->get()->toJson();
+        return Website::managed()->isLive()->get()->toJson();
     }
 
 }
