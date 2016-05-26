@@ -106,48 +106,15 @@ class CpWebsiteController extends UiBaseController
                 ],[
                     'label' => 'URL',
                     'name' => 'site_url',
-                    'placeholder' => 'www.website.com',
+                    'placeholder' => 'website.com',
                     'type' => 'text',
                     'help_block' => 'IMPORTANT: do not inclde the schema (https:// or http://), this is done automatically, only include the full hostname.',
                 ],[
-                    'type' => 'fieldset_break',
-                    'window_title' => 'Server Connection',
-                    'window_header' => 'Server Connection',
-                    'window_sub_header' => 'Server Connection information',
-                ],[
-                    'label' => 'SSH Host',
-                    'name' => 'config[host]',
-                    'placeholder' => '127.0.0.1',
-                    'type' => 'text',
-                    'attributes' => ['autocomplete' => 'off'],
-                    'help_block' => 'Deployment target host IP Address.',
-                ],[
-                    'label' => 'SSH Username',
-                    'name' => 'config[username]',
-                    'placeholder' => 'username',
-                    'type' => 'text',
-                    'attributes' => ['autocomplete' => 'off'],
-                    'help_block' => 'Authentication can happen via Username / Password or Private Key / Passphrase combinations.',
-                ],[
-                    'label' => 'Path to SSH Secret Key',
-                    'name' => 'config[privateKey]',
-                    'placeholder' => '/path/to/id_rsa',
-                    'type' => 'text',
-                    'attributes' => ['autocomplete' => 'off'],
-                    'help_block' => 'Optionally connect using your pre-authorized private key.',
-                ],[
-                    'label' => 'SSH Password / SSH Key Phrase',
-                    'name' => 'config[password]',
-                    'placeholder' => 'SSH Password or Private Key Passphrase',
-                    'type' => 'password',
-                    'attributes' => ['autocomplete' => 'off'],
-                    'help_block' => 'SSH Password or Private Key Passphrase.',
-                ],[
-                    'label' => 'Website Document Root',
-                    'name' => 'config[root]',
-                    'placeholder' => '/path/to/document/root',
-                    'type' => 'text',
-                    'attributes' => ['autocomplete' => 'off'],
+                    'label' => 'Hosting Platform',
+                    'name' => 'hosting_instance',
+                    'placeholder' => '',
+                    'type' => 'selectlist',
+                    'data' => ['local' => 'This Server'], //we make this dynamic later.
                     'help_block' => '',
                 // ],[
                 //     'label' => 'Nginx Server Name',
@@ -239,6 +206,18 @@ class CpWebsiteController extends UiBaseController
         $this->validate($request, Website::$rules);
 
         $data = $request->all();
+        $servers = config('app.websites_deployment');
+
+        if (!empty($servers[$request->hosting_instance])) {
+
+            $config = $servers[$request->hosting_instance];
+            $config['root'] = $config['vhost_root'].$request->site_url;
+
+            unset($config['vhost_root']);
+
+            $data['config'] = $config;
+            Website::testConnection($data['config'], true);
+        }
 
         $this->record = Website::create($data);
 
@@ -277,17 +256,22 @@ class CpWebsiteController extends UiBaseController
 
         $data = $request->except(['_method','_token']);
 
-        if (!$data['config']['privateKey']) {
+        $servers = config('app.websites_deployment');
 
-            $data['config']['password'] = $data['config']['password'] ?: !empty($websites->config->password) ? $websites->config->password : '';
+        if (!empty($servers[$request->hosting_instance])) {
 
+            $config = $servers[$request->hosting_instance];
+            $config['root'] = $config['vhost_root'].$request->site_url;
+
+            unset($config['vhost_root']);
+
+            $data['config'] = $config;
         }
 
         if ($websites->testConnection($data['config'], true)) {
-
             $websites->update($data);
 
-            $websites->touch(); // make sure we trigger the ::updated event
+            $websites->touch(); // make sure we trigger the ::updated event0
 
             return $this->json($this->setBaseUrl(['websites', $websites->id, 'edit']));
         }

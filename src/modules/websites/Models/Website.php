@@ -4,25 +4,26 @@ namespace P3in\Models;
 
 use Auth;
 use Carbon\Carbon;
-use P3in\Traits\HasGallery;
-use P3in\Traits\HasPermissions;
-use P3in\Traits\NavigatableTrait;
-use P3in\Traits\SettingsTrait;
-use P3in\Traits\OptionableTrait;
-use P3in\Traits\AlertableTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
+use Imagick;
+use ImagickPixel;
 use League\Flysystem\Sftp\SftpAdapter;
 use Less_Parser;
 use Log;
-use P3in\Module;
-use P3in\Models\Photo;
 use P3in\Models\Page;
-use Imagick;
-use ImagickPixel;
+use P3in\Models\Photo;
+use P3in\Models\Redirect;
+use P3in\Module;
+use P3in\Traits\AlertableTrait;
+use P3in\Traits\HasGallery;
+use P3in\Traits\HasPermissions;
+use P3in\Traits\NavigatableTrait;
+use P3in\Traits\OptionableTrait;
+use P3in\Traits\SettingsTrait;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class Website extends Model
 {
@@ -78,12 +79,6 @@ class Website extends Model
     public static $rules = [
         'site_name' => 'required|max:255', //|unique:websites // we need to do a unique if not self appproach.
         'site_url' => 'required',
-        'config.host' => 'required:ip',
-        'config.username' => 'required',
-        'config.privateKey' => 'required_without:config.password',
-        'config.password' => 'required_without:config.privateKey',
-        'config.root' => 'required',
-        'config' => 'site_connection', // in WebsitesServiceProvider.php:
     ];
 
     /**
@@ -457,4 +452,23 @@ class Website extends Model
 
         return false;
     }
+    /**
+     *
+     */
+    public function storeRedirects()
+    {
+
+        $rendered = Redirect::renderForWebsite($this);
+
+        $disk = $this->getDiskInstance();
+
+        if (!$disk->put('nginx-redirects.conf', $rendered)) {
+
+            abort(503);
+
+        }
+        return true;
+    }
+
+
 }
