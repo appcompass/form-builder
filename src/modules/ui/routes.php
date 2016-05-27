@@ -7,7 +7,7 @@ Route::group([
 ], function() {
     Route::get('/', 'UiController@getIndex');
     Route::get('/left-nav', 'UiController@getLeftNav');
-    Route::get('/left-alerts', 'UiController@getLeftAlerts');
+    // Route::get('/left-alerts', 'UiController@getLeftAlerts');
     Route::get('/notification-center', 'UiController@getNotificationCenter');
     Route::get('/dashboard', [
         'as' => 'dashboard',

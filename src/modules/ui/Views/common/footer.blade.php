@@ -43,36 +43,39 @@
 
     <!--Core js-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
-    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script> --}}
     <script src="/assets/ui/js/jquery.js"></script>
+
     <script src="/assets/ui/js/jquery-1.10.2.min.js"></script>
     <script src="/assets/ui/bs3/js/bootstrap.min.js"></script>
-    <script src="/assets/ui/js/gritter/js/jquery.gritter.js" type="text/javascript"></script>
+    <!-- <script src="/assets/ui/js/gritter/js/jquery.gritter.js" type="text/javascript"></script> -->
 
     <!--script for this page-->
     <script src="/assets/ui/js/gritter.js" type="text/javascript"></script>
     <script src="/assets/ui/js/jquery.nicescroll.js"></script>
 
-    <script src="/assets/ui/js/jvector-map/jquery-jvectormap-1.2.2.min.js"></script>
-    <script src="/assets/ui/js/jvector-map/jquery-jvectormap-us-lcc-en.js"></script>
-    <script src="/assets/ui/js/gauge/gauge.js"></script>
+    <!-- <script src="/assets/ui/js/jvector-map/jquery-jvectormap-1.2.2.min.js"></script> -->
+    <!-- <script src="/assets/ui/js/jvector-map/jquery-jvectormap-us-lcc-en.js"></script> -->
+    <!-- <script src="/assets/ui/js/gauge/gauge.js"></script> -->
+
+
     <!--clock init-->
-    <script src="/assets/ui/js/css3clock/js/css3clock.js"></script>
+    <!-- <script src="/assets/ui/js/css3clock/js/css3clock.js"></script> -->
     <!--Easy Pie Chart-->
-    <script src="/assets/ui/js/easypiechart/jquery.easypiechart.js"></script>
+    <!-- <script src="/assets/ui/js/easypiechart/jquery.easypiechart.js"></script> -->
     <!--Sparkline Chart-->
-    <script src="/assets/ui/js/sparkline/jquery.sparkline.js"></script>
-    <!--Morris Chart-->
-    <script src="/assets/ui/js/morris-chart/morris.js"></script>
-    <script src="/assets/ui/js/morris-chart/raphael-min.js"></script>
+    <!-- <script src="/assets/ui/js/sparkline/jquery.sparkline.js"></script> -->
+    <!-- Morris Chart -->
+    <!-- <script src="/assets/ui/js/morris-chart/morris.js"></script> -->
+    <!-- <script src="/assets/ui/js/morris-chart/raphael-min.js"></script> -->
     <!--jQuery Flot Chart-->
-    <script src="/assets/ui/js/flot-chart/jquery.flot.js"></script>
-    <script src="/assets/ui/js/flot-chart/jquery.flot.tooltip.min.js"></script>
-    <script src="/assets/ui/js/flot-chart/jquery.flot.resize.js"></script>
-    <script src="/assets/ui/js/flot-chart/jquery.flot.pie.resize.js"></script>
-    <script src="/assets/ui/js/flot-chart/jquery.flot.animator.min.js"></script>
-    <script src="/assets/ui/js/flot-chart/jquery.flot.growraf.js"></script>
-    <script src="/assets/ui/js/jquery.customSelect.min.js" ></script>
+    <!-- <script src="/assets/ui/js/flot-chart/jquery.flot.js"></script> -->
+    <!-- <script src="/assets/ui/js/flot-chart/jquery.flot.tooltip.min.js"></script> -->
+    <!-- <script src="/assets/ui/js/flot-chart/jquery.flot.resize.js"></script> -->
+    <!-- <script src="/assets/ui/js/flot-chart/jquery.flot.pie.resize.js"></script> -->
+    <!-- <script src="/assets/ui/js/flot-chart/jquery.flot.animator.min.js"></script> -->
+    <!-- <script src="/assets/ui/js/flot-chart/jquery.flot.growraf.js"></script> -->
+
+
     <script src="/assets/ui/js/jquery.customSelect.min.js" ></script>
     <!-- wysiwyg editor  -->
     <script src="/assets/ui/js/bootstrap-wysihtml5/wysihtml5-0.3.0.js" type="text/javascript"></script>
@@ -80,9 +83,9 @@
     <!-- iCheck -->
     <script src="/assets/ui/js/iCheck/jquery.icheck.min.js" ></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script> -->
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.10/vue.js"></script>
+    <!-- Vue Moved in the header async -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/0.6.1/vue-resource.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>

@@ -18,7 +18,6 @@ use P3in\Models\Group;
 use P3in\Models\Permission;
 use P3in\Models\Photo;
 use P3in\ModularBaseModel;
-use P3in\Traits\AlertableTrait as Alertable;
 use P3in\Traits\HasPermissions;
 use P3in\Traits\HasProfileTrait;
 use P3in\Traits\OptionableTrait;
@@ -26,7 +25,7 @@ use P3in\Traits\OptionableTrait;
 class User extends ModularBaseModel implements AuthenticatableContract, CanResetPasswordContract
 {
 
-    use Authenticatable, CanResetPassword, Alertable, Authorizable, OptionableTrait, HasPermissions, HasProfileTrait;
+    use Authenticatable, CanResetPassword, Authorizable, OptionableTrait, HasPermissions, HasProfileTrait;
 
     /**
      * The database table used by the model.
@@ -284,36 +283,37 @@ class User extends ModularBaseModel implements AuthenticatableContract, CanReset
 
     }
 
+
     /**
      *  Get/Set user's Avatar
-     *
      *
      */
     public function avatar(Photo $photo = null)
     {
 
-        if (! Modular::isDef('photos')) {
+        return "//www.gravatar.com/avatar/" . md5($this->email) . "?d=identicon&s=48";
 
-            $userEmail = \Auth::user()->email;
-            return "//www.gravatar.com/avatar/".md5($userEmail)."?s={$size}";
+        // if (! Modular::isDef('photos')) {
 
-        }
+        //     $userEmail = \Auth::user()->email;
 
-        if (! is_null($photo)) {
+        // }
 
-            if (! is_null($this->avatar)) {
+        // if (! is_null($photo)) {
 
-                $this->avatar()
-                    ->first()
-                    ->unlink();
+        //     if (! is_null($this->avatar)) {
 
-            }
+        //         $this->avatar()
+        //             ->first()
+        //             ->unlink();
 
-            $this->avatar()->save($photo);
+        //     }
 
-        }
+        //     $this->avatar()->save($photo);
 
-        return $this->morphOne(Photo::class, 'photoable');
+        // }
+
+        // return $this->morphOne(Photo::class, 'photoable');
 
     }
 

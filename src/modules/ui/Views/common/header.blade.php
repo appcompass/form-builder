@@ -50,6 +50,8 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.10/vue.js"></script>
+
     <!-- Just for debugging purposes. Don't actually copy this line! -->
     <!--[if lt IE 9]>
     <script src="/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -60,6 +62,7 @@
     <script src="//oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
     @yield('scripts.header')
+
 </head>
 
 <body class="{{ $bodyClass  or '' }}" onload="{{ $bodyOnLoad or '' }}">

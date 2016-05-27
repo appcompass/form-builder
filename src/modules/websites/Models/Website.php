@@ -17,7 +17,6 @@ use P3in\Models\Page;
 use P3in\Models\Photo;
 use P3in\Models\Redirect;
 use P3in\Module;
-use P3in\Traits\AlertableTrait;
 use P3in\Traits\HasGallery;
 use P3in\Traits\HasPermissions;
 use P3in\Traits\NavigatableTrait;
@@ -28,7 +27,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class Website extends Model
 {
 
-    use AlertableTrait, OptionableTrait, SettingsTrait, NavigatableTrait, HasGallery, HasPermissions;
+    use OptionableTrait, SettingsTrait, NavigatableTrait, HasGallery, HasPermissions;
 
     /**
      * The database table used by the model.

@@ -6,13 +6,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use P3in\Models\Permission;
 use P3in\Models\User;
-use P3in\Traits\AlertableTrait;
 use Illuminate\Database\Eloquent\Collection;
 
 class Group extends Model
 {
-
-    use AlertableTrait;
 
     /**
      * The database table used by the model.

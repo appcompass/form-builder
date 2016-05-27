@@ -30,7 +30,7 @@ class PhotosPolicy
 
     public function before(User $user, $ability)
     {
-        if ($user->isRoot()) {
+        if ($user->isRoot() || $user->isManager()) {
 
             return true;
 
@@ -44,6 +44,7 @@ class PhotosPolicy
 
     public function create(User $user, $ability)
     {
+        \Log::info($user->allPermissions());
         return $user->hasPermissions($this->create_perms);
     }
 

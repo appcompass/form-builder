@@ -1,4 +1,3 @@
-{{--
     <!--  notification start -->
     <ul class="nav top-menu">
         <!-- settings start -->
@@ -9,7 +8,7 @@
             </a>
             <ul class="dropdown-menu extended tasks-bar">
                 <li>
-                    <p class="">You have 8 pending tasks</p>
+                    <p class="">You have 8 pending taskses</p>
                 </li>
                 <li>
                     <a href="#">
@@ -134,38 +133,23 @@
             </ul>
         </li>
         <!-- inbox dropdown end -->
+
         <!-- notification dropdown start-->
         <li id="header_notification_bar" class="dropdown">
-            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-
+            <a data-toggle="dropdown" class="dropdown-toggle" v-bind:class="{bounce: animating}">
                 <i class="fa fa-bell-o"></i>
-                <span class="badge bg-warning">3</span>
+                <span class="badge bg-warning">@{{ alerts.length }}</span>
             </a>
-            <ul class="dropdown-menu extended notification">
+            <ul class="dropdown-menu extended notification" v-notifications v-bind:alerts="alerts">
                 <li>
                     <p>Notifications</p>
                 </li>
-                <li>
+                <li v-for="alert in alerts">
                     <div class="alert alert-info clearfix">
-                        <span class="alert-icon"><i class="fa fa-bolt"></i></span>
+                        <img class="alert-icon" v-if="alert.props.icon" v-bind:src="alert.icon">
+                        <span v-else class="alert-icon"><i class="fa fa-bell-o"></i></span>
                         <div class="noti-info">
-                            <a href="#"> Server #1 overloaded.</a>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="alert alert-danger clearfix">
-                        <span class="alert-icon"><i class="fa fa-bolt"></i></span>
-                        <div class="noti-info">
-                            <a href="#"> Server #2 overloaded.</a>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="alert alert-success clearfix">
-                        <span class="alert-icon"><i class="fa fa-bolt"></i></span>
-                        <div class="noti-info">
-                            <a href="#"> Server #3 overloaded.</a>
+                            <a href="#"> @{{ alert.message }} </a>
                         </div>
                     </div>
                 </li>
@@ -175,4 +159,148 @@
         <!-- notification dropdown end -->
     </ul>
     <!--  notification end -->
---}}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.6/socket.io.js"></script>
+
+<script>
+
+    var Alert = function AlertConstructor(data) {
+
+        if (data === undefined || data === '') {
+            throw "No data";
+        }
+
+        this.title = data.title;
+        this.message = data.message;
+        this.props = JSON.parse(data.props) || undefined;
+        this.icon = this.props.icon || undefined;
+
+        return this;
+    };
+
+    (function(Vue, io, window) {
+
+        // TODOS
+        // v notifications directive takes the channel being watched
+        // v craete an app that encmpasses the directive
+        //
+        Vue.directive('notifications', {
+            params: ['alerts'],
+            deep: true,
+            paramWatchers: {
+                alerts: function(val, oldVal) {
+                    this.vm.animate();
+                }
+            },
+            bind: function() {},
+            update: function() {},
+            unbind: function() {}
+        });
+
+        var topNotifications = new Vue({
+            el: '#top_menu',
+            data: {
+                socket: undefined,
+                animating: false,
+                alerts: []
+            },
+            ready: function() {
+                var vm = this;
+                this.socket = io('https://cp.bostonpads.dev:3001', {secure: true});
+                // this.socket = io({{ env('SOCKET_ADDR', 'default') }} , {secure: true});
+
+                this.socket.on("test-channel", function(data){
+                    vm.getAlert(data.hash);
+                    // vm.alerts.unshift(message);
+                 });
+            },
+            methods: {
+                getAlert: function(hash) {
+                    var vm = this;
+                    // using Vue $http because in this case we wanna silently fail
+                    this.$http.get('/alerts/', {hash: hash}).then(function(response) {
+                        try {
+                            var alert = new Alert(response.data);
+                            vm.alerts.unshift(alert);
+                        } catch(e) {
+                            console.log(e);
+                        }
+                    })
+                },
+                animate: function() {
+                    var vm = this;
+                    vm.animating = true;
+
+                    setTimeout(function() {
+                        vm.animating = false;
+                    }, 1000)
+                }
+            }
+        })
+
+    })(Vue, io, window)
+</script>
+
+
+<style>
+    a.new_alerts {
+        background: rgba(190, 120, 120, 0.8) !important;
+        color: white !important;
+    }
+    @-moz-keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {
+        -moz-transform: translateY(0);
+        transform: translateY(0);
+      }
+      40% {
+        -moz-transform: translateY(-30px);
+        transform: translateY(-30px);
+      }
+      60% {
+        -moz-transform: translateY(-15px);
+        transform: translateY(-15px);
+      }
+    }
+    @-webkit-keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+      }
+      40% {
+        -webkit-transform: translateY(-30px);
+        transform: translateY(-30px);
+      }
+      60% {
+        -webkit-transform: translateY(-15px);
+        transform: translateY(-15px);
+      }
+    }
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {
+        -moz-transform: translateY(0);
+        -ms-transform: translateY(0);
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+      }
+      20% {
+        -moz-transform: translateY(-30px);
+        -ms-transform: translateY(-30px);
+        -webkit-transform: translateY(-30px);
+        transform: translateY(-30px);
+      }
+      50% {
+        -moz-transform: translateY(-15px);
+        -ms-transform: translateY(-15px);
+        -webkit-transform: translateY(-15px);
+        transform: translateY(-15px);
+      }
+    }
+
+    .bounce {
+      /*-moz-animation: bounce 2s;*/
+      /*-webkit-animation: bounce 2s;*/
+      animation: bounce 1s;
+      animation-iteration-count: 1;
+    }
+
+</style>

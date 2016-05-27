@@ -61,12 +61,35 @@ class Permission extends Model
     }
 
     /**
-    *	 Get groups having this permission
-    *
-    *
+    * Get groups having this permission
     */
     public function groups()
     {
     	return $this->belongsToMany('P3in\Models\Group');
+    }
+
+    /**
+     * Get all the users that __DIRECTLY__ have the permission
+     */
+    public function users()
+    {
+
+        $users = [];
+
+        // get users from groups
+        foreach ($this->groups as $group) {
+
+            $users = array_merge($users, $group->users->lists('id')->toArray());
+
+        }
+
+        // get users that directly own the permission
+        $direct_users = \DB::table('permission_user')
+            ->where('permission_id', $this->id)
+            ->lists('user_id');
+
+        $users = array_unique(array_merge($direct_users, $users));
+
+        return User::whereIn('id', $users)->get();
     }
 }

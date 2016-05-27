@@ -39,18 +39,6 @@ class PermissionsServiceProvider extends ServiceProvider
     protected $defer = true;
 
     /**
-     * Laravel
-     */
-    // protected $app;
-
-    // public function __construct(Application $app)
-    // {
-
-    //     $this->app = $app;
-
-    // }
-
-    /**
      * Bootstrap services
      *
      */
@@ -63,10 +51,6 @@ class PermissionsServiceProvider extends ServiceProvider
      *   Register bindings in the container
      *
      */
-    public function register()
-    {
-
-
-    }
+    public function register() {}
 
 }

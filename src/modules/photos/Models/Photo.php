@@ -9,7 +9,6 @@ use Image;
 use P3in\Interfaces\GalleryItemInterface;
 use P3in\Models\User as User;
 use P3in\ModularBaseModel;
-use P3in\Traits\AlertableTrait;
 use P3in\Traits\HasPermissions;
 use P3in\Traits\NavigatableTrait;
 use P3in\Traits\OptionableTrait;
@@ -19,7 +18,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class Photo extends ModularBaseModel implements GalleryItemInterface
 {
 
-    use OptionableTrait, SettingsTrait, AlertableTrait, NavigatableTrait, SoftDeletes, HasPermissions;
+    use OptionableTrait, SettingsTrait, NavigatableTrait, SoftDeletes, HasPermissions;
 
     const DEFAULT_STATUS = Photo::STATUSES_PENDING;
     const TYPE_ATTRIBUTE_NAME = 'photo_of';

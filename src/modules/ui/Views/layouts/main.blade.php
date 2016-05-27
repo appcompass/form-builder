@@ -15,7 +15,8 @@
             </div>
             <!--logo end-->
 
-            <div class="nav notify-row" id="top_menu" data-load="/left-alerts">
+            <div class="nav notify-row" id="top_menu">
+                @include('ui::sections.left-alerts')
             </div>
             <div class="top-nav clearfix">
                 <!--search & user info start-->

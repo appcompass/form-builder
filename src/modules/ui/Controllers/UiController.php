@@ -52,11 +52,6 @@ class UiController extends UiBaseController {
         return response()->json($nav);
     }
 
-    public function getLeftAlerts()
-    {
-        return view('ui::sections.left-alerts');
-    }
-
     public function getNotificationCenter()
     {
         return view('ui::sections.notification-center');
@@ -74,8 +69,7 @@ class UiController extends UiBaseController {
 
     public function getUserAvatar($size = 56)
     {
-        $userEmail = \Auth::user()->email;
-        return "//www.gravatar.com/avatar/".md5($userEmail)."?s={$size}";
+        return \Auth::user()->avatar();
     }
 
     public function getUserNav()

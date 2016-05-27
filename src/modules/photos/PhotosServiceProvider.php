@@ -15,12 +15,33 @@ use P3in\Policies\PhotosPolicy;
 class PhotosServiceProvider extends ServiceProvider
 {
     /**
-     *
+     * Policies
      */
     protected $policies = [
 
         Photo::class => PhotosPolicy::class,
 
+    ];
+
+    /**
+     * Listen
+     */
+    protected $listen = [];
+
+    /**
+     * Subscribe
+     */
+    protected $subscribe = [];
+
+    /**
+     * Observe
+     */
+    protected $observe = [
+        // class watching (of which methods are being hit)
+        \P3in\Observers\AlertObserver::class => [
+            Photo::class,
+            // additional models to be watched
+        ]
     ];
 
     /**
@@ -38,9 +59,7 @@ class PhotosServiceProvider extends ServiceProvider
 
         });
 
-
     }
-
 
     /**
      * Load Intervention for images handling
