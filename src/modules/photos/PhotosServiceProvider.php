@@ -19,7 +19,7 @@ class PhotosServiceProvider extends ServiceProvider
      */
     protected $policies = [
 
-        Photo::class => PhotosPolicy::class,
+        // Photo::class => PhotosPolicy::class,
 
     ];
 
