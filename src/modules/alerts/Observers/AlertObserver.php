@@ -25,7 +25,6 @@ class AlertObserver
      */
     public function userAuthEvent($event)
     {
-
         switch(get_class($event)) {
             case 'Illuminate\Auth\Events\Login':
                 $action = 'logged in.';
@@ -39,7 +38,7 @@ class AlertObserver
 
         $alert = new AlertModel([
             'title' => ucfirst($user->first_name) . ' ' . $action,
-            'message' => "{$user->full_name} has just $action",
+            'message' => "{$user->full_name} just $action",
             'req_perm' => 'alert.info', // @TODO this fetches all the users that own the perm through Permission::users()
             'props' => [
                 'icon' => $user->avatar()
@@ -54,7 +53,6 @@ class AlertObserver
      */
     public function created($model)
     {
-
         $msg = \Auth::check() ? \Auth::user()->full_Name : 'An anonymous user ';
 
         $reflect = new \ReflectionClass($model);
@@ -66,8 +64,6 @@ class AlertObserver
         ]);
 
         Event::fire(new AlertEvent($alert, $model));
-
-        \Log::info($msg);
     }
 
     /**
@@ -75,9 +71,7 @@ class AlertObserver
      */
     public function updated($model)
     {
-
-        \Log::info(get_class($model));
-
+        // \Log::info(get_class($model));
     }
 
 
@@ -101,8 +95,15 @@ class AlertObserver
 
         }
 
-        \event::fire(new \P3in\Events\Alert('Title', $event->message, 'info', $model, $event->icon));
+        $alert = new AlertModel([
+            'title' => 'Title', // @TODO pay attention to me!
+            'message' => $event->message,
+            'level' => 'info',
+            'req_perm' => 'alert.info',
+            'props' => []
+        ]);
 
+        Event::fire(new AlertEvent($alert, $model));
     }
 
     /**

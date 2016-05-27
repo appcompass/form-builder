@@ -29,35 +29,17 @@ Class UsersServiceProvider extends ServiceProvider {
     /**
      * Subscribe
      */
-    protected $subscribe = [
-        // example:
-        // '\P3in\Observers\AlertObserver'
-        // method being hit: subscribe()
-        //      subscribe() returns a key-value pair of event -> class@method
-        //      $events->listen('Illuminate\Auth\Events\Login', '\P3in\Observers\AlertObserver@userLogin');
-    ];
+    protected $subscribe = [];
 
     /**
      *  Listen
      */
-    protected $listen = [
-        // example:
-        // 'Illuminate\Auth\Events\Login' => [
-        //     \P3in\Observers\AlertObserver::class
-        // ],
-        // method being hit: handle()
-    ];
+    protected $listen = [];
 
     /**
      * Observe
      */
-    protected $observe = [
-        // example:
-        // \P3in\Observers\AlertObserver::class => [
-            // Photo::class
-        // ]
-        // method being hit: depends on Model event (created(), deleted(), etc...)
-    ];
+    protected $observe = [];
 
     public function boot(Gate $gate)
     {
