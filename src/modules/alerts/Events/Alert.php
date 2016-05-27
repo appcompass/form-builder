@@ -4,54 +4,31 @@ namespace P3in\Events;
 
 use Auth;
 use App\Events\Event;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Queue\SerializesModels;
 use P3in\Models\User;
-use P3in\Models\Alert as AlertStorage;
+use P3in\Models\Permission;
+use P3in\Models\Alert as AlertModel;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class Alert extends Event implements ShouldBroadcast
 {
     use SerializesModels;
 
     /**
-     * all public properties are exported, we only care about the hash
+     * all public properties are exported, we only care about the id
      */
-    public $hash;
+    public $id;
 
     /**
-     * Create a new event instance.
+     * Fire an Alert
      *
-     *  @TODO too many parameters, build a class!! <- MOVE TO ALERT INJECT
+     * @param P3in\Models\Alert $alert
+     * @param Illuminate\Eloquent\Model $model for polymorphic reference
+     * @param Eloquent\Collection $users users to distribute the alert to
      */
-    public function __construct($title, $message, $level, $model, $icon = null)
+    public function __construct(AlertModel $alert, Model $model, Collection $users = null)
     {
-
-        // leave it like this, we need to be able to hit the method even if model is null
-        if (is_null($model)) {
-
-            dd("Model was empty");
-
-        }
-
-        $this->title = $title;
-
-        $this->message = $message;
-
-        $props = [
-            'icon' => $icon
-        ];
-
-        // @TODO this will become a firstOrNew in case the alert is subject to rate limitation
-
-        $alert = new AlertStorage([
-            'title' => $title,
-            'message' => $message,
-            'req_perms' => 'alerts.info',
-            'hash' => bcrypt(time()),
-            'level' => 'info',
-            'props' => json_encode($props)
-        ]);
-
 
         $alert->alertable_id = $model->id;
 
@@ -59,7 +36,33 @@ class Alert extends Event implements ShouldBroadcast
 
         $alert->save();
 
-        $this->hash = $alert->hash;
+        if ($alert->req_perm) {
+
+            try {
+
+                $perm = Permission::byType($alert->req_perm)->firstOrFail();
+
+                $users = $perm->users();
+
+            } catch (ModelNotFoundException $e) {
+
+                $users = [];
+
+                \Log::warning("Alert permission was set to " . $alert->req_perm . " but no such permissions seems to exist.");
+
+            }
+
+        } else {
+
+            \Log::info("Alert $alert->id created with no permissions assigned.");
+
+            $users = [];
+
+        }
+
+        $this->id = $alert->id;
+
+        AlertModel::distribute($alert, $users);
 
         \Log::info('Alert stored, event fired');
 

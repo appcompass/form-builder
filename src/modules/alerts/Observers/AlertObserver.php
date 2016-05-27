@@ -2,22 +2,51 @@
 
 namespace P3in\Observers;
 
+/**
+ *  Get the event
+ *  Pass it to a method
+ *  New up (or fetch) an AlertModel
+ *  Fire an AlertEvent passing the AlertModel
+ */
+
 use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use P3in\Models\User;
 use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Events\Logout;
+use P3in\Events\Alert as AlertEvent;
+use P3in\Models\Alert as AlertModel;
+use Event;
 
 class AlertObserver
 {
 
-    public function userLogin(Login $event)
+    /**
+     * Login/Logout
+     */
+    public function userAuthEvent($event)
     {
+
+        switch(get_class($event)) {
+            case 'Illuminate\Auth\Events\Login':
+                $action = 'logged in.';
+                break;
+            case 'Illuminate\Auth\Events\Logout':
+                $action = 'logged out.';
+                break;
+        }
+
         $user = $event->user;
 
-        $message = "$user->full_name just logged in.";
+        $alert = new AlertModel([
+            'title' => ucfirst($user->first_name) . ' ' . $action,
+            'message' => "{$user->full_name} has just $action",
+            'req_perm' => 'alert.info', // @TODO this fetches all the users that own the perm through Permission::users()
+            'props' => [
+                'icon' => $user->avatar()
+            ]
+        ]);
 
-        $icon = $user->avatar();
-
-        \event::fire(new \P3in\Events\Alert(ucfirst($user->first_name) . " logged in", $message, 'info', $user, $icon));
+        Event::fire(new AlertEvent($alert, $user));
     }
 
     /**
@@ -26,21 +55,17 @@ class AlertObserver
     public function created($model)
     {
 
-        if (\Auth::check()) {
-
-            $msg = \Auth::user()->full_Name . " just ";
-
-        } else {
-
-            $msg = 'An anonymous user ';
-
-        }
+        $msg = \Auth::check() ? \Auth::user()->full_Name : 'An anonymous user ';
 
         $reflect = new \ReflectionClass($model);
 
-        $msg .= 'added a ' . $reflect->getShortName();
+        $alert = new AlerModel([
+            'title' => 'New ' . $reflect->getShortName() . ' added.',
+            'message' => $msg . ' just added a ' . $reflect->getShortName(),
+            'req_perm' => 'alert.info'
+        ]);
 
-        \event::fire(new \P3in\Events\Alert('New ' . $reflect->getShortName() . ' added.', $msg, 'info',  $model));
+        Event::fire(new AlertEvent($alert, $model));
 
         \Log::info($msg);
     }
@@ -50,7 +75,9 @@ class AlertObserver
      */
     public function updated($model)
     {
+
         \Log::info(get_class($model));
+
     }
 
 
@@ -86,7 +113,8 @@ class AlertObserver
         // Here we could link 'event' => class@method
         // @NOTE remember to fill the 'subscribe' array in the ServiceProvider
 
-        $events->listen('Illuminate\Auth\Events\Login', '\P3in\Observers\AlertObserver@userLogin');
+        $events->listen('Illuminate\Auth\Events\Login', '\P3in\Observers\AlertObserver@userAuthEvent');
+        $events->listen('Illuminate\Auth\Events\Logout', '\P3in\Observers\AlertObserver@userAuthEvent');
     }
 
 }

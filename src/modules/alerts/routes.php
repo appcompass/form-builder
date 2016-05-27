@@ -3,13 +3,26 @@
 use App\Events\Alert as AlertEvent;
 use P3in\Models\User;
 use Illuminate\Http\Request;
-use P3in\Models\Alert;
+use P3in\Models\Alert as AlertModel;
 
 Route::group([
     'middleware' => ['web', 'auth'],
 ], function() {
     Route::get('/alerts', function(Request $request) {
-        return Alert::byHash($request->hash)->first();
+
+        \Log::info($request->alert_id);
+
+        $gotMail = (bool) DB::table('alert_user')
+            ->where('user_id', \Auth::user()->id)
+            ->where('alert_id', $request->alert_id)
+            ->count();
+
+        if ($gotMail) {
+
+            return AlertModel::where('id', $request->alert_id)->first();
+
+        }
+
     });
 
 

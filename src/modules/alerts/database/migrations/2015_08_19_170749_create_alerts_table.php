@@ -18,15 +18,14 @@ class CreateAlertsTable extends Migration
             $table->string('level')->default('info');
             $table->string('title');
             $table->text('message');
+            $table->text('req_perm')->nullable(); // single permission!
             $table->morphs('alertable');
             $table->json('props')->nullable();
-            $table->integer('count');
-            $table->string('hash', 60);
-            $table->string('req_perms')->nullable(); // single permissions (go through groups)
+            $table->integer('count')->nullable();
             $table->timestamps();
         });
 
-        Schema::create('alert_user', function() {
+        Schema::create('alert_user', function(Blueprint $table) {
             $table->increments('id');
 
             $table->integer('user_id')->unsigned();
@@ -35,9 +34,8 @@ class CreateAlertsTable extends Migration
             $table->integer('alert_id')->unsigned();
             $table->foreign('alert_id')->references('id')->on('alerts');
 
-            $table->bool('read')->default(false);
+            $table->boolean('read')->default(false);
             // $table->timestamp('date_opened');@TODO not really necessary
-
             $table->timestamps();
         });
     }
@@ -49,7 +47,7 @@ class CreateAlertsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('alerts');
         Schema::drop('alert_user');
+        Schema::drop('alerts');
     }
 }

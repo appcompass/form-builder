@@ -172,7 +172,7 @@
 
         this.title = data.title;
         this.message = data.message;
-        this.props = JSON.parse(data.props) || undefined;
+        this.props = data.props;
         this.icon = this.props.icon || undefined;
 
         return this;
@@ -210,15 +210,16 @@
                 // this.socket = io({{ env('SOCKET_ADDR', 'default') }} , {secure: true});
 
                 this.socket.on("test-channel", function(data){
-                    vm.getAlert(data.hash);
+                    console.log(data);
+                    vm.getAlert(data.id);
                     // vm.alerts.unshift(message);
                  });
             },
             methods: {
-                getAlert: function(hash) {
+                getAlert: function(alert_id) {
                     var vm = this;
                     // using Vue $http because in this case we wanna silently fail
-                    this.$http.get('/alerts/', {hash: hash}).then(function(response) {
+                    this.$http.get('/alerts/', {alert_id: alert_id}).then(function(response) {
                         try {
                             var alert = new Alert(response.data);
                             vm.alerts.unshift(alert);

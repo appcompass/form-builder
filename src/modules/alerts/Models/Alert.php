@@ -2,8 +2,9 @@
 
 namespace P3in\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use P3in\Models\User;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Collection;
 use P3in\Traits\JsonPropScopesTrait as JsonPropScopes;
 
 class Alert extends Model
@@ -34,63 +35,63 @@ class Alert extends Model
 	protected $fillable = [
 		'title',
 		'message',
-		'hash',
-		'req_perms',
+		'req_perm',
 		'props'
 	];
 
 	/**
-	 * The attributes excluded from the model's JSON form.
+	 *	Ploymorphic
 	 *
-	 * @var array
-	 */
-	protected $hidden = ['id'];
-
-	/**
-	 *
-	 *
+	 *	we need to keep track of the object that's emitting the event
 	 */
 	public function alertable()
 	{
-
-	  return $this->morphTo();
-
+	  	return $this->morphTo();
 	}
 
 	/**
-	 *
-	 *
+	 * 	Distribute the alert to the appropriate users
 	 *
 	 */
-	public function scopeByHash($query, $hash)
+	public static function distribute(Alert $alert, Collection $users)
 	{
-	  return $query->where('hash', '=', $hash);
+	    foreach($users as $user) {
+
+	        \DB::table('alert_user')->insert([
+	            'user_id' => $user->id,
+	            'alert_id' => $alert->id
+	        ]);
+
+	    }
+
+	    return true;
 	}
 
 	/**
 	 *	Match Alert's permissions with user's
 	 *
+	 * 	@DEPRECATE will be removed
 	 */
 	public function matchPerms(User $user = null)
 	{
 
-		if (is_null($this->req_perms)) {
+		// if (is_null($this->req_perms)) {
 
-			return $this;
+		// 	return $this;
 
-		} else if (is_null($user)) {
+		// } else if (is_null($user)) {
 
-			return null;
+		// 	return null;
 
-		} else  {
+		// } else  {
 
-			if ( $user->hasPermission($this->req_perms) ) {
+		// 	if ( $user->hasPermission($this->req_perms) ) {
 
-				return $this;
+		// 		return $this;
 
-			}
+		// 	}
 
-		}
+		// }
 
 		return false;
 	}
