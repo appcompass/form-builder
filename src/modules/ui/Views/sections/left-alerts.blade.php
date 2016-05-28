@@ -1,14 +1,57 @@
     <!--  notification start -->
     <ul class="nav top-menu">
+
+        <!-- notification dropdown start-->
+        <li id="header_notification_bar" class="dropdown">
+            <a data-toggle="dropdown" class="dropdown-toggle" v-bind:class="{bounce: animating}">
+                <i class="fa fa-user"></i>
+                <span class="badge bg-warning">@{{ alerts.length }}</span>
+            </a>
+            <ul class="dropdown-menu extended inbox" v-notifications v-bind:alerts="alerts">
+                <li>
+                    <p>Notifications</p>
+                </li>
+
+                <li v-for="alert in alerts">
+                    <a href="#">
+                        <span class="photo" v-if="alert.icon">
+                            <img alt="avatar" v-bind:src="alert.icon">
+                        </span>
+                        <span v-else><i class="fa fa-bell-o"></i></span>
+
+                        <span class="subject">
+                            <span class="from">@{{ alert.title }}</span>
+                            <span class="time">@{{ alert.time.format('HH:mm:ss')}}</span>
+                        </span>
+
+                        <span class="message">@{{ alert.message }}</span>
+                    </a>
+                </li>
+
+<!--
+                <li>
+                    <div class="alert alert-info clearfix">
+                        <img class="alert-icon" v-if="alert.props.icon" v-bind:src="alert.icon">
+                        <span v-else class="alert-icon"><i class="fa fa-bell-o"></i></span>
+                        <div class="noti-info">
+                            <a href="#"> @{{ alert.message }} </a>
+                        </div>
+                    </div>
+                </li>
+ -->
+            </ul>
+        </li>
+        <!-- notification dropdown end -->
+
         <!-- settings start -->
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                 <i class="fa fa-tasks"></i>
-                <span class="badge bg-success">8</span>
+                <span class="badge bg-success">0</span>
             </a>
             <ul class="dropdown-menu extended tasks-bar">
                 <li>
-                    <p class="">You have 8 pending taskses</p>
+                    <p class="">You have 0 pending taskses</p>
                 </li>
                 <li>
                     <a href="#">
@@ -23,46 +66,6 @@
                         </div>
                     </a>
                 </li>
-                <li>
-                    <a href="#">
-                        <div class="task-info clearfix">
-                            <div class="desc pull-left">
-                                <h5>Product Delivery</h5>
-                                <p>45% , Deadline  12 June’13</p>
-                            </div>
-                                    <span class="notification-pie-chart pull-right" data-percent="78">
-                            <span class="percent"></span>
-                            </span>
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <div class="task-info clearfix">
-                            <div class="desc pull-left">
-                                <h5>Payment collection</h5>
-                                <p>87% , Deadline  12 June’13</p>
-                            </div>
-                                    <span class="notification-pie-chart pull-right" data-percent="60">
-                            <span class="percent"></span>
-                            </span>
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <div class="task-info clearfix">
-                            <div class="desc pull-left">
-                                <h5>Target Sell</h5>
-                                <p>33% , Deadline  12 June’13</p>
-                            </div>
-                                    <span class="notification-pie-chart pull-right" data-percent="90">
-                            <span class="percent"></span>
-                            </span>
-                        </div>
-                    </a>
-                </li>
-
                 <li class="external">
                     <a href="#">See All Tasks</a>
                 </li>
@@ -73,12 +76,13 @@
         <li id="header_inbox_bar" class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                 <i class="fa fa-envelope-o"></i>
-                <span class="badge bg-important">4</span>
+                <span class="badge bg-important">0</span>
             </a>
             <ul class="dropdown-menu extended inbox">
                 <li>
-                    <p class="red">You have 4 Mails</p>
+                    <p class="red">You have 0 Mails</p>
                 </li>
+
                 <li>
                     <a href="#">
                         <span class="photo"><img alt="avatar" src="/assets/ui/images/avatar-mini.jpg"></span>
@@ -92,71 +96,11 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
-                        <span class="photo"><img alt="avatar" src="/assets/ui/images/avatar-mini-2.jpg"></span>
-                                <span class="subject">
-                                <span class="from">Jane Doe</span>
-                                <span class="time">2 min ago</span>
-                                </span>
-                                <span class="message">
-                                    Nice admin template
-                                </span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <span class="photo"><img alt="avatar" src="/assets/ui/images/avatar-mini-3.jpg"></span>
-                                <span class="subject">
-                                <span class="from">Tasi sam</span>
-                                <span class="time">2 days ago</span>
-                                </span>
-                                <span class="message">
-                                    This is an example msg.
-                                </span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <span class="photo"><img alt="avatar" src="/assets/ui/images/avatar-mini.jpg"></span>
-                                <span class="subject">
-                                <span class="from">Mr. Perfect</span>
-                                <span class="time">2 hour ago</span>
-                                </span>
-                                <span class="message">
-                                    Hi there, its a test
-                                </span>
-                    </a>
-                </li>
-                <li>
                     <a href="#">See all messages</a>
                 </li>
             </ul>
         </li>
         <!-- inbox dropdown end -->
-
-        <!-- notification dropdown start-->
-        <li id="header_notification_bar" class="dropdown">
-            <a data-toggle="dropdown" class="dropdown-toggle" v-bind:class="{bounce: animating}">
-                <i class="fa fa-bell-o"></i>
-                <span class="badge bg-warning">@{{ alerts.length }}</span>
-            </a>
-            <ul class="dropdown-menu extended notification" v-notifications v-bind:alerts="alerts">
-                <li>
-                    <p>Notifications</p>
-                </li>
-                <li v-for="alert in alerts">
-                    <div class="alert alert-info clearfix">
-                        <img class="alert-icon" v-if="alert.props.icon" v-bind:src="alert.icon">
-                        <span v-else class="alert-icon"><i class="fa fa-bell-o"></i></span>
-                        <div class="noti-info">
-                            <a href="#"> @{{ alert.message }} </a>
-                        </div>
-                    </div>
-                </li>
-
-            </ul>
-        </li>
-        <!-- notification dropdown end -->
     </ul>
     <!--  notification end -->
 
@@ -172,8 +116,9 @@
 
         this.title = data.title;
         this.message = data.message;
-        this.props = data.props;
-        this.icon = this.props.icon || undefined;
+        this.props = data.props || undefined;
+        this.icon = this.props && this.props.icon ? this.props.icon : undefined;
+        this.datetime = moment(data.updated_at);
 
         return this;
     };
@@ -181,15 +126,19 @@
     (function(Vue, io, window) {
 
         // TODOS
-        // v notifications directive takes the channel being watched
         // v craete an app that encmpasses the directive
         //
+        // - notifications directive takes the channel being watched
+            // pass socket instance as param
+            // pass channel name as param
+            // alerts being shared means every event we push on master Vue app
+
         Vue.directive('notifications', {
             params: ['alerts'],
             deep: true,
             paramWatchers: {
                 alerts: function(val, oldVal) {
-                    this.vm.animate();
+                    this.vm.animate(); // this.vm refers to Vue container instance
                 }
             },
             bind: function() {},
@@ -204,16 +153,17 @@
                 animating: false,
                 alerts: []
             },
-            ready: function() {
+            created: function() {
                 var vm = this;
-                this.socket = io('https://cp.bostonpads.dev:3001', {secure: true});
                 // this.socket = io({{ env('SOCKET_ADDR', 'default') }} , {secure: true});
+                vm.socket = io('https://cp.bostonpads.dev:3001', {secure: true});
 
-                this.socket.on("test-channel", function(data){
-                    console.log(data);
+                // link socket to channel events
+                vm.socket.on("auth-events", function(data){
                     vm.getAlert(data.id);
-                    // vm.alerts.unshift(message);
                  });
+
+                vm.catchUp();
             },
             methods: {
                 getAlert: function(alert_id) {
@@ -227,6 +177,21 @@
                             console.log(e);
                         }
                     })
+                },
+                catchUp: function() {
+                    var vm = this;
+
+                    vm.$http.get('/alerts', {}).then(function(response) {
+
+                        if (!response.data) { return; }
+
+                        response.data.forEach(function(alertData) {
+
+                            vm.alerts.unshift(new Alert(alertData));
+
+                        });
+
+                    });
                 },
                 animate: function() {
                     var vm = this;

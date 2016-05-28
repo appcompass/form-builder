@@ -19,13 +19,14 @@ class CreateAlertsTable extends Migration
             $table->string('title');
             $table->text('message');
             $table->text('req_perm')->nullable(); // single permission!
+            $table->text('emitted_by')->default('system')->nullable();
             $table->morphs('alertable');
             $table->json('props')->nullable();
             $table->integer('count')->nullable();
             $table->timestamps();
         });
 
-        Schema::create('alert_user', function(Blueprint $table) {
+        Schema::create('alert_users', function(Blueprint $table) {
             $table->increments('id');
 
             $table->integer('user_id')->unsigned();
@@ -47,7 +48,7 @@ class CreateAlertsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('alert_user');
+        Schema::drop('alert_users');
         Schema::drop('alerts');
     }
 }

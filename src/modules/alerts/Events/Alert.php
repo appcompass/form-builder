@@ -26,8 +26,9 @@ class Alert extends Event implements ShouldBroadcast
      * @param P3in\Models\Alert $alert
      * @param Illuminate\Eloquent\Model $model for polymorphic reference
      * @param Eloquent\Collection $users users to distribute the alert to
+     * @param bool excludeEmittingUser exclude the user emitting the event Alert->emitted_by
      */
-    public function __construct(AlertModel $alert, Model $model, Collection $users = null)
+    public function __construct(AlertModel $alert, Model $model, Collection $users = null, $excludeEmittingUser = true)
     {
 
         $alert->alertable_id = $model->id;
@@ -36,33 +37,39 @@ class Alert extends Event implements ShouldBroadcast
 
         $alert->save();
 
-        if ($alert->req_perm) {
+        // this is the only information we're putting on the queue/socket
+        $this->id = $alert->id;
 
-            try {
+        // @TODO move this to a collectUsers() method
+        if (is_null($users)) {
 
-                $perm = Permission::byType($alert->req_perm)->firstOrFail();
+            if ($alert->req_perm) {
 
-                $users = $perm->users();
+                try {
 
-            } catch (ModelNotFoundException $e) {
+                    $perm = Permission::byType($alert->req_perm)->firstOrFail();
+
+                    $users = $perm->users();
+
+                } catch (ModelNotFoundException $e) {
+
+                    $users = [];
+
+                    \Log::warning("Alert permission was set to " . $alert->req_perm . " but no such permissions seems to exist.");
+
+                }
+
+            } else {
+
+                \Log::info("Alert $alert->id created with no permissions assigned.");
 
                 $users = [];
 
-                \Log::warning("Alert permission was set to " . $alert->req_perm . " but no such permissions seems to exist.");
-
             }
-
-        } else {
-
-            \Log::info("Alert $alert->id created with no permissions assigned.");
-
-            $users = [];
 
         }
 
-        $this->id = $alert->id;
-
-        AlertModel::distribute($alert, $users);
+        AlertModel::distribute($alert, $users, $excludeEmittingUser);
 
         \Log::info('Alert stored, event fired');
 
@@ -77,6 +84,6 @@ class Alert extends Event implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return ['test-channel'];
+        return ['auth-events'];
     }
 }

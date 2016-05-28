@@ -53,15 +53,17 @@ app.listen(3001, function() {
     console.log('Server is running!');
 });
 
-redis.subscribe('test-channel', function(err, count) {
-    console.log('Subscribed to test-channel');
+// redis.subscribe('test-channel', function(err, count) {
+redis.psubscribe('*', function(err, count) {
+    console.log('Subscribed to channels');
 });
 
 io.on('connection', function(socket) {
     console.log('Client Connected');
 });
 
-redis.on('message', function(channel, message) {
+redis.on('pmessage', function(subscribe, channel, message) {
+    console.log('Incoming message on ' + channel);
     var message = JSON.parse(message);
     io.emit(channel, message.data);
 });

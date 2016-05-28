@@ -2,25 +2,21 @@
 
 namespace P3in\Models;
 
-use P3in\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
-use P3in\Traits\JsonPropScopesTrait as JsonPropScopes;
 
 class Alert extends Model
 {
 
-	use JsonPropScopes;
-
 	/**
-	 * The database table used by the model.
+	 * 	The database table used by the model.
 	 *
-	 * @var string
+	 * 	@var string
 	 */
 	protected $table = 'alerts';
 
 	/**
-	 * Casts array
+	 * 	Casts array
 	 *
 	 */
 	protected $casts = [
@@ -28,21 +24,22 @@ class Alert extends Model
 	];
 
 	/**
-	 * The attributes that are mass assignable.
+	 * 	The attributes that are mass assignable.
 	 *
-	 * @var array
+	 * 	@var array
 	 */
 	protected $fillable = [
 		'title',
 		'message',
 		'req_perm',
+		'emitted_by',
 		'props'
 	];
 
 	/**
-	 *	Ploymorphic
+	 *	Alertable
 	 *
-	 *	we need to keep track of the object that's emitting the event
+	 *	track the model emitting the event
 	 */
 	public function alertable()
 	{
@@ -50,51 +47,40 @@ class Alert extends Model
 	}
 
 	/**
-	 * 	Distribute the alert to the appropriate users
+	 * 	Return all the notifications sent out by the alert
 	 *
 	 */
-	public static function distribute(Alert $alert, Collection $users)
+	public function notifications()
+	{
+	  	return $this->hasMany(\P3in\Models\AlertUser::class);
+	}
+
+	/**
+	 * 	Distribute the alert to the appropriate users
+	 *
+	 * @param \P3in\Models\Alert
+	 * @param \Illuminate\Database\Eloquent\Collection
+	 * @param bool excludeEmittingUser
+	 */
+	public static function distribute(Alert $alert, Collection $users, $excludeEmittingUser = true)
 	{
 	    foreach($users as $user) {
 
-	        \DB::table('alert_user')->insert([
+	    	if ($excludeEmittingUser && $alert->emitted_by === $user->id) {
+
+	    		continue;
+
+	    	}
+
+	    	$notification = AlertUser::create([
+	    		'read' => false,
 	            'user_id' => $user->id,
-	            'alert_id' => $alert->id
-	        ]);
+	            'alert_id' => $alert->id,
+    		]);
 
 	    }
 
 	    return true;
 	}
-
-	/**
-	 *	Match Alert's permissions with user's
-	 *
-	 * 	@DEPRECATE will be removed
-	 */
-	public function matchPerms(User $user = null)
-	{
-
-		// if (is_null($this->req_perms)) {
-
-		// 	return $this;
-
-		// } else if (is_null($user)) {
-
-		// 	return null;
-
-		// } else  {
-
-		// 	if ( $user->hasPermission($this->req_perms) ) {
-
-		// 		return $this;
-
-		// 	}
-
-		// }
-
-		return false;
-	}
-
 
 }

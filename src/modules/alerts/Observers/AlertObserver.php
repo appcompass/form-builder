@@ -2,13 +2,6 @@
 
 namespace P3in\Observers;
 
-/**
- *  Get the event
- *  Pass it to a method
- *  New up (or fetch) an AlertModel
- *  Fire an AlertEvent passing the AlertModel
- */
-
 use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use P3in\Models\User;
 use Illuminate\Auth\Events\Login;
@@ -25,27 +18,22 @@ class AlertObserver
      */
     public function userAuthEvent($event)
     {
-        switch(get_class($event)) {
-            case 'Illuminate\Auth\Events\Login':
-                $action = 'logged in.';
-                break;
-            case 'Illuminate\Auth\Events\Logout':
-                $action = 'logged out.';
-                break;
-        }
+        $action = get_class($event) === 'Illuminate\Auth\Events\Login' ? 'in.' : 'out.';
 
         $user = $event->user;
 
         $alert = new AlertModel([
-            'title' => ucfirst($user->first_name) . ' ' . $action,
-            'message' => "{$user->full_name} just $action",
-            'req_perm' => 'alert.info', // @TODO this fetches all the users that own the perm through Permission::users()
+            'title' => ucfirst($user->first_name) . ' logged ' . $action,
+            'message' => "{$user->full_name} logged " . $action,
+            'req_perm' => 'alert.info',
+            'emitted_by' => $user->id,
             'props' => [
                 'icon' => $user->avatar()
             ]
         ]);
 
-        Event::fire(new AlertEvent($alert, $user));
+        // fire => alert_model // model // users to be alerted (defaults to alert permissions) // exclude emitting user
+        Event::fire(new AlertEvent($alert, $user, null, true));
     }
 
     /**
@@ -53,21 +41,26 @@ class AlertObserver
      */
     public function created($model)
     {
+
         $msg = \Auth::check() ? \Auth::user()->full_Name : 'An anonymous user ';
 
-        $reflect = new \ReflectionClass($model);
+        $reflect = new \ReflectionClass(get_class($model));
 
-        $alert = new AlerModel([
+        $alert = new AlertModel([
             'title' => 'New ' . $reflect->getShortName() . ' added.',
-            'message' => $msg . ' just added a ' . $reflect->getShortName(),
-            'req_perm' => 'alert.info'
+            'message' => $msg . ' added a ' . $reflect->getShortName(),
+            'req_perm' => 'alert.info',
+            'emitted_by' => \Auth::check() ? \Auth::user()->id : null
         ]);
 
-        Event::fire(new AlertEvent($alert, $model));
+        \Log::info($msg);
+
+        // fire => alert_model // model // users to be alerted (defaults to alert permissions) // exclude emitting user
+        Event::fire(new AlertEvent($alert, $model, null, true));
     }
 
     /**
-     * On ::saved
+     *  On ::saved
      */
     public function updated($model)
     {
@@ -76,7 +69,7 @@ class AlertObserver
 
 
     /**
-     * Generic handler
+     *  Generic handler
      */
     public function handle($event)
     {
@@ -103,17 +96,39 @@ class AlertObserver
             'props' => []
         ]);
 
-        Event::fire(new AlertEvent($alert, $model));
+        Event::fire(new AlertEvent($alert, $model, null, false));
     }
 
     /**
-     * register listeners for the subscriber.
+     * Attempt
+     *
+     * @param \Illuminate\Auth\Events\Attempting
+     */
+    public function attempt($attempting)
+    {
+        /**
+         *  To ease the alert catch-up routine we store the last_login on Attempt event to get
+         *  the timestamp before (if) it gets updated by the Login event handler
+         */
+        try {
+
+            $user = User::where('email', $attempting->credentials['email'])->firstOrFail();
+
+            \Cache::tags(['last_logins'])->put($user->email, $user->last_login, 60); // store last_login for an hour
+
+        } catch (ModelNotFoundException $e) {}
+
+    }
+
+    /**
+     *  register listeners for the subscriber.
      */
     public function subscribe($events)
     {
         // Here we could link 'event' => class@method
         // @NOTE remember to fill the 'subscribe' array in the ServiceProvider
 
+        $events->listen('Illuminate\Auth\Events\Attempting', '\P3in\Observers\AlertObserver@attempt');
         $events->listen('Illuminate\Auth\Events\Login', '\P3in\Observers\AlertObserver@userAuthEvent');
         $events->listen('Illuminate\Auth\Events\Logout', '\P3in\Observers\AlertObserver@userAuthEvent');
     }
