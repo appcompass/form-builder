@@ -16,74 +16,93 @@ class Alert extends Event implements ShouldBroadcast
     use SerializesModels;
 
     /**
-     * all public properties are exported, we only care about the id
+     *  Instead of relying on public props we export on broadcastWith
+     *  which allows us to keep the alert private
      */
-    public $id;
+    protected $alert;
+
 
     /**
-     * Fire an Alert
+     *  Fire an Alert
      *
-     * @param P3in\Models\Alert $alert
-     * @param Illuminate\Eloquent\Model $model for polymorphic reference
-     * @param Eloquent\Collection $users users to distribute the alert to
-     * @param bool excludeEmittingUser exclude the user emitting the event Alert->emitted_by
+     *  @param P3in\Models\Alert $alert
+     *  @param Illuminate\Eloquent\Model $related_model for polymorphic reference
+     *  @param Eloquent\Collection $users users to distribute the alert to
+     *  @param bool excludeEmittingUser exclude the user emitting the event Alert->emitted_by
      */
-    public function __construct(AlertModel $alert, Model $model, Collection $users = null, $excludeEmittingUser = true)
+    public function __construct(AlertModel $alert, Model $related_model, Collection $users = null, $excludeEmittingUser = true)
     {
+        // Link Alert to related_model
+        $alert->alertable_id = $related_model->id;
 
-        $alert->alertable_id = $model->id;
-
-        $alert->alertable_type = get_class($model);
+        $alert->alertable_type = get_class($related_model);
 
         $alert->save();
+
+        $this->alert = $alert;
 
         // this is the only information we're putting on the queue/socket
         $this->id = $alert->id;
 
-        // @TODO move this to a collectUsers() method
         if (is_null($users)) {
 
-            if ($alert->req_perm) {
-
-                try {
-
-                    $perm = Permission::byType($alert->req_perm)->firstOrFail();
-
-                    $users = $perm->users();
-
-                } catch (ModelNotFoundException $e) {
-
-                    $users = [];
-
-                    \Log::warning("Alert permission was set to " . $alert->req_perm . " but no such permissions seems to exist.");
-
-                }
-
-            } else {
-
-                \Log::info("Alert $alert->id created with no permissions assigned.");
-
-                $users = [];
-
-            }
+            $users = $this->collectUsers($alert);
 
         }
 
+        // distribute the alert to the users
         AlertModel::distribute($alert, $users, $excludeEmittingUser);
 
-        \Log::info('Alert stored, event fired');
-
         return true;
-
     }
 
     /**
-     * Get the channels the event should be broadcast on.
+     *  Event payload
+     */
+    public function broadcastWith()
+    {
+        return [
+            'id' => $this->alert->id
+        ];
+    }
+
+    /**
+     *  Get the channels the event should be broadcast on.
      *
-     * @return array
+     *  @return array
      */
     public function broadcastOn()
     {
-        return ['auth-events'];
+        return explode(',', $this->alert->channels);
+    }
+
+    /**
+     *  CollectUsers
+     *
+     */
+    private function collectUsers(AlertModel $alert)
+    {
+
+        if ($alert->req_perm) {
+
+            try {
+
+                $perm = Permission::byType($alert->req_perm)->firstOrFail();
+
+                return $perm->users();
+
+            } catch (ModelNotFoundException $e) {
+
+                return [];
+
+            }
+
+        } else {
+
+            \Log::info("Alert $alert->id created with no permissions assigned.");
+
+            $users = [];
+
+        }
     }
 }

@@ -29,6 +29,14 @@ class AlertsController extends Controller
     }
 
     /**
+     *
+     */
+    public function update(Request $request, $alerts)
+    {
+        return $alerts->update(['read' => true]);
+    }
+
+    /**
      *  getUnreads
      *
      */
@@ -57,16 +65,6 @@ class AlertsController extends Controller
 
         }
 
-        // AlertUser::where('alert_id', $id)
-        //     ->where('user_id', \Auth::user()->id)
-        //     ->exists();
-
-        // $gotMail = (bool) \DB::table('alert_user')
-            // ->count();
-
-        // if ($gotMail) {
-            // return AlertModel::where('id', $id)->first();
-        // }
     }
 
 

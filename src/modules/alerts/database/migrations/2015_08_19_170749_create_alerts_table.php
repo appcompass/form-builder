@@ -14,12 +14,12 @@ class CreateAlertsTable extends Migration
     {
         Schema::create('alerts', function (Blueprint $table) {
             $table->increments('id');
-
             $table->string('level')->default('info');
             $table->string('title');
             $table->text('message');
             $table->text('req_perm')->nullable(); // single permission!
             $table->text('emitted_by')->default('system')->nullable();
+            $table->text('channels')->default('info')->nullable;
             $table->morphs('alertable');
             $table->json('props')->nullable();
             $table->integer('count')->nullable();

@@ -31,6 +31,7 @@ class Alert extends Model
 	protected $fillable = [
 		'title',
 		'message',
+		'channels',
 		'req_perm',
 		'emitted_by',
 		'props'

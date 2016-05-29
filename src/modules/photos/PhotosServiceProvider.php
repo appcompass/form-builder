@@ -18,9 +18,7 @@ class PhotosServiceProvider extends ServiceProvider
      * Policies
      */
     protected $policies = [
-
         Photo::class => PhotosPolicy::class,
-
     ];
 
     /**
@@ -37,10 +35,8 @@ class PhotosServiceProvider extends ServiceProvider
      * Observe
      */
     protected $observe = [
-        // class watching (of which methods are being hit)
-        \P3in\Observers\AlertObserver::class => [
+        \P3in\Observers\PhotoObserver::class => [
             Photo::class,
-            // additional models to be watched
         ]
     ];
 
@@ -66,7 +62,6 @@ class PhotosServiceProvider extends ServiceProvider
      */
     public function loadIntervention()
     {
-
         $this->app->register(ImageServiceProvider::class);
 
         $loader = AliasLoader::getInstance();
@@ -74,7 +69,6 @@ class PhotosServiceProvider extends ServiceProvider
         $loader->alias('Image', Image::class);
 
         Config::set(['image' => ['driver' => 'imagick']]);
-
     }
 
     /**
