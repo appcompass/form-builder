@@ -211,7 +211,7 @@ class CpWebsiteController extends UiBaseController
         if (!empty($servers[$request->hosting_instance])) {
 
             $config = $servers[$request->hosting_instance];
-            $config['root'] = $config['vhost_root'].$request->site_url;
+            $config['root'] = $config['vhost_root'].$request->site_url.'/';
 
             unset($config['vhost_root']);
 
