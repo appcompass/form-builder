@@ -210,12 +210,12 @@
 {!! Form::submit('Save', ["class" => "btn btn-info"]) !!}
 
 <script>
-    (function photoSelector(w) {
+    (function mediaSelector(w) {
 
-        $('.open-select-image-modal').on('click', function(e) { e.preventDefault(), photoSelector.openModal($(this)) });
-        $('.image-selector > div').on('click', function() { photoSelector.selectImage($(this)) } )
+        $('.open-select-image-modal').on('click', function(e) { e.preventDefault(), mediaSelector.openModal($(this)) });
+        $('.image-selector > div').on('click', function() { mediaSelector.selectImage($(this)) } )
 
-        var photoSelector = {
+        var mediaSelector = {
             selectedImage: undefined,
             relatedFormInput: undefined,
             pathLabels: [],
