@@ -1,0 +1,82 @@
+/* Custom Slider */
+
+.slick-slide {
+    outline:none;
+}
+
+.slick-dots {
+    @extend .list-reset;
+    position:absolute;
+    bottom:20px;
+    text-align:center;
+    width:100%;
+}
+
+.slick-dots li {
+    display:inline-block;
+}
+
+.slick-dots button {
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    display:block;
+    line-height:1;
+    font-size:0;
+    background:#fff;
+    opacity:0.5;
+    transition:opacity 0.15s ease;
+    margin:0 4px;
+}
+
+.slick-dots .slick-active button,
+.slick-dots button:hover {
+    opacity:1;
+    outline:none;
+}
+
+.slick-arrow {
+    background:transparent;
+    color:#fff;
+    position:absolute;
+    top:50%;
+    outline:none;
+    z-index:2;
+    font-size:0;
+    transition:opacity 0.15s ease;
+    //icon font styles
+    font-family: 'icomoon';
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    &:before {
+        font-size:30px;
+    }
+    &:hover {
+        background:transparent;
+        opacity:0.6;
+    }
+}
+
+.slick-next {
+    right:20px;
+    &:before {
+        content: "\e809";
+    }
+}
+
+.slick-prev {
+    left:20px;
+    &:before {
+        content: "\e808";
+    }
+}
+
+.overflow-visible .slick-list {
+    overflow:visible!important;
+}

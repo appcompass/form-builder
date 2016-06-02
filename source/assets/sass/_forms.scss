@@ -1,0 +1,258 @@
+/* ==========================================================================
+	Forms
+=========================================================================== */
+
+form {
+	margin-bottom:30px;
+}
+
+label {
+	display:block;
+	margin-bottom:4px;
+}
+
+label .required {
+	color:$text-color;
+}
+
+input[type="text"], 
+input[type="password"], 
+input[type="date"], 
+input[type="datetime"], 
+input[type="email"], 
+input[type="number"], 
+input[type="search"], 
+input[type="tel"], 
+input[type="time"], 
+input[type="url"], 
+textarea {
+	@extend %default-font;
+	-webkit-appearance: none; 
+	background-color: #fff; 
+	border:$input-border-width solid $input-border-color; 
+	color:$input-text-color; display:block; 
+	margin: 0 0 $input-margin-bottom 0; 
+	padding:em(10px); 
+	height: $input-height; 
+	width: 100%;
+	transition:all 0.15s linear; 
+	border-radius:0;
+}
+
+input[type="text"]:focus, 
+input[type="password"]:focus, 
+input[type="date"]:focus, 
+input[type="datetime"]:focus, 
+input[type="email"]:focus, 
+input[type="number"]:focus, 
+input[type="search"]:focus, 
+input[type="tel"]:focus, 
+input[type="time"]:focus, 
+input[type="url"]:focus, 
+textarea:focus {
+	outline:none;
+}
+
+input[type="search"] {
+	box-sizing: border-box;
+}
+
+input[type="checkbox"], 
+input[type="radio"] {
+	margin:0 em(10px) 
+	$input-margin-bottom 0;
+}
+
+textarea {
+	height: auto; 
+	resize:none;
+}
+
+select {
+	width: 100%; 
+	margin-bottom:$input-margin-bottom;
+}
+
+::-webkit-input-placeholder {
+	color:$placeholder-color;
+}
+
+::-moz-placeholder {
+	color:$placeholder-color;
+}
+
+:-ms-input-placeholder {
+	color:$placeholder-color;
+}
+
+input[type="submit"], 
+button {
+	display:inline-block; 
+	background-color:$btn-color; 
+	border:none; 
+	color:#fff; 
+	height: $input-height; 
+	padding:0 em(20px); 
+	transition:all .15s ease;
+	cursor:pointer;
+	-webkit-appearance: none;
+    -webkit-border-radius: 0;
+}
+
+input[type="submit"]:hover, 
+button:hover {
+	background-color:$hover-color;
+}
+
+input[type="number"]::-webkit-inner-spin-button, 
+input[type="number"]::-webkit-outer-spin-button {
+	-webkit-appearance: none; 
+	margin: 0;
+}
+
+///------------------------------------------------------------------------
+///		ERRORS
+///------------------------------------------------------------------------
+
+form .error {
+	border-color:red!important;
+	border-width:2px!important;
+}
+
+///------------------------------------------------------------------------
+///		SELECT REPLACEMENT
+///------------------------------------------------------------------------
+
+.select {
+	position:relative; 
+	zoom:1; 
+	margin-bottom:$input-margin-bottom; 
+	overflow:hidden; 
+	white-space:nowrap;
+}
+
+.select select {
+	height: $input-height; 
+	position:absolute; 
+	left:0; 
+	top:0; 
+	margin:0; 
+	-webkit-appearance:none; 
+	-moz-appearance:none; 
+	z-index:2; 
+	opacity:0;
+}
+
+.select select + .place {
+	border:$input-border-width solid $input-border-color; 
+	color:$input-text-color; 
+	background:#fff; 
+	display:block; 
+	height:$input-height; 
+	padding:8px 30px 0 10px; 
+	text-align:left; 
+	position:relative; 
+	cursor:pointer;
+}
+
+.select select + .place:before {
+	content: ""; 
+	width:15px; 
+	height:15px;
+	font-size:15px;
+	line-height:15px; 
+	position:absolute; 
+	top:50%; 
+	right:20px; 
+	margin-top:-7px; 
+	//border-style:solid; 
+	//border-width:6px 4px 0 4px; 
+	//border-color:$input-border-color transparent transparent transparent;
+	font-family: 'icomoon';
+	content: "\e603";
+	color:$input-border-color;
+}
+
+///------------------------------------------------------------------------
+///		CHECKBOX & RADIO REPLACEMENT
+///------------------------------------------------------------------------
+
+.checkbox, 
+.radio {
+	position:relative; 
+	zoom:1; 
+	overflow:hidden; 
+	display:block;
+	margin-bottom:$input-margin-bottom;
+}
+
+.checkbox input, 
+.radio input {
+	position:absolute; 
+	margin:0; 
+	padding:0; 
+	left:0; 
+	opacity:0;
+}
+
+.checkbox label, 
+.radio label {
+	margin:0; 
+	float:left; 
+	padding-left:em(24px); 
+	cursor:pointer; 
+	position:relative;
+}
+
+.checkbox label:before, 
+.radio label:before {
+	content:""; 
+	width:16px; 
+	height:16px; 
+	border:2px solid $input-border-color; 
+	position:absolute; 
+	left:0; 
+	top:50%;
+	margin-top:-8px;
+}
+
+.radio label:before {
+	border-radius:50%;
+}
+
+.checkbox input[type="checkbox"]:checked + label:before,
+.radio input[type="radio"]:checked + label:before {
+	background:$input-border-color;
+}
+
+///------------------------------------------------------------------------
+///		PREFIX & POSTFIX
+///------------------------------------------------------------------------
+
+.postfix, 
+.prefix {display:block; 
+	position:relative; 
+	z-index:2; 
+	text-align:center; 
+	width:100%; 
+	overflow:hidden; 
+	background:#000;
+	color:#fff; 
+	border:$input-border-width solid $input-border-color; 
+	padding:em(13px) 0 em(12px); 
+	height:$input-height;
+}
+
+///------------------------------------------------------------------------
+///		GRAVITY FORMS
+///------------------------------------------------------------------------
+
+/*.gform_wrapper { }
+.gform_heading { }
+.gform_description { }
+.gform_body { }
+.gform_fields { }
+.gfield { }
+.ginput_container { }
+.gform_footer { }
+.gform_button { }*/

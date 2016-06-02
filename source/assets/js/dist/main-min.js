@@ -1,0 +1,2 @@
+!function($){$(".main-nav-trigger").on("click",function(){$(this).toggleClass("is-open"),$(".main-nav").toggleClass("is-open")}),$(".nav-dropdown-arrow").on("click",function(n){n.preventDefault(),$(this).parent().parent().toggleClass("is-open")})}(jQuery);
+//# sourceMappingURL=./main-min.js.map

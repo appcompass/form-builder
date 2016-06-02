@@ -1,0 +1,82 @@
+/* ==========================================================================
+	SETTINGS
+=========================================================================== */
+
+///------------------------------------------------------------------------
+///		FUNCTIONS
+///------------------------------------------------------------------------
+
+// EM CALCULATION
+$base-font: 16px;
+@function em($target, $context: $base-font) {
+   @if $target == 0 { @return 0 }
+   @return $target / $context + 0em;
+}
+
+///------------------------------------------------------------------------
+///		VARIABLES
+///------------------------------------------------------------------------
+
+// GRID WIDTHS
+$max-container-width: 1800px;
+$max-row-width: 1460px;
+
+// GRID BREAKPOINTS
+$break-large: 1200px;
+$break-medium: 992px;
+$break-small: 768px;
+$break-xsmall: $break-small - 1px;
+
+// GRID GUTTERS
+$gutter-xsmall: 30px;
+$gutter-small: $gutter-xsmall;
+$gutter-medium: $gutter-xsmall;
+$gutter-large: $gutter-xsmall;
+$columns: 12;
+
+// STYLE BREAKPOINTS
+
+
+// PATH VARIABLES
+$assets: "../images"; //use #{$assets}
+
+// COLORS
+$black: #333334;
+$black-light: #363636;
+$blue: #0ab7f9;
+$text-color: #696969;
+$heading-color: $black;
+$link-color: $blue;
+$hover-color: mix(black, $blue, 20%);
+$border-color:#ededed;
+$off-white: #f3f3f3;
+$black-nav: #424242;
+$black-nav-hover: #262626;
+
+// FORMS
+$input-height: 50px;
+$input-text-color: $text-color;
+$input-border-color: $border-color;
+$input-border-width: 1px;
+$input-margin-bottom: 20px;
+$placeholder-color: #999;
+$btn-color: $link-color;
+
+
+///------------------------------------------------------------------------
+/// 	FONTS
+///------------------------------------------------------------------------
+
+%default-font, 
+%proxima {
+	font-family:'Proxima Nova W01', "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+
+
+
+
+
+
+
+
