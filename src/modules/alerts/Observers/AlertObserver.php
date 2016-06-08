@@ -23,9 +23,9 @@ class AlertObserver extends BaseObserver
         // Here we could link 'event' => class@method
         // @NOTE remember to fill the 'subscribe' array in the ServiceProvider
 
-        $events->listen('Illuminate\Auth\Events\Attempting', '\P3in\Observers\AlertObserver@attempt');
-        $events->listen('Illuminate\Auth\Events\Login', '\P3in\Observers\AlertObserver@userAuthEvent');
-        $events->listen('Illuminate\Auth\Events\Logout', '\P3in\Observers\AlertObserver@userAuthEvent');
+        // $events->listen('Illuminate\Auth\Events\Attempting', '\P3in\Observers\AlertObserver@attempt');
+        // $events->listen('Illuminate\Auth\Events\Login', '\P3in\Observers\AlertObserver@userAuthEvent');
+        // $events->listen('Illuminate\Auth\Events\Logout', '\P3in\Observers\AlertObserver@userAuthEvent');
     }
 
     /**
@@ -70,6 +70,7 @@ class AlertObserver extends BaseObserver
             ]
         ]);
 
+        // @TODO
         // Event::fire(new AlertEvent($alert, $user, null, true));
     }
 
@@ -92,6 +93,7 @@ class AlertObserver extends BaseObserver
             'emitted_by' => \Auth::check() ? \Auth::user()->id : null
         ]);
 
+        // @TODO
         // Event::fire(new AlertEvent($alert, $model, null, true));
     }
 
@@ -134,6 +136,7 @@ class AlertObserver extends BaseObserver
             'props' => []
         ]);
 
+        // @TODO
         // Event::fire(new AlertEvent($alert, $model, null, false));
     }
 

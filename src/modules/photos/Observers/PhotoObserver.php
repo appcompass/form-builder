@@ -54,18 +54,6 @@ class PhotoObserver extends BaseObserver
             'alertable_type' => get_class($model)
         ]);
 
-        $alert = AlertModel::firstOrCreate([
-            'title' => 'Alert title',
-            'message' => 'body',
-            'channels' => 'dot.separated.channels',
-            'req_perm' => 'single_permission_name',
-            'batch' => true | false,
-            'emitted_by' => 'id of the emitting user',
-            'alertable_id' => 'model id that fired the event we are firing',
-            'alertable_type' => 'class of the model firing the alert'
-        ]);
-
-
         // BaseObserver@fire
         return $this->fire($alert, null, true, 10);
 
