@@ -15,6 +15,7 @@
             <li><strong>Uploaded On:</strong> <span class="pull-right">{{ $video->created_at or 'N/A' }}</span></li>
         </ul>
         @if (!isset($is_modal) OR !$is_modal)
+        @can('destroy', new Photo)
         <div class="item-actions text-right">
             <input type="checkbox" name="bulk_edit" value="{{ $video->id }}">
             {{--
@@ -48,6 +49,7 @@
                 Delete
             </a>
         </div>
+        @endcan
         @endif
     </div>
 

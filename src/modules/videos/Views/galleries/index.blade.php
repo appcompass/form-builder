@@ -1,5 +1,5 @@
 <div class="modal fade in" id="photoModal"></div>
-
+@can('create', new Video)
 <section class="panel">
     <header class="panel-heading">
         <span class="tools pull-right">
@@ -26,6 +26,7 @@
         </div>
     </div>
 </section>
+@endcan
 
 @if(!empty($videos->count()))
     <section class="panel">
@@ -34,6 +35,7 @@
         </header>
 
         <div class="panel-body">
+            @can('destroy', new Photo)
             <div class="row">
                 <div class="col-sm-6">
                     <h4>Bulk Actions:</h4>
@@ -41,6 +43,7 @@
                 </div>
             </div>
             <hr>
+            @endcan
             <div id="gallery_{{ $gallery->id }}" class="media-gal isotope sortable">
                 @include('videos::video-grid', ['videos' => $videos, 'is_modal' => false])
             </div>
