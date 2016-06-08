@@ -1,7 +1,5 @@
-<!--  notification start -->
 <ul class="nav top-menu">
 
-    <!-- notification dropdown start-->
     <li id="header_notification_bar" class="dropdown">
         <notifier
             v-bind:channel="'auth_events'"
@@ -10,9 +8,7 @@
             icon="fa-user"
         ></notifier>
     </li>
-    <!-- notification dropdown end -->
 
-    <!-- settings start -->
     <li class="dropdown">
         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
             <actions
@@ -157,13 +153,15 @@
             throw "No data";
         }
 
+        console.log(data);
+
         this.title = data.title;
         this.message = data.message;
         this.props = data.props || undefined;
         this.icon = this.props && this.props.icon ? this.props.icon : undefined;
         this.datetime = moment(data.updated_at);
         this.read = false; // @TODO get it from pivot and attach
-        this.channels = data.channels.split('.');
+        this.channels = data.channels.split(' ');
 
         return this;
     };

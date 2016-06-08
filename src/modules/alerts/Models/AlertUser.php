@@ -46,6 +46,7 @@ class AlertUser extends Model
 
     /**
      *  userCanSee
+     *
      */
     public static function userCanSee($alert_id)
     {

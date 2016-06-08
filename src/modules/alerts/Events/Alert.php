@@ -5,6 +5,7 @@ namespace P3in\Events;
 use Auth;
 use App\Events\Event;
 use P3in\Models\User;
+use P3in\Jobs\SendDelayedAlert;
 use P3in\Models\Permission;
 use P3in\Models\Alert as AlertModel;
 use Illuminate\Queue\SerializesModels;
@@ -21,24 +22,17 @@ class Alert extends Event implements ShouldBroadcast
      */
     protected $alert;
 
-
     /**
      *  Fire an Alert
      *
      *  @param P3in\Models\Alert $alert
-     *  @param Illuminate\Eloquent\Model $related_model for polymorphic reference
-     *  @param Eloquent\Collection $users users to distribute the alert to
+     *  @param Eloquent\Collection $users users to distribute the alert to, use permission -if any- to distribute
      *  @param bool excludeEmittingUser exclude the user emitting the event Alert->emitted_by
      */
-    public function __construct(AlertModel $alert, Model $related_model, Collection $users = null, $excludeEmittingUser = true)
+    public function __construct(AlertModel $alert, Collection $users = null, $excludeEmittingUser = true)
     {
-        // Link Alert to related_model
-        $alert->alertable_id = $related_model->id;
 
-        $alert->alertable_type = get_class($related_model);
-
-        $alert->save();
-
+        // this is for matching the channel, only the id is being exported
         $this->alert = $alert;
 
         // this is the only information we're putting on the queue/socket
@@ -50,10 +44,8 @@ class Alert extends Event implements ShouldBroadcast
 
         }
 
-        // distribute the alert to the users
-        AlertModel::distribute($alert, $users, $excludeEmittingUser);
+        return AlertModel::distribute($alert, $users, $excludeEmittingUser);
 
-        return true;
     }
 
     /**

@@ -64,8 +64,6 @@ class AlertsController extends Controller
             return Alert::find($id);
 
         }
-
     }
-
 
 }

@@ -19,10 +19,12 @@ class CreateAlertsTable extends Migration
             $table->text('message');
             $table->text('req_perm')->nullable(); // single permission!
             $table->text('emitted_by')->default('system')->nullable();
-            $table->text('channels')->default('info')->nullable;
+            $table->text('channels')->default('info')->nullable();
             $table->morphs('alertable');
             $table->json('props')->nullable();
-            $table->integer('count')->nullable();
+            $table->integer('count')->default(null)->nullable();
+            $table->boolean('batch')->default(false)->nullable();
+            $table->string('job_id', 32)->default(null)->nullable();
             $table->timestamps();
         });
 

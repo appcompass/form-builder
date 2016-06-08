@@ -2,6 +2,7 @@
 
 namespace P3in\Models;
 
+use P3in\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -33,8 +34,13 @@ class Alert extends Model
 		'message',
 		'channels',
 		'req_perm',
+		'batch',
+		'count',
 		'emitted_by',
-		'props'
+		'props',
+		'alertable_id',
+		'alertable_type',
+		'job_id'
 	];
 
 	/**
@@ -45,6 +51,14 @@ class Alert extends Model
 	public function alertable()
 	{
 	  	return $this->morphTo();
+	}
+
+	/**
+	 *
+	 */
+	public function user()
+	{
+	  	return $this->belongsTo(User::class, 'emitted_by');
 	}
 
 	/**
@@ -65,9 +79,15 @@ class Alert extends Model
 	 */
 	public static function distribute(Alert $alert, Collection $users, $excludeEmittingUser = true)
 	{
+		\Log::info($excludeEmittingUser);
+
+		\Log::info($users);
+
+		\Log::info($alert);
+
 	    foreach($users as $user) {
 
-	    	if ($excludeEmittingUser && $alert->emitted_by === $user->id) {
+	    	if ($excludeEmittingUser && !is_null($alert->emitted_by) && $alert->emitted_by == $user->id) {
 
 	    		continue;
 
@@ -82,6 +102,19 @@ class Alert extends Model
 	    }
 
 	    return true;
+	}
+
+	/**
+	 *	Get a unique fingerprint for the alert
+	 */
+	public function fingerprint()
+	{
+	  	return sha1(
+	  		$this->created_at->timestamp . '|' .
+	  		$this->alertable_id . '|' .
+	  		$this->alertable_type . '|' .
+	  		$this->emitted_by
+	  	);
 	}
 
 }

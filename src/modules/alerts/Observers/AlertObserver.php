@@ -9,8 +9,9 @@ use Illuminate\Auth\Events\Logout;
 use P3in\Events\Alert as AlertEvent;
 use P3in\Models\Alert as AlertModel;
 use Event;
+use P3in\Observers\BaseObserver;
 
-class AlertObserver
+class AlertObserver extends BaseObserver
 {
 
     /**
@@ -69,7 +70,7 @@ class AlertObserver
             ]
         ]);
 
-        Event::fire(new AlertEvent($alert, $user, null, true));
+        // Event::fire(new AlertEvent($alert, $user, null, true));
     }
 
     /**
@@ -91,7 +92,7 @@ class AlertObserver
             'emitted_by' => \Auth::check() ? \Auth::user()->id : null
         ]);
 
-        Event::fire(new AlertEvent($alert, $model, null, true));
+        // Event::fire(new AlertEvent($alert, $model, null, true));
     }
 
     /**
@@ -133,7 +134,7 @@ class AlertObserver
             'props' => []
         ]);
 
-        Event::fire(new AlertEvent($alert, $model, null, false));
+        // Event::fire(new AlertEvent($alert, $model, null, false));
     }
 
 }
