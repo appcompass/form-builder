@@ -24,6 +24,11 @@ trait HasGallery
     abstract function getGalleryName();
 
     /**
+     * Set it to true to make sure it returns a gallery
+     */
+    protected $forceCreateGallery = true;
+
+    /**
      *  galleries
      *
      *  @WARNING => THIS DOESN"T WORK WITH EAGER LOADING!!!!!
@@ -33,7 +38,7 @@ trait HasGallery
 
         $rel = $this->morphOne(Gallery::class, 'galleryable');
 
-        if (!$rel->get()->count()) {
+        if ($this->forceCreateGallery && !$rel->get()->count()) {
 
             $this->getOrCreateGallery($this->getGalleryName());
 
