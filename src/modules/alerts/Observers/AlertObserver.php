@@ -55,9 +55,15 @@ class AlertObserver extends BaseObserver
      */
     public function userAuthEvent($event)
     {
-        $action = get_class($event) === 'Illuminate\Auth\Events\Login' ? 'in.' : 'out.';
+        if ($event->user->isSystem()) {
+
+            return;
+
+        }
 
         $user = $event->user;
+
+        $action = get_class($event) === 'Illuminate\Auth\Events\Login' ? 'in.' : 'out.';
 
         $alert = AlertModel::create([
             'title' => ucfirst($user->first_name) . ' logged ' . $action,
@@ -78,6 +84,7 @@ class AlertObserver extends BaseObserver
     /**
      *  On ::created
      *
+     *  @NOTE this is a generic create "catchAll"
      */
     public function created($model)
     {
