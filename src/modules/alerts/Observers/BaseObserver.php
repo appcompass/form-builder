@@ -51,7 +51,7 @@ class BaseObserver
             $alert->save();
 
         // otherwise we simply increment the alert's counter and increment the job
-        // scheduled time by 10s (not tweakable for now)
+        // scheduled time by $timeout
         } else {
 
             if (! $alert->job_id) {
@@ -62,7 +62,7 @@ class BaseObserver
 
             $alert->increment('count');
 
-            $this->updateExpireTime($alert->job_id, 'default:delayed', 10);
+            $this->updateExpireTime($alert->job_id, 'default:delayed', $timeout);
 
         }
 

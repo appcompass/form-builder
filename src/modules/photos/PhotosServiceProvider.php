@@ -36,7 +36,7 @@ class PhotosServiceProvider extends ServiceProvider
      */
     protected $observe = [
         \P3in\Observers\PhotoObserver::class => [
-            // Photo::class,
+            Photo::class,
         ]
     ];
 

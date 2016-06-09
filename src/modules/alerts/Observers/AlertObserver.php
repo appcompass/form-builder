@@ -23,9 +23,9 @@ class AlertObserver extends BaseObserver
         // Here we could link 'event' => class@method
         // @NOTE remember to fill the 'subscribe' array in the ServiceProvider
 
-        // $events->listen('Illuminate\Auth\Events\Attempting', '\P3in\Observers\AlertObserver@attempt');
-        // $events->listen('Illuminate\Auth\Events\Login', '\P3in\Observers\AlertObserver@userAuthEvent');
-        // $events->listen('Illuminate\Auth\Events\Logout', '\P3in\Observers\AlertObserver@userAuthEvent');
+        $events->listen('Illuminate\Auth\Events\Attempting', '\P3in\Observers\AlertObserver@attempt');
+        $events->listen('Illuminate\Auth\Events\Login', '\P3in\Observers\AlertObserver@userAuthEvent');
+        $events->listen('Illuminate\Auth\Events\Logout', '\P3in\Observers\AlertObserver@userAuthEvent');
     }
 
     /**
@@ -59,19 +59,20 @@ class AlertObserver extends BaseObserver
 
         $user = $event->user;
 
-        $alert = new AlertModel([
+        $alert = AlertModel::create([
             'title' => ucfirst($user->first_name) . ' logged ' . $action,
             'message' => "{$user->full_name} logged " . $action,
             'channels' => 'auth_events',
             'req_perm' => 'alert.info',
             'emitted_by' => $user->id,
+            'alertable_id' => $user->id,
+            'alertable_type' => get_class($user),
             'props' => [
                 'icon' => $user->avatar()
             ]
         ]);
 
-        // @TODO
-        // Event::fire(new AlertEvent($alert, $user, null, true));
+        return $this->fire($alert, null, true, 0);
     }
 
     /**
@@ -85,16 +86,17 @@ class AlertObserver extends BaseObserver
 
         $reflect = new \ReflectionClass(get_class($model));
 
-        $alert = new AlertModel([
+        $alert = AlertModel::create([
             'title' => 'New ' . $reflect->getShortName() . ' added.',
             'message' => $msg . ' added a ' . $reflect->getShortName(),
             'channels' => 'actions',
             'req_perm' => 'alert.info',
+            'alertable_id' => $user->id,
+            'alertable_type' => get_class($user),
             'emitted_by' => \Auth::check() ? \Auth::user()->id : null
         ]);
 
-        // @TODO
-        // Event::fire(new AlertEvent($alert, $model, null, true));
+        return $this->fire($alert, null, true, 0);
     }
 
     /**
@@ -127,17 +129,17 @@ class AlertObserver extends BaseObserver
 
         }
 
-        $alert = new AlertModel([
+        $alert = AlertModel::create([
             'title' => 'Title', // @TODO pay attention to me!
             'message' => $event->message,
             'channel' => 'actions',
             'level' => 'info',
             'req_perm' => 'alert.info',
-            'props' => []
+            'alertable_id' => $user->id,
+            'alertable_type' => get_class($user),
         ]);
 
-        // @TODO
-        // Event::fire(new AlertEvent($alert, $model, null, false));
+        return $this->fire($alert, null, true, 0);
     }
 
 }
