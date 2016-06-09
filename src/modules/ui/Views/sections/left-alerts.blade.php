@@ -15,7 +15,7 @@
                 v-bind:channel="'media_actions'"
                 v-bind:alerts="alerts"
                 v-bind:socket="socket"
-                icon="fa-list"
+                icon="fa-camera"
             ></actions>
         </a>
     </li>
@@ -121,7 +121,7 @@
 
 <template id="actions">
         <a data-toggle="dropdown" class="dropdown-toggle" v-bind:class="{bounce: $parent.animating}">
-            <i class="fa fa-list"></i>
+            <i class="fa fa-camera"></i>
             <span class="badge bg-success">@{{ alerts[channel].length }}</span>
         </a>
         <ul class="dropdown-menu extended inbox">
