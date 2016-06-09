@@ -219,7 +219,7 @@
             created: function() {
                 var vm = this;
                 // this.socket = io({{ env('SOCKET_ADDR', 'default') }} , {secure: true});
-                vm.socket = io('https://cp.bostonpads.dev:3001', {secure: true});
+                vm.socket = io('{{env('ADMIN_WEBSITE_URL')}}:3001', {secure: true});
                 vm.init();
             },
             methods: {

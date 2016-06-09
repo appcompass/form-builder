@@ -26,34 +26,31 @@ var https = require('https');
 var http = require('http');
 var fs = require('fs');
 
-var privateKey = fs.readFileSync(__dirname + '/certs/key').toString();
-var certificate = fs.readFileSync(__dirname + '/certs/crt').toString();
+// get all environment variables and put htem into process.env
+require('dotenv').config({path: __dirname + '/../../.env'});
+
 
 var options = {
-    cert: certificate,
-    key: privateKey
+    cert: fs.readFileSync(process.env.SSL_CERTIFICATE, 'utf8'),
+    key: fs.readFileSync(process.env.SSL_CERTIFICATE_KEY, 'utf8')
 }
 
 var app = https.createServer(options);
-// var app = http.createServer(function(){
-    // console.log("Dunno")
-// });
 
 var io = require('socket.io')(app);
 
 var Redis = require('ioredis');
-
+//  process.env.REDIS_PASSWORD // is not used but is there if it's needed
 var redis = new Redis({
-    port: 6379,
-    host: '127.0.0.1',
+    port: process.env.REDIS_PORT,
+    host: process.env.REDIS_HOST,
     db: 0
 });
 
-app.listen(3001, function() {
+app.listen(process.env.ALERTS_LISTEN_PORT, function() {
     console.log('Server is running!');
 });
 
-// redis.subscribe('test-channel', function(err, count) {
 redis.psubscribe('*', function(err, count) {
     console.log('Subscribed to channels');
 });
