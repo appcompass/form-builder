@@ -23,7 +23,7 @@ class AlertsModuleDatabaseSeeder extends Seeder
             'type' => 'alert.info',
         ]);
 
-        $perm->label = 'Info Level Alerts';
+        $perm->label = 'Alerts: Info Level';
         $perm->description = 'Permission to see info level alerts';
         $perm->locked = true;
 

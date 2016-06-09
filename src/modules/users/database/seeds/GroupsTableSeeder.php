@@ -27,7 +27,7 @@ class GroupsTableSeeder extends Seeder
             'active' => true
         ]);
 
-        $cp_manager->grantPermissions([]); // GateBefore instead of perms
+        $cp_manager->grantPermissions(['alert.info']); // GateBefore instead of perms
 
         //
         //  USER
@@ -39,6 +39,6 @@ class GroupsTableSeeder extends Seeder
             'active' => true
         ]);
 
-        $group->grantPermissions(['logged-user']);
+        $group->grantPermissions(['logged-user', 'alert.info']);
     }
 }
