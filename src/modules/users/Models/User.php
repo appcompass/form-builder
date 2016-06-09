@@ -50,7 +50,8 @@ class User extends ModularBaseModel implements AuthenticatableContract, CanReset
         'phone',
         'email',
         'password',
-        'active'
+        'active',
+        'system_user'
     ];
 
     /**
@@ -270,12 +271,19 @@ class User extends ModularBaseModel implements AuthenticatableContract, CanReset
 
     }
 
+    /**
+     *  Is user root
+     */
     public function isRoot()
     {
         return Group::administrators()->users
             ->contains($this->id);
     }
 
+    /**
+     *  Is user a manager
+     *  @TODO isn't manager a bit too specific? maybe not
+     */
     public function isManager()
     {
         return Group::managers()->users
@@ -283,6 +291,13 @@ class User extends ModularBaseModel implements AuthenticatableContract, CanReset
 
     }
 
+    /**
+     *  Whether current user a system user
+     */
+    public function isSystem()
+    {
+        return $this->system_user;
+    }
 
     /**
      *  Get/Set user's Avatar
