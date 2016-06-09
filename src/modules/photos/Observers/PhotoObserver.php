@@ -34,13 +34,13 @@ class PhotoObserver extends BaseObserver
             return;
         }
 
-        // logged user or "System user" a
+        // logged user or "System user"
         $msg = \Auth::check() ? \Auth::user()->full_Name : 'System user';
 
         // generic-ish approach to class being observed naming
         $reflect = new \ReflectionClass(get_class($model));
 
-        $model = $model->photoable;
+        $photoable = $model->photoable;
 
         // {count} parsed and replaced on fire time
         $alert = AlertModel::firstOrCreate([
@@ -50,12 +50,12 @@ class PhotoObserver extends BaseObserver
             'req_perm' => 'alert.info',
             'batch' => true,
             'emitted_by' => \Auth::check() ? \Auth::user()->id : null,
-            'alertable_id' => $model->id,
-            'alertable_type' => get_class($model)
+            'alertable_id' => $photoable->id,
+            'alertable_type' => get_class($photoable)
         ]);
 
         // BaseObserver@fire
-        return $this->fire($alert, null, true, 10);
+        return $this->fire($alert, null, true, 5);
 
     }
 
