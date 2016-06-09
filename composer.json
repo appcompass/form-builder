@@ -26,13 +26,5 @@
         "psr-4": {
       "P3in\\": "src/modules"
         }
-    },
-    "scripts": {
-        "post-package-install": [
-            "npm install dotenv socket.io ioredis --save"
-        ],
-        "post-package-update": [
-            "npm install dotenv socket.io ioredis --save"
-        ]
     }
 }
