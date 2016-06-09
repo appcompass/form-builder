@@ -20,6 +20,7 @@
         "langemike/laravel5-less": "~1.0",
         "google/recaptcha": "~1.1",
         "roumen/sitemap": "2.6.*",
+        "pusher/pusher-php-server": "~2.0",
         "p3in/modular": "dev-develop"
     },
     "autoload": {
