@@ -12,3 +12,11 @@ storage/
 .env.php
 .env
 .env.example
+
+# Frontend specific (mike farrell)
+source/*.DS_Store
+source/*.sublime-workspace
+source/*.sublime-project
+source/*.sass-cache*
+source/*.codekit-cache*
+source/config.codekit
