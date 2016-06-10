@@ -1,0 +1,19 @@
+/* ==========================================================================
+	FALLBACKS
+=========================================================================== */
+
+.no-flexbox {
+	.main-nav > ul {
+		display:table;
+		width:100%;
+	}
+
+	.main-nav > ul > li {
+		display:table-cell;
+		vertical-align:middle;
+	}
+
+	.main-nav > ul > li > a {
+		display:inline-block;
+	}
+}
