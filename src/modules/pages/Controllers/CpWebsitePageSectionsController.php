@@ -11,9 +11,9 @@ use Illuminate\Support\Facades\Route;
 use P3in\Controllers\UiBaseController;
 use P3in\Models\Page;
 use P3in\Models\PageSection;
+use P3in\Models\Photo;
 use P3in\Models\Section;
 use P3in\Models\Website;
-use Photo;
 use Response;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
