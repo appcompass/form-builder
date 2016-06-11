@@ -1,6 +1,6 @@
-<ul class="nav top-menu">
+<ul class="nav top-menu" id="header_notification_bar">
 
-    <li id="header_notification_bar" class="dropdown">
+    <li class="dropdown">
         <notifier
             v-bind:channel="'auth_events'"
             v-bind:alerts="alerts"
