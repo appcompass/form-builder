@@ -1,5 +1,7 @@
 vendor/
 node_modules/
+www/
+!www/index.php
 
 # Laravel 4 specific
 bootstrap/compiled.php
@@ -14,7 +16,7 @@ storage/
 .env.example
 
 # Frontend specific (mike farrell)
-source/*.DS_Store
+.DS_Store
 source/*.sublime-workspace
 source/*.sublime-project
 source/*.sass-cache*
