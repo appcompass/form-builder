@@ -17,8 +17,8 @@
         "php": ">=5.5.9",
         "laravel/framework": "5.2.*",
         "intervention/image": "^2.3",
-        "p3in/modular": "dev-develop",
-        "p3in/l5cms-core": "dev-develop",
+        "p3in/modular": "dev-master",
+        "p3in/l5cms-core": "dev-master",
         "predis/predis": "^1.1@dev",
         "league/flysystem-sftp": "~1.0",
         "guzzlehttp/guzzle": "~5.3"
