@@ -23,3 +23,4 @@ source/*.sass-cache*
 source/*.codekit-cache*
 source/config.codekit
 sys/database/migrations
+sys/resources/node-scripts
