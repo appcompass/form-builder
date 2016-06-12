@@ -51,7 +51,7 @@ class User extends ModularBaseModel implements AuthenticatableContract, CanReset
         'email',
         'password',
         'active',
-        'system_user'
+        'system_user',
     ];
 
     /**
@@ -330,6 +330,15 @@ class User extends ModularBaseModel implements AuthenticatableContract, CanReset
 
         // return $this->morphOne(Photo::class, 'photoable');
 
+    }
+
+    public static function createWithRandomPassword($req)
+    {
+        $user = new User($req);
+        $user->password = str_random(8);
+        $user->save();
+
+        return $user;
     }
 
 }
