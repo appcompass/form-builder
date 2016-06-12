@@ -28,8 +28,9 @@ gulp.task('sass', function(){
 
 gulp.task('scripts', function() {
     return gulp.src([
-        'assets/bower_components/slick-carousel/slick/slick.min.js',
-        'assets/bower_components/matchHeight/jquery.matchHeight-min.js',
+        'assets/bower_components/**/*min.js',
+        '!assets/bower_components/jquery{,/**}',
+        '!assets/bower_components/normalize-css{,/**}',
         'assets/js/src/*.js'
     ])
         .pipe(uglify())
