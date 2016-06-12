@@ -2,15 +2,16 @@
 
 namespace P3in\Events;
 
-use Auth;
 use App\Events\Event;
-use P3in\Models\User;
-use P3in\Jobs\SendDelayedAlert;
-use P3in\Models\Permission;
-use P3in\Models\Alert as AlertModel;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Database\Eloquent\Model;
+use Auth;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Queue\SerializesModels;
+use P3in\Jobs\SendDelayedAlert;
+use P3in\Models\Alert as AlertModel;
+use P3in\Models\Permission;
+use P3in\Models\User;
 
 class Alert extends Event implements ShouldBroadcast
 {

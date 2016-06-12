@@ -4,17 +4,18 @@ namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Http\Request;
 use P3in\Models\PageSection;
+use P3in\Models\Permission;
 use P3in\Models\Section;
 use P3in\Models\Website;
 use P3in\ModularBaseModel;
+use P3in\Traits\HasPermissions;
 use P3in\Traits\NavigatableTrait as Navigatable;
 use P3in\Traits\SettingsTrait;
-use P3in\Traits\HasPermissions;
 
 class Page extends ModularBaseModel
 {
@@ -123,7 +124,7 @@ class Page extends ModularBaseModel
         return array_replace([
             "label" => $this->title,
             "url" => $this->url,
-            "req_perms" => $req_perm ? $req_perm->id : Permission::GUEST_PERMISSION,
+            "req_perms" => $req_perm ? $req_perm->id : null, //Permission::GUEST_PERMISSION,
             "props" => ['icon' => 'list']
         ], $overrides);
     }

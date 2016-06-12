@@ -39,9 +39,7 @@ class GroupsTableSeeder extends Seeder
             'active' => true
         ]);
 
-        if (Modular::isLoaded('permissions')) {
-            $cp_manager->grantPermissions(['alert.info']); // something else instead of perms, or make cp-admin a perm not a group.
-            $group->grantPermissions(['logged-user', 'alert.info']);
-        }
+        $cp_manager->grantPermissions([]);
+        $group->grantPermissions(['logged-user']);
     }
 }
