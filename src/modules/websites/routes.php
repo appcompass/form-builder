@@ -6,6 +6,7 @@ Route::group([
 ], function() {
 
     // website routes
+    Route::get('websites/list', 'CpWebsiteController@list');
     Route::resource('websites', 'CpWebsiteController');
     Route::resource('websites.settings', 'CpWebsiteSettingsController');
     Route::resource('websites.redirects', 'CpWebsiteRedirectsController');

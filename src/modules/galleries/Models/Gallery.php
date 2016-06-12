@@ -3,7 +3,8 @@
 namespace P3in\Models;
 
 use Auth;
-use Illuminate\Database\Eloquent\Collection;
+// use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use P3in\Interfaces\GalleryItemInterface;
 use P3in\Models\GalleryItem;
@@ -27,6 +28,7 @@ class Gallery extends Model
 
     protected $dates = [];
 
+    protected $appends = ['photoCount', 'videoCount'];
 
     /**
      *  Relationship with users
@@ -53,15 +55,11 @@ class Gallery extends Model
     public function photos()
     {
 
-        // $items = $this->items()
-        //  ->byType('P3in\Models\Photo')
-        //  ->lists('itemable_id');
-
-        // return Photo::whereIn('id', $items)->get();
-
-        // return
         return $this->hasManyThrough(Photo::class, GalleryItem::class, 'gallery_id', 'id')
-            ->orderBy('order', 'asc');
+            ->where('itemable_type', Photo::class)
+            ->orderBy('order', 'asc')
+            ->orderBy('created_at', 'desc');
+
     }
 
     /**
@@ -70,9 +68,39 @@ class Gallery extends Model
      */
     public function videos()
     {
+
         return $this->hasManyThrough(Video::class, GalleryItem::class, 'gallery_id', 'id')
-            ->orderBy('order', 'asc');
+            ->where('itemable_type', Video::class)
+            ->orderBy('gallery_items.order', 'asc')
+            ->orderBy('created_at', 'desc');
+
+        // return $this->hasMany(GalleryItem::class)
+        //     ->where('itemable_type', Video::class)
+        //     ->orderBy('order', 'asc');
     }
+
+    /**
+     *  Get Photos Count
+     *
+     */
+    public function getPhotoCountAttribute()
+    {
+
+        return count($this->photos);
+
+    }
+
+    /**
+     * Get Videos Count
+     *
+     */
+    public function getVideoCountAttribute()
+    {
+
+        return count($this->videos);
+
+    }
+
 
     /**
      *  Relation with galleryItems
@@ -80,7 +108,9 @@ class Gallery extends Model
      */
     public function galleryItems()
     {
-      return $this->hasMany(GalleryItem::class);
+
+        return $this->hasMany(GalleryItem::class);
+
     }
 
     /**
@@ -112,14 +142,102 @@ class Gallery extends Model
 
     /**
      *
+     */
+    public function sync(\Illuminate\Database\Eloquent\Collection $items, $type = null)
+    {
+
+        $syncMap = [
+            Photo::class => 'syncPhotos',
+            Video::class => 'syncVideos'
+        ];
+
+        if (!is_null($type)) {
+
+            switch($type) {
+                case 'videos':
+                    $this->syncVideos($items);
+                    break;
+                case 'photos':
+                    $this->syncPhotos($items);
+                    break;
+            }
+
+        } else if ($items instanceof \Illuminate\Database\Eloquent\Collection) {
+
+            $acc = [];
+
+            foreach($items as $item) {
+
+                $acc[get_class($item)][] = $item->id;
+
+            }
+
+            foreach($acc as $class => $items) {
+
+                return call_user_func_array([$this, $syncMap[$class]], [collect($items)]);
+
+            }
+
+        }
+
+    }
+
+    public function syncPhotos(Collection $photos)
+    {
+        $owned = $this->photos->pluck('id');
+
+        $keep = $owned->intersect($photos);
+
+        $add = $photos->diff($owned);
+
+        $delete = $owned->diff($keep);
+
+        \DB::table('gallery_items')->where('gallery_id', $this->id)->whereIn('itemable_id', $delete->toArray())->delete();
+
+        foreach(Photo::whereIn('id', $add)->get() as $photo) {
+
+            $this->addPhoto($photo);
+
+        }
+
+    }
+
+    public function syncVideos(Collection $videos)
+    {
+        // currently owned
+        $owned = $this->videos->pluck('id');
+
+        // the ones we keep
+        $keep = $owned->intersect($videos);
+
+        // the oned we add
+        $add = $videos->diff($owned);
+
+        // the oned we delete
+        $delete = $owned->diff($keep);
+
+        \DB::table('gallery_items')->where('gallery_id', $this->id)->whereIn('itemable_id', $delete->toArray())->delete();
+
+        foreach(Video::whereIn('id', $add)->get() as $video) {
+
+            $this->addVideo($video);
+
+        }
+
+    }
+
+
+    /**
+     *
      *
      */
     private function addItem(GalleryItemInterface $item)
     {
-        return GalleryItem::create([
+        return GalleryItem::firstOrCreate([
             'gallery_id' => $this->id,
             'itemable_type' => get_class($item),
-            'itemable_id' => $item->id
+            'itemable_id' => $item->id,
+            'order' => 0,
         ]);
     }
 

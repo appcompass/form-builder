@@ -6,6 +6,7 @@
         'url' => $meta->base_url
     ])
 !!}
+
     <section class="panel">
         <header class="panel-heading">
             {{ $meta->heading or '' }}
@@ -23,15 +24,16 @@
                     <div class="form-group">
                         <div class="col-lg-12">
                             <div class="btn-group">
-                                <a id="editable-sample_new" class="btn btn-primary" href="#{{ substr($meta->base_url, 0, strrpos($meta->base_url, '/')) }}/create">
+                                <a id="editable-sample_new" class="btn btn-primary" href="#{{ $meta->base_url }}/create">
                                     Add New <i class="fa fa-plus"></i>
                                 </a>
                             </div>
                         </div>
                     </div>
                 @endif
-                @include('ui::partials.form_fields', ['fields' => $meta->form->fields])
-
+                @if(!empty($meta->form->fields))
+                    @include('ui::partials.form_fields', ['fields' => $meta->form->fields])
+                @endif
             </div>
         </div>
     </section>

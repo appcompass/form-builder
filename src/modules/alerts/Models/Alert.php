@@ -1,25 +1,38 @@
 <?php
 
+// Basic alert structure
+//
+// $alert = AlertModel::firstOrCreate([
+//     'title' => 'Alert title',
+//     'message' => 'body',
+//     'channels' => 'dot.separated.channels',
+//     'req_perm' => 'single_permission_name',
+//     'batch' => true | false,
+//     'emitted_by' => 'id of the emitting user',
+//     'alertable_id' => 'model id that fired the event we are firing',
+//     'alertable_type' => 'class of the model firing the alert'
+// ]);
+//
+
+
 namespace P3in\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use P3in\Models\User;
-use P3in\Traits\JsonPropScopesTrait as JsonPropScopes;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Collection;
 
 class Alert extends Model
 {
 
-	use JsonPropScopes;
-
 	/**
-	 * The database table used by the model.
+	 * 	The database table used by the model.
 	 *
-	 * @var string
+	 * 	@var string
 	 */
 	protected $table = 'alerts';
 
 	/**
-	 * Casts array
+	 * 	Casts array
 	 *
 	 */
 	protected $casts = [
@@ -27,73 +40,96 @@ class Alert extends Model
 	];
 
 	/**
-	 * The attributes that are mass assignable.
+	 * 	The attributes that are mass assignable.
 	 *
-	 * @var array
+	 * 	@var array
 	 */
 	protected $fillable = [
 		'title',
 		'message',
-		'hash',
-		'req_perms',
-		'props'
+		'channels',
+		'req_perm',
+		'batch',
+		'count',
+		'emitted_by',
+		'props',
+		'alertable_id',
+		'alertable_type',
+		'job_id'
 	];
 
 	/**
-	 * The attributes excluded from the model's JSON form.
+	 *	Alertable
 	 *
-	 * @var array
-	 */
-	protected $hidden = ['id'];
-
-	/**
-	 *
-	 *
+	 *	track the model emitting the event
 	 */
 	public function alertable()
 	{
-
-	  return $this->morphTo();
-
+	  	return $this->morphTo();
 	}
 
 	/**
 	 *
-	 *
-	 *
 	 */
-	public function scopeByHash($query, $hash)
+	public function user()
 	{
-	  return $query->where('hash', '=', $hash);
+	  	return $this->belongsTo(User::class, 'emitted_by');
 	}
 
 	/**
-	 *	Match Alert's permissions with user's
+	 * 	Return all the notifications sent out by the alert
 	 *
 	 */
-	public function matchPerms(User $user = null)
+	public function notifications()
 	{
-
-		if (is_null($this->req_perms)) {
-
-			return $this;
-
-		} else if (is_null($user)) {
-
-			return null;
-
-		} else  {
-
-			if ( $user->hasPermission($this->req_perms) ) {
-
-				return $this;
-
-			}
-
-		}
-
-		return false;
+	  	return $this->hasMany(\P3in\Models\AlertUser::class);
 	}
 
+	/**
+	 * 	Distribute the alert to the appropriate users
+	 *
+	 * @param \P3in\Models\Alert
+	 * @param \Illuminate\Database\Eloquent\Collection
+	 * @param bool excludeEmittingUser
+	 */
+	public static function distribute(Alert $alert, Collection $users, $excludeEmittingUser = true)
+	{
+		\Log::info($excludeEmittingUser);
+
+		\Log::info($users);
+
+		\Log::info($alert);
+
+	    foreach($users as $user) {
+
+	    	if ($excludeEmittingUser && !is_null($alert->emitted_by) && $alert->emitted_by == $user->id) {
+
+	    		continue;
+
+	    	}
+
+	    	$notification = AlertUser::create([
+	    		'read' => false,
+	            'user_id' => $user->id,
+	            'alert_id' => $alert->id,
+    		]);
+
+	    }
+
+	    return true;
+	}
+
+	/**
+	 *	Get a unique fingerprint for the alert
+	 */
+	public function fingerprint()
+	{
+	  	return sha1(
+	  		$this->created_at->timestamp . '|' .
+	  		$this->alertable_id . '|' .
+	  		$this->alertable_type . '|' .
+	  		$this->emitted_by
+	  	);
+	}
 
 }

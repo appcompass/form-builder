@@ -2,10 +2,8 @@
 
 namespace P3in\Models;
 
-use P3in\Models\Gallery;
-use P3in\Models\Photo;
-use Exception;
 use Cache;
+use Exception;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -15,17 +13,19 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Support\Collection;
 use Modular;
+use P3in\Models\Gallery;
 use P3in\Models\Group;
 use P3in\Models\Permission;
-use P3in\Profiles\BaseProfile;
-use P3in\Traits\AlertableTrait as Alertable;
-use P3in\Traits\OptionableTrait;
+use P3in\Models\Photo;
+use P3in\ModularBaseModel;
 use P3in\Traits\HasPermissions;
+use P3in\Traits\HasProfileTrait;
+use P3in\Traits\OptionableTrait;
 
-class User extends Model implements AuthenticatableContract, CanResetPasswordContract
+class User extends ModularBaseModel implements AuthenticatableContract, CanResetPasswordContract
 {
 
-    use Authenticatable, CanResetPassword, Alertable, Authorizable, OptionableTrait, HasPermissions;
+    use Authenticatable, CanResetPassword, Authorizable, OptionableTrait, HasPermissions, HasProfileTrait;
 
     /**
      * The database table used by the model.
@@ -50,7 +50,8 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         'phone',
         'email',
         'password',
-        'active'
+        'active',
+        'system_user',
     ];
 
     /**
@@ -97,7 +98,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
         // @TODO  add getCacheKey or something, the id is overly non-specific. should return class_name . id . updated_at_timestamp
 
-        return Cache::remember($this->id, 1, function() {
+        return Cache::tags('user_permissions')->remember('user_'.$this->id.'_'.$this->updated_at, 1, function() {
 
             // $this->load(['groups.permissions' => function($query) { $query->where('active', true); }])
             $this->load('groups.permissions')
@@ -125,7 +126,13 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     public function grantPermission(Permission $perm)
     {
-        return $this->permissions()->attach($perm);
+        if (!$this->permissions->contains($perm->id)) {
+
+            return $this->permissions()->attach($perm);
+
+        }
+
+        return false;
     }
 
     /**
@@ -163,8 +170,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     public function hasPermissions($permissions)
     {
-
-        $permissions = explode(",", $permissions);
+        if (is_string($permissions)) {
+            $permissions = explode(",", $permissions);
+        }
 
         if (count($permissions) == 0) {
             return true;
@@ -208,10 +216,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      *
      *  TODO: this needs to be refactored a little
      */
-    public function profiles()
-    {
-        return $this->hasMany(BaseProfile::class);
-    }
+
 
     public function photos()
     {
@@ -220,6 +225,34 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function galleries()
     {
       return $this->hasMany(Gallery::class);
+    }
+
+    public function linkProfile(Model $model)
+    {
+        $profile = $this->profiles()->firstOrNew([
+            'profileable_id' => $model->getKey(),
+            'profileable_type' => get_class($model),
+        ]);
+        $profile->save();
+    }
+
+    public function profile($model_name)
+    {
+        $base_profile = $this->profiles()->where('profileable_type', $model_name)->first();
+        return $base_profile ? $base_profile->profileable : null;
+    }
+
+    public function populateField($field_name)
+    {
+        switch ($field_name) {
+            case 'users_list':
+                $users = User::select(\DB::raw("concat(first_name,' ',last_name) as name"),'id')->get();
+                return $users->pluck('name','id');
+                break;
+            default:
+                return [];
+                break;
+        }
     }
 
     public function setPasswordAttribute($value)
@@ -238,6 +271,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     }
 
+    /**
+     *  Is user root
+     */
     public function isRoot()
     {
         return Group::administrators()->users
@@ -245,36 +281,64 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     /**
+     *  Is user a manager
+     *  @TODO isn't manager a bit too specific? maybe not
+     */
+    public function isManager()
+    {
+        return Group::managers()->users
+            ->contains($this->id);
+
+    }
+
+    /**
+     *  Whether current user a system user
+     */
+    public function isSystem()
+    {
+        return $this->system_user;
+    }
+
+    /**
      *  Get/Set user's Avatar
-     *
      *
      */
     public function avatar(Photo $photo = null)
     {
 
-        if (! Modular::isDef('photos')) {
+        return "//www.gravatar.com/avatar/" . md5($this->email) . "?d=identicon&s=48";
 
-            $userEmail = \Auth::user()->email;
-            return "//www.gravatar.com/avatar/".md5($userEmail)."?s={$size}";
+        // if (! Modular::isDef('photos')) {
 
-        }
+        //     $userEmail = \Auth::user()->email;
 
-        if (! is_null($photo)) {
+        // }
 
-            if (! is_null($this->avatar)) {
+        // if (! is_null($photo)) {
 
-                $this->avatar()
-                    ->first()
-                    ->unlink();
+        //     if (! is_null($this->avatar)) {
 
-            }
+        //         $this->avatar()
+        //             ->first()
+        //             ->unlink();
 
-            $this->avatar()->save($photo);
+        //     }
 
-        }
+        //     $this->avatar()->save($photo);
 
-        return $this->morphOne(Photo::class, 'photoable');
+        // }
 
+        // return $this->morphOne(Photo::class, 'photoable');
+
+    }
+
+    public static function createWithRandomPassword($req)
+    {
+        $user = new User($req);
+        $user->password = str_random(8);
+        $user->save();
+
+        return $user;
     }
 
 }

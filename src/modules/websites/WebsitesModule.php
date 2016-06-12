@@ -48,10 +48,10 @@ Class WebsitesModule extends BaseModule
     {
         return [
             [
-                'label' => 'Websites Manager',
+                'label' => 'Website Manager',
                 'belongs_to' => ['cp_main_nav'],
                 'sub_nav' => '',
-                'req_perms' => Permission::createCpRoutePerm('websites.index', 'Websites Manager'),
+                'req_perms' => Permission::createCpRoutePerm('websites.index'),
                 'order' => 3,
                 'props' => [
                     'icon' => 'desktop',
@@ -63,7 +63,7 @@ Class WebsitesModule extends BaseModule
                 'label' => 'Setup',
                 'belongs_to' => ['websites'],
                 'sub_nav' => '',
-                'req_perms' => Permission::createCpRoutePerm('websites.edit', 'Website Setup'),
+                'req_perms' => Permission::createCpRoutePerm('websites.edit'),
                 'order' => 1,
                 'props' => [
                     'icon' => 'gears',
@@ -75,7 +75,7 @@ Class WebsitesModule extends BaseModule
                 'label' => 'Settings',
                 'belongs_to' => ['websites'],
                 'sub_nav' => '',
-                'req_perms' => Permission::createCpRoutePerm('websites.settings.index', 'Website Settings'),
+                'req_perms' => Permission::createCpRoutePerm('websites.settings.index'),
                 'order' => 2,
                 'props' => [
                     'icon' => 'pencil-square-o',
@@ -87,7 +87,7 @@ Class WebsitesModule extends BaseModule
                 'label' => 'Manage Redirects',
                 'belongs_to' => ['websites'],
                 'sub_nav' => '',
-                'req_perms' => Permission::createCpRoutePerm('websites.redirects.index', 'Website Redirects'),
+                'req_perms' => Permission::createCpRoutePerm('websites.redirects.index'),
                 'order' => 3,
                 'props' => [
                     'icon' => 'mail-reply',

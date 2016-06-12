@@ -1,17 +1,18 @@
 @foreach($fields as $field)
+@if(!isset($field->config->allowed_methods) || (isset($field->config->allowed_methods) && in_array($meta->method_name,$field->config->allowed_methods)))
     @if($field->type == 'fieldset_break')
             </div>
         </div>
     </section>
     <section class="panel">
         <header class="panel-heading">
-            {{ $field->window_title or '' }}
+            {{ $field->label or '' }}
         </header>
         <div class="panel-body row">
-            @if(!empty($field->window_header) || !empty($field->window_sub_header))
+            @if(!empty($field->config->window_header) || !empty($field->config->window_sub_header))
             <div class="col-lg-12">
-                 @if(!empty($field->window_header)) <h4>{{ $field->window_header }}</h4> @endif
-                @if(!empty($field->window_sub_header)) <p>{{ $field->window_sub_header }}</p> @endif
+                 @if(!empty($field->config->window_header)) <h4>{{ $field->config->window_header }}</h4> @endif
+                @if(!empty($field->config->window_sub_header)) <p>{{ $field->config->window_sub_header }}</p> @endif
                 <br>
             </div>
             @endif
@@ -21,19 +22,19 @@
             {!! Form::label(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $field->label, ['class' => empty($repeatable) ? 'col-lg-3 control-label' : '']) !!}
             @if(empty($repeatable)) <div class="col-lg-6"> @endif
                 @if($field->type == 'text')
-                    {!! Form::text(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
+                    {!! Form::text(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, array_merge(['class' => 'form-control', 'placeholder' => $field->placeholder], !empty($field->attributes) ? (array) $field->attributes : [])) !!}
                 @elseif($field->type == 'slugify')
-                    {!! Form::text(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, ['class' => 'form-control slugify' ,'data-source' => $field->field, 'placeholder' => $field->placeholder]) !!}
+                    {!! Form::text(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, array_merge(['class' => 'form-control slugify' ,'data-source' => $field->field, 'placeholder' => $field->placeholder], !empty($field->attributes) ? (array) $field->attributes : [])) !!}
                 @elseif($field->type == 'password')
                     <div class="password">
-                        {!! Form::password(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
+                        {!! Form::password(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, array_merge(['class' => 'form-control', 'placeholder' => $field->placeholder], !empty($field->attributes) ? (array) $field->attributes : [])) !!}
                     </div>
                 @elseif($field->type == 'textarea')
-                    {!! Form::textarea(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, ['class' => 'form-control', 'rows' => '6', 'placeholder' => $field->placeholder]) !!}
+                    {!! Form::textarea(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, array_merge(['class' => 'form-control', 'rows' => '6', 'placeholder' => $field->placeholder], !empty($field->attributes) ? (array) $field->attributes : [])) !!}
                 @elseif($field->type == 'wysiwyg')
-                    {!! Form::textarea(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, ['class' => 'wysihtml5 form-control', 'rows' => '9', 'placeholder' => $field->placeholder]) !!}
+                    {!! Form::textarea(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, array_merge(['class' => 'wysihtml5 form-control', 'rows' => '9', 'placeholder' => $field->placeholder], !empty($field->attributes) ? (array) $field->attributes : [])) !!}
                 @elseif($field->type == 'selectlist')
-                    {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $field->data, null, ['class' => 'form-control']) !!}
+                    {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $field->data, null, array_merge(['class' => 'form-control'], !empty($field->attributes) ? (array) $field->attributes : [])) !!}
                 @elseif($field->type == 'checkbox')
                     @if(!empty($field->data))
                         <div class="checkbox">
@@ -49,7 +50,7 @@
                     @else
                         <div class="checkbox">
                             <label>
-                                {!! Form::checkbox(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, 'true', null, ['class' => '']) !!}
+                                {!! Form::checkbox(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, 'true', null, array_merge(['class' => ''], !empty($field->attributes) ? (array) $field->attributes : [])) !!}
                             </label>
                         </div>
                     @endif
@@ -57,31 +58,44 @@
                         @foreach($field->data as $label => $value)
                         <div class="radio">
                             <label>
-                                {!! Form::radio(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $value, ['class' => 'form-control']) !!}
+                                {!! Form::radio(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, $value, array_merge(['class' => 'form-control'], !empty($field->attributes) ? (array) $field->attributes : [])) !!}
                                {{ $label }}
                             </label>
                         </div>
                         @endforeach
                 @elseif($field->type == 'file')
+                    @if(isset($website) && $website->gallery)
+                        <div class="row">
+                            <div class="col-lg-8">
+                    @endif
                     {!! Form::file(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, ['class' => 'form-control', 'placeholder' => $field->placeholder]) !!}
-                     @if(isset($website) && $website->gallery) <button class="btn btn-sm pull-right btn-primary open-select-image-modal">Select Image</button> @endif
+                    @if(isset($website) && $website->gallery)
+                            </div>
+                    @endif
+                     @if(isset($website) && $website->gallery)
+                            <div class="col-lg-4">
+                                <button class="btn btn-sm pull-right btn-primary open-select-image-modal">Or Select Image</button>
+                            </div>
+                        </div>
+                    @endif
                     @if(isset($prefix) AND isset($index) AND isset($record->{$prefix}[$index]->{$field->name}))
                         <b class="image-path"><img src="{{ $record->{$prefix}[$index]->{$field->name} }}" height="180" alt="" style="max-width: 250px"></b>
                     @elseif (!empty($record->{$field->name}))
                         <b class="image-path"><img src="{{ $record->{$field->name} }}" height="180" alt="" style="max-width: 250px"></b>
                     @endif
                 @elseif($field->type == 'datepicker')
-                    {!! Form::date('name', null, ['class' => 'form-control form-control-inline input-medium date-picker-default', 'placeholder' => $field->placeholder]) !!}
+                    {!! Form::date(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$field->name}]" : $field->name, null, ['class' => 'form-control form-control-inline input-medium date-picker-default', 'placeholder' => $field->placeholder]) !!}
                 @elseif($field->type == 'from_to_input')
                     <div class="input-group input-large">
                         @foreach($field->data as $i => $from_to)
+                            {!! Form::label(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, !empty($from_to->label) ? $from_to->label : null, []) !!}
                             @if($i == 1) <span class="input-group-addon">{{ $field->operator }}</span> @endif
                             @if($field->type == 'text')
-                                {!! Form::text($from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
+                                {!! Form::text(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
                             @elseif($from_to->type == 'password')
-                                {!! Form::password($from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
+                                {!! Form::password(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
                             @elseif($from_to->type == 'datepicker')
-                                {!! Form::date($from_to->name, null, ['class' => 'form-control date-picker-default', 'placeholder' => $from_to->placeholder]) !!}
+                                {!! Form::date(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, null, ['class' => 'form-control date-picker-default', 'placeholder' => $from_to->placeholder]) !!}
                             @endif
                         @endforeach
                     </div>
@@ -90,7 +104,8 @@
                         @foreach($field->data as $i => $from_to)
                             @if($from_to->type == 'selectlist')
                                 <div class="col-lg-6">
-                                    {!! Form::select($from_to->name, $from_to->data, null, ['class' => 'form-control']) !!}
+                                    {!! Form::label(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, !empty($from_to->label) ? $from_to->label : null, []) !!}
+                                    {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, $from_to->data, null, ['class' => 'form-control']) !!}
                                 </div>
                             @endif
                         @endforeach
@@ -98,23 +113,18 @@
                 @elseif($field->type == 'from_to_mixed')
                     <div class="row">
                         @foreach($field->data as $i => $from_to)
+                            <div class="col-lg-6">
+                            {!! Form::label(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, !empty($from_to->label) ? $from_to->label : null, []) !!}
                             @if($from_to->type == 'selectlist')
-                                <div class="col-lg-6">
-                                    {!! Form::select($from_to->name, $from_to->data, null, ['class' => 'form-control']) !!}
-                                </div>
-                            @elseif($field->type == 'text')
-                                <div class="col-lg-6">
-                                    {!! Form::text($from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
-                                </div>
+                                    {!! Form::select(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, $from_to->data, null, ['class' => 'form-control']) !!}
+                            @elseif($from_to->type == 'text')
+                                    {!! Form::text(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
                             @elseif($from_to->type == 'password')
-                                <div class="col-lg-6">
-                                    {!! Form::password($from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
-                                </div>
+                                    {!! Form::password(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, null, ['class' => 'form-control', 'placeholder' => $from_to->placeholder]) !!}
                             @elseif($from_to->type == 'datepicker')
-                                <div class="col-lg-6">
-                                    {!! Form::date($from_to->name, null, ['class' => 'form-control date-picker-default', 'placeholder' => $from_to->placeholder]) !!}
-                                </div>
+                                    {!! Form::date(isset($prefix) && isset($repeatable) && isset($index) ? "{$prefix}[{$index}][{$from_to->name}]" : $from_to->name, null, ['class' => 'form-control date-picker-default', 'placeholder' => $from_to->placeholder]) !!}
                             @endif
+                            </div>
                         @endforeach
                     </div>
                 @elseif($field->type == 'model_selectlist')
@@ -168,6 +178,7 @@
         </div>
 
     @endif
+@endif
 @endforeach
 
 @if(isset($website) && $website->gallery)
@@ -199,12 +210,12 @@
 {!! Form::submit('Save', ["class" => "btn btn-info"]) !!}
 
 <script>
-    (function photoSelector(w) {
+    (function mediaSelector(w) {
 
-        $('.open-select-image-modal').on('click', function(e) { e.preventDefault(), photoSelector.openModal($(this)) });
-        $('.image-selector > div').on('click', function() { photoSelector.selectImage($(this)) } )
+        $('.open-select-image-modal').on('click', function(e) { e.preventDefault(), mediaSelector.openModal($(this)) });
+        $('.image-selector > div').on('click', function() { mediaSelector.selectImage($(this)) } )
 
-        var photoSelector = {
+        var mediaSelector = {
             selectedImage: undefined,
             relatedFormInput: undefined,
             pathLabels: [],
@@ -226,7 +237,6 @@
                     path = item.attr('data-path');
 
                 this.pathLabels.each(function(idx, label) {
-                    console.log(label);
                     $(label).html('<b>Image Path: <b>' + path)
                     $(label).html('<img src="' + path +'" height="180">')
                 })
@@ -501,7 +511,7 @@ The below is the example array of all possibilities.
             ],
         ],
         'help_block' => '',
-    ],,[
+    ],[
         'label' => 'From To Mixed',
         'type' => 'from_to_mixed',
         'name' => 'this_is_not_used',

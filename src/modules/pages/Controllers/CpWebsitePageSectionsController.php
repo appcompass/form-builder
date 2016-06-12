@@ -11,9 +11,9 @@ use Illuminate\Support\Facades\Route;
 use P3in\Controllers\UiBaseController;
 use P3in\Models\Page;
 use P3in\Models\PageSection;
+use P3in\Models\Photo;
 use P3in\Models\Section;
 use P3in\Models\Website;
-use Photo;
 use Response;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -54,14 +54,14 @@ class CpWebsitePageSectionsController extends UiBaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($website_id, $page_id) {}
+    public function index(websites $websites, $page_id) {}
 
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($website_id, $page_id) {}
+    public function create(websites $websites, $page_id) {}
 
     /**
      * Store a newly created resource in storage.
@@ -69,11 +69,9 @@ class CpWebsitePageSectionsController extends UiBaseController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $website_id, $page_id)
+    public function store(Request $request, Website $websites, $page_id)
     {
-        $website = Website::managedById($website_id);
-
-        $page = Page::ofWebsite($website)->findOrFail($page_id);
+        $page = Page::ofWebsite($websites)->findOrFail($page_id);
 
         if ($request->has('add')) {
 
@@ -99,7 +97,7 @@ class CpWebsitePageSectionsController extends UiBaseController
 
             $this->record->save();
 
-            $redirect = $this->setBaseUrl(['websites', $website_id, 'pages', $page_id]);
+            $redirect = $this->setBaseUrl(['websites', $websites->id, 'pages', $page_id]);
 
         }
 
@@ -126,7 +124,7 @@ class CpWebsitePageSectionsController extends UiBaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($website_id, $page_id, $section_id) {}
+    public function show(Website $websites, $page_id, $section_id) {}
 
     /**
      * Show the form for editing the specified resource.
@@ -134,12 +132,10 @@ class CpWebsitePageSectionsController extends UiBaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($website_id, $page_id, $section_id)
+    public function edit(Website $websites, $page_id, $section_id)
     {
 
-        $website = Website::managedById($website_id);
-
-        $page = Page::ofWebsite($website)
+        $page = Page::ofWebsite($websites)
             ->findOrFail($page_id)
             ->load('sections.photos');
 
@@ -148,11 +144,13 @@ class CpWebsitePageSectionsController extends UiBaseController
 
         $edit_view = 'sections/'.$section->template->edit_view;
 
-        $this->setBaseUrl(['websites', $website_id, 'pages', $page_id, 'section', $section_id]);
+        $this->setBaseUrl(['websites', $websites->id, 'pages', $page_id, 'section', $section_id]);
+
+        $this->meta->heading = 'Edit the '.$websites->site_name.' '.$page->title.' page '.$section->template->name.' section';
 
         return view($edit_view, [
             'meta' => $this->meta,
-            'website' => $website,
+            'website' => $websites,
             'section' => $section,
             'page' => $page,
             'photos' => $section->photos,
@@ -167,12 +165,10 @@ class CpWebsitePageSectionsController extends UiBaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $website_id, $page_id, $section_id)
+    public function update(Request $request, Website $websites, $page_id, $section_id)
     {
 
-        $website = Website::managedById($website_id);
-
-        $page = Page::ofWebsite($website)
+        $page = Page::ofWebsite($websites)
             ->findOrFail($page_id);
 
         $section = $page->content()->findOrFail($section_id);
@@ -245,7 +241,7 @@ class CpWebsitePageSectionsController extends UiBaseController
 
         $section->save();
 
-        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $page_id, 'section', $section_id, 'edit']));
+        return $this->json($this->setBaseUrl(['websites', $websites->id, 'pages', $page_id, 'section', $section_id, 'edit']));
     }
 
     /**
@@ -254,18 +250,17 @@ class CpWebsitePageSectionsController extends UiBaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, $website_id, $page_id, $section_id)
+    public function destroy(Request $request, Website $websites, $page_id, $section_id)
     {
-        $website = Website::managedById($website_id);
 
-        $page = Page::ofWebsite($website)
+        $page = Page::ofWebsite($websites)
             ->findOrFail($page_id);
 
         $section = $page->content()->findOrFail($section_id);
 
         $section->delete();
 
-        return $this->json($this->setBaseUrl(['websites', $website_id, 'pages', $page_id]));
+        return $this->json($this->setBaseUrl(['websites', $websites->id, 'pages', $page_id]));
     }
 
     /**

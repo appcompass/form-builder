@@ -45,7 +45,7 @@ Class NavigationModule extends BaseModule
                 'label' => 'Navigation',
                 'belongs_to' => ['websites'],
                 'sub_nav' => '',
-                'req_perms' => Permission::createCpRoutePerm('websites.navigation.index', 'All Photos'),
+                'req_perms' => Permission::createCpRoutePerm('websites.navigation.index'),
                 'order' => 5,
                 'props' => [
                     'icon' => 'bars',

@@ -6,191 +6,208 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use P3in\Models\Permission;
 use P3in\Models\User;
-use P3in\Traits\AlertableTrait;
+use Illuminate\Database\Eloquent\Collection;
 
 class Group extends Model
 {
 
-	use AlertableTrait;
+    /**
+     * The database table used by the model.
+     *
+     * @var string
+     */
+    protected $table = 'groups';
 
-	/**
-	 * The database table used by the model.
-	 *
-	 * @var string
-	 */
-	protected $table = 'groups';
+    /**
+     * Administrators Name
+     */
+    const ADMINISTRATORS_NAME = 'cp-admin';
+    const MANAGERS_NAME = 'bostonpads-managers';
 
-	/**
-	 * Administrators Name
-	 */
-	const ADMINISTRATORS_NAME = 'cp-admin';
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = ['name', 'label', 'description', 'active'];
 
-	/**
-	 * The attributes that are mass assignable.
-	 *
-	 * @var array
-	 */
-	protected $fillable = ['name', 'label', 'description', 'active'];
+    /**
+     * Validation rules
+     */
+    public static $rules = [
+        'name' => 'required',
+        'label' => 'required'
+    ];
 
-	/**
-	 * Validation rules
-	 */
-	public static $rules = [
-		'name' => 'required',
-		'label' => 'required'
-	];
+    /**
+     * The attributes excluded from the model's JSON form.
+     *
+     * @var array
+     */
+    protected $hidden = ['password', 'remember_token'];
 
-	/**
-	 * The attributes excluded from the model's JSON form.
-	 *
-	 * @var array
-	 */
-	protected $hidden = ['password', 'remember_token'];
+    /**
+     * Get a group by name
+     */
+    public function scopeByName(Builder $query, $name)
+    {
+        return $query->where('name', str_replace(' ', '-', strtolower($name)));
+    }
 
-	/**
-	 * Get a group by name
-	 */
-	public function scopeByName(Builder $query, $name)
-	{
-		return $query->where('name', str_replace(' ', '-', strtolower($name)));
-	}
+    /**
+     *
+     */
+    public function scopeAdministrators(Builder $query)
+    {
+        return $query->where('name', Group::ADMINISTRATORS_NAME)->first();
+    }
 
-	/**
-	 *
-	 */
-	public function scopeAdministrators(Builder $query)
-	{
-	  	return $query->where('name', Group::ADMINISTRATORS_NAME)->first();
-	}
+    /**
+     *
+     */
+    public function scopeManagers(Builder $query)
+    {
+        return $query->where('name', Group::MANAGERS_NAME)->first();
+    }
 
-	/**
-	*	Link groups and users
-	*
-	*/
-	public function users()
-	{
-		return $this->belongsToMany(User::class)->withTimestamps();
-	}
+    /**
+    *   Link groups and users
+    *
+    */
+    public function users()
+    {
+        return $this->belongsToMany(User::class)->withTimestamps();
+    }
 
-	/**
-	  * Add a User to the Group
-	  */
-	public function addUser(User $user)
-	{
+    /**
+      * Add a User to the Group
+      */
+    public function addUser(User $user)
+    {
 
-		if (!$this->users->contains($user->id)) {
+        if (!$this->users->contains($user->id)) {
 
-		  	return $this->users()->attach($user);
+            return $this->users()->attach($user);
 
-		}
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * remove a user from this group
-	 */
-	public function removeUser(User $user)
-	{
-	  	return $this->users()->detach($user);
-	}
+    /**
+     * remove a user from this group
+     */
+    public function removeUser(User $user)
+    {
+        return $this->users()->detach($user);
+    }
 
-	/**
-	*	Group permissions
-	*
-	*/
-	public function permissions()
-	{
-		return $this->belongsToMany('P3in\Models\Permission')->withTimestamps();
-	}
+    /**
+    *   Group permissions
+    *
+    */
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class)->withTimestamps();
+    }
 
-	public function grantPermission($perm)
-	{
-	  	return $this->grantPermissions($perm);
-	}
+    public function grantPermission($perm)
+    {
+        return $this->grantPermissions($perm);
+    }
 
-	/**
-	  * Grant Permission(s)
-	  *
-	  *	@param mixed $perm  (string) Permission Type | (Permission) Permission Instance | (array)
-	  */
-	public function grantPermissions($perm)
-	{
+    /**
+      * Grant Permission(s)
+      *
+      * @param mixed $perm  (string) Permission Type | (Permission) Permission Instance | Collection eleoquent collection of perms to sync | (array)
+      */
+    public function grantPermissions($perm)
+    {
 
-		if (is_null($perm)) {
+        if (is_null($perm)) {
 
-			return;
+            return;
 
-		} else 	if ( is_string($perm)) {
+        } else if ($perm instanceof \Illuminate\Database\Eloquent\Collection) {
 
-			return $this->grantPermissions(Permission::byType($perm)->firstOrFail());
+            return $this->permissions()->sync($perm);
 
-		} else if ($perm instanceof Permission) {
+        } else if (is_string($perm)) {
 
-		  	return $this->permissions()->attach($perm);
+            return $this->grantPermissions(Permission::byType($perm)->firstOrFail());
 
-		} else if (is_array($perm)) {
+        } else if ($perm instanceof Permission) {
 
-			foreach($perm as $single_permission) {
+            if (!$this->permissions->contains($perm->id)) {
 
-				$this->grantPermissions($single_permission);
+                return $this->permissions()->attach($perm);
 
-			}
+            }
 
-		}
-	}
+            return false;
 
-	/**
-	 *
-	 */
-	public function hasUser(User $user)
-	{
-	  	return $this->users()->has($user->id);
-	}
+        } else if (is_array($perm)) {
 
-	/**
-	 *  Revoke all group's permissions
-	 */
-	public function revokeAll()
-	{
-		return $this->revokePermissions($this->permissions->lists('type')->toArray());
-	}
+            foreach($perm as $single_permission) {
 
-	/**
-	 *
-	 */
-	public function revokePermission($perm)
-	{
-	  	return $this->revokePermissions($perm);
-	}
+                $this->grantPermissions($single_permission);
 
-	/**
-	  * Revoke permission(s)
-	  *
-	  *	@param mixed $perm  (string) Permission Type | (Permission) Permission Instance | (array)
-	  */
-	public function revokePermissions($perm)
-	{
-		if (is_null($perm)) {
+            }
 
-			return;
+        }
+    }
 
-		} else if ( is_string($perm)) {
+    /**
+     *
+     */
+    public function hasUser(User $user)
+    {
+        return $this->users()->has($user->id);
+    }
 
-			return $this->revokePermissions(Permission::byType($perm)->firstOrFail());
+    /**
+     *  Revoke all group's permissions
+     */
+    public function revokeAll()
+    {
+        return $this->revokePermissions($this->permissions->lists('type')->toArray());
+    }
 
-		} else if ($perm instanceof Permission) {
+    /**
+     *
+     */
+    public function revokePermission($perm)
+    {
+        return $this->revokePermissions($perm);
+    }
 
-		  	return $this->permissions()->detach($perm);
+    /**
+      * Revoke permission(s)
+      *
+      * @param mixed $perm  (string) Permission Type | (Permission) Permission Instance | (array)
+      */
+    public function revokePermissions($perm)
+    {
+        if (is_null($perm)) {
 
-		}  else if (is_array($perm)) {
+            return;
 
-			foreach($perm as $single_permission) {
+        } else if ( is_string($perm)) {
 
-				$this->revokePermissions($single_permission);
+            return $this->revokePermissions(Permission::byType($perm)->firstOrFail());
 
-			}
+        } else if ($perm instanceof Permission) {
 
-		}
-	}
+            return $this->permissions()->detach($perm);
+
+        }  else if (is_array($perm)) {
+
+            foreach($perm as $single_permission) {
+
+                $this->revokePermissions($single_permission);
+
+            }
+
+        }
+    }
 }

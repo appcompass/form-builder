@@ -76,7 +76,7 @@ class CpGroupPermissionsController extends UiBaseController
 
         $groups->load('permissions');
 
-        $permissions = Permission::all();
+        $permissions = Permission::orderBy('label')->get();
 
         $this->meta->base_url = "/groups/" . $groups->id . "/permissions/";
 
@@ -91,11 +91,9 @@ class CpGroupPermissionsController extends UiBaseController
     {
         $groups->revokeAll();
 
-        foreach($request->owned as $permission) {
+        $permissions = Permission::whereIn('id', collect($request->owned)->lists('id'))->get();
 
-            $groups->grantPermissions($permission['type']);
-
-        }
+        $groups->grantPermissions($permissions);
 
         return \Response::json(['/groups/'.$groups->id.'/permissions']);
     }

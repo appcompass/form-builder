@@ -65,19 +65,15 @@ class CpWebsiteNavigationController extends UiBaseController
         $navmenus = $websites->navmenus()->whereNull('parent_id')->get();
 
         foreach($websites->pages as $page) {
-
           $navitems[] = $page->navItem()
             ->first()
             ->toArray();
-
         }
 
         foreach (Section::byType('utils')->with('navitem')->get() as $util) {
-
           $utils[] = $util->navItem()
             ->first()
             ->toArray();
-
         }
 
         return view('navigation::index', compact('navmenus', 'navitems', 'utils'))
@@ -99,7 +95,7 @@ class CpWebsiteNavigationController extends UiBaseController
       ->where('name', '=', $request->navmenu_name)
       ->firstOrFail();
 
-    if ($request->pretend) {
+    if ($request->pretend == 'true') {
 
         $navmenu = new Navmenu($navmenu->toArray());
 
@@ -147,6 +143,7 @@ class CpWebsiteNavigationController extends UiBaseController
                     'order' => null,
                     'label' => $navitem->label,
                     'url' => $navitem->url,
+                    'props' => $navitem->props,
                     'new_tab' => false
                 ]);
 
@@ -189,6 +186,7 @@ class CpWebsiteNavigationController extends UiBaseController
       $overrides = [
         'label' => isset($content['label']) ? $content['label'] : $item->label,
         'url' => isset($content['url']) ? $content['url'] : $item->url,
+        'props' => isset($content['props']) ? $content['props'] : [],
         'new_tab' => isset($content['new_tab']) ? $content['new_tab'] : false
       ];
 
@@ -205,6 +203,8 @@ class CpWebsiteNavigationController extends UiBaseController
       } else {
 
         $item->fill(array_replace($item->toArray(), $overrides));
+
+        $overrides['content'] = isset($content['content']) ? $content['content'] : '';
 
         $navmenu->addItem($item, null, $overrides);
 

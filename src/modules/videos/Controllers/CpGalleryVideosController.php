@@ -80,16 +80,27 @@ class CpGalleryVideosController extends UiBaseController
      */
     public function index(Gallery $galleries)
     {
-
         $galleries->load('videos.galleryItem', 'videos.user');
 
         if (empty($this->meta->base_url)) {
             $this->setBaseUrl(['galleries', $galleries->id, 'videos']);
         }
 
-        return view('videos::galleries.index')
-            ->with('videos', $galleries->videos)
+        $template = !empty($this->template_overide) ? $this->template_overide : 'videos::galleries.index';
+
+        $videos = $galleries->videos->each(function($video) {
+            if (!empty($video->galleryItem->id)) {
+                $video->item_id = $video->galleryItem->id;
+            }
+        });
+
+
+
+        return view($template)
+            // ->with('videos', $videos)
+            ->with('videos', $videos)
             ->with('gallery', $galleries)
+            ->with('alternative_actions', isset($this->alternative_actions) ? $this->alternative_actions : null)
             ->with('meta', $this->meta);
     }
 
@@ -135,9 +146,18 @@ class CpGalleryVideosController extends UiBaseController
         // we add this only when there is a bulk update for now till we sort out how to avoid it, if possible.
         $galleries = Gallery::findOrFail($galleries->id)->load('items', 'videos.user');
 
-        return view('videos::video-grid')
-            ->with('videos', $galleries->videos)
-            ->with('gallery', $galleries);
+        if (!empty($this->meta->base_url)) {
+            return $this->json($this->meta->base_url);
+        }else{
+            return view('videos::video-grid')
+                ->with('videos', $galleries->videos)
+                ->with('gallery', $galleries);
+        }
+    }
 
+    public function destroy(Request $request, Gallery $galleries, Video $videos)
+    {
+        $videos->delete();
+        return $this->json($this->setBaseUrl(['galleries', $galleries->id, 'videos']));
     }
 }

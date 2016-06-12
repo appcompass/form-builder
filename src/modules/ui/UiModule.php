@@ -45,7 +45,7 @@ Class UiModule extends BaseModule
                 'label' => 'Dashboard',
                 'belongs_to' => ['cp_main_nav'],
                 'sub_nav' => '',
-                'req_perms' => Permission::createCpRoutePerm('dashboard', 'Dashboard'),
+                'req_perms' => Permission::createCpRoutePerm('dashboard'),
                 'order' => 1,
                 'props' => [
                     'icon' => 'dashboard',

@@ -5,10 +5,12 @@
     <div class="panel-body">
         <div class="clearfix">
             <div class="btn-group">
-                @can('edit', $meta->classname)
-                <a id="editable-sample_new" class="btn btn-primary" href="#{{ $meta->base_url }}/create" data-click="{{ $meta->base_url }}/create" data-target="{{ $meta->data_target }}">
-                    Add New <i class="fa fa-plus"></i>
-                </a>
+                @can('create', $meta->classname)
+                    @if(empty($meta->no_create))
+                        <a id="editable-sample_new" class="btn btn-primary" href="#{{ $meta->base_url }}/create" data-click="{{ $meta->base_url }}/create" data-target="{{ $meta->data_target }}">
+                            Add New <i class="fa fa-plus"></i>
+                        </a>
+                    @endif
                 @endcan
             </div>
         </div>
@@ -52,7 +54,7 @@
                                             href="{{ $meta->base_url }}/{{ $record->getKey() }}/edit"
                                             data-click="{{ $meta->base_url }}/{{ $record->getKey() }}"
                                             data-target="{{ $meta->data_target }}"
-                                            class="btn btn-primary"
+                                            class="btn btn-xs btn-primary"
                                         >
                                             Edit
                                         </a>
@@ -65,7 +67,7 @@
                                             data-object-name="{{ get_class($record) }}"
                                             data-object-id="{{ $record->getKey() }}"
                                             data-object-redirect="{{ $meta->base_url }}"
-                                            class="btn btn-info"
+                                            class="btn btn-xs btn-info"
                                         >
                                             Clone
                                         </a>
@@ -78,7 +80,7 @@
                                             data-delete="{{ $meta->base_url }}/{{ $record->getKey() }}"
                                             data-click="/delete-modal"
                                             data-inject-area="#modal-body"
-                                            class="btn btn-danger"
+                                            class="btn btn-xs btn-danger"
                                         >
                                             Delete
                                         </a>

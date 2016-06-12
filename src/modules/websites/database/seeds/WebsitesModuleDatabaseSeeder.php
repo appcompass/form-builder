@@ -5,10 +5,11 @@ namespace P3in\Seeders;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
+use Modular;
+use P3in\Models\Field;
 use P3in\Models\Navmenu;
 use P3in\Models\Page;
 use P3in\Models\Website;
-use Modular;
 
 class WebsitesModuleDatabaseSeeder extends Seeder
 {
@@ -30,6 +31,25 @@ class WebsitesModuleDatabaseSeeder extends Seeder
         $website->config = [];
 
         $website->save();
+
+
+        $website_header_list_field = Field::firstOrNew([
+            'type' => 'selectlist',
+            'name' => 'website_header_list',
+            'source' => Website::class,
+        ]);
+        $website_header_list_field->save();
+
+        $website_footer_list_field = Field::firstOrNew([
+            'type' => 'selectlist',
+            'name' => 'website_footer_list',
+            'source' => Website::class,
+        ]);
+        $website_footer_list_field->save();
+
+
+        // Run the websites meta data seeder
+        $this->call(WebsitesMetaDataDatabaseSeeder::class);
 
         Model::reguard();
     }

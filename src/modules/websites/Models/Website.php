@@ -3,29 +3,31 @@
 namespace P3in\Models;
 
 use Auth;
-use P3in\Models\Photo;
 use Carbon\Carbon;
-use P3in\Traits\HasGallery;
-use P3in\Traits\HasPermissions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
+use Imagick;
+use ImagickPixel;
 use League\Flysystem\Sftp\SftpAdapter;
 use Less_Parser;
 use Log;
 use P3in\Models\Page;
+use P3in\Models\Photo;
+use P3in\Models\Redirect;
 use P3in\Module;
+use P3in\Traits\HasGallery;
+use P3in\Traits\HasPermissions;
 use P3in\Traits\NavigatableTrait;
+use P3in\Traits\OptionableTrait;
 use P3in\Traits\SettingsTrait;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Imagick;
-use ImagickPixel;
 
 class Website extends Model
 {
 
-    use SettingsTrait, NavigatableTrait, HasGallery, HasPermissions;
+    use OptionableTrait, SettingsTrait, NavigatableTrait, HasGallery, HasPermissions;
 
     /**
      * The database table used by the model.
@@ -68,7 +70,7 @@ class Website extends Model
     /**
      *
      */
-    protected $with = [];
+    protected $with = ['options'];
 
     /**
      * Model's rules
@@ -76,12 +78,6 @@ class Website extends Model
     public static $rules = [
         'site_name' => 'required|max:255', //|unique:websites // we need to do a unique if not self appproach.
         'site_url' => 'required',
-        'config.host' => 'required:ip',
-        'config.username' => 'required',
-        'config.privateKey' => 'required_without:config.password',
-        'config.password' => 'required_without:config.privateKey',
-        'config.root' => 'required',
-        'config' => 'site_connection',
     ];
 
     /**
@@ -176,6 +172,11 @@ class Website extends Model
         return $query->where('site_name', '!=', env('ADMIN_WEBSITE_NAME', 'CMS Admin CP'));
     }
 
+    public static function isManaged()
+    {
+        return Website::current()->id !== Website::admin()->id;
+    }
+
     /**
       *
       *
@@ -183,6 +184,18 @@ class Website extends Model
     public function scopeManagedById($query, $id)
     {
         return $query->managed()->findOrFail($id);
+    }
+
+    public function scopeIsLive($query)
+    {
+        return $query->whereHas('settings', function($query){
+            $query->where("data->>'live'", 'true');
+        });
+    }
+
+    public function getIsLiveAttribute()
+    {
+        return $this->settings('live') ? 'Yes' : 'No';
     }
 
     /**
@@ -203,6 +216,23 @@ class Website extends Model
             ]
         ], $overrides);
     }
+
+
+    public function populateField($field_name)
+    {
+        switch ($field_name) {
+            case 'website_header_list':
+                return Section::headers()->orderBy('name')->lists('name', 'id');
+                break;
+            case 'website_footer_list':
+                return Section::footers()->orderBy('name')->lists('name', 'id');
+                break;
+            default:
+                return [];
+                break;
+        }
+    }
+
 
     /**
      *  @TODO deployment shouldn't really be a Website responsibility
@@ -421,4 +451,23 @@ class Website extends Model
 
         return false;
     }
+    /**
+     *
+     */
+    public function storeRedirects()
+    {
+
+        $rendered = Redirect::renderForWebsite($this);
+
+        $disk = $this->getDiskInstance();
+
+        if (!$disk->put('nginx-redirects.conf', $rendered)) {
+
+            abort(503);
+
+        }
+        return true;
+    }
+
+
 }

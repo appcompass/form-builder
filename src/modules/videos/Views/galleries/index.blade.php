@@ -1,11 +1,11 @@
 <div class="modal fade in" id="photoModal"></div>
-
+@can('create', new Video)
 <section class="panel">
     <header class="panel-heading">
         <span class="tools pull-right">
             <a href="javascript:;" class="fa fa-chevron-down"></a>
         </span>
-        Upload Videos
+        {{ $meta->create->heading }}
     </header>
     <div class="panel-body">
         <div class="row">
@@ -26,6 +26,7 @@
         </div>
     </div>
 </section>
+@endcan
 
 @if(!empty($videos->count()))
     <section class="panel">
@@ -34,13 +35,15 @@
         </header>
 
         <div class="panel-body">
+            @can('destroy', new Photo)
             <div class="row">
                 <div class="col-sm-6">
                     <h4>Bulk Actions:</h4>
-                    <a class="btn btn-danger no-link" href="javascript:;" data-bulk-update="/galleries/{{ $gallery->id }}/videos" data-action="delete" data-target="#gallery_{{ $gallery->id }}"><i class="fa fa-times"></i> Delete Selected</a>
+                    <a class="btn btn-danger no-link" href="javascript:;" data-bulk-update="{{$meta->base_url}}" data-action="delete" data-target="#gallery_{{ $gallery->id }}"><i class="fa fa-times"></i> Delete Selected</a>
                 </div>
             </div>
             <hr>
+            @endcan
             <div id="gallery_{{ $gallery->id }}" class="media-gal isotope sortable">
                 @include('videos::video-grid', ['videos' => $videos, 'is_modal' => false])
             </div>
@@ -188,7 +191,7 @@
             update: function(event, ui) {
                 var sortData = $container.sortable('serialize');
                 $.ajax({
-                    url: '/galleries/{{ $gallery->id }}/videos',
+                    url: '{{$meta->base_url}}',
                     data: sortData,
                     type: 'POST',
                     error: function(err){

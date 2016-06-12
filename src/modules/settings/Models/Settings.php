@@ -3,8 +3,9 @@
 namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use P3in\ModularBaseModel;
 
-class Settings extends Model
+class Settings extends ModularBaseModel
 {
 
   protected $table = 'settings';

@@ -38,7 +38,7 @@ Class PagesModule extends BaseModule
                 'label' => 'Pages',
                 'belongs_to' => ['websites'],
                 'sub_nav' => '',
-                'req_perms' => Permission::createCpRoutePerm('websites.pages.index', 'All Photos'),
+                'req_perms' => Permission::createCpRoutePerm('websites.pages.index'),
                 'order' => 3,
                 'props' => [
                     'icon' => 'book',
@@ -50,7 +50,7 @@ Class PagesModule extends BaseModule
                 'label' => 'Page Info',
                 'belongs_to' => ['cp_pages_subnav'],
                 'sub_nav' => '',
-                'req_perms' => Permission::createCpRoutePerm('websites.pages.edit', 'All Photos'),
+                'req_perms' => Permission::createCpRoutePerm('websites.pages.edit'),
                 'order' => 3,
                 'props' => [
                     'icon' => 'info-circle',

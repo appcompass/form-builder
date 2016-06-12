@@ -4,6 +4,7 @@ namespace P3in\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
@@ -21,7 +22,15 @@ class PagesController extends Controller
     public function renderPage(Request $request, $url = '')
     {
 
-        $page = Page::byUrl($url)->ofWebsite()->firstOrFail();
+        try {
+
+            $page = Page::byUrl($url)->ofWebsite()->firstOrFail();
+
+        } catch (ModelNotFoundException $e) {
+
+            Abort(404, 'Page Not Found.');
+
+        }
 
         $data = $page->render();
         return view('layouts.master.'.str_replace(':', '_', $page->layout), $data)

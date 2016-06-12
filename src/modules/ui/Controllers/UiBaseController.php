@@ -209,11 +209,12 @@ class UiBaseController extends ModularBaseController {
             $action = $route->getActionName();
             $name = $route->getName();
 
+            // @TODO Warning: route->getName only works with named routes or resourceful routing
+
             list($class, $method) = explode('@', $action);
 
             $rtn['message'] = 'The url must have a defined route.';
             if ($class && $method) {
-
                 // lets get the meta data for this controller.
                 // $metaData = with(new $class)->meta;
                 $metaData = \App::make($class)->meta;
@@ -232,7 +233,6 @@ class UiBaseController extends ModularBaseController {
                     }
                 }
             }
-
             if (!$rtn['success']) {
                 $rtn['data'] = [
                     'url' => $parsedUrl['path'],

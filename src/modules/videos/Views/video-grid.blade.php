@@ -15,6 +15,7 @@
             <li><strong>Uploaded On:</strong> <span class="pull-right">{{ $video->created_at or 'N/A' }}</span></li>
         </ul>
         @if (!isset($is_modal) OR !$is_modal)
+        @can('destroy', new Photo)
         <div class="item-actions text-right">
             <input type="checkbox" name="bulk_edit" value="{{ $video->id }}">
             {{--
@@ -35,7 +36,11 @@
                 data-action="modal-delete"
                 href="#modal-edit"
                 data-toggle="modal"
+                @if(!empty($meta->base_url))
+                data-delete="{{$meta->base_url}}/{{ $video->id }}"
+                @else
                 data-delete="/videos/{{ $video->id }}"
+                @endif
                 data-click="/delete-modal"
                 data-inject-area="#modal-body"
                 class="btn btn-danger"
@@ -44,6 +49,7 @@
                 Delete
             </a>
         </div>
+        @endcan
         @endif
     </div>
 

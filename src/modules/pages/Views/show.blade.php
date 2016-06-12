@@ -37,7 +37,7 @@
                             data-inject-area="#modal-body"
                             class="btn btn-danger btn-xs"
                         >
-                            Delete
+                            <i class="fa fa-times"> </i>
                         </a>
                     </div>
                 </li>
@@ -101,10 +101,10 @@ $(document).ready(function() {
   .sortable, .draggable { max-width: 100%; }
   .sortable li img { display: none;}
   ol, ul {list-style: none; padding: 0;}
-  ol li { display: block; line-height: 20px; border: 1px solid #ddd; margin-bottom: 1rem; border-radius: 4px;}
+  ol li { display: block; margin-bottom: 1rem; border-radius: 4px;}
 
   ol.sortable li.ui-draggable { max-width: 100%; }
-  li .handle { display: inline-block; line-height: 32px; width: 30px; text-align: center; }
+  li .handle { display: inline-block; text-align: center; }
   li .handle:hover {cursor: pointer; }
 
   .placeholder { border: 1px dashed #aaa; height: 30px; width: 100%; background: rgba(175, 238, 238, 0.1); }

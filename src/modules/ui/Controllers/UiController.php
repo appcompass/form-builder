@@ -49,13 +49,7 @@ class UiController extends UiBaseController {
 
         $nav = isset($allNavs->cp_main_nav) ? $allNavs->cp_main_nav : [];
 
-        return view('ui::sections.left-nav')
-            ->with('nav', $nav);
-    }
-
-    public function getLeftAlerts()
-    {
-        return view('ui::sections.left-alerts');
+        return response()->json($nav);
     }
 
     public function getNotificationCenter()
@@ -75,8 +69,7 @@ class UiController extends UiBaseController {
 
     public function getUserAvatar($size = 56)
     {
-        $userEmail = \Auth::user()->email;
-        return "//www.gravatar.com/avatar/".md5($userEmail)."?s={$size}";
+        return \Auth::user()->avatar();
     }
 
     public function getUserNav()
@@ -87,8 +80,8 @@ class UiController extends UiBaseController {
     public function postRequestMeta(Request $request)
     {
         $rtn = $this->requestMeta($request->url);
-
-        return response()->json($rtn);
+        $code = $rtn['success'] ? 200 : 404;
+        return response()->json($rtn, $code);
     }
 
     public function postDeleteModal(Request $request)

@@ -2,7 +2,6 @@
 /* Import fonts */
 @import url(//fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic);
 @import url(//fonts.googleapis.com/css?family=Lato:400,100,100italic,300,300italic,400italic,700,700italic,900,900italic);
-@import url(bucket-ico-fonts.css);
 
 html {
     text-rendering: optimizeLegibility !important;
@@ -143,8 +142,11 @@ a,a:hover,a:focus {
 /*sidebar navigation*/
 #sidebar {
     width:240px;
-    height:100%;
     position:fixed;
+    top: 0;
+    bottom: 0;
+    overflow-y: auto;
+    overflow-x:hidden;
     background:#32323a;
     -webkit-transition:all .3s ease-in-out;
     -moz-transition:all .3s ease-in-out;
@@ -213,6 +215,12 @@ ul.sidebar-menu,ul.sidebar-menu li ul.sub {
 ul.sidebar-menu {
     padding-top:80px;
 
+}
+.collapsed {
+    display: none;
+}
+ul.sidebar-menu a {
+    cursor: pointer;
 }
 #sidebar>ul>li>ul.sub {
     display:none;
@@ -336,7 +344,6 @@ ul.sidebar-menu li a.active i {
 
 }
 .brand {
-    background:#1fb5ad;
     float:left;
     width:240px;
     height:80px;
@@ -346,7 +353,7 @@ a.logo {
     font-size:21px;
     color:#2e2e2e;
     float:left;
-    margin:20px 0 0 25px;
+    margin:10px 0 0 25px;
     text-transform:uppercase;
 }
 a.logo:hover,a.logo:focus {
@@ -696,7 +703,7 @@ ul.top-menu>li>a:hover,ul.top-menu>li>a:focus {
     float:left;
     margin-top:23px;
     margin-left:-15px;
-    background:#32d2c9;
+    background:#F6F6F6;
     border-radius:50%;
     -webkit-border-radius:50%;
     width:32px;
@@ -712,7 +719,7 @@ ul.top-menu>li>a:hover,ul.top-menu>li>a:focus {
     color:rgba(0,0,0,.3);
 }
 .sidebar-toggle-box:hover {
-    background:#F6F6F6;
+    background:#32d2c9;
 }
 .hide-left-bar {
     margin-left:-240px !important;

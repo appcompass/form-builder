@@ -60,20 +60,20 @@ trait NavigatableTrait
    *  Get the raw Navigation Item instance
    *
    */
-  public function getNavigationItem(array $overrides = [])
-  {
+    public function getNavigationItem(array $overrides = [])
+    {
 
-    return $this->makeNavigationItem($overrides);
+        return $this->makeNavigationItem($overrides);
 
-  }
+    }
 
-	/**
-	*  Get a Navigation Item
-	*
-	*  @return P3in\Models\NavigationItem
-	*/
-	private function makeNavigationItem($overrides = [])
-	{
+    /**
+    *  Get a Navigation Item
+    *
+    *  @return P3in\Models\NavigationItem
+    */
+    private function makeNavigationItem($overrides = [])
+    {
 
         $link = (new LinkClass($this->makeLink($overrides)))->toArray();
 
@@ -86,18 +86,18 @@ trait NavigatableTrait
 
         if (isset($link['props'])) {
 
-          $props = $link['props'];
+            $props = $link['props'];
 
-          unset($link['props']);
+            unset($link['props']);
 
         }
 
-		$item = NavigationItem::firstOrNew($link);
+        $item = NavigationItem::firstOrNew($link);
 
         $item->props = $props;
 
         return $item;
 
-	}
+    }
 
 }

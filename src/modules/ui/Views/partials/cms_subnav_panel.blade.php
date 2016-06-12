@@ -2,7 +2,6 @@
     <div class="panel-body">
         <h5>{{ $meta->sub_section_name or $meta->show->sub_section_name }}</h5>
         <ul class="nav nav-pills nav-stacked mail-nav">
-
             @foreach($nav as $subnav_content)
 
             <li>

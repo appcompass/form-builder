@@ -10,8 +10,6 @@
 
 <div id="navmanager">
 
-    <!-- <pre>@{{ navmenus | json }}</pre> -->
-
     <header class="panel-heading tab-bg-dark-navy-blue ">
         <ul class="nav nav-tabs">
             <li
@@ -48,6 +46,15 @@
                 </div>
             </div>
         </div>
+
+        <footer class="well">
+            <ul>
+                <strong>Notices</strong>
+                <li style="padding-left: 1rem;">Due to a limitation of 3rd party software, adding a Container item requires the user to save immediately</li>
+                <li style="padding-left: 1rem;">HTML Nav label is not being displayed, only content is</li>
+            </ul>
+        </footer>
+
     </section>
 
     <section class="panel">
@@ -91,7 +98,7 @@
             <div class="col-md-12">
                 <div class="pull-right clearfix row">
                     <a class="btn btn-danger" v-on:click="restore" >Cancel</a>
-                    <a v-on:click="store(content)" class="btn btn-success">Save</a>
+                    <a v-on:click="store(content, false)" class="btn btn-success">Save</a>
                 </div>
             </div>
         </div>
@@ -139,7 +146,7 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+<!--                 <div class="form-group">
                     <label for="url" class="control-label col-sm-4">Permission Required</label>
                     <div class="col-sm-8">
                         <select class="form-control input-sm" :disabled="0 !== navitem.req_perm">
@@ -147,6 +154,13 @@
                             <option value="somethig">Create Galleries</option>
                         </select>
                         <small class="help-block">Select what permission is required to view this item.</small>
+                    </div>
+                </div>
+ -->
+                <div class="form-group" v-if="navitem.props && navitem.props.canHaveContent">
+                    <div class="col-sm-12">
+                        <textarea v-model="navitem.content" class="form-control" rows="10" cols="30"></textarea>
+                        <small class="help-block">HTML content of the item.</small>
                     </div>
                 </div>
 
@@ -252,11 +266,15 @@
                     pretend = pretend || false;
                     hierarchy = hierarchy || this.content;
 
-                    this.resource.save({
+                    var payload = {
                         navmenu_name: this.navmenu.name,
                         hierarchy: JSON.stringify(hierarchy),
                         pretend: pretend
-                    }).then(function(response) {
+                    }
+
+                    console.dir(payload);
+
+                    this.resource.save(payload).then(function(response) {
                         this.content = parseContent(response.data);
                         if (!pretend) {this.initialState = this.content; }
                         if (cb) {cb(response); }
@@ -331,6 +349,7 @@
         //
         // UTILS
         //
+        // @TODO Utils could just be assembled on the frontend using base classes objs
         var UtilsSources = Vue.extend({
             template: '#utils-sources',
             props: ['utils'],
@@ -376,17 +395,17 @@
             events: {
                 addItem: function(item) {
 
-                    console.log(item);
-
                     var newItem = {
                         id: item.id,
-                        label: item.label === 'Empty' ? 'Rename Me' : item.label,
-                        url: item.label === 'Empty' ? '' : item.url,
+                        label: item.label,
+                        url: item.url,
                         new_tab: false,
                         children: [],
                         pivot: null,
                         req_perm: item.req_perms,
                         parent: null,
+                        props: item.props || {},
+                        content: item.content || null
                     };
 
                     this.$broadcast('itemAdded', {navmenu: this.status.active, item: newItem});
@@ -423,10 +442,14 @@
                         linked_id: item.linked_id,
                         req_perm: item.navitem.req_perms | null,
                         children: [],
+                        props: item.props,
+                        content: item.content || null,
                     };
+
                     if (children[newItem.linked_id] !== undefined) {
                         newItem.children = build(children[newItem.linked_id]);
                     }
+
                     newContent.push(newItem)
                 });
 

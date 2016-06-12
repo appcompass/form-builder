@@ -1,55 +1,12 @@
 @extends('ui::layouts.basic_admin_panel')
 
 @section('header')
-    {{ $meta->edit->heading or '' }}
+    Permissions for {{ $owner->label or $owner->full_name }}
 @stop
 
 @section('body')
     <div class="col-sm-9 col-sm-offset-1" id="permissions-manager">
-        <p class="page-header">Currently Owned by: <b>{{ $owner->label or $owner->full_name }}</b></p>
-
-        {{--
-            OWNED
-        --}}
-
-        <table class="table" v-if="owned.length">
-            <thead>
-                <tr>
-                    <th>Label</th>
-                    <th>Description</th>
-                    <th v-if="owned[0] && owned[0].permissions">Permissions</th>
-                    <th></th>
-                </tr>
-            </thead>
-
-            <tbody>
-                <tr v-for="single in owned">
-                    <td>@{{ single.label }}</td>
-                    <td>@{{ single.description }}</td>
-                    <td v-if="single.permissions">
-                        <ul>
-                            <li v-for="perm in single.permissions">@{{ perm.label }}</li>
-                        </ul>
-                    </td>
-                    <td>
-                        <a
-                            href
-                            v-on:click="remove(single)"
-                            class="btn btn-xs btn-danger"
-                        ><i class="fa fa-trash-o"> </i></a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        <p v-else><b>Nothing at the moment.</b></p>
-
-        {{--
-            AVAILABLE
-        --}}
-
-        <p class="page-header">Available</p>
-        <table v-if="avail.length" class="table">
+        <table class="table">
             <thead>
                 <tr>
                     <th>Label</th>
@@ -61,10 +18,9 @@
             <tbody>
                 <tr
                     v-for="single in avail"
-                    v-bind:class="{disabled: single.isOwned}"
                 >
-                    <td>@{{ single.label }}</td>
-                    <td>@{{ single.description }}</td>
+                    <td v-bind:class="{disabled: single.isOwned}">@{{ single.label }}</td>
+                    <td v-bind:class="{disabled: single.isOwned}">@{{ single.description }}</td>
                     <td v-if="single.permissions">
                         <ul>
                             <li v-for="perm in single.permissions">@{{ perm.label }}</li>
@@ -72,11 +28,16 @@
                     </td>
                     <td>
                         <a
-                            href
-                            v-on:click="add(single)"
-                            class="btn btn-xs btn-success"
+                            href="javascript:;"
+                            v-on:click="toggle(single)"
+                            class="btn btn-xs"
+                            v-bind:class="{'btn-success': !single.isOwned, 'btn-danger': single.isOwned}"
                         >
-                            <i class="fa fa-plus"></i>
+
+                            <i
+                                class="fa"
+                                v-bind:class="{'fa-plus': !single.isOwned, 'fa-trash-o': single.isOwned}"
+                            ></i>
                         </a>
 
                     </td>
@@ -84,14 +45,13 @@
             </tbody>
         </table>
 
-        <p v-else><b>Nothing at the moment. Please go add some first!</b></p>
-
-        <div class="tools pull-right">
+        <div class="pull-right">
             <a
-                href="#"
+                href="javascript:;"
                 class="btn btn-primary"
                 v-on:click.prevent="store()"
-            >Save</a>
+            >
+            <i class="fa fa-save"></i> Save</a>
         </div>
     </div>
 @stop
@@ -131,6 +91,7 @@
             methods: {
                 add: add,
                 remove: remove,
+                toggle: toggle,
                 store: store,
             },
             ready: function() {
@@ -158,6 +119,15 @@
         //
         //  METHODS
         //
+        function toggle(item) {
+            if (item.isOwned) {
+                item.isOwned = false;
+                return this.owned.$remove(item);
+            }else{
+                item.isOwned = true;
+                return this.owned.push(item);
+            }
+        }
 
         function add(item) {
 

@@ -15,7 +15,6 @@ class RouteMeta extends ModularBaseModel
 
     protected $casts = [
         'config' => 'object',
-        'form' => 'object',
     ];
 
     public function scopeByName($query, $name)
@@ -23,18 +22,18 @@ class RouteMeta extends ModularBaseModel
         return $query->where('name', $name);
     }
 
-    public function scopeWithForm($query, $name)
-    {
-        $form_name = substr($name, 0, strrpos($name, '.')).'.form';
-        $escaped_form_name = DB::connection()->getPdo()->quote($form_name);
+    // public function scopeWithForm($query, $name)
+    // {
+    //     $form_name = substr($name, 0, strrpos($name, '.')).'.form';
+    //     $escaped_form_name = DB::connection()->getPdo()->quote($form_name);
 
-        return $query
-            ->select(
-                "*",
-                DB::connection()->raw("(SELECT config FROM route_metas WHERE name = $escaped_form_name) as form")
-            );
-        // substr($meta->base_url, 0, strrpos($meta->base_url, '.'))
-    }
+    //     return $query
+    //         ->select(
+    //             "*",
+    //             DB::connection()->raw("(SELECT config FROM route_metas WHERE name = $escaped_form_name) as form")
+    //         );
+    //     // substr($meta->base_url, 0, strrpos($meta->base_url, '.'))
+    // }
 
     public function getCombinedAttribute()
     {

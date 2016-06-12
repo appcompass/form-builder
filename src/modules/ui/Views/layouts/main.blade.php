@@ -1,13 +1,13 @@
 @include("ui::common.header")
 
-    <section id="container">
+    <section>
         <!--header start-->
         <header class="header fixed-top clearfix">
             <!--logo start-->
             <div class="brand">
 
-                <a href="index.html" class="logo">
-                    <img alt="{{env('ADMIN_WEBSITE_NAME', 'Plus 3 CMS')}}">
+                <a href="/" class="logo">
+                    <img height="60px" alt="{{env('ADMIN_WEBSITE_NAME', 'Plus 3 CMS')}}" src="{{env('ADMIN_WEBSITE_LOGO', '/assets/ui/images/logo.svg')}}">
                 </a>
                 <div class="sidebar-toggle-box">
                     <div class="fa fa-bars"></div>
@@ -15,7 +15,8 @@
             </div>
             <!--logo end-->
 
-            <div class="nav notify-row" id="top_menu" data-load="/left-alerts">
+            <div class="nav notify-row" id="top_menu">
+                @include('ui::sections.left-alerts')
             </div>
             <div class="top-nav clearfix">
                 <!--search & user info start-->
@@ -34,18 +35,23 @@
                         </ul>
                     </li>
                     <!-- user login dropdown end -->
+                    {{--
                     <li>
                         <div class="toggle-right-box">
                             <div class="fa fa-bars"></div>
                         </div>
                     </li>
+                    --}}
                 </ul>
                 <!--search & user info end-->
             </div>
         </header>
         <!--header end-->
-        <aside>
-            <div id="sidebar" class="nav-collapse" data-load="/left-nav">
+        <aside id="sidebar">
+            <div class="nav-collapse">
+                <div class="leftside-navigation">
+                    <leftnav :items="nav"></leftnav>
+                </div>
             </div>
         </aside>
         <!--sidebar end-->
@@ -55,6 +61,9 @@
                 <!-- page start-->
                     <div class="row">
                         <div class="col-sm-12" id="main-content-out">
+                        @if(isset($main_content))
+                            {!! $main_content !!}
+                        @endif
                         </div>
                     </div>
                 </section>
@@ -89,12 +98,88 @@
         </div>
     </div>
 
-  {{-- Generic modal injection point --}}
-  <div class="modal fade" id="modal-edit" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content" id="modal-body">
-      </div>
+    {{-- Generic modal injection point --}}
+    <div class="modal fade" id="modal-edit" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="modal-body">
+            </div>
+        </div>
     </div>
-  </div>
 
+
+    {{-- Vue Templates --}}
+    <template id="leftnav-template">
+        <ul class="sidebar-menu" id="nav-accordion">
+            <li
+                v-for="item in items"
+                v-bind:class="{'sub-menu': item.children}"
+            >
+                <a v-bind:href="buildLink(item.props)" v-on:click="toggle($index)">
+                    <i class="fa fa-@{{ item.props.icon }}"> </i> @{{ item.label }}
+                </a>
+
+                <ul class="sub" v-bind:class="{ 'collapsed': visible($index) }" v-if="item.children">
+                    <li v-for="sub_item in item.children">
+                        <a v-bind:href="buildLink(sub_item.props)"> <i class="fa fa-@{{ sub_item.props.icon }}"> </i> @{{ sub_item.label }} </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </template>
+
+    @section('scripts.footer')
+    <script>
+        (function(Vue) {
+
+            var leftnav = Vue.extend({
+                props: ['items'],
+                template: '#leftnav-template',
+                data: function() {
+                    return {
+                        nav: [],
+                        sections: []
+                    }
+                },
+                methods: {
+                    buildLink: function(props) {
+                        return typeof props.link !== 'undefined' ? props.link.href : false;
+                    },
+                    toggle: function(index) {
+                        if (this.sections.indexOf(index) === -1) {
+                            this.sections.push(index);
+                        } else {
+                            this.sections.$remove(index);
+                        }
+                    },
+                    visible: function(index) {
+                        return this.sections.indexOf(index) > -1;
+                    }
+                },
+            });
+
+            var Sidebar = new Vue({
+                el: '#sidebar',
+                data: {
+                    nav: [],
+                    sections: []
+                },
+                created: function() {
+                    this.fetchNav();
+                },
+                methods: {
+                    fetchNav: function() {
+                        vm = this;
+                        $.get('/left-nav', function(response){
+                            vm.nav = response;
+                        });
+                    }
+                },
+                components: {
+                    leftnav: leftnav
+                }
+
+            })
+        })(Vue)
+    </script>
+    @stop
 @include("ui::common.footer")

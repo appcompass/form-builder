@@ -118,7 +118,6 @@ class Navmenu extends Model
     {
 
         // @TODO quick temp solution, to be refactored using proper nav structure
-        // @TODO root check has to be moved into the ofBefore policy
 
         $nav = \Cache::tags($tag)->get($key);
 
@@ -287,12 +286,15 @@ class Navmenu extends Model
             'navigation_item_id' => $navItem->id,
             'label' => isset($overrides['label']) ? $overrides['label'] : $navItem['label'],
             'url' => isset($overrides['url']) ? $overrides['url'] : $navItem['url'],
+            'content' => isset($overrides['content']) ? $overrides['content'] : $navItem['content'],
             'new_tab' => isset($overrides['new_tab']) ? $overrides['new_tab'] : $navItem['new_tab']
         ]);
 
         if (!is_null($order)) {
             $navitem_navmenu->order = $order;
         }
+
+        $navitem_navmenu->props = isset($overrides['props']) ? $overrides['props'] : '{}';
 
         $navitem_navmenu->save();
 

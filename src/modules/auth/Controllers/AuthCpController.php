@@ -12,52 +12,52 @@ use Validator;
 class AuthCpController extends UiBaseController
 {
 
-	protected $loginPath ="/auth/login";
-	protected $redirectAfterLogout = "/auth/login";
-	protected $redirectPath = '/';
-	protected $redirectTo = '/';
+    protected $loginPath ="/auth/login";
+    protected $redirectAfterLogout = "/auth/login";
+    protected $redirectPath = '/';
+    protected $redirectTo = '/';
 
-	/**
-	 * Create a new authentication controller instance.
-	 *
-	 * @return void
-	 */
-	public function __construct()
-	{
-		// $this->middleware('guest', ['except' => ['getLogout', 'getLockScreen']]);
-	}
+    /**
+     * Create a new authentication controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        // $this->middleware('guest', ['except' => ['getLogout', 'getLockScreen']]);
+    }
 
-	//-----------------------------------------------------------------------
-	//
-	//	NOTE:
-	//       getLogin is implemented in the AuthenticatesUsers Trait
-	//			 i don't think we need middleware in the AuthController
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    //
+    //  NOTE:
+    //       getLogin is implemented in the AuthenticatesUsers Trait
+    //           i don't think we need middleware in the AuthController
+    //-----------------------------------------------------------------------
 
 
-	public function getLogin()
-	{
-		// our CMS has it's own view for login.
-		return view('auth::login');
-	}
+    public function getLogin()
+    {
+        // our CMS has it's own view for login.
+        return view('auth::login');
+    }
 
-	/**
-	 * 	Get the lock screen
-	 *
-	 *
-	 */
-	public function getLockScreen()
-	{
-		if (!\Auth::check()) {
-			return redirect('/login');
-		}
+    /**
+     *  Get the lock screen
+     *
+     *
+     */
+    public function getLockScreen()
+    {
+        if (!\Auth::check()) {
+            return redirect($this->loginPath());
+        }
 
-		return view('auth::lock-screen',[
-			'user_fullname' => Auth::user()->full_name,
-			'user_email' =>  Auth::user()->email,
-			'user_avatar' => User::avatar(160),
-		]);
-	}
+        return view('auth::lock-screen',[
+            'user_fullname' => Auth::user()->full_name,
+            'user_email' =>  Auth::user()->email,
+            'user_avatar' => User::avatar(160),
+        ]);
+    }
 
     /**
      * Handle a login request to the application.
@@ -109,40 +109,40 @@ class AuthCpController extends UiBaseController
 
 
     }
-	/**
-	 * Get a validator for an incoming registration request.
-	 *
-	 * @param  array  $data
-	 * @return \Illuminate\Contracts\Validation\Validator
-	 */
-	protected function validator(array $data)
-	{
-		return Validator::make($data, [
-			'first_name' => 'required|max:255',
-			'last_name' => 'required|max:255',
-			'email' => 'required|email|max:255|unique:users',
-			'password' => 'required|confirmed|min:6',
-			'phone' => 'required|max:16',
-		]);
-	}
+    /**
+     * Get a validator for an incoming registration request.
+     *
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function validator(array $data)
+    {
+        return Validator::make($data, [
+            'first_name' => 'required|max:255',
+            'last_name' => 'required|max:255',
+            'email' => 'required|email|max:255|unique:users',
+            'password' => 'required|confirmed|min:6',
+            'phone' => 'required|max:16',
+        ]);
+    }
 
-	/**
-	 * Create a new user instance after a valid registration.
-	 *
-	 * @param  array  $data
-	 * @return User
-	 */
-	protected function create(array $data)
-	{
-		return User::create([
-			'first_name' => $data['first_name'],
-			'last_name' => $data['last_name'],
-			'email' => $data['email'],
-			'password' => bcrypt($data['password']),
-			'phone' => $data['phone'],
-			'active' => false
-		]);
-	}
+    /**
+     * Create a new user instance after a valid registration.
+     *
+     * @param  array  $data
+     * @return User
+     */
+    protected function create(array $data)
+    {
+        return User::create([
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+            'email' => $data['email'],
+            'password' => bcrypt($data['password']),
+            'phone' => $data['phone'],
+            'active' => false
+        ]);
+    }
 
     /**
      * Get the needed authorization credentials from the request.

@@ -66,7 +66,7 @@ Class GalleriesModule extends BaseModule
                 'label' => 'Galleries',
                 'belongs_to' => ['cp_main_nav_media'],
                 'sub_nav' => '',
-                'req_perms' => Permission::createCpRoutePerm('galleries.index', 'Galleries'),
+                'req_perms' => Permission::createCpRoutePerm('galleries.index'),
                 'order' => 1,
                 'props' => [
                     'icon' => 'table',
@@ -78,7 +78,7 @@ Class GalleriesModule extends BaseModule
                 'label' => 'Gallery Info',
                 'belongs_to' => ['galleries'],
                 'sub_nav' => '',
-                'req_perms' => Permission::createCpRoutePerm('galleries.edit', 'Gallery Info'),
+                'req_perms' => Permission::createCpRoutePerm('galleries.edit'),
                 'order' => 1,
                 'props' => [
                     'icon' => 'info-circle',

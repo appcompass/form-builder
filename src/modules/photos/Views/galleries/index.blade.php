@@ -1,16 +1,15 @@
 <div class="modal fade in" id="photoModal"></div>
-
-<section class="panel">
-    <header class="panel-heading">
-        <span class="tools pull-right">
-            <a href="javascript:;" class="fa fa-chevron-down"></a>
-        </span>
-        Upload Photos
-    </header>
-    <div class="panel-body">
-        <div class="row">
-            <div class="col-lg-12">
-                {{-- @can('update', $record) --}}
+@can('create', new Photo)
+    <section class="panel">
+        <header class="panel-heading">
+            <span class="tools pull-right">
+                <a href="javascript:;" class="fa fa-chevron-down"></a>
+            </span>
+            {{ $meta->create->heading }}
+        </header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-12">
                     {!!
                         Form::model($gallery, [
                             'class' => 'dropzone',
@@ -21,11 +20,11 @@
                         ])
                     !!}
                     {!! Form::close() !!}
-                {{-- @endcan --}}
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+@endcan
 
 @if(!empty($photos->count()))
     <section class="panel">
@@ -36,6 +35,7 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-6">
+                    @can('edit', new Photo)
                     <h4>Bulk Actions:</h4>
                     <select name="attributes[options][photo_of]" class="form-control bulk_update">
                         <option value="">Change Type</option>
@@ -49,7 +49,10 @@
                         <option value="active">Active</option>
                     </select>
                     <a class="btn btn-primary no-link" href="javascript:;" data-bulk-update="{{$meta->base_url}}" data-action="update" data-with=".bulk_update" data-target="#gallery_{{ $gallery->id }}"><i class="fa fa-save"></i> Update Selected</a>
+                    @endcan
+                    @can('destroy', new Photo)
                     <a class="btn btn-danger no-link" href="javascript:;" data-bulk-update="{{$meta->base_url}}" data-action="delete" data-target="#gallery_{{ $gallery->id }}"><i class="fa fa-times"></i> Delete Selected</a>
+                    @endcan
                 </div>
                 <div class="col-sm-6">
                     <h4>Filter By Type:</h4>
@@ -112,10 +115,12 @@
         width: 100%;
     }
 
+@can('edit', new Photo)
     .media-gal .item:hover {
         background-color: #f8f8f8;
         cursor: move;
     }
+@endcan
 
     .media-gal .item-image {
         display: block;
@@ -176,7 +181,6 @@
 </style>
 <script type="text/javascript">
     $(function() {
-
         var $container = $('#gallery_{{ $gallery->id }}');
 
         $container.isotope({
@@ -198,6 +202,8 @@
             $container.isotope({filter: selector});
             return false;
         });
+
+    @can('edit', new Photo)
 
         $container.sortable({
             items: ".item",
@@ -260,6 +266,8 @@
 
         $container.disableSelection();
 
+    @endcan
+
         // $('.item-actions input[type=checkbox]').iCheck({
         //     checkboxClass: 'icheckbox_square',
         //     radioClass: 'iradio_square',
@@ -269,9 +277,10 @@
 
         $(window).on('resize', function() {
             $container.isotope('reLayout');
-        })
+        });
     });
 
+@can('create', new Photo)
     Dropzone.autoDiscover = false;
 
     $(function() {
@@ -283,4 +292,5 @@
             // window.location.reload();
         });
     });
+@endcan
 </script>

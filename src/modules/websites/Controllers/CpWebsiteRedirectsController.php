@@ -96,28 +96,8 @@ class CpWebsiteRedirectsController extends UiBaseController
             ]);
 
         }
-
-        return $this->storeRedirects($websites);
-    }
-
-    /**
-     *
-     */
-    private function storeRedirects(Website $websites)
-    {
-
-        $rendered = Redirect::renderForWebsite($websites);
-
-        $disk = $websites->getDiskInstance();
-
-        if (!$disk->put('nginx-redirects.conf', $rendered)) {
-
-            abort(503);
-
+        if ($websites->storeRedirects()) {
+            return $this->json([], true, "Redirects successfully updated.");
         }
-
-        return $this->json([], true, "Redirects successfully updated.");
-
     }
-
 }

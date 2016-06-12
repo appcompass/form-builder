@@ -4,6 +4,7 @@ namespace P3in\Modules;
 
 use P3in\Models\Alerts;
 use P3in\Modules\BaseModule;
+use Symfony\Component\Process\Process;
 
 Class AlertsModule extends BaseModule
 {
@@ -17,20 +18,29 @@ Class AlertsModule extends BaseModule
 
     public function fire()
     {
-        return "Firing from {$this->module_name}";
     }
 
 
     public function bootstrap()
     {
-        return [
-            "message" => "Bootstrapping AlertsModule!"
-        ];
     }
 
     public function register()
     {
-        echo "Registering Alerts Module";
+        // lets run the npm installs we need for the node scripts that get loaded on vendor publish.
+
+        $path = resource_path('node-scripts');
+
+        $process = new Process("mkdir -p {$path} && cd {$path} && npm install dotenv socket.io ioredis --save");
+
+        $process->run(function ($type, $buffer) {
+            echo $type;
+            if (Process::ERR === $type) {
+                echo 'ERR > '.$buffer;
+            } else {
+                echo 'OUT > '.$buffer;
+            }
+        });
     }
 
 }

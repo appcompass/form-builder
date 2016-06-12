@@ -15,23 +15,30 @@ class PermissionsTableSeeder extends Seeder
      */
     public function run()
     {
-    	DB::table('permissions')->delete();
 
         // Permission::create(['type' => '', 'label' => '', 'description' => '']);
 
         // USER
-        Permission::create([
+        $perm = Permission::firstOrNew([
             'type' => 'logged-user',
-            'label' => 'User',
-            'description' => 'The user can log into the application frontend (websites)',
-            'locked' => true,
         ]);
-        Permission::create([
+
+        $perm->label = 'User';
+        $perm->description = 'The user can log into the application frontend (websites)';
+        $perm->locked = true;
+
+        $perm->save();
+
+        $perm = Permission::firstOrNew([
             'type' => 'guest',
-            'label' => 'Guest',
-            'description' => 'Guest Permission',
-            'locked' => true,
         ]);
+
+        $perm->label = 'Guest';
+        $perm->description = 'Guest Permission';
+        $perm->locked = true;
+
+        $perm->save();
+
         // And we also have the null permissions
 
         // // CP

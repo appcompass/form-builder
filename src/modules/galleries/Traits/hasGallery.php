@@ -11,8 +11,9 @@
 namespace P3in\Traits;
 
 use Auth;
-use P3in\Models\Gallery;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use P3in\Models\Gallery;
+use P3in\Models\User;
 
 trait HasGallery
 {
@@ -23,13 +24,21 @@ trait HasGallery
     abstract function getGalleryName();
 
     /**
+     * Set it to true to make sure it returns a gallery
+     */
+    protected $forceCreateGallery = true;
+
+    /**
      *  galleries
+     *
+     *  @WARNING => THIS DOESN"T WORK WITH EAGER LOADING!!!!!
      */
     public function gallery()
     {
+
         $rel = $this->morphOne(Gallery::class, 'galleryable');
 
-        if (!$rel->get()->count()) {
+        if ($this->forceCreateGallery && !$rel->get()->count()) {
 
             $this->getOrCreateGallery($this->getGalleryName());
 
@@ -46,13 +55,6 @@ trait HasGallery
     public function getOrCreateGallery($name)
     {
         try {
-
-            if (!\Auth::check()) {
-
-                throw new \Exception('User must be logged in order to create a gallery.');
-
-            }
-
             // return Gallery::where('name', '=', $name)->firstOrFail();
             return Gallery::where('galleryable_id', $this->{$this->primaryKey})
                 ->where('galleryable_type', get_class($this))
@@ -60,10 +62,22 @@ trait HasGallery
 
         } catch (ModelNotFoundException $e) {
 
+            if (!\Auth::check()) {
+                $default_user_email = config('app.default_gallery_user_email');
+                try {
+                    $user = User::where('email', $default_user_email)->firstOrFail();
+                } catch (\Exception $e) {
+                    throw new \Exception('User must be logged in order to create a gallery.');
+                }
+
+            }else{
+                $user = \Auth::user();
+            }
+
             return Gallery::create([
                 'name' => $name,
                 'description' => '',
-                'user_id' => \Auth::user()->id,
+                'user_id' => $user->id,
                 'galleryable_id' => $this->{$this->primaryKey},
                 'galleryable_type' => get_class($this)
             ]);

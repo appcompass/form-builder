@@ -1,36 +1,81 @@
 @if(empty($login))
+    <script>
+        // i really hope to find a way to move this away from here
+        @if(env('FB_APP_ID'))
+          (function(d, s, id){
+             var js, fjs = d.getElementsByTagName(s)[0];
+             if (d.getElementById(id)) {return;}
+             js = d.createElement(s); js.id = id;
+             js.src = "//connect.facebook.net/en_US/sdk.js";
+             fjs.parentNode.insertBefore(js, fjs);
+           }(document, 'script', 'facebook-jssdk'));
+        window.fbAsyncInit = function() {
+            FB.init({
+              appId     : {{ env('FB_APP_ID') }},
+              xfbml     : true,
+              status    : true,
+              version   : 'v2.6',
+              cookie    : true,
+              oauth     : true
+            });
+        };
+        @endif
+    </script>
+
+    <script>
+        @if(env('PINTEREST_APP_ID'))
+        window.pAsyncInit = function() {
+            PDK.init({
+                appId: '{{ env('PINTEREST_APP_ID') }}',
+                cookie: true
+            });
+        };
+
+        (function(d, s, id){
+            var js, pjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement(s); js.id = id;
+            js.src = "//assets.pinterest.com/sdk/sdk.js";
+            pjs.parentNode.insertBefore(js, pjs);
+        }(document, 'script', 'pinterest-jssdk'));
+        @endif
+    </script>
+
     <!--Core js-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
-    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script> --}}
     <script src="/assets/ui/js/jquery.js"></script>
+
     <script src="/assets/ui/js/jquery-1.10.2.min.js"></script>
     <script src="/assets/ui/bs3/js/bootstrap.min.js"></script>
-    <script src="/assets/ui/js/gritter/js/jquery.gritter.js" type="text/javascript"></script>
+    <!-- <script src="/assets/ui/js/gritter/js/jquery.gritter.js" type="text/javascript"></script> -->
 
     <!--script for this page-->
     <script src="/assets/ui/js/gritter.js" type="text/javascript"></script>
     <script src="/assets/ui/js/jquery.nicescroll.js"></script>
 
-    <script src="/assets/ui/js/jvector-map/jquery-jvectormap-1.2.2.min.js"></script>
-    <script src="/assets/ui/js/jvector-map/jquery-jvectormap-us-lcc-en.js"></script>
-    <script src="/assets/ui/js/gauge/gauge.js"></script>
+    <!-- <script src="/assets/ui/js/jvector-map/jquery-jvectormap-1.2.2.min.js"></script> -->
+    <!-- <script src="/assets/ui/js/jvector-map/jquery-jvectormap-us-lcc-en.js"></script> -->
+    <!-- <script src="/assets/ui/js/gauge/gauge.js"></script> -->
+
+
     <!--clock init-->
-    <script src="/assets/ui/js/css3clock/js/css3clock.js"></script>
+    <!-- <script src="/assets/ui/js/css3clock/js/css3clock.js"></script> -->
     <!--Easy Pie Chart-->
-    <script src="/assets/ui/js/easypiechart/jquery.easypiechart.js"></script>
+    <!-- <script src="/assets/ui/js/easypiechart/jquery.easypiechart.js"></script> -->
     <!--Sparkline Chart-->
-    <script src="/assets/ui/js/sparkline/jquery.sparkline.js"></script>
-    <!--Morris Chart-->
-    <script src="/assets/ui/js/morris-chart/morris.js"></script>
-    <script src="/assets/ui/js/morris-chart/raphael-min.js"></script>
+    <!-- <script src="/assets/ui/js/sparkline/jquery.sparkline.js"></script> -->
+    <!-- Morris Chart -->
+    <!-- <script src="/assets/ui/js/morris-chart/morris.js"></script> -->
+    <!-- <script src="/assets/ui/js/morris-chart/raphael-min.js"></script> -->
     <!--jQuery Flot Chart-->
-    <script src="/assets/ui/js/flot-chart/jquery.flot.js"></script>
-    <script src="/assets/ui/js/flot-chart/jquery.flot.tooltip.min.js"></script>
-    <script src="/assets/ui/js/flot-chart/jquery.flot.resize.js"></script>
-    <script src="/assets/ui/js/flot-chart/jquery.flot.pie.resize.js"></script>
-    <script src="/assets/ui/js/flot-chart/jquery.flot.animator.min.js"></script>
-    <script src="/assets/ui/js/flot-chart/jquery.flot.growraf.js"></script>
-    <script src="/assets/ui/js/jquery.customSelect.min.js" ></script>
+    <!-- <script src="/assets/ui/js/flot-chart/jquery.flot.js"></script> -->
+    <!-- <script src="/assets/ui/js/flot-chart/jquery.flot.tooltip.min.js"></script> -->
+    <!-- <script src="/assets/ui/js/flot-chart/jquery.flot.resize.js"></script> -->
+    <!-- <script src="/assets/ui/js/flot-chart/jquery.flot.pie.resize.js"></script> -->
+    <!-- <script src="/assets/ui/js/flot-chart/jquery.flot.animator.min.js"></script> -->
+    <!-- <script src="/assets/ui/js/flot-chart/jquery.flot.growraf.js"></script> -->
+
+
     <script src="/assets/ui/js/jquery.customSelect.min.js" ></script>
     <!-- wysiwyg editor  -->
     <script src="/assets/ui/js/bootstrap-wysihtml5/wysihtml5-0.3.0.js" type="text/javascript"></script>
@@ -38,10 +83,9 @@
     <!-- iCheck -->
     <script src="/assets/ui/js/iCheck/jquery.icheck.min.js" ></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script> -->
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.10/vue.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/0.6.1/vue-resource.js"></script>
+    <!-- Vue Moved in the header async -->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
 
@@ -53,28 +97,7 @@
 
     @yield('scripts.footer')
 
-    <script>
-        (function(xhrOpen) {
-            /**
-            *   XHR Interceptor
-            */
-            XMLHttpRequest.prototype.open = function(method, url, async, user, pass) {
-                this.addEventListener("readystatechange", function() {
-                    if (this.status === 403) {
-                       sweetAlert("Unauthorized", "You are not authorized to view this resource", "error");
-                       this.abort();
-                    }
-                }, false);
-                xhrOpen.call(this, method, url, async, user, pass);
-            };
-
-        })(XMLHttpRequest.prototype.open);
-
-    </script>
-
     <script type="text/javascript">
-
-
 
         // temp spot tille we include actual file.
         // examples/source https://gist.github.com/cowboy/1025817#file-jquery-ba-deparam-min-js
@@ -90,6 +113,20 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+
+        /**
+        *   Maps an array by the specified property
+        *
+        */
+        function mapBy(array, prop) {
+            var map = {};
+            if (array && array.length) {
+                for (var i=0; i < array.length; i++) {
+                    map[ array[i][prop] ] = array[i];
+                }
+            }
+            return map;
+        }
 
         @if(empty($nolock))
             // This is where we put the logic which handles auto redirecting the user to the /lock-screen when they have been idle for X seconds.
@@ -141,7 +178,8 @@
             });
         }
 
-        function openModal(title, message, is_error){
+        function openModal(title, message, is_error, width_overide){
+            var raw = false;
             switch(title){
                 case 'success':
                     title = 'Success!';
@@ -154,6 +192,7 @@
                 break;
                 case 'error':
                     title = 'Failure!';
+                    raw = true;
                 break;
 
             }
@@ -163,6 +202,9 @@
             $('#modal-alert').find('h4 span').text(title);
             $('#modal-alert').find('.message').html(message);
 
+            if (width_overide) {
+                $('#modal-alert').find('.modal-dialog').width(width_overide);
+            }
             if (is_error) {
                 $('#modal-alert').addClass('error-modal')
             };
@@ -234,26 +276,63 @@
                 helper: "clone",
             });
         }
+        var alertModal = $('#modal-alert');
+
+        $(document).ajaxStart(function(){
+            openModal('Loading', 'Loading Please wait..');
+        });
+
+        $(document).ajaxStop(function(){
+            if (!alertModal.hasClass('error-modal')) {
+                alertModal.modal('hide');
+            };
+        });
+        // Added this replacing the native XMLHttpRequest XHR Interceptor since it's not as stable/consistent as jquery's handling of ajax events.
+        // The downside is though that we can't use vue-resource, and instead have to use jquery's ajax methods.  It's unfortunate but jQuery actually has
+        // better support for handling consecutive ajax events (i.e. do something on the first request, and do something else when the very last request is finished)
+        $(document).ajaxError(function(event, xhr, settings, error){
+            switch (xhr.status) {
+                case 403:
+                   sweetAlert("Unauthorized", "You are not authorized to view this resource", "error");
+                    break;
+                case 404:
+                   sweetAlert("Resource Not Found", "The Resource you are looking for isn't there!", "error");
+                    break;
+                case 400: // Bad Request
+                   sweetAlert("Bad Request", xhr.responseText, "error");
+                    break;
+                case 422:
+                    response = JSON.parse(xhr.responseText);
+                    data = response.data;
+                    error_string = '';
+                    for (var prop in data) {
+                        if (Object.prototype.hasOwnProperty.call(data, prop)) {
+                            error_string += data[prop].join('<br>');
+                        }
+                    }
+                    error_string += '<br>';
+                    openModal(error, error_string, true);
+                    break;
+                case 500:
+                    sweetAlert({
+                        title: xhr.statusText,
+                        text: error, //xhr.responseText
+                        type: 'error',
+                        html: true,
+                    });
+
+                    openModal('error', xhr.responseText, true, 1000);
+                    break;
+            }
+        });
+
+        alertModal.on('hidden.bs.modal', function (e) {
+            alertModal.removeClass('error-modal');
+            alertModal.find('h4 span').text('');
+            alertModal.find('.message').text('');
+        });
 
         $(document).ready(function () {
-            var alertModal = $('#modal-alert');
-
-            $(this).ajaxStart(function(){
-                // openModal('Loading', 'Loading Please wait..');
-            });
-
-            $(this).ajaxStop(function(){
-                if (!alertModal.hasClass('error-modal')) {
-                    alertModal.modal('hide');
-                };
-            });
-
-            alertModal.on('hidden.bs.modal', function (e) {
-                alertModal.removeClass('error-modal');
-                alertModal.find('h4 span').text('');
-                alertModal.find('.message').text('');
-            });
-
             var router = new Simrou();
 
             router.addRoute('*sp').get(function(e, params){
@@ -267,14 +346,13 @@
                 req.done(function(data){
                     if (data.success) {
                         loadSourceToTarget(data.data);
-                    }else{
-                        openModal('error', data.message, true);
                     }
 
                 });
             });
-
-            router.start('/dashboard');
+            @if(empty($main_content))
+                router.start('/dashboard');
+            @endif
 
             // $(document).on('click', 'a', function(e){
             //     e.preventDefault();
@@ -283,16 +361,6 @@
             //         router.navigate(url);
             //     };
             // });
-
-
-
-
-
-
-
-
-
-
 
 
             if ($.fn.niceScroll) {
@@ -452,18 +520,13 @@
                     url: source,
                     type: 'POST',
                     data: selectedObjects,
-                    error: function(err){
-                        openModal('error', err, true);
-                    },
-                    success: function(data){
-                        $(target).html(data);
-                    },
-                    complete: function(xhr, status){
-                        if (status =='success') {
-                            loadData($(target));
+                    success: function(res){
+                        if (res.success) {
+                            router.navigate(res.data);
                         }else{
-                            openModal('error', status, true);
+                            openModal('error', res.message, true);
                         }
+                        // $(target).html(data);
                     }
                 });
             });

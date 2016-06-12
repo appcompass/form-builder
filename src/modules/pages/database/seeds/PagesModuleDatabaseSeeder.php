@@ -30,6 +30,7 @@ class PagesModuleDatabaseSeeder extends Seeder
             'title' => 'Page Info',
             'description' => 'Page Info',
             'slug' => 'edit',
+            'url' => '/edit',
             'order' => 2,
             'active' => true
         ]);

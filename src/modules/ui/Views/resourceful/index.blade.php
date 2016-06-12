@@ -5,10 +5,12 @@
     <div class="panel-body">
         <div class="clearfix">
             <div class="btn-group">
-                @can('edit', $meta->classname)
-                <a id="editable-sample_new" class="btn btn-primary" href="#{{ $meta->base_url }}/create" data-click="{{ $meta->base_url }}/create" data-target="#main-content-out">
-                    Add New <i class="fa fa-plus"></i>
-                </a>
+                @can('create', $meta->classname)
+                    @if(empty($meta->no_create))
+                        <a id="editable-sample_new" class="btn btn-primary" href="#{{ $meta->base_url }}/create" data-click="{{ $meta->base_url }}/create" data-target="#main-content-out">
+                            Add New <i class="fa fa-plus"></i>
+                        </a>
+                    @endif
                 @endcan
             </div>
         </div>
@@ -52,12 +54,13 @@
                                             href="{{ $meta->base_url }}/{{ $record->id }}/edit"
                                             data-click="{{ $meta->base_url }}/{{ $record->id }}"
                                             data-target="#main-content-out"
-                                            class="btn btn-primary"
+                                            class="btn btn-xs btn-primary"
                                         >
                                             Edit
                                         </a>
                                     @endcan
                                     @elseif($action == 'clone')
+                                    @can('edit', $record)
                                         <a
                                             data-action="clone"
                                             href=""
@@ -65,22 +68,25 @@
                                             data-object-name="{{ get_class($record) }}"
                                             data-object-id="{{ $record->id }}"
                                             data-object-redirect="{{ $meta->base_url }}"
-                                            class="btn btn-info"
+                                            class="btn btn-xs btn-info"
                                         >
                                             Clone
                                         </a>
+                                    @endcan
                                     @elseif($action == 'delete')
-                                        <a
-                                            data-action="modal-delete"
-                                            href="#modal-edit"
-                                            data-toggle="modal"
-                                            data-delete="{{ $meta->base_url }}/{{ $record->id }}"
-                                            data-click="/delete-modal"
-                                            data-inject-area="#modal-body"
-                                            class="btn btn-danger"
-                                        >
-                                            Delete
-                                        </a>
+                                        @can('destroy', $record)
+                                            <a
+                                                data-action="modal-delete"
+                                                href="#modal-edit"
+                                                data-toggle="modal"
+                                                data-delete="{{ $meta->base_url }}/{{ $record->id }}"
+                                                data-click="/delete-modal"
+                                                data-inject-area="#modal-body"
+                                                class="btn btn-xs btn-danger"
+                                            >
+                                                Delete
+                                            </a>
+                                        @endcan
                                     @endif
                                 @endforeach
                             </td>
@@ -93,7 +99,7 @@
                         @elseif($row_data->type == 'option')
                             <td>{{ $record->getOption($row_key, $row_data->option_name) }}</td>
                         @else
-                            <td>{{ $record->$row_key }}</td>
+                            <td>{!! $record->$row_key !!}</td>
                         @endif
                     @endforeach
                 </tr>
@@ -113,24 +119,6 @@
 
 <script>
     $(document).ready(function() {
-
-        @if(!isset($meta->filter_view))
-            /*
-             * Initialize DataTable
-             */
-            $('#dynamic-table').dataTable( {
-
-            } );
-            /*
-             * Initialse DataTables, with no sorting on the 'details' column
-             */
-            var oTable = $('#hidden-table-info').dataTable( {
-                "aoColumnDefs": [
-                    { "bSortable": false, "aTargets": [ 0 ] }
-                ],
-                "aaSorting": [[1, 'asc']]
-            });
-        @endif
 
         /*
          * Insert a 'details' column to the table

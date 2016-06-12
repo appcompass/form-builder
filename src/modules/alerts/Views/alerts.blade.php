@@ -24,12 +24,13 @@
       methods: {
 
         fetchAlerts: function(hash) {
-          this.$http.get('/notifications/alerts/info?hash=' + encodeURIComponent(hash), function(alert) {
-            if (alert) {
-              this.alerts.unshift(alert);
-              this.trimQueue()
-            }
-          })
+            vm = this;
+            $.get('/notifications/alerts/info', {hash: encodeURIComponent(hash)}, function(alert){
+                if (alert) {
+                  vm.alerts.unshift(alert);
+                  vm.trimQueue()
+                }
+            });
         },
 
         trimQueue: function() {

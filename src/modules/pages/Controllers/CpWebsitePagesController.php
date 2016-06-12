@@ -28,7 +28,7 @@ class CpWebsitePagesController extends UiBaseController
                     'target' => '#record-detail',
                 ],
             ],
-            'heading' => 'Website\'s pages',
+            'heading' => 'Website pages',
             'table' => [
                 'headers' => [
                     'Title',
@@ -108,11 +108,11 @@ class CpWebsitePagesController extends UiBaseController
         'form' => [
             'fields' => [
                 [
-                    'label' => 'Page Title',
+                    'label' => 'Page Name',
                     'name' => 'title',
-                    'placeholder' => 'Page Title',
+                    'placeholder' => 'Page Name',
                     'type' => 'text',
-                    'help_block' => 'The title of the page.',
+                    'help_block' => 'The name of the page, used to describe the page internally (so you know what page it is).',
                 ],[
                     'label' => 'Page Slug',
                     'name' => 'slug',
@@ -195,7 +195,9 @@ class CpWebsitePagesController extends UiBaseController
     public function index(Website $websites)
     {
         $this->records = $websites->pages;
+        $this->meta->index->heading = $websites->site_name.' '.$this->meta->index->heading;
 
+        // dd($this->meta->index->heading);
         return $this->build('index', ['websites', $websites->id, 'pages']);
     }
 
@@ -210,6 +212,7 @@ class CpWebsitePagesController extends UiBaseController
         $this->meta->create->route = [$this->meta->create->route, $websites->id];
 
         $this->meta->page_list = Page::ofWebsite($websites)->isActive()->lists('title', 'id')->put('' , 'No Parent')->reverse();
+        $this->meta->create->heading = 'Add page to '.$websites->site_name.' Website';
 
         return $this->build('create', ['websites', $websites->id, 'pages']);
     }
@@ -272,6 +275,8 @@ class CpWebsitePagesController extends UiBaseController
 
         $this->meta->data_target = '#content-edit';
 
+        $this->meta->show->sub_section_name = $websites->site_name.' '.$pages->title.' '.$this->meta->show->sub_section_name;
+
         return view('pages::show')
             ->with('website', $websites)
             ->with('page', $this->record)
@@ -305,6 +310,7 @@ class CpWebsitePagesController extends UiBaseController
         $this->record->settings = $this->record->settings->data;
 
         $this->meta->data_target = '#content-edit';
+        $this->meta->edit->heading = 'Edit the '.$websites->site_name.' '.$pages->title.' page';
 
         return $this->build('edit', ['websites', $websites->id, 'pages', $pages->id]);
     }
@@ -331,6 +337,11 @@ class CpWebsitePagesController extends UiBaseController
         }
 
         $pages->url = $pages->getUrl();
+
+        if ($pages->navItem) {
+            $pages->navItem->url = $pages->url;
+            $pages->navItem->save();
+        }
 
         $pages->update($request->except(['settings', 'parent']));
 
