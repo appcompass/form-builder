@@ -33,23 +33,25 @@ class WebsitesModuleDatabaseSeeder extends Seeder
         $website->save();
 
 
-        $website_header_list_field = Field::firstOrNew([
-            'type' => 'selectlist',
-            'name' => 'website_header_list',
-            'source' => Website::class,
-        ]);
-        $website_header_list_field->save();
+        if (Modular::isLoaded('ui')) {
+            $website_header_list_field = Field::firstOrNew([
+                'type' => 'selectlist',
+                'name' => 'website_header_list',
+                'source' => Website::class,
+            ]);
+            $website_header_list_field->save();
 
-        $website_footer_list_field = Field::firstOrNew([
-            'type' => 'selectlist',
-            'name' => 'website_footer_list',
-            'source' => Website::class,
-        ]);
-        $website_footer_list_field->save();
+            $website_footer_list_field = Field::firstOrNew([
+                'type' => 'selectlist',
+                'name' => 'website_footer_list',
+                'source' => Website::class,
+            ]);
+            $website_footer_list_field->save();
 
 
-        // Run the websites meta data seeder
-        $this->call(WebsitesMetaDataDatabaseSeeder::class);
+            // Run the websites meta data seeder
+            $this->call(WebsitesMetaDataDatabaseSeeder::class);
+        }
 
         Model::reguard();
     }

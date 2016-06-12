@@ -5,6 +5,7 @@ namespace P3in\Seeders;
 use Illuminate\Database\Seeder;
 use P3in\Models\Group;
 use P3in\Models\Permission;
+use Modular;
 use DB;
 
 class GroupsTableSeeder extends Seeder
@@ -27,7 +28,6 @@ class GroupsTableSeeder extends Seeder
             'active' => true
         ]);
 
-        $cp_manager->grantPermissions(['alert.info']); // GateBefore instead of perms
 
         //
         //  USER
@@ -39,6 +39,9 @@ class GroupsTableSeeder extends Seeder
             'active' => true
         ]);
 
-        $group->grantPermissions(['logged-user', 'alert.info']);
+        if (Modular::isLoaded('permissions')) {
+            $cp_manager->grantPermissions(['alert.info']); // something else instead of perms, or make cp-admin a perm not a group.
+            $group->grantPermissions(['logged-user', 'alert.info']);
+        }
     }
 }
