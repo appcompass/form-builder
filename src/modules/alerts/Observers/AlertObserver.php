@@ -2,13 +2,14 @@
 
 namespace P3in\Observers;
 
-use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
-use P3in\Models\User;
+use Event;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
+use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use P3in\Events\Alert as AlertEvent;
 use P3in\Models\Alert as AlertModel;
-use Event;
+use P3in\Models\User;
 use P3in\Observers\BaseObserver;
 
 class AlertObserver extends BaseObserver
@@ -42,6 +43,9 @@ class AlertObserver extends BaseObserver
         try {
 
             $user = User::where('email', $attempting->credentials['email'])->firstOrFail();
+
+            // THis should be login_attempts not last_login because it
+            // doesn't gurantee the user entered the correct password.
 
             \Cache::tags(['last_logins'])->put($user->email, $user->last_login, 60); // store last_login for an hour
 
