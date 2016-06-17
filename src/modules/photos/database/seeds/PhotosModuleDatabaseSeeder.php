@@ -32,8 +32,9 @@ class PhotosModuleDatabaseSeeder extends Seeder
             ['label' => 'Bedroom', 'order' => 3 ],
             ['label' => 'Living Room', 'order' => 4 ],
             ['label' => 'Hallway', 'order' => 5 ],
-            ['label' => 'Master Bathroom', 'order' => 6 ],
-            ['label' => 'Bathroom', 'order' => 7 ]
+            ['label' => 'Porch/deck', 'order' => 6],
+            ['label' => 'Master Bathroom', 'order' => 7 ],
+            ['label' => 'Bathroom', 'order' => 8 ]
         ]);
 
         // Lets create permissions for the route.
