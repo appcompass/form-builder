@@ -168,6 +168,12 @@ class CpWebsitePagesController extends UiBaseController
                     'placeholder' => 'Meta Keywords',
                     'type' => 'text',
                     'help_block' => 'The meta keywords of the page.',
+                ],[
+                    'label' => 'Canonical URL',
+                    'name' => 'settings[meta_data][canonical]',
+                    'placeholder' => 'Canonical URL',
+                    'type' => 'text',
+                    'help_block' => 'Canonical (default) url for this page.',
                 ]
             ]
         ]

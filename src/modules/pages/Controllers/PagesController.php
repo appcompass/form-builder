@@ -42,15 +42,21 @@ class PagesController extends Controller
     {
         $sitemap = \App::make("sitemap");
 
-        $sitemap->setCache('laravel.sitemap', 60);
-
-        if (!$sitemap->isCached()) {
-            $pages = Page::with('content')->ofWebsite()->get();
+        // $sitemap->setCache('laravel.sitemap', 1);
+        // if (!$sitemap->isCached()) {
+            $pages = Page::with('content', 'settings')
+                ->ofWebsite()
+                ->get();
 
              foreach ($pages as $page) {
+                if ($config = $page->settings('config')) {
+                    if (isset($config->dynamic) && $config->dynamic == 'true') {
+                        continue;
+                    }
+                }
                 $sitemap->add(URL::to($page->url), $page->updated_at, $page->priority, $page->update_frequency, $page->images);
              }
-        }
+        // }
 
         return $sitemap->render($type);
     }
