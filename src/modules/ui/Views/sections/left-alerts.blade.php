@@ -153,7 +153,7 @@
             throw "No data";
         }
 
-        console.log(data);
+        // console.log(data);
 
         this.title = data.title;
         this.message = data.message;
