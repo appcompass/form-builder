@@ -7,7 +7,7 @@
 		<div class="row">
 			<div class="medium-8 medium-centered columns"> 
 				<h1 class="banner-title">Company</h1>
-				<div class="banner-description">
+				<div class="banner-desc">
 					<p>We love connecting with clients, learning about their business objectives, and building well-crafted web applications for them. As if this weren’t enough, we also get to work with bright, inventive, and fun teammates. We at Plus 3 Interactive are dedicated to creating quality Web solutions, and we have the experience to turn ideas into reality.</p>
 				</div>
 			</div>

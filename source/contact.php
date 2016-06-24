@@ -7,7 +7,7 @@
 		<div class="row">
 			<div class="medium-8 medium-centered columns"> 
 				<h1 class="banner-title">Contact Us</h1>
-				<div class="banner-description">
+				<div class="banner-desc">
 					<p>Are you interested in design and development of a business Web site or Web application? Are you looking for web marketing services to get the most out of your current Web site?</p>
 					<p>Please let us know how we can help your business grow.</p>
 				</div>

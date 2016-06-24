@@ -195,7 +195,7 @@
 			<div class="section-header">
 				<h2 class="section-heading">Plus 3 Interactive <span class="color-blue">-</span> Active!</h2>
 				<div class="section-social-follow">
-					Follow Us <a class="icon-instagram"></a> <a class="icon-twitter"></a> <a class="icon-facebook"></a>
+					<span>Follow Us</span> <a class="icon-instagram"></a> <a class="icon-twitter"></a> <a class="icon-facebook"></a>
 				</div>
 			</div>
 		</div>

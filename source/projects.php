@@ -7,7 +7,7 @@
 		<div class="row">
 			<div class="medium-8 medium-centered columns"> 
 				<h1 class="banner-title">Projects</h1>
-				<div class="banner-description">
+				<div class="banner-desc">
 					<p>We find unique solutions to our clients’ unique problems through developing custom web applications, integrating proprietary systems with the modern web, and turning business ideas into web solutions. See some of our projects.</p>
 				</div>
 			</div>

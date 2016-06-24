@@ -734,6 +734,11 @@ hr {
 	vertical-align:middle;
 }
 
+.section-social-follow span {
+	display:inline-block;
+	vertical-align:middle;
+}
+
 .section-social-follow a {
 	color:#fff;
 	font-size:20px;
@@ -929,12 +934,12 @@ hr {
 	}
 }
 
-.banner-description {
+.banner-desc {
 	font-weight:600;
 	margin-top:10px;
 }
 
-.banner-description *:last-child {
+.banner-desc *:last-child {
 	margin-bottom:0;
 }
 
