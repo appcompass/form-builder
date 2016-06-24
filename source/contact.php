@@ -16,7 +16,7 @@
 	</div>
 </section><!-- banner -->
 
-<div class="section-main">
+<div class="section-pad">
 	<div class="row">
 		<div class="medium-8 medium-centered columns">
 			<form class="enable-labels">

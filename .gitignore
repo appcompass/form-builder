@@ -17,11 +17,11 @@ storage/
 
 # Frontend specific (mike farrell)
 .DS_Store
-source/*.sublime-workspace
-source/*.sublime-project
-source/*.sass-cache*
-source/*.codekit-cache*
-source/config.codekit
+*.sublime-workspace
+*.sublime-project
+*.sass-cache*
+*.codekit-cache*
+config.codekit
 sys/database/migrations
 sys/resources/node-scripts
 supervisord.conf
