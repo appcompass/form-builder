@@ -18,10 +18,8 @@
 <section class="section-module section-team">
 	<div class="row">
 		<div class="medium-8 medium-centered columns">
-			<h2 class="section-heading section-team-heading">The Team</h2>
-			<div class="section-desc section-team-desc">
-				<p>Plus 3 Interactive is a customer-focused business. Our team finds the right solutions to our customers’ unique challenges.</p>
-				<p><a href=""><strong>Check out the people who make our company work</strong> <span class="icon-arrow"></span></a>
+			<div class="section-header">
+				<h2 class="section-heading">Meet our Team!</h2>
 			</div>
 		</div>
 	</div>
@@ -56,7 +54,7 @@
 <section class="section-module section-social">
 	<div class="row">
 		<div class="xsmall-12 columns">
-			<div class="section-social-heading">
+			<div class="section-header">
 				<h2 class="section-heading">Plus 3 Interactive <span class="color-blue">-</span> Active!</h2>
 				<div class="section-social-follow">
 					Follow Us <a class="icon-instagram"></a> <a class="icon-twitter"></a> <a class="icon-facebook"></a>

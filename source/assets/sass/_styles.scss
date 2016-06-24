@@ -293,6 +293,12 @@ hr {
 	}
 }
 
+.main-nav > ul > .current-menu-item > a {
+	@include breakpoint(medium) {
+		border-top-color:$blue;
+	}
+}
+
 .main-nav > ul > li > a:hover,
 .main-nav > ul > li:hover > a {
 	@include breakpoint(medium) {
@@ -480,14 +486,14 @@ hr {
 	text-align:center;
 }
 
+.section-header {
+	margin-bottom:60px;
+}
+
 .section-heading {
 	font-weight:bold;
 	font-size:em(60px);
 	margin-bottom:20px;
-}
-
-.section-desc {
-	margin-bottom:60px;
 }
 
 .section-desc p {
@@ -509,7 +515,7 @@ hr {
 	text-align:center;
 }
 
-.section-solutions-heading {
+.section-solutions .section-heading {
 	color:#fff;
 }
 
@@ -693,6 +699,7 @@ hr {
 	display:block;
 	font-size:em(40px);
 	font-weight:bold;
+	line-height:1.2;
 }
 
 .team-position {
@@ -705,11 +712,11 @@ hr {
 	padding-bottom:0;
 }
 
-.section-social-heading {
+.section-social .section-header {
 	margin-bottom:80px;
 }
 
-.section-social-heading .section-heading {
+.section-social .section-heading {
 	display:inline-block;
 	margin:0;
 	vertical-align:middle;

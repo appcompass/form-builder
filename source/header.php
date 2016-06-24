@@ -25,7 +25,7 @@
                 </div>
                 <nav class="main-nav">
                     <ul>
-                        <li><a href="solutions.php"><span class="icon icon-solutions"></span> Solutions <span class="nav-dropdown-arrow"></span></a>
+                        <li class="current-menu-item"><a href="solutions.php"><span class="icon icon-solutions"></span> Solutions <span class="nav-dropdown-arrow"></span></a>
                             <ul>
                                 <li><a href="process.php"><span class="icon icon-solutions"></span> Our Process</a></li>
                             </ul>

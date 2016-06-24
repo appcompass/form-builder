@@ -39,9 +39,11 @@
 <section class="section-module section-solutions">
 	<div class="row">
 		<div class="medium-8 medium-centered columns">
-			<h2 class="section-heading section-solutions-heading">Targeted Web Solutions</h2>
-			<div class="section-desc section-solutions-desc">
-				<p>We develop custom web applications that meet the unique needs of your business. Plus 3 Interactive can help your company meet its strategic goals:</p>
+			<div class="section-header">
+				<h2 class="section-heading">Targeted Web Solutions</h2>
+				<div class="section-desc">
+					<p>We develop custom web applications that meet the unique needs of your business. Plus 3 Interactive can help your company meet its strategic goals:</p>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -137,9 +139,11 @@
 <section class="section-module section-process">
 	<div class="row">
 		<div class="medium-8 medium-centered columns">
-			<h2 class="section-heading section-process-heading">Our Process</h2>
-			<div class="section-desc section-process-desc">
-				<p>Explore our development process …</p>
+			<div class="section-header">
+				<h2 class="section-heading">Our Process</h2>
+				<div class="section-desc">
+					<p>Explore our development process …</p>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -148,10 +152,12 @@
 <section class="section-module section-team">
 	<div class="row">
 		<div class="medium-8 medium-centered columns">
-			<h2 class="section-heading section-team-heading">The Team</h2>
-			<div class="section-desc section-team-desc">
-				<p>Plus 3 Interactive is a customer-focused business. Our team finds the right solutions to our customers’ unique challenges.</p>
-				<p><a href=""><strong>Check out the people who make our company work</strong> <span class="icon-arrow"></span></a>
+			<div class="section-header">
+				<h2 class="section-heading">The Team</h2>
+				<div class="section-desc">
+					<p>Plus 3 Interactive is a customer-focused business. Our team finds the right solutions to our customers’ unique challenges.</p>
+					<p><a href=""><strong>Check out the people who make our company work</strong> <span class="icon-arrow"></span></a></p>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -186,7 +192,7 @@
 <section class="section-module section-social">
 	<div class="row">
 		<div class="xsmall-12 columns">
-			<div class="section-social-heading">
+			<div class="section-header">
 				<h2 class="section-heading">Plus 3 Interactive <span class="color-blue">-</span> Active!</h2>
 				<div class="section-social-follow">
 					Follow Us <a class="icon-instagram"></a> <a class="icon-twitter"></a> <a class="icon-facebook"></a>
