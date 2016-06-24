@@ -1074,6 +1074,42 @@ hr {
 	font-weight:normal;
 }
 
+.section-project {
+	display:table;
+	width:100%;
+	min-height:550px;
+	padding:30px;
+	background-repeat:no-repeat;
+	background-position:center right;
+	background-size:cover;
+}
+
+.section-project-content {
+	display:table-cell;
+	vertical-align:middle;
+	background-color:rgba($black, 0.7);
+	@include breakpoint(small) {
+		background-color:transparent;
+	}
+}
+
+.project-logo {
+	margin-bottom:60px;
+}
+
+.project-services {
+	color:#fff;
+}
+
+.project-services ul {
+	@extend .list-reset;
+}
+
+.project-services p, 
+.project-services ul {
+	margin-bottom:20px;
+}
+
 
 ///------------------------------------------------------------------------
 ///		SIDEBAR
@@ -1220,6 +1256,7 @@ hr {
 	padding:12px 20px;
 	line-height:1.2;
 	border-radius:3px;
+	text-align:center;
 }
 
 .btn-expand {
@@ -1251,6 +1288,22 @@ hr {
 	font-size:22px;
 	vertical-align:middle;
 	margin-left:10px;
+}
+
+.btn-white {
+	@extend .btn;
+	background:#fff;
+	border:2px solid #fff;
+	color:$blue;
+}
+
+.btn-white:hover {
+	background:transparent;
+	color:#fff;
+}
+
+.btn-project {
+	min-width:150px;
 }
 
 ///------------------------------------------------------------------------
