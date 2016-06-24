@@ -343,7 +343,7 @@ class Photo extends ModularBaseModel implements GalleryItemInterface
 
             if (method_exists($this->photoable, 'getBasePhotoPath')) {
 
-                return $this->photoable->getBasePhotoPath() . $this->attributes['path'];
+                return $this->photoable->getBasePhotoPath($this) . $this->attributes['path'];
 
             }
         }
