@@ -36,11 +36,11 @@
 	</div>
 </section><!-- home-banner -->
 
-<section class="home-section home-solutions">
+<section class="section-module section-solutions">
 	<div class="row">
 		<div class="medium-8 medium-centered columns">
-			<h2 class="home-section-heading home-solutions-heading">Targeted Web Solutions</h2>
-			<div class="home-section-desc home-solutions-desc">
+			<h2 class="section-heading section-solutions-heading">Targeted Web Solutions</h2>
+			<div class="section-desc section-solutions-desc">
 				<p>We develop custom web applications that meet the unique needs of your business. Plus 3 Interactive can help your company meet its strategic goals:</p>
 			</div>
 		</div>
@@ -49,39 +49,39 @@
 		<div class="medium-6 columns">
 			<div class="row">
 				<div class="small-6 columns">
-					<a href="" class="home-solution-box">
-						<span class="home-solution-front">
-							<span class="home-solution-icon"><img src="assets/images/content/solution_web_apps.png"></span>
-							<span class="home-solution-title">Custom Web Applications</span>
+					<a href="" class="solution-box">
+						<span class="solution-box-front">
+							<span class="solution-box-icon"><img src="assets/images/content/solution_web_apps.png"></span>
+							<span class="solution-box-title">Custom Web Applications</span>
 						</span>
-						<span class="home-solution-back">
-							<span class="home-solution-back-center">
-								<span class="home-solution-title">Custom Web Applications</span>
-								<ul class="home-solution-list">
+						<span class="solution-box-back">
+							<span class="solution-box-back-center">
+								<span class="solution-box-title">Custom Web Applications</span>
+								<ul class="solution-box-list">
 									<li>Middleware designed for your requirements</li>
 									<li>Integrated with legacy &amp; proprietary systems</li>
 									<li>Web 2.0 standards</li>
 								</ul>
-								<span class="home-solution-more"><span class="icon-plus"></span> See More</span>
+								<span class="solution-box-more"><span class="icon-plus"></span> See More</span>
 							</span>
 						</span>
 					</a>
 				</div>
 				<div class="small-6 columns">
-					<a href="" class="home-solution-box">
-						<span class="home-solution-front">
-							<span class="home-solution-icon"><img src="assets/images/content/solution_middleware.png"></span>
-							<span class="home-solution-title">Middleware Development</span>
+					<a href="" class="solution-box">
+						<span class="solution-box-front">
+							<span class="solution-box-icon"><img src="assets/images/content/solution_middleware.png"></span>
+							<span class="solution-box-title">Middleware Development</span>
 						</span>
-						<span class="home-solution-back">
-							<span class="home-solution-back-center">
-								<span class="home-solution-title">Custom Web Applications</span>
-								<ul class="home-solution-list">
+						<span class="solution-box-back">
+							<span class="solution-box-back-center">
+								<span class="solution-box-title">Custom Web Applications</span>
+								<ul class="solution-box-list">
 									<li>Middleware designed for your requirements</li>
 									<li>Integrated with legacy &amp; proprietary systems</li>
 									<li>Web 2.0 standards</li>
 								</ul>
-								<span class="home-solution-more"><span class="icon-plus"></span> See More</span>
+								<span class="solution-box-more"><span class="icon-plus"></span> See More</span>
 							</span>
 						</span>
 					</a>
@@ -91,40 +91,40 @@
 		<div class="medium-6 columns">
 			<div class="row">
 				<div class="small-6 columns">
-					<a href="" class="home-solution-box">
-						<span class="home-solution-front">
-							<span class="home-solution-icon"><img src="assets/images/content/solution_device_comm.png"></span>
-							<span class="home-solution-title">Device Web Communications</span>
+					<a href="" class="solution-box">
+						<span class="solution-box-front">
+							<span class="solution-box-icon"><img src="assets/images/content/solution_device_comm.png"></span>
+							<span class="solution-box-title">Device Web Communications</span>
 						</span>
-						<span class="home-solution-back">
-							<span class="home-solution-back-center">
-								<span class="home-solution-title">Custom Web Applications</span>
-								<ul class="home-solution-list">
+						<span class="solution-box-back">
+							<span class="solution-box-back-center">
+								<span class="solution-box-title">Custom Web Applications</span>
+								<ul class="solution-box-list">
 									<li>Middleware designed for your requirements</li>
 									<li>Integrated with legacy &amp; proprietary systems</li>
 									<li>Web 2.0 standards</li>
 								</ul>
-								<span class="home-solution-more"><span class="icon-plus"></span> See More</span>
+								<span class="solution-box-more"><span class="icon-plus"></span> See More</span>
 							</span>
 						</span>
 					</a>
 				</div>
 				<div class="small-6 columns">
-					<a href="" class="home-solution-box">
-						<span class="home-solution-front">
-							<span class="home-solution-icon"><img src="assets/images/content/solution_app_management.png"></span>
-							<span class="home-solution-title">Web Application Management Systems</span>
+					<a href="" class="solution-box">
+						<span class="solution-box-front">
+							<span class="solution-box-icon"><img src="assets/images/content/solution_app_management.png"></span>
+							<span class="solution-box-title">Web Application Management Systems</span>
 						</span>
-						<span class="home-solution-back">
-							<span class="home-solution-back-center">
-								<span class="home-solution-title">Custom Web Applications</span>
-								<ul class="home-solution-list">
+						<span class="solution-box-back">
+							<span class="solution-box-back-center">
+								<span class="solution-box-title">Custom Web Applications</span>
+								<ul class="solution-box-list">
 									<li>Middleware designed for your requirements</li>
 									<li>Integrated with legacy &amp; proprietary systems</li>
 									<li>Web 2.0 standards</li>
 									<li>Web 2.0 standards</li>
 								</ul>
-								<span class="home-solution-more"><span class="icon-plus"></span> See More</span>
+								<span class="solution-box-more"><span class="icon-plus"></span> See More</span>
 							</span>
 						</span>
 					</a>
@@ -132,63 +132,63 @@
 			</div>
 		</div>
 	</div>
-</section><!-- home-solutions -->
+</section><!-- section-solutions -->
 
-<section class="home-section home-process">
+<section class="section-module section-process">
 	<div class="row">
 		<div class="medium-8 medium-centered columns">
-			<h2 class="home-section-heading home-process-heading">Our Process</h2>
-			<div class="home-section-desc home-process-desc">
+			<h2 class="section-heading section-process-heading">Our Process</h2>
+			<div class="section-desc section-process-desc">
 				<p>Explore our development process …</p>
 			</div>
 		</div>
 	</div>
-</section><!-- home-process -->
+</section><!-- section-process -->
 
-<section class="home-section home-team">
+<section class="section-module section-team">
 	<div class="row">
 		<div class="medium-8 medium-centered columns">
-			<h2 class="home-section-heading home-team-heading">The Team</h2>
-			<div class="home-section-desc home-team-desc">
+			<h2 class="section-heading section-team-heading">The Team</h2>
+			<div class="section-desc section-team-desc">
 				<p>Plus 3 Interactive is a customer-focused business. Our team finds the right solutions to our customers’ unique challenges.</p>
 				<p><a href=""><strong>Check out the people who make our company work</strong> <span class="icon-arrow"></span></a>
 			</div>
 		</div>
 	</div>
-	<div class="home-team-members">
-		<a href="" class="home-team-member" style="background-image:url('assets/images/content/team_imene.jpg');">
+	<div class="section-team-members">
+		<a href="" class="section-team-member" style="background-image:url('assets/images/content/team_imene.jpg');">
 			<span class="team-hover">
 				<span class="team-name">Imene Saidi</span>
 				<span class="team-position">Information Architect</span>
 			</span>
 		</a>
-		<a href="" class="home-team-member" style="background-image:url('assets/images/content/team_jubair.jpg');">
+		<a href="" class="section-team-member" style="background-image:url('assets/images/content/team_jubair.jpg');">
 			<span class="team-hover">
 				<span class="team-name">Jubair Saidi</span>
 				<span class="team-position">Information Architect</span>
 			</span>
 		</a>
-		<a href="" class="home-team-member" style="background-image:url('assets/images/content/team_aisha.jpg');">
+		<a href="" class="section-team-member" style="background-image:url('assets/images/content/team_aisha.jpg');">
 			<span class="team-hover">
 				<span class="team-name">Aisha Saidi</span>
 				<span class="team-position">Information Architect</span>
 			</span>
 		</a>
-		<a href="" class="home-team-member" style="background-image:url('assets/images/content/team_lazarus.jpg');">
+		<a href="" class="section-team-member" style="background-image:url('assets/images/content/team_lazarus.jpg');">
 			<span class="team-hover">
 				<span class="team-name">Lazarus Morrison</span>
 				<span class="team-position">Information Architect</span>
 			</span>
 		</a>
 	</div>
-</section><!-- home-team -->
+</section><!-- section-team -->
 
-<section class="home-section home-social">
+<section class="section-module section-social">
 	<div class="row">
 		<div class="xsmall-12 columns">
-			<div class="home-social-heading">
-				<h2 class="home-section-heading">Plus 3 Interactive <span class="color-blue">-</span> Active!</h2>
-				<div class="home-social-follow">
+			<div class="section-social-heading">
+				<h2 class="section-heading">Plus 3 Interactive <span class="color-blue">-</span> Active!</h2>
+				<div class="section-social-follow">
 					Follow Us <a class="icon-instagram"></a> <a class="icon-twitter"></a> <a class="icon-facebook"></a>
 				</div>
 			</div>
@@ -301,9 +301,9 @@
 		<div class="facebook-slideshow-controls"></div>
 			
 	</div><!-- facebook-slideshow-wrap -->
-</section><!-- home-social -->
+</section><!-- section-social -->
 
-<section class="home-section home-reviews">
+<section class="section-module section-reviews">
 	<div class="row">
 		<div class="xsmall-12 columns">
 			<div class="review-slideshow">

@@ -74,12 +74,12 @@
 
 	/* Match Heights
 	---------------------------------------------------------------------- */
-	$('.home-solution-box').matchHeight();
-	$('.home-solution-front').matchHeight();
+	$('.solution-box').matchHeight();
+	$('.solution-box-front').matchHeight();
 	$('.facebook-slide').matchHeight();
 
 	if ($(window).width() < breakpoints.small) {
-		$('.home-solution-box, .home-solution-front, .facebook-slide').matchHeight({ remove: true });
+		$('.solution-box, .solution-box-front, .facebook-slide').matchHeight({ remove: true });
 	}
 
 	/* Form Labels
