@@ -82,4 +82,22 @@
 		$('.home-solution-box, .home-solution-front, .facebook-slide').matchHeight({ remove: true });
 	}
 
+	/* Form Labels
+	---------------------------------------------------------------------- */
+	
+	// Add class to labels
+	/*$('.enable-labels label').each(function() {
+		if( $(this).next().is('input:not(:checkbox, :radio), textarea') ) {
+			$(this).addClass('inside');
+		}
+	});*/
+
+	$('.enable-labels input:not(:checkbox, :radio), .enable-labels textarea').on('focus', function() {
+		$(this).prev('.inside').removeClass('inside').addClass('outside');
+	}).on('focusout', function() {
+		if( !$(this).val() ) {
+			$(this).prev('.outside').removeClass('outside').addClass('inside');
+		}
+	});
+
 })(jQuery);

@@ -48,17 +48,20 @@ $text-color: #696969;
 $heading-color: $black;
 $link-color: $blue;
 $hover-color: mix(black, $blue, 20%);
-$border-color:#ededed;
+$border-color:#dbdbdb;
 $off-white: #f3f3f3;
 $black-nav: #424242;
 $black-nav-hover: #262626;
 
 // FORMS
 $input-height: 50px;
+$input-bg-color: transparent;
 $input-text-color: $text-color;
-$input-border-color: $border-color;
-$input-border-width: 1px;
-$input-margin-bottom: 20px;
+$input-border-color: #e7e7e7;
+$input-focus-border-color: $blue;
+$input-border-width: 2px;
+$input-margin-top: 0;
+$input-margin-bottom:10px;
 $placeholder-color: #999;
 $btn-color: $link-color;
 

@@ -57,6 +57,60 @@
 		text-align:center;
 }
 
+.small-text-left {
+  @include breakpoint(small) {
+    text-align:left;
+  }
+}
+
+.small-text-right {
+  @include breakpoint(small) {
+    text-align:right;
+  }
+}
+
+.small-text-center {
+  @include breakpoint(small) {
+    text-align:center;
+  }
+}
+
+.medium-text-left {
+  @include breakpoint(medium) {
+    text-align:left;
+  }
+}
+
+.medium-text-right {
+  @include breakpoint(medium) {
+    text-align:right;
+  }
+}
+
+.medium-text-center {
+  @include breakpoint(medium) {
+    text-align:center;
+  }
+}
+
+.large-text-left {
+  @include breakpoint(large) {
+    text-align:left;
+  }
+}
+
+.large-text-right {
+  @include breakpoint(large) {
+    text-align:right;
+  }
+}
+
+.large-text-center {
+  @include breakpoint(large) {
+    text-align:center;
+  }
+}
+
 .hide {
   display:none;
 }

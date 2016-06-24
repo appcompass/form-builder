@@ -11,34 +11,46 @@ html, body {
 	line-height:1.5; 
 	color:$text-color;
 	background:#fff;
+	font-weight:600;
 }
 
 h1, h2, h3, h4, h5, h6 {
 	color:$heading-color;
 	line-height:1.2;
+	margin-bottom:30px;
 	&:first-child { 
 		margin-top:0;
 	}
 }
 
-h1 {}
+h1 {
+	font-size:em(60px);
+}
 
-h2 {}
+h2 { 
+	font-size:em(22px);
+}
 
-h3 {}
+h3, h4, h5, h6 {
+	font-size:em(18px);
+	color:$text-color;
+}
 
-h4, h5, h6 {}
-
-p, ul, ol, blockquote {
+p, ul, ol, blockquote, hr {
 	margin:0 0 30px 0;
 }
 
+ul {
+	padding:0 0 0 20px;
+}
+
 ul ul, ol ol {
-	margin:0
+	margin:0;
 }
 
 a {
 	color:$link-color;
+	text-decoration:none;
 }
 
 a:hover {
@@ -49,6 +61,11 @@ blockquote {
 	font-style:italic; 
 	font-size:120%; 
 	padding:0 20px;
+}
+
+hr {
+	border:solid $border-color;
+	border-width:1px 0 0 0;
 }
 
 
@@ -684,6 +701,10 @@ blockquote {
 	font-weight:bold;
 }
 
+.home-social {
+	padding-bottom:0;
+}
+
 .home-social-heading {
 	margin-bottom:80px;
 }
@@ -720,7 +741,7 @@ blockquote {
 
 .facebook-slideshow-wrap {
 	background-color:$off-white;
-	padding:40px 0;
+	padding:50px 0;
 	position:relative;
 }
 
@@ -805,6 +826,7 @@ blockquote {
 .fb-post-desc {
 	font-size:em(14px);
 	margin-bottom:40px;
+	font-weight:normal;
 }
 
 .fb-footer {
@@ -871,6 +893,174 @@ blockquote {
 ///------------------------------------------------------------------------
 ///		CONTENT
 ///------------------------------------------------------------------------
+.banner {
+	display:table;
+	width:100%;
+	min-height:440px;
+	text-align:center;
+	padding:40px 0;
+	color:#fff;
+	background-color:$black-light;
+	background-repeat:no-repeat;
+	background-position:center;
+	background-size:cover;
+}
+
+.banner-content {
+	display:table-cell;
+	vertical-align:middle;
+	width:100%;
+}
+
+.banner-title {
+	@extend .word-wrap;
+	color:#fff;
+	font-size:em(60px);
+	margin:0;
+	@include breakpoint(small) {
+		font-size:em(130px);
+	}
+}
+
+.banner-description {
+	font-weight:600;
+	margin-top:10px;
+}
+
+.banner-description *:last-child {
+	margin-bottom:0;
+}
+
+.section-solution {
+	border-bottom:1px solid $border-color;
+	padding:60px 0 30px;
+	@include breakpoint(small) {
+		padding:60px 60px 30px;
+	}
+}
+
+.section-solution:last-child {
+	border-bottom:0;
+}
+
+.solution-intro {
+	@include breakpoint(medium) {
+		text-align:center;
+	}
+}
+
+.solution-graphic {
+	@include breakpoint(medium) {
+		margin-top:50px;
+	}
+}
+
+.link-list {
+	color:$blue;
+}
+
+.list-centered {
+	display:inline-block;
+	text-align:left;
+}
+
+.banner-cta {
+	display:table;
+	width:100%;
+	background:$blue;
+	color:#fff;
+	padding:40px 0;
+	text-align:center;
+	min-height:470px;
+	transition:background 0.15s ease;
+}
+
+.banner-cta:hover {
+	color:#fff;
+	background:$hover-color;
+}
+
+.banner-cta-content {
+	display:table-cell;
+	vertical-align:middle;
+	padding:0 ($gutter-xsmall/2);
+}
+
+.banner-cta-heading {
+	font-size:em(34px);
+	font-weight:normal;
+	color:#fff;
+	margin:0 auto;
+	width:100%;
+	max-width:$max-row-width;
+}
+
+.banner-cta-heading .icon-arrow {
+	margin-left:10px;
+	vertical-align:middle;
+	padding-bottom:8px;
+}
+
+.section-main {
+	padding:60px 0 30px;
+	@include breakpoint(medium) {
+		padding:80px 0 50px;
+	}
+}
+
+.section-contact {
+	background:$blue;
+	color:#fff;
+	@include breakpoint(small) {
+		display:flex;
+		flex-direction:row;
+		flex-wrap:wrap;
+		justify-content:flex-start;
+		align-items:stretch;
+		align-content:flex-start;
+		min-height:570px;
+
+	}
+}
+
+.contact-map {
+	position:relative;
+	min-height:400px;
+	@include breakpoint(small) {
+		width:50%;
+		min-height:570px;
+	}
+}
+
+.contact-map iframe {
+	width:100%;
+	height:100%;
+	position:absolute;
+}
+
+.contact-info {
+	@extend .clearfix;
+	padding:40px 30px 10px;
+	font-size:em(34px);
+	color:#fff;
+	font-weight:normal;
+	@include breakpoint(small) {
+		width:50%;
+		display:flex;
+		align-items: center;
+		justify-content:center;
+	}
+}
+
+.contact-info a {
+	color:#fff;
+}
+
+.contact-info-heading {
+	font-size:1em;
+	color:#fff;
+	font-weight:normal;
+}
 
 
 ///------------------------------------------------------------------------
@@ -1005,6 +1195,7 @@ blockquote {
 	text-align:center;
 	font-size:em(12px);
 	color:#5c5c5c;
+	font-weight:normal;
 }
 
 ///------------------------------------------------------------------------
@@ -1016,6 +1207,7 @@ blockquote {
 	transition:all .15s ease;
 	padding:12px 20px;
 	line-height:1.2;
+	border-radius:3px;
 }
 
 .btn-expand {
@@ -1030,6 +1222,23 @@ blockquote {
 		width:100%;
 		text-align:center;
 	}
+}
+
+.btn-blue {
+	@extend .btn;
+	color:#fff;
+	background:$blue;
+}
+
+.btn-blue:hover {
+	color:#fff;
+	background:$hover-color;
+}
+
+.btn-blue .icon-arrow {
+	font-size:22px;
+	vertical-align:middle;
+	margin-left:10px;
 }
 
 ///------------------------------------------------------------------------

@@ -7,10 +7,9 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="apple-touch-icon" href="apple-touch-icon.png">
-        <!-- Place favicon.ico in the root directory -->
+        <link rel="icon" type="image/png" href="favicon.png">
 
-        <script type="text/javascript" src="//fast.fonts.net/jsapi/e1ef451d-c61f-4ad3-b4e0-e3d8adb46d89.js"></script>
+        <link type="text/css" rel="stylesheet" href="//fast.fonts.net/cssapi/e1ef451d-c61f-4ad3-b4e0-e3d8adb46d89.css"/>
         <link rel="stylesheet" href="assets/css/main-min.css">
         <!--script src="/assets/js/dist/modernizr-custom.js"></script-->
     </head>
@@ -21,19 +20,19 @@
         <div class="wrapper">
             <header class="header">
                 <div class="logo-wrap">
-                    <a href="/" class="logo"><span class="visually-hidden">Plus 3 Interactive</span></a>
+                    <a href="/home.php" class="logo"><span class="visually-hidden">Plus 3 Interactive</span></a>
                     <a class="main-nav-trigger"><span></span></a>
                 </div>
                 <nav class="main-nav">
                     <ul>
-                        <li><a href=""><span class="icon icon-solutions"></span> Solutions <span class="nav-dropdown-arrow"></span></a>
+                        <li><a href="solutions.php"><span class="icon icon-solutions"></span> Solutions <span class="nav-dropdown-arrow"></span></a>
                             <ul>
-                                <li><a href=""><span class="icon icon-solutions"></span> Our Process</a></li>
+                                <li><a href="process.php"><span class="icon icon-solutions"></span> Our Process</a></li>
                             </ul>
                         </li>
-                        <li><a href=""><span class="icon icon-projects"></span> Projects</a></li>
-                        <li><a href=""><span class="icon icon-company"></span> Company</a></li>
-                        <li><a href=""><span class="icon icon-contact"></span> Contact Us</a></li>
+                        <li><a href="projects.php"><span class="icon icon-projects"></span> Projects</a></li>
+                        <li><a href="company.php"><span class="icon icon-company"></span> Company</a></li>
+                        <li><a href="contact.php"><span class="icon icon-contact"></span> Contact Us</a></li>
                         <li><a href=""><span class="icon icon-login"></span> Customer Login</a></li>
                     </ul>
                     <div class="main-nav-social">

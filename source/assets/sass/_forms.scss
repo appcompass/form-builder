@@ -8,11 +8,29 @@ form {
 
 label {
 	display:block;
-	margin-bottom:4px;
+	transition:all 0.15s ease;
 }
 
 label .required {
 	color:$text-color;
+}
+
+label.outside,
+label.inside {
+	line-height:26px;
+	height:26px;
+	margin:0;
+}
+
+label.outside {
+	font-size:12px;
+	color:$black;
+	transform: translateX(0) translateY(0);
+}
+
+label.inside {
+	font-size:16px;
+	transform: translateX(10px) translateY(38px);
 }
 
 input[type="text"], 
@@ -28,15 +46,16 @@ input[type="url"],
 textarea {
 	@extend %default-font;
 	-webkit-appearance: none; 
-	background-color: #fff; 
+	background-color: $input-bg-color; 
 	border:$input-border-width solid $input-border-color; 
 	color:$input-text-color; display:block; 
-	margin: 0 0 $input-margin-bottom 0; 
+	margin: $input-margin-top 0 $input-margin-bottom 0; 
 	padding:em(10px); 
 	height: $input-height; 
 	width: 100%;
 	transition:all 0.15s linear; 
 	border-radius:0;
+	position:relative;
 }
 
 input[type="text"]:focus, 
@@ -51,6 +70,7 @@ input[type="time"]:focus,
 input[type="url"]:focus, 
 textarea:focus {
 	outline:none;
+	border-color:$input-focus-border-color;
 }
 
 input[type="search"] {
@@ -59,8 +79,7 @@ input[type="search"] {
 
 input[type="checkbox"], 
 input[type="radio"] {
-	margin:0 em(10px) 
-	$input-margin-bottom 0;
+	margin:$input-margin-top em(10px) $input-margin-bottom 0;
 }
 
 textarea {
@@ -70,7 +89,7 @@ textarea {
 
 select {
 	width: 100%; 
-	margin-bottom:$input-margin-bottom;
+	margin:$input-margin-top 0 $input-margin-bottom 0;
 }
 
 ::-webkit-input-placeholder {
@@ -126,7 +145,7 @@ form .error {
 .select {
 	position:relative; 
 	zoom:1; 
-	margin-bottom:$input-margin-bottom; 
+	margin:$input-margin-top 0 $input-margin-bottom 0; 
 	overflow:hidden; 
 	white-space:nowrap;
 }
@@ -183,7 +202,7 @@ form .error {
 	zoom:1; 
 	overflow:hidden; 
 	display:block;
-	margin-bottom:$input-margin-bottom;
+	margin:$input-margin-top 0 $input-margin-bottom 0;
 }
 
 .checkbox input, 
