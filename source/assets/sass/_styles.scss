@@ -1135,21 +1135,21 @@ a .icon-arrow {
 
 .popup {
 	@extend .clearfix;
-	background:#fff;
-	padding:20px;
 	position:relative;
+	max-width:1120px;
+	margin:20px 20px;
+	padding:20px;
+	background:#fff;
 	@include breakpoint(small) {
 		padding:80px;
+	}
+	@include breakpoint(1160px) {
+		margin:30px auto;
 	}	
 }
 
 .popup-project {
-	max-width:1120px;
-	margin:20px 20px;
 	padding:0;
-	@include breakpoint(1160px) {
-		margin:0 auto;
-	}
 }
 
 .popup-pad {
@@ -1169,6 +1169,19 @@ a .icon-arrow {
 	@include breakpoint(small) {
 		padding:30px 80px 0;
 	}
+}
+
+.form-footer {
+	margin-top:20px;
+}
+
+.required-notice {
+	background:$red;
+	color:#fff;
+	padding:12px;
+	text-align:center;
+	margin-top:0;
+	margin-bottom:20px;
 }
 
 ///------------------------------------------------------------------------

@@ -3,7 +3,7 @@
 	    <footer class="footer">
 	    	<div class="footer-buttons">
 	    		<a href="" class="btn-footer"><span class="icon icon-contact"></span> Contact Us</a>
-	    		<a href="" class="btn-footer"><span class="icon icon-document"></span> Request a Proposal</a>
+	    		<a href="#proposal-popup" class="btn-footer btn-proposal"><span class="icon icon-document"></span> Request a Proposal</a>
 	    	</div>
 	    	<div class="footer-bottom">
 	    		<a href="" class="footer-logo"><span class="visually-hidden">Plus 3 Interactive</a>
@@ -26,7 +26,9 @@
 	    		<p>&copy;2010-<?php echo date('Y'); ?> Plus 3 Interactive LLC All Rights Reserved</p>
 	    	</div>
 	    </footer><!-- footer -->
-	</div><!-- wrapper -->	
+	</div><!-- wrapper -->
+
+	<?php include('partials/proposal.php'); ?>
 
 	<!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>

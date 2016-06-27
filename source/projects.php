@@ -91,7 +91,7 @@
 	</div>
 </section><!-- section-project -->
 
-<div id="project-name-popup" class="popup popup-project">
+<div id="project-name-popup" class="popup popup-project mfp-hide">
 	<div class="popup-pad row">
 		<p class="popup-project-logo">
 			<img src="assets/images/content/logo_versalink_color.svg" width="310" height="128">
@@ -115,7 +115,7 @@
 	<div class="popup-footer">
 		<p><a href="" class="">For information on how we can help you, please contact us <span class="icon-arrow"></span></a></p>
 	</div>
-</div>
+</div> <!-- popup-project -->
 
 <section class="section-module section-clients">
 	<div class="row">

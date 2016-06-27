@@ -6,6 +6,10 @@ form {
 	margin-bottom:30px;
 }
 
+form p {
+	margin:20px 0;
+}
+
 label {
 	display:block;
 	transition:all 0.15s ease;
@@ -241,7 +245,8 @@ form .error {
 
 .checkbox input[type="checkbox"]:checked + label:before,
 .radio input[type="radio"]:checked + label:before {
-	background:$input-border-color;
+	background:$blue;
+	box-shadow:inset 0 0 0 2px #fff;
 }
 
 ///------------------------------------------------------------------------

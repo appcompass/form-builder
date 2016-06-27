@@ -83,17 +83,11 @@
 		$('.solution-box, .solution-box-front, .facebook-slide, .project-card').matchHeight({ remove: true });
 	}
 
-	/* Form Labels
+	/* Forms
 	---------------------------------------------------------------------- */
 	
-	// Add class to labels
-	/*$('.enable-labels label').each(function() {
-		if( $(this).next().is('input:not(:checkbox, :radio), textarea') ) {
-			$(this).addClass('inside');
-		}
-	});*/
-
-	$('.enable-labels input:not(:checkbox, :radio), .enable-labels textarea').on('focus', function() {
+	// Labels
+	$('.inside + input:not(:checkbox, :radio), .inside + textarea').on('focus', function() {
 		$(this).prev('.inside').removeClass('inside').addClass('outside');
 	}).on('focusout', function() {
 		if( !$(this).val() ) {
@@ -101,10 +95,18 @@
 		}
 	});
 
+	// Reveal Next
+	$('.checkbox-reveal').on('change', function() {
+		if($(this).is(':checked')) {
+			$(this).parent().next('.hide').removeClass('hide');
+		} else {
+			$(this).parent().next('.hide').addClass('hide');
+		}
+	});
 
 	/* Popups
 	---------------------------------------------------------------------- */
-	$('.btn-project').magnificPopup({
+	$('.btn-project, .btn-proposal').magnificPopup({
 		type:'inline',
 		closeMarkup:'<button title="%title%" type="button" class="mfp-close icon-close"></button>'
 	});
