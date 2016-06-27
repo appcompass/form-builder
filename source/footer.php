@@ -33,6 +33,7 @@
 	<script>window.jQuery || document.write('<script src="/assets/bower_components/jquery/dist/jquery.min.js"><\/script>')</script>
 	<script src="assets/bower_components/matchHeight/jquery.matchHeight-min.js"></script>
 	<script src="assets/bower_components/slick-carousel/slick/slick.min.js"></script>
+	<script src="assets/bower_components/magnific-popup/dist/jquery.magnific-popup.min.js"></script>
 	<script src="assets/js/dist/main-min.js"></script>
 
 </body>

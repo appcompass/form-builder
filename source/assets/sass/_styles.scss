@@ -504,8 +504,9 @@ hr {
 	text-decoration:none;
 }
 
-.section-desc .icon-arrow {
+a .icon-arrow {
 	margin-left:5px;
+	vertical-align:middle;
 }
 
 .section-solutions {
@@ -967,7 +968,7 @@ hr {
 	}
 }
 
-.link-list {
+.link-list, .blue-list {
 	color:$blue;
 }
 
@@ -1110,6 +1111,65 @@ hr {
 	margin-bottom:20px;
 }
 
+.project-card {
+	padding:40px 40px 10px;
+	box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.08);
+	margin-bottom:30px;
+}
+
+.project-card-image {
+	text-align:center;
+	margin-bottom:20px;
+}
+
+.project-card-type {
+	color:#aeaeae;
+	font-size:em(14px);
+	margin-bottom:40px;
+}
+
+.project-card-desc {
+	font-size:em(14px);
+	text-align:left;
+}
+
+.popup {
+	@extend .clearfix;
+	background:#fff;
+	padding:20px;
+	position:relative;
+	@include breakpoint(small) {
+		padding:80px;
+	}	
+}
+
+.popup-project {
+	max-width:1120px;
+	margin:20px 20px;
+	padding:0;
+	@include breakpoint(1160px) {
+		margin:0 auto;
+	}
+}
+
+.popup-pad {
+	padding:30px 20px 0;
+	@include breakpoint(small) {
+		padding:80px 80px 50px;
+	}
+}
+
+.popup-project-logo {
+	margin-bottom:60px;
+}
+
+.popup-footer {
+	border-top:1px solid $border-color;
+	padding:30px 20px 0;
+	@include breakpoint(small) {
+		padding:30px 80px 0;
+	}
+}
 
 ///------------------------------------------------------------------------
 ///		SIDEBAR

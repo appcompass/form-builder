@@ -18,7 +18,7 @@
 			<div class="medium-8 medium-centered columns">
 				<h1>Targeted Web Solutions</h1>
 				<p>As a software service provider we find optimal solutions for your unique business challenges, including</p>
-				<ul class="link-list list-centered">
+				<ul class="blue-list list-centered">
 					<li><a href="">Web applications for online businesses</a></li>
 					<li><a href="">Middleware to integrate legacy systems</a></li>
 					<li><a href="">Software for connected devices</a></li>
@@ -42,7 +42,7 @@
 					<li>Improving distributor interactions, sales, and maintenance workflows</li>
 					<li>Designing remote device networking and management, with increased performance and visibility</li>
 				</ul>
-				<ul class="link-list">
+				<ul class="blue-list">
 					<li><a href="">ATMGuru eCommerce Platform</a></li>
 					<li><a href="">GPG Online Instruction Application</a></li>
 					<li><a href="">Equinox02 Inventory Notification System</a></li>
@@ -67,7 +67,7 @@
 					<li>Upgrading legacy data architecture to support modern application perfomance</li>
 					<li>Real time integration with improved performance and user experience</li>
 				</ul>
-				<ul class="link-list">
+				<ul class="blue-list">
 					<li><a href="">Triton VersaLink Communication System</a></li>
 					<li><a href="">Boston Pads Real Estate Listings</a></li>
 				</ul>
@@ -91,7 +91,7 @@
 					<li>Device monitoring and notifications</li>
 					<li>Trending and data analytics on device performance, users, system resources, and more</li>
 				</ul>
-				<ul class="link-list">
+				<ul class="blue-list">
 					<li><a href="">Triton VersaLink Communication System</a></li>
 				</ul>
 				<hr>
@@ -117,7 +117,7 @@
 					<li>Bank-level security for eCommerce, banking, or medical sites</li>
 					<li>Regular updates of AMS provided by Plus 3 Interactive</li>
 				</ul>
-				<ul class="link-list">
+				<ul class="blue-list">
 					<li><a href="">ATM Gurus eCommerce</a></li>
 					<li><a href="">Boston Pads Real Estate Listings</a></li>
 					<li><a href="">GPG Online Instruction</a></li>

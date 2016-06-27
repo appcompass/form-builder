@@ -156,7 +156,7 @@
 				<h2 class="section-heading">The Team</h2>
 				<div class="section-desc">
 					<p>Plus 3 Interactive is a customer-focused business. Our team finds the right solutions to our customers’ unique challenges.</p>
-					<p><a href=""><strong>Check out the people who make our company work</strong> <span class="icon-arrow"></span></a></p>
+					<p><a href="">Check out the people who make our company work <span class="icon-arrow"></span></a></p>
 				</div>
 			</div>
 		</div>

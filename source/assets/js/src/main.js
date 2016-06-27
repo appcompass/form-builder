@@ -77,9 +77,10 @@
 	$('.solution-box').matchHeight();
 	$('.solution-box-front').matchHeight();
 	$('.facebook-slide').matchHeight();
+	$('.project-card').matchHeight();
 
 	if ($(window).width() < breakpoints.small) {
-		$('.solution-box, .solution-box-front, .facebook-slide').matchHeight({ remove: true });
+		$('.solution-box, .solution-box-front, .facebook-slide, .project-card').matchHeight({ remove: true });
 	}
 
 	/* Form Labels
@@ -98,6 +99,14 @@
 		if( !$(this).val() ) {
 			$(this).prev('.outside').removeClass('outside').addClass('inside');
 		}
+	});
+
+
+	/* Popups
+	---------------------------------------------------------------------- */
+	$('.btn-project').magnificPopup({
+		type:'inline',
+		closeMarkup:'<button title="%title%" type="button" class="mfp-close icon-close"></button>'
 	});
 
 })(jQuery);
