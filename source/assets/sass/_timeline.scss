@@ -4,21 +4,28 @@
 
 .process-timeline {
 	max-width:1110px;
-	margin:80px auto 80px;
-	padding-bottom:200px;
+	margin:0 auto 40px;
+	//padding-bottom:80px;
 	overflow:hidden;
 	position:relative;
+	@include breakpoint($break-timeline) {
+		padding-bottom:200px;
+		margin:80px auto 80px;
+	}
 }
 
+
 .process-timeline:after {
-	content:"";
-	position:absolute;
-	bottom:0;
-	left:0;
-	width:100%;
-	height:450px;
-	display:block;
-	background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 35%,rgba(255,255,255,1) 100%);
+	@include breakpoint($break-timeline) {
+		content:"";
+		position:absolute;
+		bottom:0;
+		left:0;
+		width:100%;
+		height:450px;
+		display:block;
+		background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 35%,rgba(255,255,255,1) 100%);
+	}
 }
 
 .process-step-container {
@@ -28,29 +35,37 @@
 .process-step {
 	@extend .clearfix;
 	position:relative;
-	padding-right:10px;
+	@include breakpoint($break-timeline) {
+		padding-right:10px;
+	}
 }
 
 .process-step-container:nth-child(even) .process-step {
-	float:right;
-	padding-left:12px;
-	padding-right:0;
+	@include breakpoint($break-timeline) {
+		float:right;
+		padding-left:12px;
+		padding-right:0;
+	}
 }
 
 .process-step:before {
-	content:'';
-	display:block;
-	width:1px;
-	background:$border-color;
-	position:absolute;
-	right:0;
-	top:-1100%;
-	height:2200%;
+	@include breakpoint($break-timeline) {
+		content:'';
+		display:block;
+		width:1px;
+		background:$border-color;
+		position:absolute;
+		right:0;
+		top:-1100%;
+		height:2200%;
+	}
 }
 
 .process-step-container:nth-child(even) .process-step:before {
-	right:auto;
-	left:0;
+	@include breakpoint($break-timeline) {
+		right:auto;
+		left:0;
+	}
 }
 
 .process-step-top {
@@ -59,12 +74,14 @@
 }
 
 .process-step-top:after {
-	content:'';
-	display:block;
-	background:$border-color;
-	height:1px;
-	position:relative;
-	top:-15px;
+	@include breakpoint($break-timeline) {
+		content:'';
+		display:block;
+		background:$border-color;
+		height:1px;
+		position:relative;
+		top:-15px;
+	}
 }
 
 .process-step-bot {
@@ -74,16 +91,25 @@
 .process-step-line {
 	width:2px;
 	background:$process-color1;
-	position:absolute;
-	top:0;
-	right:-12px;
-	bottom:6px;
-	z-index:2;
+	margin:0 auto 20px;
+	height:230px;
+	position:relative;
+	@include breakpoint($break-timeline) {
+		position:absolute;
+		top:0;
+		bottom:6px;
+		height:auto;
+		z-index:2;
+		right:-12px;
+		margin:0;
+	}
 }
 
 .process-step-container:nth-child(even) .process-step-line {
-	right:auto;
-	left:-12px;
+	@include breakpoint($break-timeline) {
+		right:auto;
+		left:-12px;
+	}
 }
 
 .process-step-line:before {
@@ -116,18 +142,24 @@
 .process-step-content {
 	width:100%;
 	max-width:350px;
-	text-align:right;
-	float:left;
 	background:#fff;
 	padding:0 20px;
 	position:relative;
 	z-index:2;
+	text-align:center;
+	margin:0 auto;
+	@include breakpoint($break-timeline) {
+		text-align:right;
+		float:left;
+	}
 }
 
 .process-step-container:nth-child(even) .process-step-content {
-	float:right;
-	text-align:left;
-	padding-right:12px;
+	@include breakpoint($break-timeline) {
+		float:right;
+		text-align:left;
+		padding-right:12px;
+	}
 }
 
 .process-step-icon {
@@ -146,22 +178,28 @@
 }
 
 .process-step-desc {
-	position:absolute;
-	top:0;
 	color:$text-color;
 	padding-top:21px;
-	margin-top:-1px;
+	@include breakpoint($break-timeline) {
+		position:absolute;
+		top:0;
+		margin-top:-1px;
+	}
 }
 
 .process-step-container:nth-child(even) .process-step-desc {
-	right:0;
+	@include breakpoint($break-timeline) {
+		right:0;
+	}
 }
 
 .process-step-1 {
 	color:$process-color1;
-	width:40%;
-	.process-step-top {
-		padding-top:230px;
+	@include breakpoint($break-timeline) {
+		width:40%;
+		.process-step-top {
+			padding-top:230px;
+		}
 	}
 	.process-step-line,
 	.process-step-line:before {
@@ -174,10 +212,12 @@
 
 .process-step-2 {
 	color:$process-color2;
-	width:57.5%;
-	margin-top:-20px;
-	.process-step-top {
-		padding-top:227px;
+	@include breakpoint($break-timeline) {
+		width:57.5%;
+		margin-top:-20px;
+		.process-step-top {
+			padding-top:227px;
+		}
 	}
 	.process-step-line,
 	.process-step-line:before {
@@ -190,10 +230,12 @@
 
 .process-step-3 {
 	color:$process-color3;
-	width:45%;
-	margin-top:-90px;
-	.process-step-top {
-		padding-top:182px;
+	@include breakpoint($break-timeline) {
+		width:45%;
+		margin-top:-90px;
+		.process-step-top {
+			padding-top:182px;
+		}
 	}
 	.process-step-line,
 	.process-step-line:before {
@@ -206,11 +248,14 @@
 
 .process-step-4 {
 	color:$process-color4;
-	width:52.5%;
-	margin-top:-70px;
-	.process-step-top {
-		padding-top:146px;
+	@include breakpoint($break-timeline) {
+		width:52.5%;
+		margin-top:-70px;
+			.process-step-top {
+			padding-top:146px;
+		}
 	}
+	
 	.process-step-line,
 	.process-step-line:before {
 		background:$process-color4;
@@ -222,10 +267,12 @@
 
 .process-step-5 {
 	color:$process-color5;
-	width:50%;
-	margin-top:-150px;
-	.process-step-top {
-		padding-top:200px;
+	@include breakpoint($break-timeline) {
+		width:50%;
+		margin-top:-150px;
+		.process-step-top {
+			padding-top:200px;
+		}
 	}
 	.process-step-line,
 	.process-step-line:before {
@@ -238,10 +285,12 @@
 
 .process-step-6 {
 	color:$process-color6;
-	width:47.5%;
-	margin-top:-160px;
-	.process-step-top {
-		padding-top:244px;
+	@include breakpoint($break-timeline) {
+		margin-top:-160px;
+		width:47.5%;
+		.process-step-top {
+			padding-top:244px;
+		}
 	}
 	.process-step-line,
 	.process-step-line:before {
@@ -254,10 +303,12 @@
 
 .process-step-7 {
 	color:$process-color7;
-	width:55%;
-	margin-top:-268px;
-	.process-step-top {
-		padding-top:212px;
+	@include breakpoint($break-timeline) {
+		margin-top:-268px;
+		width:55%;
+		.process-step-top {
+			padding-top:212px;
+		}
 	}
 	.process-step-line,
 	.process-step-line:before {
@@ -270,10 +321,12 @@
 
 .process-step-8 {
 	color:$process-color8;
-	width:42.5%;
-	margin-top:-80px;
-	.process-step-top {
-		padding-top:74px;
+	@include breakpoint($break-timeline) {
+		margin-top:-80px;
+		width:42.5%;
+		.process-step-top {
+			padding-top:74px;
+		}
 	}
 	.process-step-line,
 	.process-step-line:before {
@@ -286,20 +339,27 @@
 
 .process-step-9 {
 	color:$process-color9;
-	width:60%;
-	//margin-top:-130px;
-	.process-step-top {
-		//padding-top:200px;
+	@include breakpoint($break-timeline) {
+		width:60%;
 	}
 	.process-step-top:after {
-		background:transparent;
+		background:$process-color9;
+		@include breakpoint($break-timeline) {
+			background:transparent;
+		}
 	}
 	.process-step-line,
 	.process-step-line:before {
-		background:transparent;
+		background:$process-color9;
+		@include breakpoint($break-timeline) {
+			background:transparent;
+		}
 	}
 	.process-step-line:after {
-		border-color:transparent;
-		background:transparent
+		border-color:$process-color9;
+		@include breakpoint($break-timeline) {
+			border-color:transparent;
+			background:transparent
+		}
 	}
 }

@@ -1199,6 +1199,52 @@ a .icon-arrow {
 	font-weight:bold;
 }
 
+.banner-blue {
+	background:$blue;
+	color:#fff;
+	padding:100px 0 80px;
+}
+
+.banner-blue-container {
+	text-align:center;
+	@include breakpoint(small) {
+		display:table;
+		width:100%;
+		text-align:left;
+	}
+}
+
+.banner-blue-icon {
+	margin-bottom:40px;
+	@include breakpoint(small) {
+		display:table-cell;
+		vertical-align:middle;
+		width:40%;
+		text-align:center;
+		margin:0;
+	}
+}
+
+.banner-blue-content {
+	@include breakpoint(small) {
+		display:table-cell;
+		vertical-align:middle;
+		width:60%;
+	}
+}
+
+.banner-blue-heading {
+	font-size:em(30px);
+	color:#fff;
+}
+
+.banner-blue ul {
+	@include breakpoint(xsmall) {
+		display:inline-block;
+		text-align:left;
+	}
+}
+
 ///------------------------------------------------------------------------
 ///		SIDEBAR
 ///------------------------------------------------------------------------
