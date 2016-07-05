@@ -1062,11 +1062,12 @@ a .icon-arrow {
 	width:100%;
 	height:100%;
 	position:absolute;
+	z-index:2;
 }
 
 .contact-info {
 	@extend .clearfix;
-	padding:40px 30px 10px;
+	padding:40px 30px 20px;
 	font-size:em(34px);
 	color:#fff;
 	font-weight:normal;
@@ -1092,17 +1093,31 @@ a .icon-arrow {
 	display:table;
 	width:100%;
 	min-height:550px;
-	padding:30px;
+	position:relative;
+}
+
+.section-project-image {
+	height:300px;
+	width:100%;
 	background-repeat:no-repeat;
 	background-position:center right;
 	background-size:cover;
+	@include breakpoint(small) {
+		position:absolute;
+		top:0;
+		left:0;
+		height:100%;
+		width:100%;
+	}
 }
 
 .section-project-content {
-	display:table-cell;
-	vertical-align:middle;
-	background-color:rgba($black, 0.7);
+	background-color:rgba($black, 1);
+	padding:40px 15px;
 	@include breakpoint(small) {
+		padding:30px;
+		display:table-cell;
+		vertical-align:middle;
 		background-color:transparent;
 	}
 }
@@ -1122,6 +1137,10 @@ a .icon-arrow {
 .project-services p, 
 .project-services ul {
 	margin-bottom:20px;
+}
+
+.section-clients {
+	padding-bottom:0;
 }
 
 .project-card {
@@ -1150,11 +1169,11 @@ a .icon-arrow {
 	@extend .clearfix;
 	position:relative;
 	max-width:1120px;
-	margin:20px 20px;
-	padding:30px 20px;
+	margin:20px 10px;
+	padding:30px 15px;
 	background:#fff;
 	@include breakpoint(medium) {
-		padding:80px;
+		padding:80px 65px;
 	}
 	@include breakpoint(1160px) {
 		margin:30px auto;

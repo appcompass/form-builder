@@ -15,7 +15,8 @@
 	</div>
 </section><!-- banner -->
 
-<section class="section-project" style="background-image:url('assets/images/content/bg_project_atmgurus.jpg');">
+<section class="section-project">
+	<div class="section-project-image" style="background-image:url('assets/images/content/bg_project_atmgurus.jpg');"></div>
 	<div class="section-project-content">
 		<div class="row">
 			<div class="small-6 columns">
@@ -34,7 +35,8 @@
 	</div>
 </section><!-- section-project -->
 
-<section class="section-project" style="background-image:url('assets/images/content/bg_project_bostonpads.jpg');">
+<section class="section-project">
+	<div class="section-project-image" style="background-image:url('assets/images/content/bg_project_bostonpads.jpg');"></div>
 	<div class="section-project-content">
 		<div class="row">
 			<div class="small-6 columns">
@@ -53,7 +55,8 @@
 	</div>
 </section><!-- section-project -->
 
-<section class="section-project" style="background-image:url('assets/images/content/bg_project_versalink.jpg');">
+<section class="section-project">
+	<div class="section-project-image" style="background-image:url('assets/images/content/bg_project_versalink.jpg');"></div>
 	<div class="section-project-content">
 		<div class="row">
 			<div class="small-6 columns">
@@ -72,7 +75,8 @@
 	</div>
 </section><!-- section-project -->
 
-<section class="section-project" style="background-image:url('assets/images/content/bg_project_pronto.jpg');">
+<section class="section-project">
+	<div class="section-project-image" style="background-image:url('assets/images/content/bg_project_pronto.jpg');"></div>
 	<div class="section-project-content">
 		<div class="row">
 			<div class="small-6 columns">

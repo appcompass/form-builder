@@ -19,7 +19,7 @@
 <div class="section-pad">
 	<div class="row">
 		<div class="medium-8 medium-centered columns">
-			<form class="enable-labels">
+			<form>
 				<div class="row">
 					<div class="small-6 columns">
 						<label for="" class="inside">*First Name</label>

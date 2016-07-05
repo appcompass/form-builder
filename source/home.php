@@ -53,7 +53,7 @@
 				<div class="small-6 columns">
 					<a href="" class="solution-box">
 						<span class="solution-box-front">
-							<span class="solution-box-icon"><img src="assets/images/content/solution_web_apps.png"></span>
+							<span class="solution-box-icon"><img src="assets/images/content/solution_web_apps.svg" width="164" height="130"></span>
 							<span class="solution-box-title">Custom Web Applications</span>
 						</span>
 						<span class="solution-box-back">
@@ -72,7 +72,7 @@
 				<div class="small-6 columns">
 					<a href="" class="solution-box">
 						<span class="solution-box-front">
-							<span class="solution-box-icon"><img src="assets/images/content/solution_middleware.png"></span>
+							<span class="solution-box-icon"><img src="assets/images/content/solution_middleware.svg" width="146" height="130"></span>
 							<span class="solution-box-title">Middleware Development</span>
 						</span>
 						<span class="solution-box-back">
@@ -95,7 +95,7 @@
 				<div class="small-6 columns">
 					<a href="" class="solution-box">
 						<span class="solution-box-front">
-							<span class="solution-box-icon"><img src="assets/images/content/solution_device_comm.png"></span>
+							<span class="solution-box-icon"><img src="assets/images/content/solution_device_comm.svg" width="132" height="130"></span>
 							<span class="solution-box-title">Device Web Communications</span>
 						</span>
 						<span class="solution-box-back">
@@ -114,7 +114,7 @@
 				<div class="small-6 columns">
 					<a href="" class="solution-box">
 						<span class="solution-box-front">
-							<span class="solution-box-icon"><img src="assets/images/content/solution_app_management.png"></span>
+							<span class="solution-box-icon"><img src="assets/images/content/solution_app_management.svg" width="170" height="130"></span>
 							<span class="solution-box-title">Web Application Management Systems</span>
 						</span>
 						<span class="solution-box-back">

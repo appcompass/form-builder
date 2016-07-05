@@ -18,7 +18,7 @@
 			<p class="breadcrumb"><a href="">Solutions</a> <span class="sep">/</span> Our Process</p>
 		</div>
 		<div class="small-6 columns small-text-right">
-			<a href="">Learn more about Plus 3 Interactive <span class="icon-arrow"></span></a>
+			<p><a href="">Learn more about Plus 3 Interactive <span class="icon-arrow"></span></a></p>
 		</div>
 	</div>
 </div><!-- section-breadcrumb -->

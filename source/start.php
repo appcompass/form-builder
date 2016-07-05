@@ -13,6 +13,7 @@
 <ul style="margin:0 0 0 16px; padding:0;">
 <li><a href="home.php">Home</a></li>
 <li><a href="solutions.php">Solutions</a></li>
+<li><a href="process.php">Process</a></li>
 <li><a href="projects.php">Projects</a></li>
 <li><a href="company.php">Company</a></li>
 <li><a href="contact.php">Contact</a></li>

@@ -11,7 +11,7 @@
 
         <link type="text/css" rel="stylesheet" href="//fast.fonts.net/cssapi/e1ef451d-c61f-4ad3-b4e0-e3d8adb46d89.css"/>
         <link rel="stylesheet" href="assets/css/main-min.css">
-        <!--script src="/assets/js/dist/modernizr-custom.js"></script-->
+        <script src="/assets/js/dist/modernizr-custom.js"></script>
     </head>
     <body <?php if(isset($page_class)) echo 'class="'.$page_class.'"'; ?>>
         <!--[if lt IE 8]>
