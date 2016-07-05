@@ -27,6 +27,9 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-linkedin:before {
+    content: "\e90e";
+}
 .icon-close:before {
     content: "\e90d";
 }

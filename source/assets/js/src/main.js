@@ -106,7 +106,7 @@
 
 	/* Popups
 	---------------------------------------------------------------------- */
-	$('.btn-project, .btn-proposal').magnificPopup({
+	$('.btn-project, .btn-proposal, .team-popup').magnificPopup({
 		type:'inline',
 		closeMarkup:'<button title="%title%" type="button" class="mfp-close icon-close"></button>'
 	});
