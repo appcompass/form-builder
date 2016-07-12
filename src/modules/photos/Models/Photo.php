@@ -326,6 +326,11 @@ class Photo extends ModularBaseModel implements GalleryItemInterface
         return !empty($this->meta->MimeType) ? $this->meta->MimeType : null;
     }
 
+    public function getRawPathAttribute()
+    {
+        return $this->attributes['path'];
+    }
+
     /**
     *
     *
