@@ -23,7 +23,7 @@ class AlertsController extends Controller
 
         } else {
 
-            return $this->getUreads($request->user());
+            return $this->getUreads($request->user(), $request->page, $request->channel);
 
         }
     }
@@ -40,18 +40,35 @@ class AlertsController extends Controller
      *  getUnreads
      *
      */
-    protected function getUreads(User $user)
+    protected function getUreads(User $user, $page = 1, $channel = null)
     {
+
         if ($last_login = \Cache::tags(['last_logins'])->get($user->email)) {
 
-            return AlertUser::from(new Carbon($last_login))
-                ->get()
-                ->load('alert')
-                ->lists('alert');
+            $fromDate = new Carbon($last_login);
+
+        } else {
+
+            $fromDate = Carbon::now()->subDays(1);
 
         }
 
-        return;
+        $query = AlertUser::from($fromDate);
+
+        if (! is_null($channel)) {
+
+            $query->whereHas('alert', function($query) use ($channel) {
+
+                    $query->where('channels', 'like', $channel);
+
+                });
+
+        }
+
+        return $query->orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->lists('alert');
+
     }
 
     /**

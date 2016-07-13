@@ -3,7 +3,7 @@
     <li class="dropdown">
         <notifier
             v-bind:channel="'auth_events'"
-            v-bind:alerts="alerts"
+            v-bind:alerts="alerts['auth_events']"
             v-bind:socket="socket"
             icon="fa-user"
         ></notifier>
@@ -13,7 +13,7 @@
         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
             <actions
                 v-bind:channel="'media_actions'"
-                v-bind:alerts="alerts"
+                v-bind:alerts="alerts['media_actions']"
                 v-bind:socket="socket"
                 icon="fa-camera"
             ></actions>
@@ -93,14 +93,14 @@
 <template id="notifier">
         <a data-toggle="dropdown" class="dropdown-toggle" v-bind:class="{bounce: $parent.animating}">
             <i class="fa fa-user"></i>
-            <span class="badge bg-warning">@{{ alerts[channel].length }}</span>
+            <span class="badge bg-warning">@{{ alerts.length }}</span>
         </a>
         <ul class="dropdown-menu extended inbox">
             <li>
                 <p>Notifications</p>
             </li>
 
-            <li v-for="alert in alerts[channel]">
+            <li v-for="alert in alerts">
                 <a href="#">
                     <span class="photo" v-if="alert.icon">
                         <img alt="avatar" v-bind:src="alert.icon">
@@ -109,12 +109,15 @@
 
                     <span class="subject">
                         <span class="from">@{{ alert.title }}</span>
-                        <span class="time">@{{ alert.datetime.format('hh:mm:ss') }}</span>
+                        <span class="time">@{{ alert.datetime.fromNow() }}</span>
                     </span>
 
                     <span class="message">@{{ alert.message }}</span>
                 </a>
             </li>
+
+            <a v-on:click="prev()">prev</a>
+            <a v-on:click="next()">next</a>
 
         </ul>
 </template>
@@ -122,23 +125,27 @@
 <template id="actions">
         <a data-toggle="dropdown" class="dropdown-toggle" v-bind:class="{bounce: $parent.animating}">
             <i class="fa fa-camera"></i>
-            <span class="badge bg-success">@{{ alerts[channel].length }}</span>
+            <span class="badge bg-success">@{{ alerts.length || 0 }}</span>
         </a>
         <ul class="dropdown-menu extended inbox">
             <li>
                 <p>Notifications</p>
             </li>
 
-            <li v-for="alert in alerts[channel]">
+            <li v-for="alert in alerts">
                 <a href="#">
                     <span class="subject">
                         <span class="from">@{{ alert.title }}</span>
-                        <span class="time">@{{ alert.datetime.format('hh:mm:ss') }}</span>
+                        <span class="time">@{{ alert.datetime.fromNow() }}</span>
                     </span>
 
                     <span class="message">@{{ alert.message }}</span>
                 </a>
             </li>
+
+            <a v-on:click="prev()">prev</a>
+            <a v-on:click="next()">next</a>
+
 
         </ul>
 </template>
@@ -153,8 +160,6 @@
             throw "No data";
         }
 
-        console.log(data);
-
         this.title = data.title;
         this.message = data.message;
         this.props = data.props || undefined;
@@ -166,7 +171,22 @@
         return this;
     };
 
+
+    var paginationMethods = {
+        methods: {
+            next: function() {
+                var page = ++this.$parent.pagination[this.channel].page;
+                return this.$parent.fetchAlerts(page, this.channel, true);
+            },
+            prev: function() {
+                var page = --this.$parent.pagination[this.channel].page;
+                return this.$parent.fetchAlerts(page, this.channel, true);
+            }
+        }
+    };
+
     (function(Vue, io, window) {
+
 
         /**
         *   Vue - Default Notifier component - Draft
@@ -175,12 +195,13 @@
         var Notifier = Vue.extend({
             template: '#notifier',
             props: ['alerts', 'socket', 'channel', 'icon'],
+            mixins: [paginationMethods],
             ready: function() {
                 var vm = this;
                 vm.socket.on(vm.channel, function(data) {
                     vm.$parent.getAlert(data.id);
                 })
-            }
+            },
         })
 
         Vue.component('notifier', Notifier);
@@ -192,6 +213,7 @@
         var Actions = Vue.extend({
             template: '#actions',
             props: ['alerts', 'socket', 'channel', 'icon'],
+            mixins: [paginationMethods],
             ready: function() {
                 var vm = this;
                 vm.socket.on(vm.channel, function(data) {
@@ -214,18 +236,30 @@
                 alerts: {
                     auth_events: [],
                     media_actions: [],
+                },
+                pagination: {
+                    auth_events: {page: 1},
+                    media_actions: {page: 1},
                 }
             },
             created: function() {
                 var vm = this;
-                // this.socket = io({{ env('SOCKET_ADDR', 'default') }} , {secure: true});
                 vm.socket = io('{{env('ADMIN_WEBSITE_URL')}}:3001', {secure: true});
-                vm.init();
+                return this.fetchAlerts(1);
             },
             methods: {
-                init: function() {
+                fetchAlerts: function(page, channel, reset) {
                     var vm = this;
-                    vm.$http.get('/alerts', {}).then(function(response) {
+                    // fetches by page
+                    if (reset) {
+                        _.forEach(vm.alerts, function(channel) {
+                            channel.length = 0;
+                        })
+                    }
+
+                    page = page || 1
+                    channel = channel ? '&channel=' + channel : '';
+                    vm.$http.get('/alerts?page=' + page + channel, {}).then(function(response) {
                         if (!response.data) { return; }
                         response.data.forEach(function(alertData) {
                             vm.pushToChannels(new Alert(alertData));
@@ -234,17 +268,26 @@
                 },
                 pushToChannels: function(alert) {
                     var vm = this;
+
                     alert.channels.forEach(function(channel) {
-                        if (!vm.alerts[channel]) {
-                            vm.alerts[channel] = [];
+                        if (vm.alerts[channel].length < 10 ) {
+                            // just push
+                            vm.alerts[channel].push(alert);
+                        } else {
+                            // put new alert on top
+                            vm.alerts[channel].unshift(alert);
                         }
-                        vm.alerts[channel].unshift(alert);
+                        // cut if too long
+                        if (vm.alerts[channel].length > 10) {
+                            vm.alerts[channel].length = 10;
+                        }
+
                     })
                 },
                 getAlert: function(alert_id) {
                     var vm = this;
                     // using Vue $http because in this case we wanna silently fail
-                    this.$http.get('/alerts/', {alert_id: alert_id}).then(function(response) {
+                    this.$http.get('/alerts', {alert_id: alert_id}).then(function(response) {
                         try {
                             vm.pushToChannels(new Alert(response.data));
                         } catch(e) {
