@@ -55,7 +55,7 @@ class AlertObserver extends BaseObserver
      */
     public function userAuthEvent($event)
     {
-        if ($event->user->isSystem()) {
+        if (!$event->user || $event->user->isSystem()) {
 
             return;
 
