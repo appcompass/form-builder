@@ -48,13 +48,6 @@ class PhotosServiceProvider extends ServiceProvider
 
         $this->loadIntervention();
 
-        // Link delete event
-        Photo::deleted(function ($photo) {
-
-            $photo->galleryItem->delete();
-
-        });
-
     }
 
     /**
