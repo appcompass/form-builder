@@ -1,5 +1,6 @@
 <ul class="nav top-menu" id="header_notification_bar">
 
+    @if(\Auth::user()->isRoot())
     <li class="dropdown">
         <notifier
             v-bind:channel="'auth_events'"
@@ -8,6 +9,7 @@
             icon="fa-user"
         ></notifier>
     </li>
+    @endif
 
     <li class="dropdown">
         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
