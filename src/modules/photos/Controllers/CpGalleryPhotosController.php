@@ -3,6 +3,10 @@
 namespace P3in\Controllers;
 
 use Auth;
+use Chumper\Zipper\Zipper;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Promise;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use P3in\Controllers\UiBaseController;
@@ -182,5 +186,42 @@ class CpGalleryPhotosController extends UiBaseController
     {
         $photos->delete();
         return $this->json($this->setBaseUrl(['galleries', $galleries->id, 'photos']));
+    }
+
+    public function downloadPhotos(Request $request, Gallery $galleries)
+    {
+        $file_name = $galleries->name.'.zip';
+
+        $galleries->load('photos');
+
+        $client = new Client([
+            'base_uri' => url('').'/',
+        ]);
+        $zipper = new Zipper;
+        $zipper->make($file_name);
+
+        $promises = [];
+        foreach ($galleries->photos as $photo) {
+            $pathinfo = pathinfo($photo->path);
+            $promises[$pathinfo['basename']] = $client->getAsync($photo->path);
+        }
+
+        $results = Promise\settle($promises)->wait();
+
+        foreach ($results as $name => $result) {
+            if ($result['state'] == 'fulfilled') {
+                $zipper->addString($name, $result['value']->getBody());
+            }
+        }
+
+        $stored_file = public_path().'/'.$zipper->getFilePath();
+
+        $zipper->close();
+
+        // here, we need to add the file to a scheduled job to auto delete this file at something like 3am.
+
+        return response()->download($stored_file, $file_name, [
+            'Content-Type' => 'application/octet-stream',
+        ]);
     }
 }
