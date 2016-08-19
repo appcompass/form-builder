@@ -73,7 +73,7 @@ class CpGalleryPhotosController extends UiBaseController
 
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except('downloadPhotos');
 
         $this->controller_class = __CLASS__;
         $this->nav_name = 'cp_photos_subnav';

@@ -59,7 +59,7 @@ class Photo extends ModularBaseModel implements GalleryItemInterface
     /**
     * With
     */
-    protected $with = ['options'];
+    protected $with = [];
 
     protected $casts = [
         'meta' => 'object'
