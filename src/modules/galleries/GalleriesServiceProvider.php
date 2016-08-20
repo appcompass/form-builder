@@ -4,6 +4,7 @@ namespace P3in\Modules\Providers;
 
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Foundation\AliasLoader;
+use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use P3in\Providers\BaseServiceProvider as ServiceProvider;
 use Illuminate\Routing\Router;
 use P3in\Models\Gallery;
@@ -20,7 +21,7 @@ class GalleriesServiceProvider extends ServiceProvider
      *
      */
     protected $policies = [
-        Gallery::class => ResourcesPolicy::class,
+        // Gallery::class => ResourcesPolicy::class,
     ];
 
     /**
@@ -43,10 +44,19 @@ class GalleriesServiceProvider extends ServiceProvider
      * Bootstrap services
      *
      */
-    public function boot(Router $router)
+    public function boot(Router $router, GateContract $gate)
     {
+        $this->registerPolicies($gate);
 
         $router->model('galleries', Gallery::class);
+
+        $gate->define('download-source', function(User $user, Gallery $gallery) {
+            if ($user->isRoot()) {
+                return true;
+            }
+            return $user->hasPermission('galleries.photos.download-source');
+        });
+
 
     }
 

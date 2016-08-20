@@ -28,4 +28,8 @@ Trait HasPhoto {
         return $this->getBasePhotoPath();
     }
 
+    public function getLocalPathAttribute()
+    {
+        return $this->getLocalPhotoPath();
+    }
 }

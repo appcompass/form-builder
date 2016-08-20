@@ -34,7 +34,7 @@
 
         <div class="panel-body">
             <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-8">
                     @can('edit', new Photo)
                     <h4>Bulk Actions:</h4>
                     <select name="attributes[options][photo_of]" class="form-control bulk_update">
@@ -54,8 +54,11 @@
                     <a class="btn btn-danger no-link" href="javascript:;" data-bulk-update="{{$meta->base_url}}" data-action="delete" data-target="#gallery_{{ $gallery->id }}"><i class="fa fa-times"></i> Delete Selected</a>
                     @endcan
                     <a class="btn btn-info no-link" href="/download-gallery-photos/{{ $gallery->id }}"><i class="fa fa-download"></i> Download All</a>
+                    @can('download-source', $gallery)
+                    <a class="btn btn-info no-link" href="/download-gallery-source-photos/{{ $gallery->id }}"><i class="fa fa-download"></i> Download Originals</a>
+                    @endcan
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-4">
                     <h4>Filter By Type:</h4>
                     <span class="filters">
                         <a class="btn btn-info btn-xs" href="javascript:;" data-filter="*">All</a>

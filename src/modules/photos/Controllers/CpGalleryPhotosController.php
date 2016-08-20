@@ -218,10 +218,39 @@ class CpGalleryPhotosController extends UiBaseController
 
         $zipper->close();
 
-        // here, we need to add the file to a scheduled job to auto delete this file at something like 3am.
+        $this->sentToCleanupScheduler($stored_file);
 
         return response()->download($stored_file, $file_name, [
             'Content-Type' => 'application/octet-stream',
         ]);
+    }
+
+    public function downloadSourcePhotos(Request $request, Gallery $galleries)
+    {
+        $file_name = $galleries->name.'.zip';
+
+        $galleries->load('photos');
+
+        $zipper = new Zipper;
+        $zipper->make($file_name);
+
+        foreach ($galleries->photos as $photo) {
+            $zipper->add($photo->local_path);
+        }
+
+        $stored_file = public_path().'/'.$zipper->getFilePath();
+
+        $zipper->close();
+
+        $this->sentToCleanupScheduler($stored_file);
+
+        return response()->download($stored_file, $file_name, [
+            'Content-Type' => 'application/octet-stream',
+        ]);
+    }
+
+    private function sentToCleanupScheduler($path)
+    {
+        // here, we need to add the file to a scheduled job to auto delete this file at something like 3am.
     }
 }
