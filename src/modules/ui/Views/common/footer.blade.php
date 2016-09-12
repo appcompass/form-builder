@@ -157,6 +157,9 @@
             });
 
             call.done(function(){
+                if (!obj.attribute) {
+                    loadData($(obj.target));
+                }
                 if (obj.next && obj.next.url) {
                     loadSourceToTarget(obj.next);
                 };

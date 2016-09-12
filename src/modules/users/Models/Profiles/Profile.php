@@ -23,4 +23,18 @@ class Profile extends ModularBaseModel
             ]);
         }
     }
+
+    public static function getUserProfiles(User $user)
+    {
+        $profiles = $user->profiles;
+        $rtn = [];
+        foreach ($profiles as $profile_type) {
+            if (!is_null($profile = $user->{$profile_type->name})) {
+                $profile->profile_key = $profile_type->name;
+                $rtn[] = $profile;
+            }
+        }
+
+        return $rtn;
+    }
 }
