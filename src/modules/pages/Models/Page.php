@@ -4,6 +4,7 @@ namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
@@ -20,7 +21,7 @@ use P3in\Traits\SettingsTrait;
 class Page extends ModularBaseModel
 {
 
-    use SettingsTrait, Navigatable, HasPermissions;
+    use SettingsTrait, Navigatable, HasPermissions, SoftDeletes;
 
     /**
      * The database table used by the model.
@@ -357,7 +358,8 @@ class Page extends ModularBaseModel
 
     public function getUrlAttribute()
     {
-        return $this->dynamic_segment ? str_replace('([a-z0-9-]+)', $this->dynamic_segment, $this->attributes['url']) : $this->attributes['url'];
+        $replace_with = $this->dynamic_segment ? $this->dynamic_segment : '';
+        return '/'.str_replace('([a-z0-9-]+)', $replace_with, $this->attributes['url']);
     }
 
     public function getImagesAttribute()

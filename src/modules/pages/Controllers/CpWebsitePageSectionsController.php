@@ -221,11 +221,14 @@ class CpWebsitePageSectionsController extends UiBaseController
 
                         continue;
 
+                    }else{
+
+                        $photo = $section->addPhoto($single_file['image'], Auth::user());
+
+                        if (isset($content[$field_name]) && isset($content[$field_name][$idx])) {
+                            $content[$field_name][$idx]['image'] = $photo->path;
+                        }
                     }
-
-                    $photo = $section->addPhoto($single_file['image'], Auth::user());
-
-                    $content[$field_name][$idx]['image'] = $photo->path;
                 }
             }
         }
