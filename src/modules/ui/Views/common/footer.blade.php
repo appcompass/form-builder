@@ -539,6 +539,12 @@
                 $(this).next('.input-error').remove();
             });
 
+            $(document).on('submit', 'form:not(.ajax-form)', function(e) {
+                e.preventDefault();
+                $(this)[0].submit();
+                // $(this).submit();
+            });
+
             $(document).on('submit', '.ajax-form', function(e){
                 e.preventDefault();
 
