@@ -114,7 +114,10 @@ class CpWebsiteController extends UiBaseController
                     'name' => 'hosting_instance',
                     'placeholder' => '',
                     'type' => 'selectlist',
-                    'data' => ['local' => 'This Server'], //we make this dynamic later.
+                    'data' => [ //we make this dynamic later.
+                        'local' => 'This Server',
+                        'production' => 'The Production Server',
+                    ],
                     'help_block' => '',
                 // ],[
                 //     'label' => 'Nginx Server Name',
