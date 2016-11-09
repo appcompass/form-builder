@@ -331,7 +331,7 @@ class Navmenu extends Model
     public function scopeByName($query, $name, $label = null)
     {
 
-        $navmenu = Navmenu::where('name', '=', $name)->first();
+        $navmenu = $query->where('name', '=', $name)->first();
 
         if (is_null($navmenu)) {
 

@@ -192,7 +192,7 @@ class CpWebsiteNavigationController extends UiBaseController
 
       if ( (isset($content['children']) && count($content['children'])) ) {
 
-          $child_nav = Navmenu::byName($item->label);
+          $child_nav = $website->navmenus()->byName($item->label);
 
           $navmenu->addChildren($child_nav, null, $overrides);
 
