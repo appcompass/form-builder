@@ -60,24 +60,24 @@ class CpWebsiteNavigationController extends UiBaseController
   public function index(Website $websites)
   {
 
-        $websites->load('navmenus', 'pages', 'pages.navitem');
+        // $websites->load('navmenus.navitems', 'pages', 'pages.navitem');
 
-        $navmenus = $websites->navmenus()->whereNull('parent_id')->get();
+        // $navmenus = $websites->navmenus()->whereNull('parent_id')->get();
+        // // dd($navmenus->toArray());
+        // foreach($websites->pages as $page) {
+        //   $navitems[] = $page->navItem()
+        //     ->first()
+        //     ->toArray();
+        // }
 
-        foreach($websites->pages as $page) {
-          $navitems[] = $page->navItem()
-            ->first()
-            ->toArray();
-        }
+        // foreach (Section::byType('utils')->with('navitem')->get() as $util) {
+        //   $utils[] = $util->navItem()
+        //     ->first()
+        //     ->toArray();
+        // }
 
-        foreach (Section::byType('utils')->with('navitem')->get() as $util) {
-          $utils[] = $util->navItem()
-            ->first()
-            ->toArray();
-        }
-
-        return view('navigation::index', compact('navmenus', 'navitems', 'utils'))
-          ->with('website', $websites);
+        // return view('navigation::index', compact('navmenus', 'navitems', 'utils'))
+        //   ->with('website', $websites);
   }
 
   /**
