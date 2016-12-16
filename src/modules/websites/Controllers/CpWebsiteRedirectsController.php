@@ -76,7 +76,8 @@ class CpWebsiteRedirectsController extends UiBaseController
     public function store(Request $request, Website $websites)
     {
 
-        Redirect::forWebsite($websites)->truncate();
+        // Redirect::forWebsite($websites)->truncate();
+        Redirect::forWebsite($websites)->delete();
 
         foreach ($request->get('redirects') as $redirect) {
 
@@ -97,7 +98,9 @@ class CpWebsiteRedirectsController extends UiBaseController
 
         }
         if ($websites->storeRedirects()) {
+
             return $this->json([], true, "Redirects successfully updated.");
+
         }
     }
 }
