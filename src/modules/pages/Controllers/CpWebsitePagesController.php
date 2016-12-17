@@ -32,8 +32,8 @@ class CpWebsitePagesController extends UiBaseController
             'table' => [
                 'headers' => [
                     'Title',
-                    'Name',
-                    'Slug',
+                    'Parent',
+                    'Url',
                     'Created',
                     'Updated',
                     'Actions',
@@ -43,11 +43,10 @@ class CpWebsitePagesController extends UiBaseController
                         'type' => 'link_by_id',
                         'target' => '#main-content-out',
                     ],
-                    'name' => [
-                        'type' => 'link_by_id',
-                        'target' => '#main-content-out',
+                    'parent_title' => [
+                        'type' => 'text',
                     ],
-                    'slug' => [
+                    'url' => [
                         'type' => 'text',
                     ],
                     'created_at' => [
