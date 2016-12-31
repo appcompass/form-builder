@@ -349,7 +349,7 @@ class CpWebsitePagesController extends UiBaseController
         $pages->update($request->except(['settings', 'parent']));
 
         $pages->url = $pages->getUrl();
-        $page->save();
+        $pages->save();
 
         return $this->json($this->setBaseUrl(['websites', $websites->id, 'pages', $pages->id, 'edit']));
     }
