@@ -7,6 +7,7 @@ var design = response;
 s1.append(design);
 });
 
+
 s1.stop().animate({ opacity: 0,transform: 'translate(0,200)'}, 3000, mina.easeout);
 
 //Development.svg
