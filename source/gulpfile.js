@@ -12,7 +12,7 @@ var runSequence = require('run-sequence');
 var timestamp = new Date().getTime(); //we'll use this later to timestamp the js and css file names on build.
 
 gulp.task('clean:dist', function() {
-  return del.sync(['../www/**', '!../www', '!../www/index.php'], {force: true});
+  return del.sync(['../public/**', '!../public', '!../public/index.php'], {force: true});
 });
 
 gulp.task('templates', function(){
@@ -28,7 +28,7 @@ gulp.task('templates', function(){
                 block.end();
             }
         }))
-        .pipe(gulp.dest('../www'));
+        .pipe(gulp.dest('../public'));
 });
 
 gulp.task('sass', function(){
@@ -36,7 +36,7 @@ gulp.task('sass', function(){
         .pipe(sass())
         .pipe(cssnano())
         .pipe(rename('main-min.css'))
-        .pipe(gulp.dest('../www/assets/css'));
+        .pipe(gulp.dest('../public/assets/css'));
 });
 
 gulp.task('modernizr', function() {
@@ -44,7 +44,7 @@ gulp.task('modernizr', function() {
         'assets/js/dist/modernizr-custom.js'
     ])
         .pipe(uglify())
-        .pipe(gulp.dest('../www/assets/js/dist'));
+        .pipe(gulp.dest('../public/assets/js/dist'));
 
 });
 
@@ -57,18 +57,18 @@ gulp.task('scripts', function() {
     ])
         .pipe(uglify())
         .pipe(concat('main-min.js'))
-        .pipe(gulp.dest('../www/assets/js/dist'));
+        .pipe(gulp.dest('../public/assets/js/dist'));
 });
 
 gulp.task('images', function(){
     return gulp.src('assets/images/**/*')
         .pipe(imagemin())
-        .pipe(gulp.dest('../www/assets/images'));
+        .pipe(gulp.dest('../public/assets/images'));
 });
 
 gulp.task('fonts', function() {
     return gulp.src('assets/fonts/**/*')
-        .pipe(gulp.dest('../www/assets/fonts'));
+        .pipe(gulp.dest('../public/assets/fonts'));
 });
 
 gulp.task('build', function(callback) {
