@@ -1,0 +1,165 @@
+<svg id="Rings" viewBox="0 0 622.67 339.44" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<defs>
+		<style>
+			.cls-1,
+			.cls-11,
+			.cls-14,
+			.cls-17,
+			.cls-2,
+			.cls-21,
+			.cls-23,
+			.cls-5,
+			.cls-8{fill:none;}.cls-1{stroke:#efefef;opacity:0.5;}.cls-1,
+			.cls-11,
+			.cls-12,
+			.cls-14,
+			.cls-15,
+			.cls-17,
+			.cls-18,
+			.cls-2,
+			.cls-20,
+			.cls-21,
+			.cls-22,
+			.cls-23,
+			.cls-25,
+			.cls-3,
+			.cls-5,
+			.cls-6,
+			.cls-8,
+			.cls-9{stroke-miterlimit:10;}.cls-2,
+			.cls-3{stroke:#31a5d7;}.cls-11,
+			.cls-12,
+			.cls-14,
+			.cls-15,
+			.cls-17,
+			.cls-18,
+			.cls-2,
+			.cls-21,
+			.cls-22,
+			.cls-23,
+			.cls-25,
+			.cls-3,
+			.cls-5,
+			.cls-6,
+			.cls-8,
+			.cls-9{stroke-width:1.18px;}.cls-12,
+			.cls-15,
+			.cls-18,
+			.cls-22,
+			.cls-25,
+			.cls-3,
+			.cls-30,
+			.cls-6,
+			.cls-9{fill:#fff;}.cls-26,
+			.cls-4{fill:#31a5d7;}.cls-5,
+			.cls-6{stroke:#f47e4f;}.cls-7{fill:#f47e4f;}.cls-8,
+			.cls-9{stroke:#28b34b;}.cls-10{fill:#28b34b;}.cls-11{stroke:#805da8;}.cls-12{stroke:#683c97;}.cls-13{fill:#683c97;}.cls-14,
+			.cls-15{stroke:#ed1d8e;}.cls-16,
+			.cls-31{fill:#ed1d8e;}.cls-17,
+			.cls-18{stroke:#1dbcbd;}.cls-19{fill:#1dbcbd;}.cls-20,
+			.cls-24{fill:#fed00f;}.cls-20,
+			.cls-21,
+			.cls-22{stroke:#7acc23;}.cls-23,
+			.cls-25{stroke:#fed00f;}.cls-26,
+			.cls-31{font-size:11px;font-family:ProximaNova Bold;font-weight:700;}.cls-27{fill:#58595b;white-space:pre;}.cls-28{fill:#434343;}.cls-29{fill:#414042;}
+		</style>
+	</defs>
+	<title>p3_process</title>
+	<circle class="cls-1" cx="250.82" cy="169.72" r="169.22"/>
+	<circle class="cls-1" cx="250.82" cy="169.72" r="158.31"/>
+	<circle class="cls-1" cx="250.82" cy="169.72" r="147.4"/>
+	<circle class="cls-1" cx="250.82" cy="169.72" r="136.5"/>
+	<circle class="cls-1" cx="250.82" cy="169.72" r="125.51"/>
+	<circle class="cls-1" cx="250.82" cy="169.72" r="114.6"/>
+	<circle class="cls-1" cx="250.82" cy="169.72" r="103.7"/>
+	<circle class="cls-1" cx="250.82" cy="169.72" r="92.79"/>
+	<circle class="cls-1" cx="250.82" cy="169.72" r="81.88"/>
+	<g data-name="Node 1" id="Node_1">
+		<path class="cls-2" d="M144.61,104a168.66,168.66,0,0,1,24.76,88.27" transform="translate(250.67 -22.5)"/>
+		<circle class="cls-3" cx="395.28" cy="81.51" r="2.39"/>
+		<circle class="cls-4" cx="420.04" cy="169.79" r="1.2"/>
+		<animateTransform
+			id="test1"
+			attributeName="transform"
+			attributeType="XML"
+			type="rotate"
+			from="0 250.82 169.72"
+			to="-33 250.82 169.72"
+			begin="0"
+			dur="2"
+			fill="freeze"
+			repeateCount="indefinite"
+		/>
+		<animateTransform
+			id="test2"
+			attributeName="transform"
+			attributeType="XML"
+			type="rotate"
+			from="-33 250.82 169.72"
+			to="-66 250.82 169.72"
+			begin="test1.end+1"
+			dur="2"
+			fill="freeze"
+			repeateCount="indefinite"
+		/>
+	</g>
+	<g data-name="Node 2" id="Node_2">
+		<path class="cls-5" d="M135.7,110.37a158.59,158.59,0,0,0-11.85-17,158.6,158.6,0,0,0-63-47.44" transform="translate(250.67 -22.5)"/>
+		<circle class="cls-6" cx="311.5" cy="23.48" r="2.39"/>
+		<circle class="cls-7" cx="386.37" cy="87.87" r="1.21"/>
+		<animateTransform
+			id="test1"
+			attributeName="transform"
+			attributeType="XML"
+			type="rotate"
+			from="0 250.82 169.72"
+			to="-33 250.82 169.72"
+			begin="0"
+			dur="2"
+			fill="freeze"
+			repeateCount="indefinite"
+		/>
+		<animateTransform
+			id="test2"
+			attributeName="transform"
+			attributeType="XML"
+			type="rotate"
+			from="-33 250.82 169.72"
+			to="-66 250.82 169.72"
+			begin="test1.end+1"
+			dur="2"
+			fill="freeze"
+			repeateCount="indefinite"
+		/>
+	</g>
+	<g data-name="Node 3" id="Node_3">
+		<path class="cls-8" d="M61.27,58A147,147,0,0,0,.15,44.82a148.58,148.58,0,0,0-24.49,2" transform="translate(250.67 -22.5)"/>
+		<circle class="cls-9" cx="226.53" cy="24.44" r="2.39"/>
+		<circle class="cls-10" cx="311.94" cy="35.53" r="1.21"/>
+	</g>
+	<g data-name="Node 4" id="Node_4">
+		<path class="cls-11" d="M0.15,55.73A136.16,136.16,0,0,0-104.3,104.33" transform="translate(250.67 -22.5)"/>
+		<circle class="cls-12" cx="146.37" cy="81.7" r="2.39"/>
+		<circle class="cls-13" cx="250.82" cy="33.23" r="1.2"/>
+	</g>
+	<g data-name="Node 5" id="Node_5">
+		<path class="cls-14" d="M-77.25,93.38a125.3,125.3,0,0,0-48.11,98.9" transform="translate(250.67 -22.5)"/>
+		<circle class="cls-15" cx="125.47" cy="169.79" r="2.39"/>
+		<circle class="cls-16" cx="173.42" cy="70.88" r="1.2"/>
+	</g>
+	<g data-name="Node 6" id="Node_6">
+		<path class="cls-17" d="M-111.89,168a115.48,115.48,0,0,0-2.57,24.28,114.42,114.42,0,0,0,44.83,91" transform="translate(250.67 -22.5)"/>
+		<circle class="cls-18" cx="181.04" cy="260.79" r="2.39"/>
+		<circle class="cls-19" cx="138.78" cy="145.5" r="1.21"/>
+	</g>
+	<g data-name="Node 7" id="Node_7">
+		<circle class="cls-20" cx="147.12" cy="169.78" r="1.21"/>
+		<path class="cls-21" d="M-103.55,192.29A103.65,103.65,0,0,0-21.72,293.72a114,114,0,0,0,12,1.58" transform="translate(250.67 -22.5)"/>
+		<circle class="cls-22" cx="240.97" cy="272.8" r="2.39"/>
+	</g>
+	<g data-name="Node 8" id="Node_8">
+		<path class="cls-23" d="M-27.57,280.92a83.93,83.93,0,0,0,27.72,4.2h0a93.1,93.1,0,0,0,24.41-3.23" transform="translate(250.67 -22.5)"/>
+		<circle class="cls-24" cx="223.06" cy="258.4" r="1.21"/>
+		<circle class="cls-25" cx="275.23" cy="259.38" r="2.39"/>
+	</g>
+</svg>
