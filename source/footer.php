@@ -33,8 +33,9 @@
     <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="/assets/bower_components/jquery/dist/jquery.min.js"><\/script>')</script>
-
     <!-- htmlbuild:remove -->
+    <script src="/assets/js/src/snap.svg-min.js"></script>
+    <script type="text/javascript" src="/assets/js/snap/snap.js"></script>
     <script src="assets/bower_components/matchHeight/jquery.matchHeight-min.js"></script>
     <script src="assets/bower_components/slick-carousel/slick/slick.min.js"></script>
     <script src="assets/bower_components/magnific-popup/dist/jquery.magnific-popup.min.js"></script>

@@ -146,7 +146,6 @@
                 </div>
             </div>
             <svg id="design"></svg>
-            <script type="text/javascript" src="/assets/js/snap/snap.js"></script>
         </div>
     </div>
 </section><!-- section-process -->

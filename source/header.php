@@ -13,9 +13,6 @@
         <link rel="stylesheet" href="assets/css/main-min.css">
 
         <script src="/assets/js/dist/modernizr-custom.js"></script>
-        <script src="/assets/js/dist/snap.svg-min.js"></script>
-        <!-- <script type="text/javascript" src="/assets/js/snap/snap.js"></script> -->
-
     </head>
     <body <?php if(isset($page_class)) echo 'class="'.$page_class.'"'; ?>>
         <!--[if lt IE 8]>
