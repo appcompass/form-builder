@@ -1,0 +1,22 @@
+import Vue from 'vue'
+import Vuex from 'vuex'
+
+import * as getters from './getters'
+import * as actions from './actions'
+import * as mutations from './mutators'
+
+Vue.use(Vuex)
+
+const state = {
+  count: 10,
+  history: []
+}
+
+const store = new Vuex.Store({
+  state,
+  getters,
+  actions,
+  mutations
+})
+
+export default store
