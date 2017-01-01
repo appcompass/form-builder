@@ -117,9 +117,9 @@
 var s1 = new Snap("#design");
 
 // Design.svg
-Snap.load('assets/images/our_process/process_icons/design.svg', function(response){
+Snap.load('/assets/images/our_process/home_process.svg', function(response){
     var design = response;
     s1.append(design);
 });
 
-s1.stop().animate({ opacity: 0,transform: 'translate(0,200)'}, 3000, mina.easeout);
+// s1.stop().animate({ opacity: 0,transform: 't'+[0, 200]}, 3000);

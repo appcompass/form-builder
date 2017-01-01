@@ -145,8 +145,10 @@
                     <p>Explore our development process …</p>
                 </div>
             </div>
-            <svg id="design"></svg>
         </div>
+    </div>
+    <div class="row">
+        <div class="medium-12 medium-centered columns" id="design"></div>
     </div>
 </section><!-- section-process -->
 

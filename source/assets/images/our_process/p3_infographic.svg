@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <svg version="1.1" id="Rings" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 340.1 339.4" style="enable-background:new 0 0 340.1 339.4;" xml:space="preserve">
+	 viewBox="0 0 640.1 339.4" style="enable-background:new 0 0 640.1 339.4;" xml:space="preserve">
 <style type="text/css">
 	.st0{opacity:0.5;fill:none;stroke:#EFEFEF;stroke-miterlimit:10;enable-background:new    ;}
 
@@ -36,7 +36,10 @@
 	.st23{fill:#FED00F;}
 	.st24{fill:#FFFFFF;stroke:#FED00F;stroke-width:1.18;stroke-miterlimit:10;}
 </style>
-<title>p3 infographic rings</title>
+<title>Info Graphic</title>
+
+
+
 <circle class="st0" cx="169.7" cy="169.7" r="169.2"/>
 <circle class="st0" cx="169.7" cy="169.7" r="158.3"/>
 <circle class="st0" cx="169.7" cy="169.7" r="147.4"/>
@@ -1017,5 +1020,4 @@
 		fill="freeze"
 	/>
 </circle>
-
 </svg>
