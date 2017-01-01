@@ -117,7 +117,7 @@
 var s1 = new Snap("#design");
 
 // Design.svg
-Snap.load('/assets/images/our_process/home_process.svg', function(response){
+Snap.load('/assets/images/content/home_process.svg', function(response){
     var design = response;
     s1.append(design);
 });
