@@ -113,118 +113,177 @@
 
 })(jQuery);
 
-
 var home_process = new Snap("#home-process-svg");
-
 Snap.load('/assets/images/content/home_process.svg', function(svg){
     home_process.append(svg);
 
     // Rings
     var rings = home_process.select('#rings');
-    var discovery_line = rings.select('#discovery_line');
-
-    // Arrows
-    var up_arrow_group = home_process.select('#up_arrow_group');
-    var up_arrow_container = home_process.select('#up_arrow_container');
-    var up_arrow = home_process.select('#up_arrow');
-    var down_arrow_group = home_process.select('#down_arrow_group');
-    var down_arrow_container = home_process.select('#down_arrow_container');
-    var down_arrow = home_process.select('#down_arrow');
-
-    // Arrow handling.
-    up_arrow_group.mouseover(function(e){
-        up_arrow_container.addClass('active-arrow-container').removeClass('inactive-arrow-container');
-        up_arrow.addClass('active-arrow').removeClass('inactive-arrow');
-    }).mouseout(function(e){
-        up_arrow_container.addClass('inactive-arrow-container').removeClass('active-arrow-container');
-        up_arrow.addClass('inactive-arrow').removeClass('active-arrow');
-    });
-
-    down_arrow_group.mouseover(function(e){
-        down_arrow_container.addClass('active-arrow-container').removeClass('inactive-arrow-container');
-        down_arrow.addClass('active-arrow').removeClass('inactive-arrow');
-    }).mouseout(function(e){
-        down_arrow_container.addClass('inactive-arrow-container').removeClass('active-arrow-container');
-        down_arrow.addClass('inactive-arrow').removeClass('active-arrow');
-    });
 
     // Rotations
     var rings_bbox = rings.getBBox();
-    var speed = 3000;
-    var pause_duration = 2000;
+    var int;
+    var speed = 6000;
+    // var pause_duration = 0;
+    // var interval = speed+pause_duration;
+    var step_speed = speed/3;
+    var pos = 0;
+    var is_running = false;
+    var anim_circle_enter = mina.elastic;
+    var anim_circle_rotate = mina.easeinout;
+    var anim_step = mina.linear;
+
+    // // Design TODO: Launch circle line
+    // step_id: '#launch',
     var svg_config = [
         {
             line_id: '#discovery_line',
             step_id: '#discovery',
-            turn_degrees: 31
+            start: 0,
+            end: 31
         }, {
             line_id: '#client_consultation_line',
             step_id: '#client_consultation',
-            turn_degrees: 65.5
+            start: 31,
+            end: 65.5
         }, {
             line_id: '#kick_off_line',
             step_id: '#kick_off',
-            turn_degrees: 90
+            start: 65.5,
+            end: 90
         }, {
             line_id: '#information_architecture_development_line',
             step_id: '#information_architecture',
-            turn_degrees: 128.3
+            start: 90,
+            end: 128.3
         }, {
             line_id: '#design_line',
             step_id: '#design',
-            turn_degrees: 167.8
+            start: 128.3,
+            end: 167.8
         }, {
             line_id: '#front_end_development_line',
             step_id: '#frontend_development',
-            turn_degrees: 179.7
+            start: 167.8,
+            end: 179.7
         }, {
             line_id: '#back_end_development_line',
             step_id: '#backend_development',
-            turn_degrees: 252.6
+            start: 179.7,
+            end: 252.6
         }, {
             line_id: '#quality_assurance_line',
             step_id: '#quality_assurance',
-            turn_degrees: 360
+            start: 252.6,
+            end: 360
         }
     ];
 
-    // // Design TODO: Launch circle line
-    // step_id: '#launch',
-    var step = function(row, index, step_count){
-        setTimeout(function(){
-            home_process.select(row.step_id)
-            .animate({
-                opacity: 1,
-                transform: 't'+[0, 0]
-            }, speed/3, mina.linear, function(){
+    function turnToTransform(degree){
+        return 'r'+degree+',' + rings_bbox.cx + ',' + rings_bbox.cy
+    }
 
+    function step(elm, start_pos, opac, end_pos, cb)
+    {
+        //we scale the step group up for now till we get
+        //the directional arrows working properly.
+        var s = 1.3;
+
+        home_process.select(elm)
+        .transform('s'+[s,s]+'t'+[100, start_pos])
+        .animate({
+            opacity: opac,
+            transform: 's'+[s,s]+'t'+[100, end_pos]
+        }, step_speed, anim_step, function(){
+            if (cb) {
+                cb();
+            }
+        });
+    }
+
+    function animate(){
+        int = setInterval(function(){
+            var row = svg_config[pos];
+
+            step(row.step_id, (is_running ? -400 : 0), 1, 0, function(){
+
+                is_running = true;
+                // If we are at the first position, which is at both 0 and 360 degrees,
+                // then lets reset the rings to create a smooth loop effect.
+                if (pos == 0) {
+                    rings.transform(turnToTransform(row.start));
+                }
+                // Move rings forward.
                 rings.animate({
-                    transform: 'r'+row.turn_degrees+',' + rings_bbox.cx + ',' + rings_bbox.cy
-                }, speed, mina.linear);
+                    transform: turnToTransform(row.end)
+                }, speed, anim_circle_rotate);
 
                 setTimeout(function(){
-                    home_process.select(row.step_id)
-                    .animate({
-                        opacity: 0,
-                        transform: 't'+[0, 400]
-                    }, speed/3, mina.linear, function(){
-                        if (index == step_count-1) {
-                            run_animation();
-                        }
-                    });
-                }, speed-(speed/3));
+                    step(row.step_id, 0, 0, 400);
+                }, speed-step_speed);
+
+                // Increment or reset the position tracking.
+                if (pos === svg_config.length-1) {
+                    pos = 0;
+                }else{
+                    pos++;
+                }
+
             });
-        },(speed)*index);
+        }, speed); //interval
     }
 
-    var run_animation = function(){
-        for (var i = 0; i < svg_config.length; i++) {
-            curr_row = svg_config[i];
-            curr_step_elm = home_process.select(curr_row.step_id);
-            curr_step_elm.transform('t0,-400');
-            step(curr_row, i, svg_config.length);
-        }
+    // function moveTo(i){
+    //     // we need to check the config size to allow loop between start and finish.
+    //     pos = i;
+    //     clearInterval(int);
+    //     // we need to be able to fast forward and fast rewind.
+    //     animate();
+    // }
+
+    function init(){
+            var row = svg_config[0];
+            rings.transform('t'+[rings_bbox.x, 0]).animate({
+                transform: 't'+[0, 0]
+            }, speed, anim_circle_enter);
+            step(row.step_id, -400, 1, 0);
+            animate();
     }
 
-    run_animation();
+    init();
+
+    // // Arrow handling.
+
+    // // Arrows
+    // var up_arrow_group = home_process.select('#up_arrow_group');
+    // var up_arrow_container = home_process.select('#up_arrow_container');
+    // var up_arrow = home_process.select('#up_arrow');
+    // var down_arrow_group = home_process.select('#down_arrow_group');
+    // var down_arrow_container = home_process.select('#down_arrow_container');
+    // var down_arrow = home_process.select('#down_arrow');
+
+    // up_arrow_group.mouseover(function(e){
+    //     up_arrow_container.addClass('active-arrow-container').removeClass('inactive-arrow-container');
+    //     up_arrow.addClass('active-arrow').removeClass('inactive-arrow');
+    // }).mouseout(function(e){
+    //     up_arrow_container.addClass('inactive-arrow-container').removeClass('active-arrow-container');
+    //     up_arrow.addClass('inactive-arrow').removeClass('active-arrow');
+    // });
+
+    // down_arrow_group.mouseover(function(e){
+    //     down_arrow_container.addClass('active-arrow-container').removeClass('inactive-arrow-container');
+    //     down_arrow.addClass('active-arrow').removeClass('inactive-arrow');
+    // }).mouseout(function(e){
+    //     down_arrow_container.addClass('inactive-arrow-container').removeClass('active-arrow-container');
+    //     down_arrow.addClass('inactive-arrow').removeClass('active-arrow');
+    // });
+
+    // up_arrow_group.click(function(e){
+    //     moveTo(pos+1);
+    // });
+
+    // down_arrow_group.click(function(e){
+    //     moveTo(pos-1);
+    // });
+
 });

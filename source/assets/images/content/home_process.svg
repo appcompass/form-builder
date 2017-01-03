@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 21.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-     viewBox="0 0 1200 1000" style="enable-background:new 0 0 1200 1000;" xml:space="preserve">
+<svg version="1.1" id="process_svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1200 1000" style="enable-background:new 0 0 1200 1000;" xml:space="preserve">
     <style type="text/css">
         #launch, #quality_assurance, #backend_development, #frontend_development, #design, #information_architecture, #kick_off, #client_consultation, #discovery {
             opacity: 0;
@@ -10,12 +9,12 @@
         .st3{enable-background:new;}
         .step_title_text {
             font-size:26.0013px;
-            font-family:'ProximaNova-Bold';
+            font-family:'Proxima Nova W01', "Helvetica Neue", Helvetica, Arial, sans-serif;
         }
         .step_desc_text {
             font-size:16px;
             fill:#595959;
-            font-family:'ProximaNova-Semibold';
+            font-family:'Proxima Nova W01', "Helvetica Neue", Helvetica, Arial, sans-serif;
         }
         .st8{fill:none;}
         .launch_fill {
@@ -48,23 +47,109 @@
         .discovery_fill {
             fill:#31A5D7;
         }
-        .st18{opacity:0.5;fill:none;stroke:#EFEFEF;stroke-miterlimit:10;enable-background:new    ;}
-        .st19{fill:none;stroke:#31A5D7;stroke-width:1.18;stroke-miterlimit:10;}
-        .st20{fill:#FFFFFF;stroke:#31A5D7;stroke-width:1.18;stroke-miterlimit:10;}
-        .st21{fill:none;stroke:#F47E4F;stroke-width:1.18;stroke-miterlimit:10;}
-        .st22{fill:#FFFFFF;stroke:#F47E4F;stroke-width:1.18;stroke-miterlimit:10;}
-        .st23{fill:none;stroke:#28B34B;stroke-width:1.18;stroke-miterlimit:10;}
-        .st24{fill:#FFFFFF;stroke:#28B34B;stroke-width:1.18;stroke-miterlimit:10;}
-        .st25{fill:none;stroke:#805DA8;stroke-width:1.18;stroke-miterlimit:10;}
-        .st27{fill:#FFFFFF;stroke:#683C97;stroke-width:1.18;stroke-miterlimit:10;}
-        .st28{fill:none;stroke:#ED1D8E;stroke-width:1.18;stroke-miterlimit:10;}
-        .st29{fill:#FFFFFF;stroke:#ED1D8E;stroke-width:1.18;stroke-miterlimit:10;}
-        .st30{fill:none;stroke:#1DBCBD;stroke-width:1.18;stroke-miterlimit:10;}
-        .st31{fill:#FFFFFF;stroke:#1DBCBD;stroke-width:1.18;stroke-miterlimit:10;}
-        .st32{fill:none;stroke:#7ACC23;stroke-width:1.18;stroke-miterlimit:10;}
-        .st33{fill:#FFFFFF;stroke:#7ACC23;stroke-width:1.18;stroke-miterlimit:10;}
-        .st34{fill:none;stroke:#FED00F;stroke-width:1.18;stroke-miterlimit:10;}
-        .st35{fill:#FFFFFF;stroke:#FED00F;stroke-width:1.18;stroke-miterlimit:10;}
+        .rings_line {
+            opacity:0.5;
+            fill:none;
+            stroke:#EFEFEF;
+            stroke-miterlimit:10;
+            enable-background:new;
+        }
+        .discovery_line {
+            fill:none;
+            stroke:#31A5D7;
+            stroke-width:1.18;
+            stroke-miterlimit:10;
+        }
+        .discovery_line_close {
+            fill:#FFFFFF;
+            stroke:#31A5D7;
+            stroke-width:1.18;
+            stroke-miterlimit:10;
+        }
+        .client_consultation_line {
+            fill:none;
+            stroke:#F47E4F;
+            stroke-width:1.18;
+            stroke-miterlimit:10;
+        }
+        .client_consultation_line_close {
+            fill:#FFFFFF;
+            stroke:#F47E4F;
+            stroke-width:1.18;
+            stroke-miterlimit:10;
+        }
+        .kick_off_line {
+            fill:none;
+            stroke:#28B34B;
+            stroke-width:1.18;
+            stroke-miterlimit:10;
+        }
+        .kick_off_line_close {
+            fill:#FFFFFF;
+            stroke:#28B34B;
+            stroke-width:1.18;
+            stroke-miterlimit:10;
+        }
+        .information_architecture_development_line {
+            fill:none;
+            stroke:#805DA8;
+            stroke-width:1.18;
+            stroke-miterlimit:10;
+        }
+        .information_architecture_development_line_close {
+            fill:#FFFFFF;
+            stroke:#683C97;
+            stroke-width:1.18;
+            stroke-miterlimit:10;
+        }
+        .design_line {
+            fill:none;
+            stroke:#ED1D8E;
+            stroke-width:1.18;
+            stroke-miterlimit:10;
+        }
+        .design_line_close {
+            fill:#FFFFFF;
+            stroke:#ED1D8E;
+            stroke-width:1.18;
+            stroke-miterlimit:10;
+        }
+        .front_end_development_line {
+            fill:none;
+            stroke:#1DBCBD;
+            stroke-width:1.18;
+            stroke-miterlimit:10;
+        }
+        .front_end_development_line_close {
+            fill:#FFFFFF;
+            stroke:#1DBCBD;
+            stroke-width:1.18;
+            stroke-miterlimit:10;
+        }
+        .back_end_development_line {
+            fill:none;
+            stroke:#7ACC23;
+            stroke-width:1.18;
+            stroke-miterlimit:10;
+        }
+        .back_end_development_line_close {
+            fill:#FFFFFF;
+            stroke:#7ACC23;
+            stroke-width:1.18;
+            stroke-miterlimit:10;
+        }
+        .quality_assurance_line {
+            fill:none;
+            stroke:#FED00F;
+            stroke-width:1.18;
+            stroke-miterlimit:10;
+        }
+        .quality_assurance_line_close {
+            fill:#FFFFFF;
+            stroke:#FED00F;
+            stroke-width:1.18;
+            stroke-miterlimit:10;
+        }
         .st36{fill:#00AEEF;fill-opacity:0;stroke:#E0E0E0;stroke-width:2;stroke-linejoin:round;}
         .st37{fill:#D8D8D8;}
         .active-arrow-container{fill:#434343;}
@@ -502,7 +587,7 @@
     </g>
     <g id="kick_off">
         <g id="kick_off_text">
-            <text id="kick_off_text_title_text" transform="matrix(0.9924 0 0 1 708.1548 556.4482)" class="st0 step_title_text"> 3 Kick Off Meeting</text>
+            <text id="kick_off_text_title_text" transform="matrix(0.9924 0 0 1 714.1548 556.4482)" class="st0 step_title_text"><tspan class="kick_off_fill">3</tspan> Kick Off Meeting</text>
             <g id="kick_off_text_description">
                 <text transform="matrix(1 0 0 1 688.4346 585.3438)" class="st3"><tspan x="0" y="0" class="step_desc_text">We meet to discuss the project plan, </tspan><tspan x="-9.5" y="19.2" class="step_desc_text">including timeline, milestones, training, </tspan><tspan x="-1.9" y="38.4" class="step_desc_text">meeting schedule, risk management, </tspan><tspan x="77.3" y="57.6" class="step_desc_text">and next steps.</tspan></text>
             </g>
@@ -599,57 +684,57 @@
         </g>
     </g>
     <g id="rings">
-        <circle id="discovery_circle" class="st18" cx="-1.8" cy="500" r="488.2"/>
-        <circle id="client_consultation_circle" class="st18" cx="-1.8" cy="500" r="456.8"/>
-        <circle id="kick_off_circle" class="st18" cx="-1.8" cy="500" r="425.3"/>
-        <circle id="information_architecture_development_circle" class="st18" cx="-1.8" cy="500" r="393.9"/>
-        <circle id="design_circle" class="st18" cx="-1.8" cy="500" r="362.1"/>
-        <circle id="front_end_development_circle" class="st18" cx="-1.8" cy="500" r="330.7"/>
-        <circle id="back_end_development_circle" class="st18" cx="-1.8" cy="500" r="299.3"/>
-        <circle id="quality_assurance_circle" class="st18" cx="-1.8" cy="500" r="267.9"/>
-        <circle id="launch_circle" class="st18" cx="-1.8" cy="500" r="236.3"/>
+        <circle id="discovery_circle" class="rings_line" cx="-1.8" cy="500" r="488.2"/>
+        <circle id="client_consultation_circle" class="rings_line" cx="-1.8" cy="500" r="456.8"/>
+        <circle id="kick_off_circle" class="rings_line" cx="-1.8" cy="500" r="425.3"/>
+        <circle id="information_architecture_development_circle" class="rings_line" cx="-1.8" cy="500" r="393.9"/>
+        <circle id="design_circle" class="rings_line" cx="-1.8" cy="500" r="362.1"/>
+        <circle id="front_end_development_circle" class="rings_line" cx="-1.8" cy="500" r="330.7"/>
+        <circle id="back_end_development_circle" class="rings_line" cx="-1.8" cy="500" r="299.3"/>
+        <circle id="quality_assurance_circle" class="rings_line" cx="-1.8" cy="500" r="267.9"/>
+        <circle id="launch_circle" class="rings_line" cx="-1.8" cy="500" r="236.3"/>
         <g id="discovery_line">
-            <path class="st19" d="M415.2,245.6c46.7,76.8,71.6,164.7,71.6,254.8"/>
+            <path class="discovery_line" d="M415.2,245.6c46.7,76.8,71.6,164.7,71.6,254.8"/>
             <circle class="discovery_fill" cx="486.5" cy="500.4" r="3.5"/>
-            <circle class="st20" cx="415.2" cy="245.6" r="6.9"/>
+            <circle class="discovery_line_close" cx="415.2" cy="245.6" r="6.9"/>
         </g>
         <g id="client_consultation_line">
-            <path class="st21" d="M389.6,263.9c-50.5-83.4-126-148.6-216.1-185.8"/>
+            <path class="client_consultation_line" d="M389.6,263.9c-50.5-83.4-126-148.6-216.1-185.8"/>
             <circle class="client_consultation_fill" cx="389.6" cy="263.9" r="3.5"/>
-            <circle class="st22" cx="173.4" cy="78.1" r="6.9"/>
+            <circle class="client_consultation_line_close" cx="173.4" cy="78.1" r="6.9"/>
         </g>
         <g id="kick_off_line">
-            <path class="st23" d="M174.5,112.8C119.1,87.7,59,74.7-1.8,74.7c-23.6,0-47.4,2-70.6,5.8"/>
+            <path class="kick_off_line" d="M174.5,112.8C119.1,87.7,59,74.7-1.8,74.7c-23.6,0-47.4,2-70.6,5.8"/>
             <circle class="kick_off_fill" cx="174.5" cy="112.8" r="3.5"/>
-            <circle class="st24" cx="-71.9" cy="80.6" r="6.9"/>
+            <circle class="kick_off_line_close" cx="-71.9" cy="80.6" r="6.9"/>
         </g>
         <g id="information_architecture_development_line">
-            <path class="st25" d="M-1.8,106.1c-116.2,0-226.5,51.4-301.3,140.2"/>
+            <path class="information_architecture_development_line" d="M-1.8,106.1c-116.2,0-226.5,51.4-301.3,140.2"/>
             <circle class="information_architecture_fill" cx="-1.8" cy="106.1" r="3.5"/>
-            <circle class="st27" cx="-302.9" cy="246.1" r="6.9"/>
+            <circle class="information_architecture_development_line_close" cx="-302.9" cy="246.1" r="6.9"/>
         </g>
         <g id="design_line">
-            <path class="st28" d="M-225,214.9c-87.7,68.7-139.1,174-138.8,285.3"/>
+            <path class="design_line" d="M-225,214.9c-87.7,68.7-139.1,174-138.8,285.3"/>
             <circle class="design_fill" cx="-225" cy="214.9" r="3.5"/>
-            <circle class="st29" cx="-363.2" cy="500.4" r="6.9"/>
+            <circle class="design_line_close" cx="-363.2" cy="500.4" r="6.9"/>
         </g>
         <g id="front_end_development_line">
-            <path class="st30" d="M-324.9,430.1c-26.9,125.3,20.5,254.4,122,332.7"/>
+            <path class="front_end_development_line" d="M-324.9,430.1c-26.9,125.3,20.5,254.4,122,332.7"/>
             <circle class="front_end_development_fill" cx="-324.9" cy="430.1" r="3.5"/>
-            <circle class="st31" cx="-203.2" cy="763" r="6.9"/>
+            <circle class="front_end_development_line_close" cx="-203.2" cy="763" r="6.9"/>
         </g>
         <g id="back_end_development_line">
-            <path class="st32" d="M-300.9,500.4c0,141.1,98.1,263,236.1,292.6c11.6,2,23.1,3.8,34.7,4.5"/>
+            <path class="back_end_development_line" d="M-300.9,500.4c0,141.1,98.1,263,236.1,292.6c11.6,2,23.1,3.8,34.7,4.5"/>
             <circle class="backend_development_fill" cx="-300.9" cy="500.4" r="3.5"/>
-            <circle class="st33" cx="-30" cy="797.5" r="6.9"/>
+            <circle class="back_end_development_line_close" cx="-30" cy="797.5" r="6.9"/>
         </g>
         <g id="quality_assurance_line">
-            <path class="st34" d="M-81.7,755.9c25.6,8.4,52.9,12.7,79.9,12.2l0,0c23.6,0,47.6-3.1,70.5-9.3"/>
+            <path class="quality_assurance_line" d="M-81.7,755.9c25.6,8.4,52.9,12.7,79.9,12.2l0,0c23.6,0,47.6-3.1,70.5-9.3"/>
             <circle class="quality_assurance_fill" cx="-81.7" cy="755.9" r="3.5"/>
-            <circle class="st35" cx="68.7" cy="758.8" r="6.9"/>
+            <circle class="quality_assurance_line_close" cx="68.7" cy="758.8" r="6.9"/>
         </g>
     </g>
-    <g id="arrows">
+<!--     <g id="arrows">
         <g id="up_arrow_group" class="arrow_group">
             <circle id="up_arrow_container" class="inactive-arrow-container" cx="1152.5" cy="436.5" r="41.5"/>
             <path id="up_arrow" class="inactive-arrow" d="M1165,430.9l-1.5,1.5L1153,422l-10.5,10.4l-1.5-1.5l12-11.9L1165,430.9z M1154.1,421.3V454
@@ -660,5 +745,5 @@
             <path id="down_arrow" class="inactive-arrow" d="M1141,569.1l1.5-1.5L1153,578l10.5-10.4l1.5,1.5l-12,11.9L1141,569.1z M1151.9,578.7V546h2.1
                 v32.7H1151.9z"/>
         </g>
-    </g>
+    </g> -->
 </svg>
