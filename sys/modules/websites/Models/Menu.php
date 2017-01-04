@@ -13,6 +13,8 @@ class Menu extends Model
         'name'
     ];
 
+    // protected $with = ['items'];
+
     // public funciton website()
     // {
     //     return $this->belongsTo(Website::class);
@@ -25,7 +27,7 @@ class Menu extends Model
      */
     public function items()
     {
-        return $this->hasMany(NavItem::class)->with('navigatable')->orderBy('id', 'DESC');
+        return $this->hasMany(NavItem::class)->with('navigatable')->orderBy('id', 'ASC');
     }
 
     /**
@@ -101,6 +103,10 @@ class Menu extends Model
             $thisref['label'] = $node['label'];
 
             $thisref['new_tab'] = $node['new_tab'];
+
+            $thisref['clickable'] = $node['clickable'];
+
+            $thisref['icon'] = $node['icon'] ?: null;
 
             if ($node['parent_id'] == null) {
 

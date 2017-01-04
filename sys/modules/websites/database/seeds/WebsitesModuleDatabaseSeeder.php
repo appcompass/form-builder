@@ -23,7 +23,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             // $builder->json('Auth Key', 'config.key')->list()->required()->sortable()->searchable();
         })->setAlias(['websites.index', 'websites.show', 'websites.create']);
 
-        Website::create(['name' => 'Test', 'url' => 'www.example.org']);
+        $CMS = Website::create(['name' => 'CMS', 'url' => 'https://k1cc0.me:8080']);
 
         \DB::statement("DELETE FROM forms WHERE name = 'pages'");
 
@@ -40,58 +40,24 @@ class WebsitesModuleDatabaseSeeder extends Seeder
         \DB::statement('TRUNCATE menus CASCADE');
 
         // @NOTE parent_id MUST be defined before slug, otherwise it won't be available when we build the url
+        $users = Page::create(['name' => 'users', 'title' => 'Users', 'slug' => 'users', 'website_id' => $CMS->id]);
+        $groups = Page::create(['name' => 'groups', 'title' => 'Groups', 'slug' => 'groups', 'website_id' => $CMS->id]);
+        $permissions = Page::create(['name' => 'permissions', 'title' => 'Permissions', 'slug' => 'permissions', 'website_id' => $CMS->id]);
+        $websites = Page::create(['name' => 'websites', 'title' => 'Websites', 'slug' => 'websites', 'website_id' => $CMS->id]);
+        $galleries = Page::create(['name' => 'galleries', 'title' => 'Galleries', 'slug' => 'galleries', 'website_id' => $CMS->id]);
 
-        $home = Page::create([
-            'name' => 'homepage',
-            'title' => 'Home of the Underdogs',
-            'description' => 'Come here for some good oldies',
-            'slug' => '']
-        );
+        MenuBuilder::new('main_nav', $CMS, function(MenuBuilder $builder) use($users, $groups, $permissions, $websites, $galleries) {
 
-        $services = Page::create([
-            'name' => 'services',
-            'title' => 'Services',
-            'parent_id' => $home->id,
-            'slug' => 'services']
-        );
+            $users_management_category = $builder->add(['url' => '', 'label' => 'Users Management', 'alt' => 'Users Management', 'new_tab' => false, 'clickable' => false]);
+            $builder->add($users)->setParent($users_management_category)->icon('user');
+            $builder->add($groups)->setParent($users_management_category)->icon('users');
+            $builder->add($permissions)->setParent($users_management_category)->icon('lock');
 
-        $about = Page::create([
-            'name' => 'about',
-            'title' => 'About',
-            'parent_id' => $services->id,
-            'slug' => 'about'
-        ]);
+            $properties_category = $builder->add(['url' => '', 'label' => 'Web Properties', 'alt' => 'Web Properties', 'new_tab' => false, 'clickable' => false]);
+            $builder->add($websites)->setParent($properties_category)->icon('globe');
 
-        $websites = Page::create([
-            'name' => 'websites',
-            'title' => 'Websites Creation',
-            'parent_id' => $about->id,
-            'slug' => 'websites'
-        ]);
-
-        $hosting = Page::create([
-            'name' => 'hosting',
-            'title' => 'Hosting',
-            'parent_id' => $about->id,
-            'slug' => 'hosting'
-        ]);
-
-        Page::create([
-            'name' => 'traffic',
-            'title' => 'Traffic monitoring',
-            'parent_id' => $about->id,
-            'slug' => 'traffic'
-        ]);
-
-        MenuBuilder::new('main_nav', function(MenuBuilder $builder) use($home, $about, $services, $websites, $hosting) {
-
-            $builder->add($home);
-            $services_nav_item = $builder->add($services);
-            $builder->add($about)->setParent($services_nav_item);
-            $websites_nav_item = $builder->add($websites)->setParent($services_nav_item);
-            $builder->add(['url' => 'http://www.google.com', 'label' => 'Google', 'alt' => 'Google', 'new_tab' => true]);
-            $builder->add($hosting)->setParent($websites_nav_item);
-
+            $publications_category = $builder->add(['url' => '', 'label' => 'Publications', 'alt' => 'Publications', 'new_tab' => false, 'clickable' => false]);
+            $builder->add($galleries)->setParent($publications_category)->icon('camera');
         });
 
 

@@ -3,6 +3,7 @@
 namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use P3in\Models\Website;
 
 class Page extends Model
 {
@@ -11,11 +12,17 @@ class Page extends Model
         'slug',
         'title',
         'description',
+        'website_id'
     ];
 
     protected $guarded = [
         'url', // url are ALWAYS gonna be generated
     ];
+
+    public function website()
+    {
+        return $this->belongsTo(Website::class);
+    }
 
     /**
      * parent
@@ -48,9 +55,14 @@ class Page extends Model
 
         $this->attributes['url'] = $this->buildUrl();
 
-        $this->save();
+        if ($this->exists) {
 
-        $this->updateChildrenUrl();
+            $this->save();
+
+            $this->updateChildrenUrl();
+
+        }
+
     }
 
     /**
@@ -77,9 +89,9 @@ class Page extends Model
      */
     private function buildUrl()
     {
-        $slugs = [];
-
         $page = $this;
+
+        $slugs = [$this->slug];
 
         while($page->parent_id !== NULL) {
 
