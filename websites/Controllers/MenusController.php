@@ -13,4 +13,9 @@ class MenusController extends AbstractController
         $this->repo = $repo;
     }
 
+    public function show($model)
+    {
+        return $model->render();
+    }
+
 }

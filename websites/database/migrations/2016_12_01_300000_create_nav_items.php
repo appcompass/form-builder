@@ -25,12 +25,16 @@ class CreateNavItems extends Migration
             $table->string('url', 2083)->nullable();
             $table->integer('order')->unsigned()->nullable();
             $table->integer('req_perm')->unsigned()->nullable();
+            $table->boolean('clickable')->default(true); // sometimes we just want separators
+            $table->string('icon')->nullable();
             // $table->foreign('req_perms')->references('id')->on('permissions');
 
             $table->integer('navigatable_id')->nullable();
             $table->string('navigatable_type')->nullable();
 
             $table->timestamps();
+
+            $table->index('menu_id');
         });
     }
 

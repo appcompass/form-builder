@@ -37,5 +37,10 @@ class WebsitesServiceProvider extends ServiceProvider
         \Route::bind('page', function($value) {
             return \P3in\Models\Page::findOrFail($value);
         });
+
+        \Route::bind('menu', function($value) {
+            return \P3in\Models\Menu::findOrFail($value);
+        });
+
     }
 }
