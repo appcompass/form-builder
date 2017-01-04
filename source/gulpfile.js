@@ -46,7 +46,7 @@ gulp.task('sass', function(){
 });
 
 gulp.task('css', function(){
-    return gulp.src('assets/sass/**/*.css')
+    return gulp.src('assets/css/**/*.css')
         .pipe(cssnano())
         .pipe(rename('main-min.css'))
         .pipe(gulp.dest('../public/assets/css'));
@@ -91,9 +91,9 @@ gulp.task('svgs', function () {
 });
 
 gulp.task('images', function(){
-    return gulp.src(['assets/images/**/*.jpg','assets/images/**/*.png'])
+    return gulp.src(['**/*.jpg','**/*.png', '!node_modules/**/*'])
         .pipe(imagemin())
-        .pipe(gulp.dest('../public/assets/images'));
+        .pipe(gulp.dest('../public'));
 });
 
 gulp.task('fonts', function() {
@@ -119,5 +119,5 @@ gulp.task('serve', function () {
 });
 
 gulp.task('build', function(callback) {
-    runSequence('clean:dist', 'sass', ['css', 'modernizr', 'scripts', 'images', 'fonts', 'templates'], callback);
+    runSequence('clean:dist', 'sass', ['css', 'modernizr', 'scripts', 'svgs', 'images', 'fonts', 'templates'], callback);
 });

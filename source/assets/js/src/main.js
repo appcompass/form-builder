@@ -114,24 +114,24 @@
 })(jQuery);
 
 var home_process = new Snap("#home-process-svg");
-Snap.load('/assets/images/content/home_process.svg', function(svg){
+Snap.load('assets/images/content/home_process.svg', function(svg){
     home_process.append(svg);
 
     // Rings
     var rings = home_process.select('#rings');
-
-    // Rotations
     var rings_bbox = rings.getBBox();
+
     var int;
-    var speed = 6000;
-    // var pause_duration = 0;
-    // var interval = speed+pause_duration;
+    var tim;
+    var speed = 4000;
     var step_speed = speed/3;
     var pos = 0;
+    var in_view = false;
     var is_running = false;
-    var anim_circle_enter = mina.elastic;
+    var step_scale = 1.2;
+    var anim_stage = mina.easeinout;
     var anim_circle_rotate = mina.easeinout;
-    var anim_step = mina.linear;
+    var anim_step = mina.easeinout;
 
     // // Design TODO: Launch circle line
     // step_id: '#launch',
@@ -183,17 +183,13 @@ Snap.load('/assets/images/content/home_process.svg', function(svg){
         return 'r'+degree+',' + rings_bbox.cx + ',' + rings_bbox.cy
     }
 
-    function step(elm, start_pos, opac, end_pos, cb)
+    function step(elm, start_pos, opac, end_pos, step_speed, anim_step, cb)
     {
-        //we scale the step group up for now till we get
-        //the directional arrows working properly.
-        var s = 1.3;
-
         home_process.select(elm)
-        .transform('s'+[s,s]+'t'+[100, start_pos])
+        .transform('s'+[step_scale,step_scale]+'t'+[0, start_pos])
         .animate({
             opacity: opac,
-            transform: 's'+[s,s]+'t'+[100, end_pos]
+            transform: 's'+[step_scale,step_scale]+'t'+[0, end_pos]
         }, step_speed, anim_step, function(){
             if (cb) {
                 cb();
@@ -201,11 +197,48 @@ Snap.load('/assets/images/content/home_process.svg', function(svg){
         });
     }
 
+    function stepOut(step_id){
+        tim = setTimeout(function(){
+            step(step_id, 0, 0, 400, step_speed, anim_step);
+        }, speed-step_speed);
+
+    }
+
+    function stageSet(elm, type){
+        var bbox = elm.getBBox();
+        var parentBbox = elm.parent().getBBox();
+        var start_pos = [0,0];
+        var end_pos = [0, 0];
+
+
+        switch(type){
+            case 'arrows':
+                start_pos = [bbox.w+8, 0];
+            break;
+            case 'rings':
+                start_pos = [bbox.x, 0];
+            break;
+        }
+        elm
+        .transform('t'+start_pos)
+        .stop()
+        .animate({
+            transform: 't'+end_pos
+        }, step_speed, anim_stage);
+    }
+
+    function rotateRings(degrees, speed){
+        // Rotate rings.
+        rings.animate({
+            transform: turnToTransform(degrees)
+        }, speed, anim_circle_rotate);
+    }
+
     function animate(){
         int = setInterval(function(){
             var row = svg_config[pos];
 
-            step(row.step_id, (is_running ? -400 : 0), 1, 0, function(){
+            step(row.step_id, (is_running ? -400 : 0), 1, 0, step_speed, anim_step, function(){
 
                 is_running = true;
                 // If we are at the first position, which is at both 0 and 360 degrees,
@@ -213,14 +246,10 @@ Snap.load('/assets/images/content/home_process.svg', function(svg){
                 if (pos == 0) {
                     rings.transform(turnToTransform(row.start));
                 }
-                // Move rings forward.
-                rings.animate({
-                    transform: turnToTransform(row.end)
-                }, speed, anim_circle_rotate);
 
-                setTimeout(function(){
-                    step(row.step_id, 0, 0, 400);
-                }, speed-step_speed);
+                rotateRings(row.end, speed);
+
+                stepOut(row.step_id);
 
                 // Increment or reset the position tracking.
                 if (pos === svg_config.length-1) {
@@ -232,28 +261,100 @@ Snap.load('/assets/images/content/home_process.svg', function(svg){
             });
         }, speed); //interval
     }
-
-    // function moveTo(i){
-    //     // we need to check the config size to allow loop between start and finish.
-    //     pos = i;
-    //     clearInterval(int);
-    //     // we need to be able to fast forward and fast rewind.
-    //     animate();
-    // }
-
-    function init(){
-            var row = svg_config[0];
-            rings.transform('t'+[rings_bbox.x, 0]).animate({
-                transform: 't'+[0, 0]
-            }, speed, anim_circle_enter);
-            step(row.step_id, -400, 1, 0);
-            animate();
+    function stopLoops(){
+        clearInterval(int);
+        clearTimeout(tim);
     }
 
-    init();
+    function init(){
+        var row = svg_config[0];
+
+        // stageSet(arrows, 'arrows');
+        stageSet(rings, 'rings');
+
+        step(row.step_id, -400, 1, 0, step_speed, anim_step);
+        animate();
+    }
+
+    function reset(){
+        stopLoops();
+        var bbox = rings.getBBox();
+
+
+        rings.stop().transform('');
+
+        for (var i = 0; i < svg_config.length; i++) {
+            home_process.select(svg_config[i].step_id)
+            .stop()
+            .transform('')
+            .attr({opacity: 0});
+        }
+    }
+
+    function isInView(elm) {
+        var elm_top = elm.getBoundingClientRect().top;
+        var elm_bottom = elm.getBoundingClientRect().bottom;
+
+        return elm_top < window.innerHeight && elm_bottom >= 0;
+    }
+
+    function viewWatcher(){
+        var check = isInView(home_process.node);
+        if (check != in_view) {
+            in_view = check;
+            console.log(in_view);
+            if (in_view && !is_running) {
+                init();
+            }else{
+                // Restting the animation doesn't work as expected,
+                // will need more time to dig into this one...
+                // reset();
+            }
+        }
+    }
+
+    if (document.addEventListener) {
+        document.addEventListener('scroll', viewWatcher, false);
+    } else if (document.attachEvent) {
+        document.attachEvent('on' + 'scroll', viewWatcher);
+    }
+
+    // viewWatcher();
 
     // // Arrow handling.
+    // var arrows = home_process.select('#arrows');
+    // var arrows_bbox = arrows.getBBox();
 
+    // function moveTo(i){
+    //     stopLoops();
+
+    //     if (i >= svg_config.length) {
+    //         pos = 0;
+    //     }else if(i < 0) {
+    //         pos = svg_config.length-1;
+    //     }else{
+    //         pos = i;
+    //     }
+
+    //     var row = svg_config[pos];
+    //     var old_row = svg_config[old_pos];
+
+    //     console.log(old_row, row);
+    //     rings.stop();
+    //     home_process.select(old_row.step_id)
+    //     .stop()
+
+    //     .transform('t'+[0, 0])
+    //     .animate({
+    //         opacity: 0,
+    //         transform: 't'+[0, 400]
+    //     }, 500, anim_step);
+
+    //     rotateRings(row.end, 500);
+    //     // step(old_row.step_id, 0, 0, 400, 500, anim_step);
+    //     step(row.step_id, -400, 1, 0, 500, anim_step);
+    //     animate();
+    // }
     // // Arrows
     // var up_arrow_group = home_process.select('#up_arrow_group');
     // var up_arrow_container = home_process.select('#up_arrow_container');
