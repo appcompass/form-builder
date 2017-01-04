@@ -2,29 +2,95 @@
 
 namespace P3in\Models;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use P3in\Models\Website;
 
 class Page extends Model
 {
-
     protected $fillable = [
         'name',
+        'slug',
         'title',
         'description',
-        'slug',
-        'url',
-        'layout'
     ];
 
-    public function website()
-    {
-        return $this->belongsTo(Website::class);
-    }
+    protected $guarded = [
+        'url', // url are ALWAYS gonna be generated
+    ];
 
+    /**
+     * parent
+     *
+     * @return     BelongsTo
+     */
     public function parent()
     {
-        return $this->belongsTo(Page::class);
+        return $this->belongsTo(Page::class, 'parent_id');
     }
+
+    /**
+     * children
+     *
+     * @return     HasMany
+     */
+    public function children()
+    {
+        return $this->hasMany(Page::class, 'parent_id');
+    }
+
+    /**
+     * Sets the url based on slug
+     *
+     * @param      <type>  $slug   The slug
+     */
+    public function setSlugAttribute($slug)
+    {
+        $this->attributes['slug'] = $slug;
+
+        $this->attributes['url'] = $this->buildUrl();
+
+        $this->save();
+
+        $this->updateChildrenUrl();
+    }
+
+    /**
+     * updateChildrenUrl
+     *
+     *  Updates children's url
+     *
+     */
+    private function updateChildrenUrl()
+    {
+        foreach($this->children as $child) {
+
+            $child->url = $child->buildUrl();
+
+            $child->save();
+
+        }
+    }
+
+    /**
+     * buildUrl
+     *
+     * @return     string   Full Url, including parents
+     */
+    private function buildUrl()
+    {
+        $slugs = [];
+
+        $page = $this;
+
+        while($page->parent_id !== NULL) {
+
+            array_push($slugs, $page->slug);
+
+            $page = $page->parent;
+
+        }
+
+        return '/' . implode('/', array_reverse($slugs));
+    }
+
+
 }
