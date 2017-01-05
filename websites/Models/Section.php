@@ -6,16 +6,16 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use P3in\Models\Website;
 
-class Page extends Model
+class Section extends Model
 {
 
     protected $fillable = [
         'name',
-        'title',
-        'description',
-        'slug',
-        'url',
-        'layout'
+        'fits',
+        'display_view',
+        'edit_view',
+        'type',
+        'config',
     ];
 
     public function page()

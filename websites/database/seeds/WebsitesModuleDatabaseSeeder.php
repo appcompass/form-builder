@@ -23,7 +23,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             // $builder->json('Auth Key', 'config.key')->list()->required()->sortable()->searchable();
         })->setAlias(['websites.index', 'websites.show', 'websites.create']);
 
-        $CMS = Website::create(['name' => 'CMS', 'url' => 'https://k1cc0.me:8080']);
+        $CMS = Website::create(['name' => env('ADMIN_WEBSITE_NAME'), 'url' => env('ADMIN_WEBSITE_URL')]);
 
         \DB::statement("DELETE FROM forms WHERE name = 'pages'");
 
@@ -40,11 +40,11 @@ class WebsitesModuleDatabaseSeeder extends Seeder
         \DB::statement('TRUNCATE menus CASCADE');
 
         // @NOTE parent_id MUST be defined before slug, otherwise it won't be available when we build the url
-        $users = Page::create(['name' => 'users', 'title' => 'Users', 'slug' => 'users', 'website_id' => $CMS->id]);
-        $groups = Page::create(['name' => 'groups', 'title' => 'Groups', 'slug' => 'groups', 'website_id' => $CMS->id]);
-        $permissions = Page::create(['name' => 'permissions', 'title' => 'Permissions', 'slug' => 'permissions', 'website_id' => $CMS->id]);
-        $websites = Page::create(['name' => 'websites', 'title' => 'Websites', 'slug' => 'websites', 'website_id' => $CMS->id]);
-        $galleries = Page::create(['name' => 'galleries', 'title' => 'Galleries', 'slug' => 'galleries', 'website_id' => $CMS->id]);
+        $users = $CMS->pages()->create(['name' => 'users', 'title' => 'Users', 'slug' => 'users']);
+        $groups = $CMS->pages()->create(['name' => 'groups', 'title' => 'Groups', 'slug' => 'groups']);
+        $permissions = $CMS->pages()->create(['name' => 'permissions', 'title' => 'Permissions', 'slug' => 'permissions']);
+        $websites = $CMS->pages()->create(['name' => 'websites', 'title' => 'Websites', 'slug' => 'websites']);
+        $galleries = $CMS->pages()->create(['name' => 'galleries', 'title' => 'Galleries', 'slug' => 'galleries']);
 
         MenuBuilder::new('main_nav', $CMS, function(MenuBuilder $builder) use($users, $groups, $permissions, $websites, $galleries) {
 
