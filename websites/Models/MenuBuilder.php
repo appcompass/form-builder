@@ -32,14 +32,15 @@ class MenuBuilder
      *
      * @return     <type>   ( description_of_the_return_value )
      */
-    public static function new($name, Closure $closure = null)
+    public static function new($name, Website $website, Closure $closure = null)
     {
 
         $instance = new static();
 
         $instance->menu = Menu::create([
 
-            'name' => $name
+            'name' => $name,
+            'website_id' => $website->id
 
         ]);
 
@@ -156,4 +157,6 @@ class MenuBuilder
 
         }
 
-    }}
+    }
+
+}

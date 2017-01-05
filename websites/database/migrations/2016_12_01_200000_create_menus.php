@@ -16,11 +16,13 @@ class CreateMenus extends Migration
         Schema::create('menus', function(Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            // $table->integer('website_id')->unsigned();
-            // $table->foreigh('website_id')->references('id')->on('websites');
             $table->timestamps();
+
+            $table->integer('website_id')->unsigned();
+            $table->foreign('website_id')->references('id')->on('websites');
+
+            $table->unique(['name', 'website_id']); // just for sanity check
             $table->index('name');
-            // $table->unique(['name', 'website_id']);
         });
     }
 

@@ -10,9 +10,10 @@ class Link
 
     private $rules = [
         'label' => 'required',
-        'url' => 'required',
+        'url' => 'required_if:clickable,true',
         'alt' => 'required',
-        'new_tab' => 'required'
+        'new_tab' => 'required',
+        // 'clickable' => ''
     ];
 
     private $attributes;
