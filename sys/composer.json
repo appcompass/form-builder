@@ -49,10 +49,15 @@
         ],
         "post-update-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
-            "php artisan optimize"
+            "php artisan vendor:publish",
+            "php artisan optimize",
+            "php artisan cache:clear",
+            "cd ../cp && npm run build",
+            "cd ../source && gulp build"
         ]
     },
     "config": {
+        "discard-changes": true,
         "preferred-install": "dist"
     }
 }
