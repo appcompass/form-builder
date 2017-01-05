@@ -15,10 +15,6 @@ class CreateMenus extends Migration
     {
         Schema::create('menus', function(Blueprint $table) {
             $table->increments('id');
-
-            $table->integer('website_id')->unsigned();
-            $table->foreign('website_id')->references('id')->on('websites');
-
             $table->string('name');
             $table->timestamps();
 

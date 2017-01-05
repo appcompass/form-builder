@@ -26,3 +26,5 @@ config.codekit
 sys/database/migrations
 sys/resources/node-scripts
 supervisord.conf
+
+cp/config/server.env.js

@@ -59,6 +59,7 @@ import Formboolean from './FormBuilder/Boolean'
 import swal from 'sweetalert'
 import _ from 'lodash'
 import SubComponent from './SubComponent'
+// import env from 'dotenv'
 
 export default {
   name: 'EditView',
@@ -95,7 +96,7 @@ export default {
   methods: {
 
     refresh () {
-      var api = '/api/'
+      var api = process.env.API_SERVER + '/api/'
       this.loading = true
       this.$http.get(api + this.model)
         .then((response) => {

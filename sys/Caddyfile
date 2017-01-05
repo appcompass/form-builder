@@ -1,6 +1,6 @@
 api.k1cc0.me
 
-root ./public
+root ../public
 
 #gzip
 #browse

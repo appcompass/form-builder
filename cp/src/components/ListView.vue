@@ -123,7 +123,7 @@ export default {
     }, 500),
 
     update () {
-      var api = '/api'
+      var api = process.env.API_SERVER + '/api'
       this.loading = true
       this.model = this.$route.path
       this.$http.get(api + this.$route.path, {
