@@ -8,6 +8,8 @@ use P3in\Models\Menu;
 class MenusRepository extends AbstractRepository implements MenusRepositoryInterface
 {
 
+    public $with = ['items'];
+
     public function __construct(Menu $model)
     {
         $this->model = $model;

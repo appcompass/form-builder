@@ -42,6 +42,8 @@ div
           router-link(:to="{name: 'sub', params: {model: 'users', id: $route.params.id, sub: 'permissions'}}") Permissions
           br
           router-link(:to="{name: 'sub', params: {model: 'websites', id: $route.params.id, sub: 'pages'}}") Pages
+          br
+          router-link(:to="{name: 'sub', params: {model: 'websites', id: $route.params.id, sub: 'navigation'}}") Navigation
 
   div.columns
     .column.is-12
