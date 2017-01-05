@@ -43,11 +43,11 @@ export default {
     }
   },
   created () {
-    var api = 'https://api.k1cc0.me/api/'
+    var api = '/api/'
 
     this.model = this.$route.params.model.split('_').join('/')
 
-    this.$http.get('https://api.k1cc0.me/api' + this.$route.path)
+    this.$http.get('/api' + this.$route.path)
       .then((response) => {
         this.create = response.data.edit // edit and create form are the same (for now)
         // this.resource = this.$resource(api + this.create.resource)

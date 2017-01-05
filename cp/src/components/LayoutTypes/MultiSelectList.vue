@@ -18,7 +18,7 @@ export default {
     }
   },
   mounted () {
-    var api = 'https://api.k1cc0.me/api'
+    var api = '/api'
 
     this.resource = this.$resource(api + this.$route.path)
   },
