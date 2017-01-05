@@ -18,7 +18,7 @@ export default {
   },
   methods: {
     fetch (endpoint) {
-      return this.$http.get('https://api.k1cc0.me/api' + endpoint)
+      return this.$http.get('/api' + endpoint)
     }
   }
 }

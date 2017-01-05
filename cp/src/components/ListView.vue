@@ -76,7 +76,7 @@ export default {
         return
       }
 
-      // var api = 'https://api.k1cc0.me/api'
+      // var api = '/api'
       this.model = to.path
       this.loading = true
 
@@ -123,7 +123,7 @@ export default {
     }, 500),
 
     update () {
-      var api = 'https://api.k1cc0.me/api'
+      var api = '/api'
       this.loading = true
       this.model = this.$route.path
       this.$http.get(api + this.$route.path, {

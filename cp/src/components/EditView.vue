@@ -95,7 +95,7 @@ export default {
   methods: {
 
     refresh () {
-      var api = 'https://api.k1cc0.me/api/'
+      var api = '/api/'
       this.loading = true
       this.$http.get(api + this.model)
         .then((response) => {
