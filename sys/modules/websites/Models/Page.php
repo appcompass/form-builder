@@ -12,7 +12,7 @@ class Page extends Model
         'slug',
         'title',
         'description',
-        'website_id'
+        // 'website_id'
     ];
 
     protected $guarded = [
@@ -43,6 +43,16 @@ class Page extends Model
     {
         return $this->hasMany(Page::class, 'parent_id');
     }
+
+    public function sections()
+    {
+        return $this->belongsToMany(Section::class);
+    }
+
+    // public function sections()
+    // {
+    //     return $this->belongsToMany(Section::class);
+    // }
 
     /**
      * Sets the url based on slug

@@ -129,7 +129,7 @@ class ResourceBuilder
      *
      * @return     <type>  ( description_of_the_return_value )
      */
-    public function dropalias($alias)
+    public function dropAlias($alias)
     {
         $this->form->dropAlias($alias);
 
