@@ -23,7 +23,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             // $builder->json('Auth Key', 'config.key')->list()->required()->sortable()->searchable();
         })->setAlias(['websites.index', 'websites.show', 'websites.create']);
 
-        $CMS = Website::create(['name' => 'CMS', 'url' => 'https://k1cc0.me:8080']);
+        $CMS = Website::create(['name' => env('ADMIN_WEBSITE_NAME'), 'url' => env('ADMIN_WEBSITE_URL')]);
 
         \DB::statement("DELETE FROM forms WHERE name = 'pages'");
 
