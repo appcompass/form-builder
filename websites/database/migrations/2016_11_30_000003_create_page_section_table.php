@@ -15,15 +15,17 @@ class CreatePageSectionTable extends Migration
     {
         Schema::create('page_section', function(Blueprint $table) {
             $table->increments('id');
-            $table->integer('section_id')->unsigned();
+
             $table->integer('page_id')->unsigned();
+            $table->foreign('page_id')->references('id')->on('pages')->onDelete('cascade');
+
+            $table->integer('section_id')->unsigned();
+            $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
+
             $table->string('section')->nullable();
             $table->json('content')->nullable();
             $table->integer('order')->unsigned()->nullable();
             $table->string('type')->nullable();
-
-            $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
-            $table->foreign('page_id')->references('id')->on('pages')->onDelete('cascade');
         });
     }
 
