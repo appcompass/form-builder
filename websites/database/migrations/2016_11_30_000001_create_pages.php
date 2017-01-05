@@ -15,6 +15,13 @@ class CreatePages extends Migration
     {
         Schema::create('pages', function(Blueprint $table) {
             $table->increments('id');
+
+            $table->integer('parent_id')->nullable();
+            $table->foreign('parent_id')->references('id')->on('pages');
+
+            $table->integer('website_id')->unsigned();
+            $table->foreign('website_id')->references('id')->on('websites');
+
             $table->string('name');
             $table->string('slug');
             $table->string('url', 2083)->nullable(); // this is being derived automatically
@@ -22,12 +29,6 @@ class CreatePages extends Migration
             $table->string('description')->nullable();
             $table->string('meta')->nullable();
             $table->boolean('dynamic_url')->default(false);
-
-            $table->integer('parent_id')->nullable();
-            $table->foreign('parent_id')->references('id')->on('pages');
-
-            $table->integer('website_id')->unsigned();
-            $table->foreign('website_id')->references('id')->on('websites');
 
             $table->timestamps();
             $table->softDeletes();
