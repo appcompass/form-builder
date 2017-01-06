@@ -96,7 +96,7 @@ export default {
   methods: {
 
     refresh () {
-      var api = process.env.API_SERVER + '/api/'
+      var api = process.env.API_SERVER
       this.loading = true
       this.$http.get(api + this.model)
         .then((response) => {

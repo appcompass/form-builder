@@ -18,8 +18,7 @@ export default {
     }
   },
   mounted () {
-    var api = '/api'
-
+    const api = process.env.API_SERVER
     this.resource = this.$resource(api + this.$route.path)
   },
   methods: {

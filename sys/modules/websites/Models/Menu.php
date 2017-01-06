@@ -13,12 +13,15 @@ class Menu extends Model
         'name'
     ];
 
-    // protected $with = ['items'];
-
-    // public funciton website()
-    // {
-    //     return $this->belongsTo(Website::class);
-    // }
+    /**
+     * Website
+     *
+     * @return     BelongsTo    Website
+     */
+    public function website()
+    {
+        return $this->belongsTo(Website::class);
+    }
 
     /**
      * items
@@ -82,39 +85,35 @@ class Menu extends Model
 
         return $this->mapTree($items);
 
-        // return $this->fastMapTree($this->items->toArray());
     }
 
-    function mapTree($dataset) {
+    /**
+     * Single-pass Tree Mapping from flat array
+     *
+     * @param      array  $dataset  The dataset
+     *
+     * @return     array  Nested Tree structure
+     */
+    function mapTree(array $dataset) {
 
-        $refs = [];
+        $map = [];
         $tree = [];
+
+        $required = ['parent_id', 'label', 'url', 'new_tab', 'clickable', 'icon'];
 
         foreach($dataset as $id => &$node) {
 
-            $thisref =& $refs[$node['id']];
+            $current =& $map[$node['id']];
 
-            $thisref['parent_id'] = $node['parent_id'];
-
-            $thisref['label'] = $node['label'];
-
-            $thisref['url'] = $node['url'];
-
-            $thisref['label'] = $node['label'];
-
-            $thisref['new_tab'] = $node['new_tab'];
-
-            $thisref['clickable'] = $node['clickable'];
-
-            $thisref['icon'] = $node['icon'] ?: null;
+            $current = array_intersect_key($node, array_flip($required));
 
             if ($node['parent_id'] == null) {
 
-                $tree[$node['id']] =& $thisref;
+                $tree[$node['id']] =& $current;
 
             } else {
 
-                $refs[$node['parent_id']]['children'][$node['id']] =& $thisref;
+                $map[$node['parent_id']]['children'][$node['id']] =& $current;
 
             }
         }

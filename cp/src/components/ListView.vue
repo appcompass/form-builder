@@ -62,13 +62,15 @@ export default {
       search: {},
       sorters: {},
       loading: true,
-      pagination: {surrounded: 3}
+      pagination: {surrounded: 3},
+      watcherFired: false
     }
   },
 
   watch: {
     'pagination.current_page' (nv, ov) {
       this.update()
+      console.log('from pagination watcher')
     },
     '$route' (to, from) {
       this.search = {}
@@ -76,36 +78,20 @@ export default {
         return
       }
 
-      // var api = '/api'
       this.model = to.path
       this.loading = true
 
       this.sorters = {}
       this.search = {}
 
-      this.update()
+      // we trigger an update only if page stays the same, otherwise we let pagination watcher fire the query
+      if (this.pagination.current_page === 1) {
+        this.update()
+      } else {
+        this.pagination.current_page = 1
+      }
 
-      // this.$http.get(api + this.$route.path)
-      //   .then((response) => {
-      //     this.loading = false
-      //     if (!response.data.list) {
-      //       this.list = undefined
-      //       return
-      //     }
-      //     if (this.$route.name === 'sub') {
-      //       console.log('list is sub')
-      //       this.list.list_layout = 'MultiSelect'
-      //     }
-
-      //     this.list = response.data.list
-      //     this.pagination = _.omit(response.data.collection.data, ['data'])
-      //     this.collection = response.data.collection
-      //     this.resource = this.$resource(api + '/' + this.list.resource)
-      //   })
-      //   .catch((response) => {
-      //     this.loading = false
-      //     swal({title: 'Error', text: response.data.errors, type: 'error'})
-      //   })
+      console.log('from $route watcher')
     }
   },
 
@@ -123,7 +109,7 @@ export default {
     }, 500),
 
     update () {
-      var api = process.env.API_SERVER + '/api'
+      var api = process.env.API_SERVER
       this.loading = true
       this.model = this.$route.path
       this.$http.get(api + this.$route.path, {

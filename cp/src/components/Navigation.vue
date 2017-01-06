@@ -1,41 +1,35 @@
 <template lang="jade">
 div
-  aside.menu(v-for="subs, cat in navigation")
-    p.menu-label {{ cat }}
+  aside.menu(v-for="cat in navigation")
+    p.menu-label {{ cat.label }}
     ul.menu-list
-      li(v-for="item in subs")
-        router-link(v-bind:to="item.to")
+      li(v-for="item in cat.children")
+        router-link(v-bind:to="item.url")
           span {{ item.label }}
 </template>
 
 <script>
 export default {
   name: 'Navigation',
+  created () {
+    const api = process.env.API_SERVER
+    this.$http.get(api + 'menus/1')
+      .then(response => {
+        this.navigation = response.body.collection
+      })
+  },
   data () {
     return {
-      navigation: {
-        'General': [
-          // {to: '/', icon: 'dashboard', label: 'Dashboard'},
-          {to: '/users', icon: 'user', label: 'Users'},
-          {to: '/groups', icon: 'users', label: 'Groups'},
-          {to: '/permissions', icon: 'lock', label: 'Permissions'}
-        ],
-        'Web Properties': [
-          {to: '/websites', icon: 'globe', label: 'Websites'}
-        ],
-        'Publications': [
-          {to: '/posts', icon: 'paper-plane', label: 'Posts'},
-          {to: '/galleries', icon: 'camera', label: 'Galleries'}
-        ]
-      }
+      navigation: {}
     }
   }
 }
 </script>
 
 <style lang="sass" scoped>
+@import '../assets/sass/variables.sass'
 .menu-label
   margin-top: 1rem
 .router-link-active
-  // color: red !important
+  color: $primary-color !important
 </style>
