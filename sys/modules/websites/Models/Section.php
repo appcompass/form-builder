@@ -2,25 +2,27 @@
 
 namespace P3in\Models;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use P3in\Models\Website;
+use P3in\Models\Layout;
 
 class Section extends Model
 {
 
     protected $fillable = [
         'name',
-        'fits',
-        'display_view',
-        'edit_view',
+        'template',
         'type',
         'config',
     ];
 
-    public function page()
+    public function layout()
     {
-        return $this->belongsToMany(Page::class);
+        return $this->belongsTo(Layout::class);
     }
 
+    // // @TODO
+    // public function form()
+    // {
+    //     return $this->hasOne(Form::class);
+    // }
 }

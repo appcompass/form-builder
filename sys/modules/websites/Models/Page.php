@@ -3,6 +3,9 @@
 namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use P3in\Models\Layout;
+use P3in\Models\PageSection;
 use P3in\Models\Website;
 
 class Page extends Model
@@ -12,7 +15,6 @@ class Page extends Model
         'slug',
         'title',
         'description',
-        // 'website_id'
     ];
 
     protected $guarded = [
@@ -44,15 +46,30 @@ class Page extends Model
         return $this->hasMany(Page::class, 'parent_id');
     }
 
-    public function sections()
+    public function layouts()
     {
-        return $this->belongsToMany(Section::class);
+        return $this->belongsToMany(Layout::class)
+            ->withPivot('order')
+            ->orderBy('pivot_order', 'asc');
     }
 
-    // public function sections()
-    // {
-    //     return $this->belongsToMany(Section::class);
-    // }
+    public function contents()
+    {
+        return $this->hasMany(PageSection::class)->orderBy('order', 'asc');
+    }
+
+    public function scopeByUrl($query, $url)
+    {
+        $escaped_url = DB::connection()->getPdo()->quote($url);
+        $raw_url = DB::raw($escaped_url);
+
+        return $query
+            ->select(
+                "*",
+                DB::raw("NULLIF(substring($escaped_url from url), url) AS dynamic_segment")
+            )
+            ->where($raw_url,'SIMILAR TO', DB::raw('url'));
+    }
 
     /**
      * Sets the url based on slug
