@@ -26,5 +26,6 @@ class FieldtypesTableSeeder extends Seeder
         Fieldtype::create(['type' => 'radio', 'label' => 'Radio Selection']);
         Fieldtype::create(['type' => 'secret', 'label' => 'Password Field']);
         Fieldtype::create(['type' => 'datetime', 'label' => 'Datetime']);
+        Fieldtype::create(['type' => 'menueditor', 'label' => 'Menu Editor']);
     }
 }
