@@ -1,5 +1,5 @@
 <template lang="jade">
-h1 MenuEditor Muddafukka
+h1 MenuEditor
 </template>
 
 <script>
