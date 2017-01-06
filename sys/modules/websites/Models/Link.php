@@ -2,11 +2,21 @@
 
 namespace P3in\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use Validator;
 use Exception;
 
-class Link
+class Link extends Model
 {
+
+    protected $fillable = [
+        'label',
+        'url',
+        'alt',
+        'new_tab',
+        'clickable',
+        'icon'
+    ];
 
     private $rules = [
         'label' => 'required',
@@ -16,31 +26,31 @@ class Link
         // 'clickable' => ''
     ];
 
-    private $attributes;
+    // protected $attributes;
 
-    public function __construct($attributes)
-    {
-        $validator = Validator::make($attributes, $this->rules);
+    // public function __construct($attributes)
+    // {
+        // $validator = Validator::make($attributes, $this->rules);
 
-        if (!$validator->passes()) {
+        // if (!$validator->passes()) {
 
-            throw new Exception($validator->errors());
+            // throw new Exception($validator->errors());
 
-        }
+        // }
 
-        $this->attributes = $attributes;
+        // $this->attributes = $attributes;
 
-    }
+    // }
 
-    public function __get($attribute)
-    {
-        if (isset($this->attributes[$attribute])) {
+    // public function __get($attribute)
+    // {
+    //     if (isset($this->attributes[$attribute])) {
 
-            return $this->attributes[$attribute];
+    //         return $this->attributes[$attribute];
 
-        }
+    //     }
 
-        return NULL;
-    }
+    //     return NULL;
+    // }
 
 }

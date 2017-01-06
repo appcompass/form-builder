@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePageSectionTable extends Migration
+class CreateLayoutPage extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,15 @@ class CreatePageSectionTable extends Migration
      */
     public function up()
     {
-        Schema::create('page_section', function(Blueprint $table) {
+        Schema::create('layout_page', function(Blueprint $table) {
             $table->increments('id');
 
             $table->integer('page_id')->unsigned();
             $table->foreign('page_id')->references('id')->on('pages')->onDelete('cascade');
 
-            $table->integer('section_id')->unsigned();
-            $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
+            $table->integer('layout_id')->unsigned();
+            $table->foreign('layout_id')->references('id')->on('layouts')->onDelete('cascade');
 
-            $table->json('content')->nullable();
             $table->integer('order')->unsigned()->nullable();
         });
     }
@@ -34,6 +33,6 @@ class CreatePageSectionTable extends Migration
      */
     public function down()
     {
-    	Schema::drop('page_section');
+    	Schema::drop('layout_page');
     }
 }
