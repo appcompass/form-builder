@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateWebsitesTable extends Migration
+class CreateLinks extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,14 @@ class CreateWebsitesTable extends Migration
      */
     public function up()
     {
-        Schema::create('websites', function(Blueprint $table) {
+        Schema::create('links', function(Blueprint $table) {
             $table->increments('id');
-            $table->string('name', 64);
-            $table->string('url', 128);
-            $table->json('config')->nullable();
+            $table->string('label');
+            $table->text('alt');
+            $table->boolean('new_tab');
+            $table->string('url', 2083);
+            $table->boolean('clickable')->default(true); // sometimes we just want separators
+            $table->string('icon')->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +32,6 @@ class CreateWebsitesTable extends Migration
      */
     public function down()
     {
-    	Schema::drop('websites');
+        Schema::drop('links');
     }
 }

@@ -107,7 +107,7 @@ class MenuBuilder
 
         } else if (is_array($item)) {
 
-            $nav_item = NavItem::fromLink(new Link($item));
+            $nav_item = NavItem::fromLink(Link::create($item));
 
         } else if ($item instanceof Page) {
 
