@@ -4,12 +4,12 @@ namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use P3in\Models\Page;
+use Exception;
 
 class NavItem extends Model
 {
 
     protected $fillable = [
-        'url',
         'label',
         'navigatable_id',
         'navigatable_type',
@@ -42,13 +42,44 @@ class NavItem extends Model
     }
 
     /**
+     * NavItems factory
+     *
+     * @param      <type>     $model  The model
+     *
+     * @throws     Exception  Model not allowed
+     *
+     * @return     <type>     NavItem generator
+     */
+    public static function fromModel($model)
+    {
+        $allowedModels = ['P3in\Models\Page', 'P3in\Models\Link'];
+
+        $model_class = get_class($model);
+
+        if (! in_array($model_class, $allowedModels)) {
+
+            throw new Exception("Model not allowed: {$model_class}");
+
+        }
+
+        switch ($model_class) {
+            case "P3in\Models\Page":
+                return static::fromPage($model);
+                break;
+            case "P3in\Models\Link":
+                return static::fromLink($model);
+                break;
+        }
+    }
+
+    /**
      * fromPage
      *
      * @param      \App\Page  $page   The page
      *
      * @return     NavItem
      */
-    public static function fromPage(Page $page)
+    private static function fromPage(Page $page)
     {
         return NavItem::create([
             'navigatable_id' => $page->id,
@@ -67,10 +98,11 @@ class NavItem extends Model
      *
      * @return     NavItem
      */
-    public static function fromLink(Link $link)
+    private static function fromLink(Link $link)
     {
         return NavItem::create([
-            'url' => $link->url,
+            'navigatable_id' => $link->id,
+            'navigatable_type' => get_class($link),
             'label' => $link->label,
             'alt' => $link->alt,
             'new_tab' => $link->new_tab,

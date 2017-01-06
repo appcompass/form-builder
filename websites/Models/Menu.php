@@ -30,7 +30,7 @@ class Menu extends Model
      */
     public function items()
     {
-        return $this->hasMany(NavItem::class)->with('navigatable')->orderBy('id', 'ASC');
+        return $this->hasMany(NavItem::class)->with('navigatable')->orderBy('id', 'DESC');
     }
 
     /**
@@ -105,7 +105,14 @@ class Menu extends Model
 
             $current =& $map[$node['id']];
 
-            $current = array_intersect_key($node, array_flip($required));
+            $current['parent_id'] = $node['parent_id'];
+            $current['label'] = $node['label'];
+            $current['url'] = $node['url'];
+            $current['new_tab'] = $node['new_tab'];
+            $current['clickable'] = $node['clickable'];
+            $current['icon'] = $node['icon'];
+
+            // $current = array_intersect_key($node, array_flip($required));
 
             if ($node['parent_id'] == null) {
 
