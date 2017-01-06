@@ -19,6 +19,9 @@ class CreateSectionsTable extends Migration
             $table->integer('layout_id')->nullable();
             $table->foreign('layout_id')->references('id')->on('layouts');
 
+            $table->integer('form_id')->nullable();
+            $table->foreign('form_id')->references('id')->on('forms');
+
             $table->string("name");
             $table->string("template");
             $table->string('type')->nullable();

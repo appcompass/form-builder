@@ -3,6 +3,7 @@
 namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use P3in\Models\Form;
 use P3in\Models\Layout;
 
 class Section extends Model
@@ -20,9 +21,8 @@ class Section extends Model
         return $this->belongsTo(Layout::class);
     }
 
-    // // @TODO
-    // public function form()
-    // {
-    //     return $this->hasOne(Form::class);
-    // }
+    public function form()
+    {
+        return $this->hasOne(Form::class);
+    }
 }
