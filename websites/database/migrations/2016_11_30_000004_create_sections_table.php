@@ -15,10 +15,12 @@ class CreateSectionsTable extends Migration
     {
         Schema::create('sections', function(Blueprint $table) {
             $table->increments('id');
+
+            $table->integer('layout_id')->nullable();
+            $table->foreign('layout_id')->references('id')->on('layouts');
+
             $table->string("name");
-            $table->string("fits");
-            $table->string("display_view");
-            $table->string("edit_view");
+            $table->string("template");
             $table->string('type')->nullable();
             $table->json("config")->nullable();
             $table->timestamps();
