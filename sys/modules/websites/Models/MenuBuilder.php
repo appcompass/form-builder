@@ -14,6 +14,8 @@ class MenuBuilder
      */
     private $menu;
 
+    private $allowedModels = ['P3in\Models\Page', 'P3in\Models\Link'];
+
     private function __construct(Menu $menu = null)
     {
         if (!is_null($menu)) {
@@ -97,27 +99,19 @@ class MenuBuilder
 
         }
 
-        if ($item instanceof NavItem) {
+        if (is_array($item)) {
 
-            $nav_item = $item;
-
-        } else if ($item instanceof Link) {
-
-            $nav_item = NavItem::fromLink($item);
-
-        } else if (is_array($item)) {
-
-            $nav_item = NavItem::fromLink(Link::create($item));
-
-        } else if ($item instanceof Page) {
-
-            $nav_item = NavItem::fromPage($item);
-
-        } else {
-
-            throw new \Exception("Trying to add something i don't understand");
+            $item = Link::create($item);
 
         }
+
+        if (!in_array(get_class($item), $this->allowedModels)) {
+
+            throw new \Exception("Model " . get_class($item) ." is not allowed");
+
+        }
+
+        $nav_item = NavItem::fromModel($item);
 
         if ($this->menu->add($nav_item)) {
 
