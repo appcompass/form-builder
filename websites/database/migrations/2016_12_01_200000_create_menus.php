@@ -17,7 +17,7 @@ class CreateMenus extends Migration
             $table->increments('id');
 
             $table->integer('website_id')->unsigned();
-            $table->foreign('website_id')->references('id')->on('websites');
+            $table->foreign('website_id')->references('id')->on('websites')->onDelete('cascade');
 
             $table->string('name');
             $table->timestamps();
