@@ -14,8 +14,23 @@ class Website extends Model
         'url'
     ];
 
+    /**
+     * Pages
+     *
+     * @return     hasMany
+     */
     public function pages()
     {
         return $this->hasMany(Page::class);
+    }
+
+    /**
+     * Menus
+     *
+     * @return     hasMany
+     */
+    public function menus()
+    {
+        return $this->hasMany(Menu::class);
     }
 }

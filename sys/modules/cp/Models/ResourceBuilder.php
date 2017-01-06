@@ -187,6 +187,11 @@ class ResourceBuilder
         return $this->addField($label, $name, 'secret', $validation);
     }
 
+    public function menuEditor($label = 'Menu Editor', $name = 'menu-editor', $validation = '')
+    {
+        return $this->addField($label, $name, 'menueditor', $validation);
+    }
+
     /**
      * Adds a field.
      *

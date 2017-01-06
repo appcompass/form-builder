@@ -43,7 +43,7 @@ div
           br
           router-link(:to="{name: 'sub', params: {model: 'websites', id: $route.params.id, sub: 'pages'}}") Pages
           br
-          router-link(:to="{name: 'sub', params: {model: 'websites', id: $route.params.id, sub: 'navigation'}}") Navigation
+          router-link(:to="{name: 'sub', params: {model: 'websites', id: $route.params.id, sub: 'menus'}}") Navigation
 
   div.columns
     .column.is-12
@@ -56,6 +56,8 @@ import Formstring from './FormBuilder/String'
 import Formtext from './FormBuilder/Text'
 import Formsecret from './FormBuilder/Secret'
 import Formboolean from './FormBuilder/Boolean'
+import Formmenueditor from './FormBuilder/MenuEditor'
+
 import swal from 'sweetalert'
 import _ from 'lodash'
 import SubComponent from './SubComponent'
@@ -63,7 +65,7 @@ import SubComponent from './SubComponent'
 
 export default {
   name: 'EditView',
-  components: { Formstring, Formtext, Formsecret, Formboolean, SubComponent },
+  components: { Formstring, Formtext, Formsecret, Formboolean, Formmenueditor, SubComponent },
 
   data () {
     return {

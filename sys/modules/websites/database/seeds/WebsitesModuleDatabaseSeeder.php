@@ -35,6 +35,18 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             $builder->string('Layout', 'layout')->list(false)->required()->sortable()->searchable();
         })->setAlias(['pages.show', 'websites.pages.index', 'websites.pages.create', 'websites.pages.show']);
 
+        \DB::statement("DELETE FROM forms WHERE name = 'menus'");
+
+        ResourceBuilder::new('menus', 'menus/{id}', function(ResourceBuilder $builder) {
+            $builder->string('Name', 'name')->list()->required()->sortable()->searchable();
+        })->setAlias(['websites.menus.index', 'websites.menus.create']);
+
+        \DB::statement("DELETE FROM forms WHERE name = 'menus-editor'");
+
+        ResourceBuilder::new('menus-editor', 'menus-editor/{id}', function(ResourceBuilder $builder) {
+            $builder->menuEditor()->list(false);
+        })->setAlias(['websites.menus.show']);
+
         \DB::statement('TRUNCATE pages CASCADE');
         \DB::statement('TRUNCATE nav_items CASCADE');
         \DB::statement('TRUNCATE menus CASCADE');

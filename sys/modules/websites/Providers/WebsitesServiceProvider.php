@@ -30,6 +30,10 @@ class WebsitesServiceProvider extends ServiceProvider
             \P3in\Interfaces\MenusRepositoryInterface::class, \P3in\Repositories\MenusRepository::class
         );
 
+        $this->app->bind(
+            \P3in\Interfaces\WebsiteMenusRepositoryInterface::class, \P3in\Repositories\WebsiteMenusRepository::class
+        );
+
         \Route::bind('website', function($value) {
             return \P3in\Models\Website::findOrFail($value);
         });
