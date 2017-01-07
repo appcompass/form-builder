@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\DB;
 use P3in\Models\FormBuilder;
 use P3in\Models\Gallery;
 use P3in\Models\Layout;
+use P3in\Models\Page;
 use P3in\Models\PageRenderer;
 use P3in\Models\PageSection;
 use P3in\Models\Section;
@@ -104,25 +105,27 @@ class DatabaseSeeder extends Seeder
 
         // lets set some arbitrary settings to test the settings functionality.
         $website->settings = [
-            'templates' => [
-                'header' => 'components/PublicWebsites/HeaderOne.vue',
-                'footer' => 'components/PublicWebsites/FooterOne.vue',
-            ],
-            'meta_data' => [
-                'title' => 'Default website title',
-                'description' => 'some random default description for the website.',
-                'keywords' => 'awesome cms, keywords, stuff',
-                'custom_header_html' => '<style>/* folks will want to overide and ineject their own html/css/js */ .hideme: { display: none; }</style>',
-                'robots_txt' => 'robot.txt file contents',
-            ],
-            'contact_forms' => [
-                'from_email' => 'support@p3in.com',
-                'from_name' => 'Plus 3 Support',
-                'to_email' => 'reach.us@p3in.com',
-                'recaptcha_key' => 'shtuff',
-                'recaptcha_secret' => 'shequit!',
-            ],
             'modules' => [
+                'websites' => [
+                    'templates' => [
+                        'header' => 'components/PublicWebsites/HeaderOne.vue',
+                        'footer' => 'components/PublicWebsites/FooterOne.vue',
+                    ],
+                    'meta_data' => [
+                        'title' => 'Default website title',
+                        'description' => 'some random default description for the website.',
+                        'keywords' => 'awesome cms, keywords, stuff',
+                        'custom_header_html' => '<style>/* folks will want to overide and ineject their own html/css/js */ .hideme: { display: none; }</style>',
+                        'robots_txt' => 'robot.txt file contents',
+                    ],
+                ],
+                'contact_forms' => [
+                    'from_email' => 'support@p3in.com',
+                    'from_name' => 'Plus 3 Support',
+                    'to_email' => 'reach.us@p3in.com',
+                    'recaptcha_key' => 'shtuff',
+                    'recaptcha_secret' => 'shequit!',
+                ],
                 'google_analytics' => [
                     'tracking_id' => 'UA-00000000-1',
                 ],
@@ -214,11 +217,13 @@ class DatabaseSeeder extends Seeder
         $cp_dash_gallery_activity_content->save();
         $cp_dash_gallery_uploads_content->save();
 
-        // @TODO: Render the page structure.
-        $renderer =  new PageRenderer($website);
+        // Render the page structure.  We re fetch all the data because we want to test queries run.
+        DB::enableQueryLog();
+        $website_for_renderer = Website::find($website->id);
+        $renderer =  new PageRenderer($website_for_renderer);
 
-        $data = $renderer->setPage($dashboard)->render();
+        $data = $renderer->setPage($dashboard->url)->render();
 
-        dd($data);
+        dd(DB::getQueryLog(), $data);
     }
 }
