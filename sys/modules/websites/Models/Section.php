@@ -16,6 +16,10 @@ class Section extends Model
         'config',
     ];
 
+    protected $casts = [
+        'config' => 'object'
+    ];
+
     public function layout()
     {
         return $this->belongsTo(Layout::class);
