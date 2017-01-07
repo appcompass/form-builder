@@ -16,6 +16,7 @@ use Closure;
 class PageRenderer
 {
 
+    private $website;
     private $pages;
     private $page;
     private $build;
@@ -23,14 +24,45 @@ class PageRenderer
     public function __construct(Website $website)
     {
         $this->build = [];
+        $this->website = $website;
         $this->pages = $website->pages();
+
 
         return $this;
     }
 
-    public function render($url)
+    public function setPage($page_or_url)
     {
-        $this->getUrl($url);
+        if ($page_or_url instanceof Page) {
+            // we check if the page is part of the website, validate
+            // permissions for the current user to view this page, etc.
+
+            if (!$this->pages->find($page_or_url->id)) {
+                throw new \Exception('The page does not belong to this website.');
+            }
+
+            $page = $page_or_url;
+
+        }elseif (is_string($page)) {
+
+            $page = $this->getPageFromUrl($page_or_url);
+
+        }else{
+            throw new \Exception('Must pass a page instance or the url.');
+        }
+
+        $this->page = $page;
+
+        return $this;
+    }
+
+    public function render()
+    {
+
+        if (!$this->page) {
+            throw new \Exception('A page must be set.');
+        }
+
         $this->getFrame();
         $this->getContent();
 
@@ -58,14 +90,17 @@ class PageRenderer
     private function getContent()
     {
         // fetch and build the content of the page
+
         $this->build['content'] = []; //stuff
     }
 
-    private function getUrl($url)
+    private function getPageFromUrl($url)
     {
-        $this->page = $this->pages->byUrl($url)->firstorFail();
-
-        return $this;
+        try {
+            return $this->pages->byUrl($url)->firstorFail();
+        } catch (Exception $e) {
+            throw new \Exception('There is no page by that URL.');
+        }
     }
 
 }
