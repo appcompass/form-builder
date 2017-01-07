@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\DB;
 use P3in\Models\FormBuilder;
 use P3in\Models\Gallery;
 use P3in\Models\Layout;
+use P3in\Models\PageRenderer;
 use P3in\Models\PageSection;
 use P3in\Models\Section;
 use P3in\Models\User;
@@ -24,6 +25,7 @@ class DatabaseSeeder extends Seeder
         // I'm not attached to any part more than another,
         // it's mainly a big brainstorm excersize.
 
+        DB::statement("TRUNCATE TABLE settings RESTART IDENTITY CASCADE");
         DB::statement("TRUNCATE TABLE pages RESTART IDENTITY CASCADE");
         DB::statement("TRUNCATE TABLE sections RESTART IDENTITY CASCADE");
         DB::statement("TRUNCATE TABLE layouts RESTART IDENTITY CASCADE");
@@ -97,8 +99,50 @@ class DatabaseSeeder extends Seeder
 
         $cp_dash_gallery_uploads_section->save();
 
+        // Get the website
+        $website =  Website::firstOrFail();
+
+        // lets set some arbitrary settings to test the settings functionality.
+        $website->settings = [
+            'templates' => [
+                'header' => 'components/PublicWebsites/HeaderOne.vue',
+                'footer' => 'components/PublicWebsites/FooterOne.vue',
+            ],
+            'meta_data' => [
+                'title' => 'Default website title',
+                'description' => 'some random default description for the website.',
+                'keywords' => 'awesome cms, keywords, stuff',
+                'custom_header_html' => '<style>/* folks will want to overide and ineject their own html/css/js */ .hideme: { display: none; }</style>',
+                'robots_txt' => 'robot.txt file contents',
+            ],
+            'contact_forms' => [
+                'from_email' => 'support@p3in.com',
+                'from_name' => 'Plus 3 Support',
+                'to_email' => 'reach.us@p3in.com',
+                'recaptcha_key' => 'shtuff',
+                'recaptcha_secret' => 'shequit!',
+            ],
+            'modules' => [
+                'google_analytics' => [
+                    'tracking_id' => 'UA-00000000-1',
+                ],
+                'social' => [
+                    'facebook_app_id' => 'xxxxxxxxxxxx',
+                    'facebook_page_url' => 'https://www.facebook.com/plus3interactive',
+                    'twitter_page_url' => 'https://www.twitter.com/plus3interactive',
+                    'linkedin_page_url' => 'https://www.linkedin.com/plus3interactive',
+                    'instagram_page_url' => 'https://www.instagram.com/plus3interactive',
+                    'googleplus_page_url' => 'https://www.googleplus.com/plus3interactive',
+                ],
+                'some_client_module' => [
+                    'some_setting' => 'xxxxxxxxxxxx',
+                ],
+            ]
+        ];
+        $website->save();
+
         // DASHBOARD PAGE
-        $dashboard = Website::firstOrFail()->pages()->create([
+        $dashboard = $website->pages()->create([
             'name' => 'Dashboard',
             'slug' => '',
             'title' => 'Dashboard',
@@ -170,7 +214,11 @@ class DatabaseSeeder extends Seeder
         $cp_dash_gallery_activity_content->save();
         $cp_dash_gallery_uploads_content->save();
 
-        // @TODO: create an output of the complete structure
-        // of the dashboard page and it's contents.
+        // @TODO: Render the page structure.
+        $renderer =  new PageRenderer($website);
+
+        $data = $renderer->setPage($dashboard)->render();
+
+        dd($data);
     }
 }

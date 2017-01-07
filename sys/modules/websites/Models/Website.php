@@ -4,14 +4,25 @@ namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use P3in\Models\Page;
+use P3in\Traits\SettingsTrait;
 
 class Website extends Model
 {
 
+    use SettingsTrait,
+        // Navigatable,
+        // HasPermissions,
+        SoftDeletes;
+
     protected $fillable = [
         'name',
         'url'
+    ];
+
+    protected $casts = [
+        'config' => 'object'
     ];
 
     /**
