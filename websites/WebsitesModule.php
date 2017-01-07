@@ -24,4 +24,10 @@ Class WebsitesModule extends BaseModule
         \Log::info('Registering <Websites> Module');
         // Profile::registerProfiles($this->profiles);
     }
+
+    public function getRenderData($settings)
+    {
+        // bunch of cases we actually want to do stuff with these settings.
+        return $settings;
+    }
 }
