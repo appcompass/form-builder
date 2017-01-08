@@ -4,6 +4,7 @@ namespace P3in\Models;
 
 use Closure;
 use Exception;
+use Illuminate\Support\Facades\App;
 use P3in\Models\Page;
 use P3in\Models\PageSection;
 use P3in\Models\Section;
@@ -70,12 +71,16 @@ class PageRenderer
         }
     }
 
-    private function getModulesData($moduleSettings)
+    private function getModulesData($modulesSettings)
     {
         $rtn = [];
-        foreach ($moduleSettings as $module_name => $settings) {
-            // this needs work in modular too.
-            $rtn[$module_name] = \Modular::getRenderData($settings);
+        foreach ($modulesSettings as $module_name => $settings) {
+            $module = \Modular::get($module_name);
+            $method = 'getRenderData';
+            if (!empty($module->class_name) && method_exists($module->class_name, $method)) {
+                $instance = App::make($module->class_name);
+                $rtn[$module_name] = call_user_func_array([$instance, $method], [$settings]);
+            }
         }
         return $rtn;
     }

@@ -119,27 +119,28 @@ class DatabaseSeeder extends Seeder
                         'robots_txt' => 'robot.txt file contents',
                     ],
                 ],
-                'contact_forms' => [
-                    'from_email' => 'support@p3in.com',
-                    'from_name' => 'Plus 3 Support',
-                    'to_email' => 'reach.us@p3in.com',
-                    'recaptcha_key' => 'shtuff',
-                    'recaptcha_secret' => 'shequit!',
-                ],
-                'google_analytics' => [
-                    'tracking_id' => 'UA-00000000-1',
-                ],
-                'social' => [
-                    'facebook_app_id' => 'xxxxxxxxxxxx',
-                    'facebook_page_url' => 'https://www.facebook.com/plus3interactive',
-                    'twitter_page_url' => 'https://www.twitter.com/plus3interactive',
-                    'linkedin_page_url' => 'https://www.linkedin.com/plus3interactive',
-                    'instagram_page_url' => 'https://www.instagram.com/plus3interactive',
-                    'googleplus_page_url' => 'https://www.googleplus.com/plus3interactive',
-                ],
-                'some_client_module' => [
-                    'some_setting' => 'xxxxxxxxxxxx',
-                ],
+                // the below modules don't exist so it will throw an error, so they are here for now just as a concept
+                // 'contact_forms' => [
+                //     'from_email' => 'support@p3in.com',
+                //     'from_name' => 'Plus 3 Support',
+                //     'to_email' => 'reach.us@p3in.com',
+                //     'recaptcha_key' => 'shtuff',
+                //     'recaptcha_secret' => 'shequit!',
+                // ],
+                // 'google_analytics' => [
+                //     'tracking_id' => 'UA-00000000-1',
+                // ],
+                // 'social' => [
+                //     'facebook_app_id' => 'xxxxxxxxxxxx',
+                //     'facebook_page_url' => 'https://www.facebook.com/plus3interactive',
+                //     'twitter_page_url' => 'https://www.twitter.com/plus3interactive',
+                //     'linkedin_page_url' => 'https://www.linkedin.com/plus3interactive',
+                //     'instagram_page_url' => 'https://www.instagram.com/plus3interactive',
+                //     'googleplus_page_url' => 'https://www.googleplus.com/plus3interactive',
+                // ],
+                // 'some_client_module' => [
+                //     'some_setting' => 'xxxxxxxxxxxx',
+                // ],
             ]
         ];
         $website->save();
