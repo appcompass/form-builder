@@ -47,7 +47,7 @@ class PageRenderer
         return $this;
     }
 
-    public function render()
+    public function render($filtered = true)
     {
 
         if (!$this->page) {
@@ -55,7 +55,7 @@ class PageRenderer
         }
 
         $this->getSettings();
-        $this->getContent();
+        $this->getContent($filtered);
 
         // structure the page data to be sent to the front-end to work out.
         return $this->build;
@@ -65,7 +65,7 @@ class PageRenderer
     {
         // fetch website settings that contain information on the website's header/footer/scripts/etc
         if ($settings = $this->website->settings) {
-            $this->build['modules'] = $this->getModulesData($settings->modules);
+            $this->build['settings'] = $this->getModulesData($settings->modules);
         }else{
             throw new Exception('Website settings are not complete.');
         }
@@ -76,20 +76,44 @@ class PageRenderer
         $rtn = [];
         foreach ($modulesSettings as $module_name => $settings) {
             $module = \Modular::get($module_name);
+            // this logic should be abstracted to the moudularhandler,
+            // problem with what's there now is that it loops through
+            // all modules rather than just use the one requested.
             $method = 'getRenderData';
-            if (!empty($module->class_name) && method_exists($module->class_name, $method)) {
-                $instance = App::make($module->class_name);
-                $rtn[$module_name] = call_user_func_array([$instance, $method], [$settings]);
+            if (!empty($module->class_name)) {
+                $rtn[$module_name] = $this->callMethod($module->class_name, $method, [$settings]);
             }
         }
         return $rtn;
     }
 
-    private function getContent()
+    private function getContent($filtered = true)
     {
         // fetch and build the content of the page
+        $contents = $this->page->contents->load('section.layout');
 
-        $this->build['content'] = []; //stuff
+        // we only do this so toArray doesn't render stuff we don't want
+        // displayed via most API calls, still may be good to be able to do
+        // both, hency why I didn't make it permanent on the model.
+        if ($filtered) {
+            $this->cleanContents($contents);
+
+            $contents->each(function($content){
+                $this->cleanSections($content->section);
+                $this->cleanLayouts($content->section->layout);
+            });
+        }
+
+        foreach ($contents as &$content) {
+            $config = $content->section->config;
+
+            if (!empty($config->class) && !empty($config->method))
+            {
+                $content->content = $this->callMethod($config->class, $config->method, $content->content);
+            }
+        }
+
+        $this->build['content'] = $contents->toArray(); //stuff
     }
 
     private function getPageFromUrl($url)
@@ -101,4 +125,36 @@ class PageRenderer
         }
     }
 
+    private function cleanContents(&$contents)
+    {
+        $contents
+            ->makeHidden('id')
+            ->makeHidden('page_id')
+            ->makeHidden('section_id');
+    }
+
+    private function cleanSections(&$sections)
+    {
+        $sections
+            ->makeHidden('id')
+            ->makeHidden('layout_id')
+            ->makeHidden('form_id')
+            ->makeHidden('config')
+            ->makeHidden('created_at')
+            ->makeHidden('updated_at')
+            ;
+    }
+
+    private function cleanLayouts(&$layouts)
+    {
+        $layouts->makeHidden('id');
+    }
+
+    private function callMethod($class, $method, $params = null)
+    {
+        if (method_exists($class, $method)) {
+            $instance = App::make($class);
+            return call_user_func_array([$instance, $method], $params);
+        }
+    }
 }

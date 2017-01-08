@@ -15,4 +15,22 @@ class Gallery extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    // temp for demo/test purpose
+    public function latestActivity($count)
+    {
+        return Gallery::take($count)
+            ->orderBy('updated_at','desc')
+            ->get()
+            ->makeHidden('id')
+            ->makeHidden('user_id');
+    }
+
+    public function mostUploads($count)
+    {
+        return Gallery::take($count)
+            ->get()
+            ->makeHidden('id')
+            ->makeHidden('user_id');
+    }
 }
