@@ -33,10 +33,15 @@ class AfterRoute
         $response = $next($request);
 
         if ($response->exception) {
-
             $result = [
                 'errors' => $response->exception->getMessage()
             ];
+
+            if (env('APP_DEBUG')) {
+                $result['file'] = $response->exception->getFile();
+                $result['line'] = $response->exception->getLine();
+                $result['trace'] = $response->exception->getTrace();
+            }
 
             return response()->json($result, $response->getStatusCode());
 

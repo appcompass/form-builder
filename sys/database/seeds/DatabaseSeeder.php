@@ -7,7 +7,7 @@ use P3in\Models\Gallery;
 use P3in\Models\Layout;
 use P3in\Models\Page;
 use P3in\Models\PageRenderer;
-use P3in\Models\PageSection;
+use P3in\Models\PageContent;
 use P3in\Models\Section;
 use P3in\Models\User;
 use P3in\Models\Website;
@@ -161,7 +161,7 @@ class DatabaseSeeder extends Seeder
         //The content in these 5 instances are params that are passed to the class specified in the Section.
         //the contents of these page sections will normally be set via the CMS UI form for this section on the
         //page where we edit this page's content (like any page in the current itteration of our CMS)
-        $cp_dash_system_summary_content = new PageSection([
+        $cp_dash_system_summary_content = new PageContent([
             // in this instance, the first param is an array of the items to display and this section.
             // the UI would be something like a repeatable allowing you to select an icon, value, and typing in a label.
             // Or simply a drop down that pre-selects these 3 values, then the array of 3 would be simply an identifier of some sort.
@@ -188,15 +188,15 @@ class DatabaseSeeder extends Seeder
             ],
             'order' => 1,
         ]);
-        $cp_dash_user_activity_content = new PageSection([
+        $cp_dash_user_activity_content = new PageContent([
             'content' => [20],
             'order' => 2,
         ]);
-        $cp_dash_gallery_activity_content = new PageSection([
+        $cp_dash_gallery_activity_content = new PageContent([
             'content' => [10],
             'order' => 3,
         ]);
-        $cp_dash_gallery_uploads_content = new PageSection([
+        $cp_dash_gallery_uploads_content = new PageContent([
             'content' => [15],
             'order' => 4,
         ]);

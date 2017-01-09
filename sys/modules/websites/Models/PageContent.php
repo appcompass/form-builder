@@ -6,11 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 use P3in\Models\Page;
 use P3in\Models\Section;
 
-class PageSection extends Model
+class PageContent extends Model
 {
     protected $table = 'page_section';
-
-    public $timestamps = false;
 
     protected $fillable = [
         'content',
