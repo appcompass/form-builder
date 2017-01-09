@@ -105,6 +105,7 @@ class Menu extends Model
 
             $current =& $map[$node['id']];
 
+            $current['id'] = $node['id'];
             $current['parent_id'] = $node['parent_id'];
             $current['label'] = $node['label'];
             $current['url'] = $node['url'];
@@ -124,6 +125,8 @@ class Menu extends Model
 
             }
         }
+
+        // dd(array_values_recursive($tree));
 
         return $tree;
     }
