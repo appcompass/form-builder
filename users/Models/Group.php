@@ -33,12 +33,6 @@ class Group extends Model
         'label' => 'required'
     ];
 
-    /**
-     * The attributes excluded from the model's JSON form.
-     *
-     * @var array
-     */
-    protected $hidden = ['password', 'remember_token'];
 
     /**
      * Get a group by name
@@ -84,56 +78,56 @@ class Group extends Model
     *   Group permissions
     *
     */
-    // public function permissions()
-    // {
-    //     return $this->belongsToMany(Permission::class)->withTimestamps();
-    // }
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class)->withTimestamps();
+    }
 
-    // public function grantPermission($perm)
-    // {
-    //     return $this->grantPermissions($perm);
-    // }
+    public function grantPermission($perm)
+    {
+        return $this->grantPermissions($perm);
+    }
 
     /**
       * Grant Permission(s)
       *
       * @param mixed $perm  (string) Permission Type | (Permission) Permission Instance | Collection eleoquent collection of perms to sync | (array)
       */
-    // public function grantPermissions($perm)
-    // {
+    public function grantPermissions($perm)
+    {
 
-    //     if (is_null($perm)) {
+        if (is_null($perm)) {
 
-    //         return;
+            return;
 
-    //     } else if ($perm instanceof \Illuminate\Database\Eloquent\Collection) {
+        } else if ($perm instanceof \Illuminate\Database\Eloquent\Collection) {
 
-    //         return $this->permissions()->sync($perm);
+            return $this->permissions()->sync($perm);
 
-    //     } else if (is_string($perm)) {
+        } else if (is_string($perm)) {
 
-    //         return $this->grantPermissions(Permission::byType($perm)->firstOrFail());
+            return $this->grantPermissions(Permission::byType($perm)->firstOrFail());
 
-    //     } else if ($perm instanceof Permission) {
+        } else if ($perm instanceof Permission) {
 
-    //         if (!$this->permissions->contains($perm->id)) {
+            if (!$this->permissions->contains($perm->id)) {
 
-    //             return $this->permissions()->attach($perm);
+                return $this->permissions()->attach($perm);
 
-    //         }
+            }
 
-    //         return false;
+            return false;
 
-    //     } else if (is_array($perm)) {
+        } else if (is_array($perm)) {
 
-    //         foreach($perm as $single_permission) {
+            foreach($perm as $single_permission) {
 
-    //             $this->grantPermissions($single_permission);
+                $this->grantPermissions($single_permission);
 
-    //         }
+            }
 
-    //     }
-    // }
+        }
+    }
 
     /**
      *
@@ -146,46 +140,46 @@ class Group extends Model
     /**
      *  Revoke all group's permissions
      */
-    // public function revokeAll()
-    // {
-    //     return $this->revokePermissions($this->permissions->lists('type')->toArray());
-    // }
+    public function revokeAll()
+    {
+        return $this->revokePermissions($this->permissions->lists('type')->toArray());
+    }
 
     /**
      *
      */
-    // public function revokePermission($perm)
-    // {
-    //     return $this->revokePermissions($perm);
-    // }
+    public function revokePermission($perm)
+    {
+        return $this->revokePermissions($perm);
+    }
 
     /**
       * Revoke permission(s)
       *
       * @param mixed $perm  (string) Permission Type | (Permission) Permission Instance | (array)
       */
-    // public function revokePermissions($perm)
-    // {
-    //     if (is_null($perm)) {
+    public function revokePermissions($perm)
+    {
+        if (is_null($perm)) {
 
-    //         return;
+            return;
 
-    //     } else if ( is_string($perm)) {
+        } else if ( is_string($perm)) {
 
-    //         return $this->revokePermissions(Permission::byType($perm)->firstOrFail());
+            return $this->revokePermissions(Permission::byType($perm)->firstOrFail());
 
-    //     } else if ($perm instanceof Permission) {
+        } else if ($perm instanceof Permission) {
 
-    //         return $this->permissions()->detach($perm);
+            return $this->permissions()->detach($perm);
 
-    //     }  else if (is_array($perm)) {
+        }  else if (is_array($perm)) {
 
-    //         foreach($perm as $single_permission) {
+            foreach($perm as $single_permission) {
 
-    //             $this->revokePermissions($single_permission);
+                $this->revokePermissions($single_permission);
 
-    //         }
+            }
 
-    //     }
-    // }
+        }
+    }
 }

@@ -18,7 +18,7 @@ class CreatePhotosTable extends Migration
             $table->json('meta')->nullable();
 
             // to use with polymorphic relationships
-            $table->morph('photoable');
+            $table->morphs('photoable');
 
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')

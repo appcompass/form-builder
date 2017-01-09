@@ -2,8 +2,13 @@
 
 namespace P3in\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Auth\Access\Gate;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\ServiceProvider;
+use P3in\Interfaces\GalleriesRepositoryInterface;
+use P3in\Models\Gallery;
+use P3in\Models\Photo;
+use P3in\Repositories\GalleriesRepository;
 
 class GalleriesServiceProvider extends ServiceProvider
 {
@@ -15,12 +20,15 @@ class GalleriesServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(
-            \P3in\Interfaces\GalleriesRepositoryInterface::class, \P3in\Repositories\GalleriesRepository::class
+            GalleriesRepositoryInterface::class, GalleriesRepository::class
         );
 
-        \Route::bind('gallery', function($value) {
-            return \P3in\Models\Gallery::findOrFail($value);
-        });
+        Route::model('galleries', Gallery::class);
+        Route::model('photos', Photo::class);
+
+        // \Route::bind('gallery', function($value) {
+        //     return \P3in\Models\Gallery::findOrFail($value);
+        // });
 
     }
 }

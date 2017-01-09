@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
@@ -13,9 +12,13 @@ class CreatePermissionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('permissions', function(Blueprint $table) {
+        Schema::create('permissions', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name')->unique();
+            $table->string('type')->unique();
+            $table->string('label');
+            $table->text('description')->nullable();
+            // $table->unique('type');
+            $table->boolean('locked')->default(false);
             $table->timestamps();
         });
 
@@ -27,7 +30,6 @@ class CreatePermissionsTable extends Migration
             $table->foreign('permission_id')->references('id')->on('permissions')->onDelete('cascade');
             $table->timestamps();
         });
-
     }
 
     /**

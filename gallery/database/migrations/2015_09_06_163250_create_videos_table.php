@@ -18,7 +18,7 @@ class CreateVideosTable extends Migration
             $table->json('meta')->nullable();
 
             // to use with polymorphic relationships
-            $table->morph('videoable');
+            $table->morphs('videoable');
 
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')

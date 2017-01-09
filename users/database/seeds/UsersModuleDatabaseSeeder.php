@@ -21,6 +21,9 @@ class UsersModuleDatabaseSeeder extends Seeder
     {
         Model::unguard();
 
+        \DB::statement('TRUNCATE users CASCADE');
+        \DB::statement('TRUNCATE permissions CASCADE');
+
         $this->call(GroupsTableSeeder::class);
         $this->call(PermissionsSeeder::class);
         // $this->call(UsersTableSeeder::class);
@@ -29,9 +32,6 @@ class UsersModuleDatabaseSeeder extends Seeder
         //
         //  USERS
         //
-
-        \DB::statement('TRUNCATE users CASCADE');
-        \DB::statement('TRUNCATE permissions CASCADE');
 
         \DB::statement("DELETE FROM forms WHERE name = 'users'");
         // generate 20 dummy permissions

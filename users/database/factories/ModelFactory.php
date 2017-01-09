@@ -14,8 +14,10 @@ use Faker\Generator as Faker;
 */
 
 $factory->define(P3in\Models\Permission::class, function(Faker $faker) {
+    $word = $faker->unique()->word;
     return [
-        'name' => $faker->unique()->word
+        'label' => $word,
+        'type' => $word,
     ];
 });
 
