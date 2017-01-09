@@ -13,8 +13,17 @@
     "require": {
         "php": ">=5.6.4",
         "laravel/framework": "5.3.*",
-        "predis/predis": "^1.1",
-        "p3in/modular": "dev-refactor"
+        "p3in/modular": "dev-refactor",
+
+        "league/flysystem-sftp": "~1.0",
+        "guzzlehttp/guzzle": "~6.0",
+
+        "laravelcollective/remote": "5.*",
+        "langemike/laravel5-less": "~1.0",
+        "chumper/zipper": "0.6.x",
+        "google/recaptcha": "~1.1",
+        "roumen/sitemap": "2.6.*"
+
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

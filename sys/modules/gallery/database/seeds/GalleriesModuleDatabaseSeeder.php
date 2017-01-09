@@ -4,6 +4,7 @@ namespace P3in\Seeders;
 
 use Illuminate\Database\Seeder;
 use P3in\Models\ResourceBuilder;
+use P3in\Models\User;
 
 class GalleriesModuleDatabaseSeeder extends Seeder
 {
@@ -20,6 +21,5 @@ class GalleriesModuleDatabaseSeeder extends Seeder
 
         })->setAlias(['galleries.index', 'galleries.show', 'galleries.create']);
 
-        \P3in\Models\Gallery::create(['name' => 'First Gallery', 'user_id' => \P3in\Models\User::first()->id]);
     }
 }
