@@ -5,7 +5,7 @@ namespace P3in\Models;
 use P3in\Models\Page;
 use P3in\Models\Layout;
 use P3in\Models\Section;
-use P3in\Models\PageSection;
+use P3in\Models\PageContent;
 use Closure;
 
 class PageBuilder
@@ -87,7 +87,7 @@ class PageBuilder
      *
      * @throws     \Exception   (description)
      *
-     * @return     PageSection      PageSection instance
+     * @return     PageContent      PageContent instance
      */
     public function add($item)
     {
@@ -98,13 +98,13 @@ class PageBuilder
 
         }
 
-        if ($item instanceof PageSection) {
+        if ($item instanceof PageContent) {
 
             $page_section = $item;
 
         } else if (is_array($item)) {
 
-            $page_section = new PageSection($item);
+            $page_section = new PageContent($item);
 
         } else {
 
@@ -118,15 +118,15 @@ class PageBuilder
 
         } else {
 
-            throw new \Exception("Something went wrong while adding the PageSection {$page_section->id} to Page {$this->page->id}");
+            throw new \Exception("Something went wrong while adding the PageContent {$page_section->id} to Page {$this->page->id}");
 
         }
     }
 
     /**
-     * Drop PageSection
+     * Drop PageContent
      *
-     * @param      \App\PageSection  $page_section  The navigation item
+     * @param      \App\PageContent  $page_section  The navigation item
      */
     public function drop($item)
     {
@@ -134,7 +134,7 @@ class PageBuilder
 
             $page_section = $this->page->sections()->findOrFail($item);
 
-        } else if ($item instanceof PageSection) {
+        } else if ($item instanceof PageContent) {
 
             $page_section = $this->page->sections()->findOrFail($item->id);
 
@@ -146,7 +146,7 @@ class PageBuilder
 
         } else {
 
-            throw new \Exception("Errors while removing PageSection");
+            throw new \Exception("Errors while removing PageContent");
 
         }
 

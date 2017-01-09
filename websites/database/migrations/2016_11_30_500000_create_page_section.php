@@ -24,6 +24,8 @@ class CreatePageSection extends Migration
 
             $table->json('content')->nullable();
             $table->integer('order')->unsigned()->nullable();
+
+            $table->timestamps();
         });
     }
 
@@ -34,6 +36,6 @@ class CreatePageSection extends Migration
      */
     public function down()
     {
-    	Schema::drop('page_section');
+        Schema::drop('page_section');
     }
 }

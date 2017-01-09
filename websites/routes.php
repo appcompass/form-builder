@@ -6,25 +6,24 @@ Route::group([
     'middleware' => 'api',
 ], function($router) {
     $router->resource('websites', WebsitesController::class);
-    $router->resource('websites.pages', WebsitePagesController::class);
-    // $router->resource('websites.pages.sections', WebsitePagesSectionsController::class);
     $router->resource('websites.menus', WebsiteMenusController::class);
+    $router->resource('websites.pages', WebsitePagesController::class);
+    $router->resource('pages.contents', PageContentsController::class); // @TODO: websites.pages.contents
+    $router->resource('websites.settings', WebsiteSettingsController::class);
+    $router->resource('websites.redirects', WebsiteRedirectsController::class);
 
-    // $router->resource('websites.settings', 'WebsiteSettingsController');
-    // $router->resource('websites.redirects', 'WebsiteRedirectsController');
-
-    // @QUESTION: menus are web specific, do we need this?
     $router->resource('menus', MenusController::class);
 
     // Public Front-end website endpoints
     $router->group([
+        'prefix' => 'render',
         'middleware' => 'web',
     ], function($router){
 
-        // $router->post('render-page/form-submissions', 'PagesController@submitForm');
-        // $router->get('render-page/sitemap.{type}', 'PagesController@renderSitemap')->where('type', '(xml|html|txt|ror-rss|ror-rdf)');
-        // $router->get('render-page/robots.txt', 'PagesController@renderRobotsTxt');
-        // $router->any('render-page/{path?}', 'PagesController@renderPage')->where('path', '(.*)');
+        // $router->post('form-submissions', 'PagesController@submitForm');
+        // $router->get('sitemap.{type}', 'PagesController@renderSitemap')->where('type', '(xml|html|txt|ror-rss|ror-rdf)');
+        // $router->get('robots.txt', 'PagesController@renderRobotsTxt');
+        // $router->any('{path?}', 'PagesController@renderPage')->where('path', '(.*)');
 
     });
 });

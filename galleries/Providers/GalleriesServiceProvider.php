@@ -26,9 +26,13 @@ class GalleriesServiceProvider extends ServiceProvider
         Route::model('galleries', Gallery::class);
         Route::model('photos', Photo::class);
 
-        // \Route::bind('gallery', function($value) {
-        //     return \P3in\Models\Gallery::findOrFail($value);
-        // });
+        Route::bind('gallery', function($value) {
+            return Gallery::findOrFail($value);
+        });
+
+        Route::bind('photo', function($value) {
+            return Photo::findOrFail($value);
+        });
 
     }
 }

@@ -2,8 +2,28 @@
 
 namespace P3in\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Auth\Access\Gate;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\ServiceProvider;
+use P3in\Interfaces\MenusRepositoryInterface;
+use P3in\Interfaces\PageContentsRepositoryInterface;
+use P3in\Interfaces\PagesRepositoryInterface;
+use P3in\Interfaces\WebsiteMenusRepositoryInterface;
+use P3in\Interfaces\WebsitePagesRepositoryInterface;
+use P3in\Interfaces\WebsiteSettingsRepositoryInterface;
+use P3in\Interfaces\WebsitesRepositoryInterface;
+use P3in\Models\Menu;
+use P3in\Models\Page;
+use P3in\Models\Section;
+use P3in\Models\Setting;
+use P3in\Models\Website;
+use P3in\Repositories\MenusRepository;
+use P3in\Repositories\PageContentsRepository;
+use P3in\Repositories\PagesRepository;
+use P3in\Repositories\WebsiteMenusRepository;
+use P3in\Repositories\WebsitePagesRepository;
+use P3in\Repositories\WebsiteSettingsRepository;
+use P3in\Repositories\WebsitesRepository;
 
 class WebsitesServiceProvider extends ServiceProvider
 {
@@ -14,36 +34,46 @@ class WebsitesServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->app->bind(
-            \P3in\Interfaces\WebsitesRepositoryInterface::class, \P3in\Repositories\WebsitesRepository::class
-        );
+        // we shoudl prob make this a method that runs through $this->bindings
+        foreach ([
+            WebsitesRepositoryInterface::class => WebsitesRepository::class,
+            WebsitePagesRepositoryInterface::class => WebsitePagesRepository::class,
+            WebsiteSettingsRepositoryInterface::class => WebsiteSettingsRepository::class,
+            PageContentsRepositoryInterface::class => PageContentsRepository::class,
+            PagesRepositoryInterface::class => PagesRepository::class,
+            MenusRepositoryInterface::class => MenusRepository::class,
+            WebsiteMenusRepositoryInterface::class => WebsiteMenusRepository::class,
+        ] as $interface => $repo) {
+            $this->app->bind(
+                $interface, $repo
+            );
+        }
 
-        $this->app->bind(
-            \P3in\Interfaces\WebsitePagesRepositoryInterface::class, \P3in\Repositories\WebsitePagesRepository::class
-        );
+        Route::model('websites', Website::class);
+        Route::model('settings', Setting::class);
+        Route::model('pages', Page::class);
+        Route::model('contents', PageContent::class);
+        Route::model('sections', Section::class);
+        Route::model('menus', Menu::class);
 
-        $this->app->bind(
-            \P3in\Interfaces\PagesRepositoryInterface::class, \P3in\Repositories\PagesRepository::class
-        );
-
-        $this->app->bind(
-            \P3in\Interfaces\MenusRepositoryInterface::class, \P3in\Repositories\MenusRepository::class
-        );
-
-        $this->app->bind(
-            \P3in\Interfaces\WebsiteMenusRepositoryInterface::class, \P3in\Repositories\WebsiteMenusRepository::class
-        );
-
-        \Route::bind('website', function($value) {
-            return \P3in\Models\Website::findOrFail($value);
+        Route::bind('website', function($value) {
+            return Website::findOrFail($value);
         });
 
-        \Route::bind('page', function($value) {
-            return \P3in\Models\Page::findOrFail($value);
+        Route::bind('setting', function($value) {
+            return Setting::findOrFail($value);
         });
 
-        \Route::bind('menu', function($value) {
-            return \P3in\Models\Menu::findOrFail($value);
+        Route::bind('page', function($value) {
+            return Page::findOrFail($value);
+        });
+
+        Route::bind('content', function($value) {
+            return PageContent::findOrFail($value);
+        });
+
+        Route::bind('menu', function($value) {
+            return Menu::findOrFail($value);
         });
 
     }

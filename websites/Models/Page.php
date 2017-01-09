@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use P3in\Traits\SettingsTrait;
 use P3in\Models\Layout;
-use P3in\Models\PageSection;
+use P3in\Models\PageContent;
 use P3in\Models\Website;
 
 class Page extends Model
@@ -63,7 +63,7 @@ class Page extends Model
 
     public function contents()
     {
-        return $this->hasMany(PageSection::class)->orderBy('order', 'asc');
+        return $this->hasMany(PageContent::class)->orderBy('order', 'asc');
     }
 
     public function scopeByUrl($query, $url)

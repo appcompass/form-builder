@@ -6,7 +6,7 @@ use Closure;
 use Exception;
 use Illuminate\Support\Facades\App;
 use P3in\Models\Page;
-use P3in\Models\PageSection;
+use P3in\Models\PageContent;
 use P3in\Models\Section;
 use P3in\Models\Website;
 
