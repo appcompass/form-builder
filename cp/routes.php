@@ -5,8 +5,8 @@ Route::group([
     'namespace' => 'P3in\Controllers',
     'middleware' => 'api',
 ], function($router) {
-    // $router->get('/notification-center', 'CpController@getNotificationCenter');
-    // $router->get('/dashboard', 'CpController@getDashboard');
+    // $router->get('notification-center', 'CpController@getNotificationCenter');
+    // $router->get('dashboard', 'CpController@getDashboard');
 
 
     // T@ODO: some day, it would be nice to allow this route to be the
