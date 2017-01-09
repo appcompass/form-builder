@@ -12,4 +12,4 @@ if (isset($path)) {
 
 }
 
-throw new \Exception('Path not specified while trying to load <test> module.');
+throw new \Exception('Path not specified while trying to load <blog> module.');
