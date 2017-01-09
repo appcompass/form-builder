@@ -53,7 +53,11 @@ class UsersModuleDatabaseSeeder extends Seeder
             $builder->string('Email', 'email')->list()->required()->validation('email')->sortable()->searchable();
             $builder->string('Date Added', 'created_at')->list()->edit(false)->sortable();
             $builder->secret()->required();
-        })->setAlias(['users.index', 'users.show', 'users.create']);
+        })->setAlias([
+            'users.index',
+            'users.show',
+            'users.create',
+        ]);
 
         //
         //  GROUPS
@@ -65,7 +69,11 @@ class UsersModuleDatabaseSeeder extends Seeder
             $builder->string('Group Label', 'label')->list()->required()->sortable()->searchable();
             $builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();
             $builder->string('Date Added', 'created_at')->list()->edit(false)->sortable();
-        })->setAlias(['groups.index', 'groups.show', 'groups.create']);
+        })->setAlias([
+            'groups.index',
+            'groups.show',
+            'groups.create',
+        ]);
 
         Model::reguard();
     }

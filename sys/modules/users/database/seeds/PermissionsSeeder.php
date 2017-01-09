@@ -30,7 +30,11 @@ class PermissionsSeeder extends Seeder
             $builder->string('Name', 'name')->list()->required()->sortable()->searchable();
             $builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();
             $builder->string('Created', 'created_at')->list()->edit(false)->required()->sortable()->searchable();
-        })->setAlias(['permissions.index', 'permissions.show', 'permissions.create']);
+        })->setAlias([
+            'permissions.index',
+            'permissions.show',
+            'permissions.create',
+        ]);
 
         Permission::create([
             'type' => 'logged-user',
