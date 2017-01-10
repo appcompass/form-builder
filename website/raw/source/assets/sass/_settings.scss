@@ -1,0 +1,101 @@
+/* ==========================================================================
+	SETTINGS
+=========================================================================== */
+
+///------------------------------------------------------------------------
+///		FUNCTIONS
+///------------------------------------------------------------------------
+
+// EM CALCULATION
+$base-font: 16px;
+@function em($target, $context: $base-font) {
+   @if $target == 0 { @return 0 }
+   @return $target / $context + 0em;
+}
+
+///------------------------------------------------------------------------
+///		VARIABLES
+///------------------------------------------------------------------------
+
+// GRID WIDTHS
+$max-container-width: 100%;
+$max-row-width: 1200px;
+
+// GRID BREAKPOINTS
+$break-large: 1200px;
+$break-medium: 992px;
+$break-small: 768px;
+$break-xsmall: $break-small - 1px;
+
+// GRID GUTTERS
+$gutter-xsmall: 30px;
+$gutter-small: $gutter-xsmall;
+$gutter-medium: $gutter-xsmall;
+$gutter-large: $gutter-xsmall;
+$columns: 12;
+
+// STYLE BREAKPOINTS
+$break-timeline: 992px;
+
+
+// PATH VARIABLES
+$assets: "../images"; //use #{$assets}
+
+// COLORS
+$black: #333334;
+$black-light: #363636;
+$blue: #0ab7f9;
+$text-color: #696969;
+$heading-color: $black;
+$link-color: $blue;
+$hover-color: mix(black, $blue, 20%);
+$border-color:#dbdbdb;
+$off-white: #f3f3f3;
+$black-nav: #424242;
+$black-nav-hover: #262626;
+$red: #ff122c;
+$process-color1: $blue;
+$process-color2: #f47e4f;
+$process-color3: #28b34b;
+$process-color4: #805da8;
+$process-color5: #ed1d8e;
+$process-color6: #1dbcbd;
+$process-color7: #7acc23;
+$process-color8: #fed00f;
+$process-color9: #56c9e6;
+
+// FORMS
+$input-height: 50px;
+$input-bg-color: transparent;
+$input-text-color: $text-color;
+$input-border-color: #e7e7e7;
+$input-focus-border-color: $blue;
+$input-border-width: 2px;
+$input-margin-top: 0;
+$input-margin-bottom:10px;
+$placeholder-color: #999;
+$btn-color: $link-color;
+
+
+///------------------------------------------------------------------------
+/// 	FONTS
+///		
+///		Proxima Nova
+///		400 normal 
+///		600 semibold
+///		700 bold
+///------------------------------------------------------------------------
+
+%default-font, 
+%proxima {
+	font-family:'Proxima Nova W01', "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+
+
+
+
+
+
+
+

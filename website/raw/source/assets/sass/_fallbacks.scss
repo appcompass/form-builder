@@ -1,0 +1,47 @@
+/* ==========================================================================
+	FALLBACKS
+=========================================================================== */
+
+.no-flexbox {
+	.header {
+		width:100%;
+		display:table;
+	}
+
+	.logo-wrap {
+		display:table-cell;
+	}
+
+	.main-nav {
+		display:table;
+	}
+
+	.main-nav > ul {
+		display:table;
+		float:right;
+	}
+
+	.main-nav > ul > li {
+		display:table-cell;
+		vertical-align:middle;
+	}
+
+	.main-nav > ul > li > a {
+		display:inline-block;
+	}
+
+	.section-contact {
+		display:table;
+		width:100%;
+	}
+
+	.contact-map, 
+	.contact-info {
+		display:table-cell;
+		vertical-align:middle;
+	}
+
+	.contact-map {
+		height:570px;
+	}
+}
