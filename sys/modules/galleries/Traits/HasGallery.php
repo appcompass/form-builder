@@ -36,17 +36,17 @@ trait HasGallery
     public function gallery()
     {
 
-        $rel = $this->morphOne(Gallery::class, 'galleryable');
+        return $this->morphOne(Gallery::class, 'galleryable');
 
-        if ($this->forceCreateGallery && $this->id && !$rel->get()->count()) {
+        // if ($this->forceCreateGallery && $this->id && !$rel->get()->count()) {
 
-            $this->getOrCreateGallery($this->getGalleryName());
+        //     $this->getOrCreateGallery($this->getGalleryName());
 
-            $this->fresh();
+        //     $this->fresh();
 
-        }
+        // }
 
-        return $rel;
+        // return $rel;
     }
 
     /**

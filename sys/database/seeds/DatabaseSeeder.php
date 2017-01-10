@@ -6,10 +6,12 @@ use P3in\Models\FormBuilder;
 use P3in\Models\Gallery;
 use P3in\Models\Layout;
 use P3in\Models\Page;
-use P3in\Models\PageRenderer;
 use P3in\Models\PageContent;
+use P3in\Models\PageRenderer;
+use P3in\Models\Photo;
 use P3in\Models\Section;
 use P3in\Models\User;
+use P3in\Models\Video;
 use P3in\Models\Website;
 
 class DatabaseSeeder extends Seeder
@@ -26,6 +28,7 @@ class DatabaseSeeder extends Seeder
         // I'm not attached to any part more than another,
         // it's mainly a big brainstorm excersize.
 
+        DB::statement("TRUNCATE TABLE galleries RESTART IDENTITY CASCADE");
         DB::statement("TRUNCATE TABLE settings RESTART IDENTITY CASCADE");
         DB::statement("TRUNCATE TABLE pages RESTART IDENTITY CASCADE");
         DB::statement("TRUNCATE TABLE sections RESTART IDENTITY CASCADE");
@@ -144,6 +147,35 @@ class DatabaseSeeder extends Seeder
             ]
         ];
         $website->save();
+
+        // Gallery
+        $gallery = new Gallery(['name' => 'First Gallery']);
+        $user = User::first();
+
+        $gallery->user()->associate($user);
+        $gallery->galleryable()->associate($website);
+        $gallery->save();
+
+        $photo = new Photo([
+            'path' => 'random/path.png',
+            'status' => 'pending',
+            'storage' => 'local',
+        ]);
+        $video = new Video([
+            'name' => 'random video',
+            'storage' => 'wistia',
+        ]);
+
+        $photo->user()->associate($user);
+        $photo->photoable()->associate($user);
+        $photo->save();
+
+        $video->user()->associate($user);
+        $video->videoable()->associate($user);
+        $video->save();
+
+        $gallery->addItem($photo, 1);
+        $gallery->addItem($video, 2);
 
         // DASHBOARD PAGE
         $dashboard = $website->pages()->create([

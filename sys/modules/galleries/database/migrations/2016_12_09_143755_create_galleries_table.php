@@ -17,7 +17,7 @@ class CreateGalleriesTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users'); // we don't delete galleries on user deletion
-            $table->morphs('galleryable');
+            $table->nullableMorphs('galleryable');
             $table->string('name');
 
             $table->timestamps();

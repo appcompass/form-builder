@@ -51,6 +51,11 @@ class GalleryItem extends Model
         return $this->morphTo('itemable');
     }
 
+    public function gallery()
+    {
+        return $this->belongsTo(Gallery::class);
+    }
+
     /**
      * Add type
      */

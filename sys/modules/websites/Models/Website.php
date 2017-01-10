@@ -168,6 +168,13 @@ class Website extends Model
         return $this->getMachineName();
     }
 
+    /**
+     *
+     */
+    public function getMachineName()
+    {
+        return strtolower(str_replace(' ', '_', $this->site_name));
+    }
     // public function populateField($field_name)
     // {
     //     switch ($field_name) {
@@ -307,14 +314,6 @@ class Website extends Model
 
     //     return $parser->getCss();
 
-    // }
-
-    // /**
-    //  *
-    //  */
-    // public function getMachineName()
-    // {
-    //     return strtolower(str_replace(' ', '_', $this->site_name));
     // }
 
     // /*
