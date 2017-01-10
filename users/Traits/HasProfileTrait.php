@@ -3,7 +3,7 @@
 namespace P3in\Traits;
 
 use Illuminate\Support\Facades\Cache;
-use P3in\Profiles\Profile;
+use P3in\Models\Profiles\Profile;
 
 trait HasProfileTrait
 {
