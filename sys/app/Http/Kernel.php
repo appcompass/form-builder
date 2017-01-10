@@ -34,9 +34,9 @@ class Kernel extends HttpKernel
 
         'api' => [
             // 'throttle:60,1',
-            // 'bindings',
+            'bindings',
             \P3in\Middleware\AfterRoute::class,
-            \Illuminate\Routing\Middleware\SubstituteBindings::class // @NOTE bindings aren't needed, we're dynamicaly "binding" ourselves <-- bullshit
+            // \Illuminate\Routing\Middleware\SubstituteBindings::class // @NOTE bindings aren't needed, we're dynamicaly "binding" ourselves <-- bullshit
         ],
     ];
 

@@ -6,11 +6,13 @@ use Cache;
 use Exception;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Auth\Access\Authorizable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 use Modular;
 use P3in\Models\Gallery;
@@ -19,19 +21,23 @@ use P3in\Models\Permission;
 use P3in\Models\Photo;
 use P3in\ModularBaseModel;
 use P3in\Traits\HasPermissions;
-// use P3in\Traits\HasProfileTrait;
-// use P3in\Traits\OptionableTrait;
+use P3in\Traits\HasProfileTrait;
+use P3in\Traits\OptionableTrait;
 
-class User extends ModularBaseModel implements AuthenticatableContract, CanResetPasswordContract
+class User extends ModularBaseModel implements
+    AuthenticatableContract,
+    AuthorizableContract,
+    CanResetPasswordContract
 {
 
     use
         Authenticatable,
+        Authorizable,
         CanResetPassword,
-        Authorizable
-        // OptionableTrait,
-        // HasPermissions,
-        // HasProfileTrait
+        Notifiable,
+        OptionableTrait,
+        HasPermissions,
+        HasProfileTrait
         ;
 
     /**
@@ -86,112 +92,6 @@ class User extends ModularBaseModel implements AuthenticatableContract, CanReset
     ];
 
     /**
-    *   Get all the permissions the user has
-    *
-    *
-    */
-    // public function permissions()
-    // {
-
-    //     return $this->belongsToMany(Permission::class)->withTimestamps();
-
-    // }
-
-    /**
-     * Return all the permissions of the user
-     *
-     * @return array permission owned by the user
-     */
-    // public function allPermissions()
-    // {
-
-        // @TODO  add getCacheKey or something, the id is overly non-specific. should return class_name . id . updated_at_timestamp
-
-        // return Cache::tags('user_permissions')->remember('user_'.$this->id.'_'.$this->updated_at, 1, function() {
-
-            // $this->load(['groups.permissions' => function($query) { $query->where('active', true); }])
-            // $this->load('groups.permissions')
-            //     ->load('permissions');
-
-    //         $perms = collect($this->permissions->lists('type', 'id'));
-
-    //         $this->groups
-    //             ->each(function($group) use($perms) {
-    //                 $group->permissions
-    //                     ->lists('type', 'id')
-    //                     ->each(function($perm, $key) use($perms) {
-    //                         $perms->push($perm);
-    //                     });
-    //         });
-
-    //         return $perms->unique();
-
-    //     });
-
-    // }
-
-    /**
-     * Adds a permission to the user
-     */
-    // public function grantPermission(Permission $perm)
-    // {
-    //     if (!$this->permissions->contains($perm->id)) {
-
-    //         return $this->permissions()->attach($perm);
-
-    //     }
-
-    //     return false;
-    // }
-
-    /**
-     * Revokes a user's permission
-     */
-    // public function revokePermission(Permission $perm)
-    // {
-    //     return $this->permissions()->detach($perm);
-    // }
-
-    /**
-     *  Check if user has a single permission
-     *
-     *  @param string $permission Permission type.
-     *  @return bool
-     */
-    // public function hasPermission($permission)
-    // {
-
-    //     if (is_array($permission)) {
-
-    //         return $this->hasPermissions($permission);
-
-    //     }
-
-    //     return in_array($permission, $this->allPermissions()->toArray());
-
-    // }
-
-    /**
-     *  Check if user has a group of permissions
-     *
-     *  @param array permissions
-     *  @return bool
-     */
-    // public function hasPermissions($permissions)
-    // {
-    //     if (is_string($permissions)) {
-    //         $permissions = explode(",", $permissions);
-    //     }
-
-    //     if (count($permissions) == 0) {
-    //         return true;
-    //     }
-
-    //     return (bool)count(array_intersect($this->allPermissions()->toArray(), $permissions)) == count($permissions);
-
-    // }
-
-    /**
      *  Get all the groups this user belongs to
      *
      *
@@ -206,30 +106,6 @@ class User extends ModularBaseModel implements AuthenticatableContract, CanReset
         return $this->belongsToMany(Permission::class)->withTimestamps();
     }
 
-    /**
-      * Add current user to a group
-      */
-    // public function addToGroup(Group $group)
-    // {
-    //     return $group->addUser($this);
-    // }
-
-    /**
-      *  Remove current user from a group
-      */
-    // public function removeFromGroup(Group $group)
-    // {
-    //     return $group->removeUser($this);
-    // }
-
-    /**
-     *  Get either all or a specific profile type of a user
-     *
-     *
-     *  TODO: this needs to be refactored a little
-     */
-
-
     public function photos()
     {
       return $this->hasMany(Photo::class);
@@ -238,6 +114,13 @@ class User extends ModularBaseModel implements AuthenticatableContract, CanReset
     {
       return $this->hasMany(Gallery::class);
     }
+
+    /**
+     *  Get either all or a specific profile type of a user
+     *
+     *
+     *  TODO: this needs to be refactored a little
+     */
 
     public function linkProfile(Model $model)
     {
@@ -345,6 +228,115 @@ class User extends ModularBaseModel implements AuthenticatableContract, CanReset
 
     }
 
+    /**
+      * Add current user to a group
+      */
+    // public function addToGroup(Group $group)
+    // {
+    //     return $group->addUser($this);
+    // }
+
+    /**
+      *  Remove current user from a group
+      */
+    // public function removeFromGroup(Group $group)
+    // {
+    //     return $group->removeUser($this);
+    // }
+
+    /**
+     * Return all the permissions of the user
+     *
+     * @return array permission owned by the user
+     */
+    // public function allPermissions()
+    // {
+
+        // @TODO  add getCacheKey or something, the id is overly non-specific. should return class_name . id . updated_at_timestamp
+
+        // return Cache::tags('user_permissions')->remember('user_'.$this->id.'_'.$this->updated_at, 1, function() {
+
+            // $this->load(['groups.permissions' => function($query) { $query->where('active', true); }])
+            // $this->load('groups.permissions')
+            //     ->load('permissions');
+
+    //         $perms = collect($this->permissions->lists('type', 'id'));
+
+    //         $this->groups
+    //             ->each(function($group) use($perms) {
+    //                 $group->permissions
+    //                     ->lists('type', 'id')
+    //                     ->each(function($perm, $key) use($perms) {
+    //                         $perms->push($perm);
+    //                     });
+    //         });
+
+    //         return $perms->unique();
+
+    //     });
+
+    // }
+
+    /**
+     * Adds a permission to the user
+     */
+    // public function grantPermission(Permission $perm)
+    // {
+    //     if (!$this->permissions->contains($perm->id)) {
+
+    //         return $this->permissions()->attach($perm);
+
+    //     }
+
+    //     return false;
+    // }
+
+    /**
+     * Revokes a user's permission
+     */
+    // public function revokePermission(Permission $perm)
+    // {
+    //     return $this->permissions()->detach($perm);
+    // }
+
+    /**
+     *  Check if user has a single permission
+     *
+     *  @param string $permission Permission type.
+     *  @return bool
+     */
+    // public function hasPermission($permission)
+    // {
+
+    //     if (is_array($permission)) {
+
+    //         return $this->hasPermissions($permission);
+
+    //     }
+
+    //     return in_array($permission, $this->allPermissions()->toArray());
+
+    // }
+
+    /**
+     *  Check if user has a group of permissions
+     *
+     *  @param array permissions
+     *  @return bool
+     */
+    // public function hasPermissions($permissions)
+    // {
+    //     if (is_string($permissions)) {
+    //         $permissions = explode(",", $permissions);
+    //     }
+
+    //     if (count($permissions) == 0) {
+    //         return true;
+    //     }
+
+    //     return (bool)count(array_intersect($this->allPermissions()->toArray(), $permissions)) == count($permissions);
+
+    // }
 
     // temp for demo/test purpose
     public function latestUserActivity($config)
