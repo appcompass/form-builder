@@ -45,7 +45,8 @@ class CreateFormBuilderTables extends Migration
             $table->increments('id');
             $table->string('name')->unique();
             $table->string('list_layout')->default('Table'); // the list view layout [Cards, Table, SelectMulti]
-            $table->string('resource')->nullable()->unique(); // point to base resource url
+            $table->string('resource')->nullable(); // point to base resource url
+            // $table->string('resource')->nullable()->unique(); // point to base resource url
             $table->timestamps();
 
             $table->index('name');

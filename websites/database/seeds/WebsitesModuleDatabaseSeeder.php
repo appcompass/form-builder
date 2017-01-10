@@ -43,7 +43,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
 
         \DB::statement("DELETE FROM forms WHERE name = 'menus-editor'");
 
-        ResourceBuilder::new('menus-editor', 'menus-editor/{id}', function(ResourceBuilder $builder) {
+        ResourceBuilder::new('menus-editor', 'menus/{id}', function(ResourceBuilder $builder) {
             $builder->menuEditor()->list(false);
         })->setAlias(['websites.menus.show']);
 
