@@ -41,11 +41,8 @@ class Photo extends ModularBaseModel implements GalleryItemInterface
         'path',
         'name',
         'meta',
-        'user_id',
         'status',
         'storage',
-        'photoable_type',
-        'photoable_id',
         'created_at',
         'updated_at',
         'options'

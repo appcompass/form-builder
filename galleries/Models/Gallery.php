@@ -110,7 +110,7 @@ class Gallery extends Model
     {
 
         return $this->hasMany(GalleryItem::class)
-          ->orderBy('order', 'desc');
+            ->orderBy('order', 'asc');
 
     }
 
@@ -120,8 +120,7 @@ class Gallery extends Model
      */
     public function items()
     {
-        return $this->galleryItems()
-            ->orderBy('order', 'asc');
+        return $this->galleryItems();
     }
 
     /**
@@ -139,6 +138,25 @@ class Gallery extends Model
     public function addPhoto(Photo $photo, $order = null)
     {
         return $this->addItem($photo, $order);
+    }
+
+    /**
+     *  addItem
+     *
+     *  Adds an item to this gallery
+     */
+    public function addItem(GalleryItemInterface $item, $order = 1)
+    {
+        $galleryItem = new GalleryItem([
+            'order' => $order,
+        ]);
+
+        $galleryItem
+            ->itemable()
+            ->associate($item);
+
+      return $this->galleryItems()->save($galleryItem);
+
     }
 
     /**
@@ -238,24 +256,6 @@ class Gallery extends Model
             $this->addVideo($video, $start);
 
         }
-
-    }
-
-
-    /**
-     *  addItem
-     *
-     *  Adds an item to this gallery
-     */
-    private function addItem(GalleryItemInterface $item, $order = 1)
-    {
-
-      return GalleryItem::firstOrCreate([
-          'gallery_id' => $this->id,
-          'itemable_type' => get_class($item),
-          'itemable_id' => $item->id,
-          'order' => $order
-      ]);
 
     }
 
