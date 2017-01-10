@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use P3in\Models\Page;
+use P3in\Models\Redirect;
 use P3in\Traits\HasGallery;
 use P3in\Traits\HasPermissions;
 use P3in\Traits\SettingsTrait;
@@ -47,6 +48,16 @@ class Website extends Model
     public function menus()
     {
         return $this->hasMany(Menu::class);
+    }
+
+    /**
+     * Redirects
+     *
+     * @return     hasMany
+     */
+    public function redirects()
+    {
+        return $this->hasMany(Redirect::class);
     }
 
     public function logo()

@@ -10,10 +10,12 @@ use P3in\Interfaces\PageContentsRepositoryInterface;
 use P3in\Interfaces\PagesRepositoryInterface;
 use P3in\Interfaces\WebsiteMenusRepositoryInterface;
 use P3in\Interfaces\WebsitePagesRepositoryInterface;
+use P3in\Interfaces\WebsiteRedirectsRepositoryInterface;
 use P3in\Interfaces\WebsiteSettingsRepositoryInterface;
 use P3in\Interfaces\WebsitesRepositoryInterface;
 use P3in\Models\Menu;
 use P3in\Models\Page;
+use P3in\Models\Redirect;
 use P3in\Models\Section;
 use P3in\Models\Setting;
 use P3in\Models\Website;
@@ -22,6 +24,7 @@ use P3in\Repositories\PageContentsRepository;
 use P3in\Repositories\PagesRepository;
 use P3in\Repositories\WebsiteMenusRepository;
 use P3in\Repositories\WebsitePagesRepository;
+use P3in\Repositories\WebsiteRedirectsRepository;
 use P3in\Repositories\WebsiteSettingsRepository;
 use P3in\Repositories\WebsitesRepository;
 
@@ -38,6 +41,7 @@ class WebsitesServiceProvider extends ServiceProvider
         foreach ([
             WebsitesRepositoryInterface::class => WebsitesRepository::class,
             WebsitePagesRepositoryInterface::class => WebsitePagesRepository::class,
+            WebsiteRedirectsRepositoryInterface::class => WebsiteRedirectsRepository::class,
             WebsiteSettingsRepositoryInterface::class => WebsiteSettingsRepository::class,
             PageContentsRepositoryInterface::class => PageContentsRepository::class,
             PagesRepositoryInterface::class => PagesRepository::class,
@@ -50,6 +54,7 @@ class WebsitesServiceProvider extends ServiceProvider
         }
 
         Route::model('websites', Website::class);
+        Route::model('redirects', Redirect::class);
         Route::model('settings', Setting::class);
         Route::model('pages', Page::class);
         Route::model('contents', PageContent::class);
@@ -58,6 +63,10 @@ class WebsitesServiceProvider extends ServiceProvider
 
         Route::bind('website', function($value) {
             return Website::findOrFail($value);
+        });
+
+        Route::bind('redirect', function($value) {
+            return Redirect::findOrFail($value);
         });
 
         Route::bind('setting', function($value) {
