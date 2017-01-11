@@ -20,8 +20,8 @@ div
           span(
             v-bind:is="'Form' + field.type",
             v-bind:pointer="field.name"
-            v-bind:data="_.get(collection, field.name)"
-            v-bind:value="_.get(collection, field.name)"
+            v-bind:data="value(field.name)"
+            v-bind:value="value(field.name)"
             @input="set"
           )
       footer
@@ -61,7 +61,6 @@ import Formmenueditor from './FormBuilder/MenuEditor'
 import swal from 'sweetalert'
 import _ from 'lodash'
 import SubComponent from './SubComponent'
-// import env from 'dotenv'
 
 export default {
   name: 'EditView',
@@ -72,7 +71,8 @@ export default {
       resource: undefined,
       edit: {},
       collection: undefined,
-      loading: true
+      loading: true,
+      model: undefined
     }
   },
 
@@ -96,7 +96,7 @@ export default {
   },
 
   methods: {
-
+    // we refresh in a decent number of instances, but have to make sure after PUTting we propagate the refreshed stuff down to the actual items
     refresh () {
       var api = process.env.API_SERVER
       this.loading = true
@@ -117,9 +117,14 @@ export default {
       _.setWith(this.collection, data.pointer, data.value)
     },
 
+    value (fieldName) {
+      return _.get(this.collection, fieldName)
+    },
+
     update () {
       this.loading = true
-      this.resource.update({id: this.collection.id}, this.collection)
+      this.$http.put(process.env.API_SERVER + this.$route.fullPath.split('_').join('/'), this.collection)
+      // this.resource.update({id: this.collection.id}, this.collection)
         .then((response) => {
           this.loading = false
           swal({title: 'Success', text: response.data.message, type: 'success'}, () => {
