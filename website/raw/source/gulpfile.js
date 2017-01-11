@@ -1,4 +1,7 @@
 var gulp = require('gulp');
+var fs = require("fs");
+var path = require('path');
+var url = require("url");
 var del = require('del');
 var rename = require("gulp-rename");
 var sass = require('gulp-sass');
@@ -7,16 +10,20 @@ var htmlbuild = require('gulp-htmlbuild');
 var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
 var imagemin = require('gulp-imagemin');
+var svgmin = require('gulp-svgmin');
 var gulpIf = require('gulp-if');
 var runSequence = require('run-sequence');
+var connect = require('gulp-connect-php');
+var browserSync = require('browser-sync').create();
+var reload = browserSync.reload;
 var timestamp = new Date().getTime(); //we'll use this later to timestamp the js and css file names on build.
 
 gulp.task('clean:dist', function() {
-  return del.sync(['../www/**', '!../www', '!../www/index.php'], {force: true});
+  return del.sync(['../public/**', '!../public', '!../public/index.php'], {force: true});
 });
 
 gulp.task('templates', function(){
-    return gulp.src('**/*.php')
+    return gulp.src(['**/*.php', '!index.php'])
         .pipe(htmlbuild({
             // css: htmlbuild.preprocess.css(function (block) {
             //  block.end('/assets/css/styles_' + timestamp + '.css');
@@ -28,15 +35,21 @@ gulp.task('templates', function(){
                 block.end();
             }
         }))
-        .pipe(gulp.dest('../www'));
+        .pipe(gulp.dest('../public'));
 });
 
 gulp.task('sass', function(){
     return gulp.src('assets/sass/**/*.scss')
         .pipe(sass())
+        .pipe(rename('main-min.css'))
+        .pipe(gulp.dest('assets/css'));
+});
+
+gulp.task('css', function(){
+    return gulp.src('assets/css/**/*.css')
         .pipe(cssnano())
         .pipe(rename('main-min.css'))
-        .pipe(gulp.dest('../www/assets/css'));
+        .pipe(gulp.dest('../public/assets/css'));
 });
 
 gulp.task('modernizr', function() {
@@ -44,7 +57,7 @@ gulp.task('modernizr', function() {
         'assets/js/dist/modernizr-custom.js'
     ])
         .pipe(uglify())
-        .pipe(gulp.dest('../www/assets/js/dist'));
+        .pipe(gulp.dest('../public/assets/js/dist'));
 
 });
 
@@ -57,20 +70,54 @@ gulp.task('scripts', function() {
     ])
         .pipe(uglify())
         .pipe(concat('main-min.js'))
-        .pipe(gulp.dest('../www/assets/js/dist'));
+        .pipe(gulp.dest('../public/assets/js/dist'));
+});
+
+gulp.task('svgs', function () {
+    return gulp
+        .src('assets/images/**/*.svg')
+        .pipe(svgmin(function (file) {
+            var prefix = path.basename(file.relative, path.extname(file.relative));
+            return {
+                plugins: [{
+                    cleanupIDs: {
+                        prefix: prefix + '-',
+                        minify: true
+                    }
+                }]
+            }
+        }))
+        .pipe(gulp.dest('../public/assets/images/'));
 });
 
 gulp.task('images', function(){
-    return gulp.src('assets/images/**/*')
+    return gulp.src(['**/*.jpg','**/*.png', '!node_modules/**/*'])
         .pipe(imagemin())
-        .pipe(gulp.dest('../www/assets/images'));
+        .pipe(gulp.dest('../public'));
 });
 
 gulp.task('fonts', function() {
     return gulp.src('assets/fonts/**/*')
-        .pipe(gulp.dest('../www/assets/fonts'));
+        .pipe(gulp.dest('../public/assets/fonts'));
+});
+
+gulp.task('watch', ['serve'] , function() {
+    gulp.watch('./*.php', reload);
+    gulp.watch('./assets/js/src/*.js', reload);
+    gulp.watch("./assets/images/**/*", reload);
+    gulp.watch('./assets/sass/**/*.scss',['sass', reload]);
+});
+
+gulp.task('serve', function () {
+    connect.server({}, function (){
+        browserSync.init({
+            browser: ['FirefoxDeveloperEdition'],
+            proxy: '127.0.0.1:8000'
+        });
+
+    });
 });
 
 gulp.task('build', function(callback) {
-    runSequence('clean:dist', ['sass', 'modernizr', 'scripts', 'images', 'fonts', 'templates'], callback);
+    runSequence('clean:dist', 'sass', ['css', 'modernizr', 'scripts', 'svgs', 'images', 'fonts', 'templates'], callback);
 });
