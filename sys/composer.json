@@ -62,7 +62,7 @@
             "php artisan optimize",
             "php artisan cache:clear",
             "cd ../cp && npm run build",
-            "cd ../source && gulp build"
+            "cd ../website && npm run build"
         ]
     },
     "config": {

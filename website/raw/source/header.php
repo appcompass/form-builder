@@ -1,4 +1,4 @@
-<!doctype html>
+    <!doctype html>
 <html class="no-js" lang="">
     <head>
         <meta charset="utf-8">
@@ -11,6 +11,7 @@
 
         <link type="text/css" rel="stylesheet" href="//fast.fonts.net/cssapi/e1ef451d-c61f-4ad3-b4e0-e3d8adb46d89.css"/>
         <link rel="stylesheet" href="assets/css/main-min.css">
+
         <script src="/assets/js/dist/modernizr-custom.js"></script>
     </head>
     <body <?php if(isset($page_class)) echo 'class="'.$page_class.'"'; ?>>
@@ -36,12 +37,12 @@
                         <li><a href=""><span class="icon icon-login"></span> Customer Login</a></li>
                     </ul>
                     <div class="main-nav-social">
-                        Follow Us 
+                        Follow Us
                         <a href=""><span class="icon icon-instagram"></span></a>
                         <a href=""><span class="icon icon-twitter"></span></a>
                         <a href=""><span class="icon icon-facebook"></span></a>
                     </div>
                 </nav>
             </header><!-- header -->
-            
+
             <main class="main">

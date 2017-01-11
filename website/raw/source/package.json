@@ -2,8 +2,12 @@
   "name": "api.p3in.com",
   "version": "1.0.0",
   "description": "",
-  "main": "gulpfile.js",
+  "private": true,
+  "scripts": {
+    "build": "gulp build"
+  },
   "dependencies": {
+    "browser-sync": "^2.18.5",
     "del": "^2.2.0",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.0",
@@ -12,10 +16,16 @@
     "gulp-if": "^2.0.1",
     "gulp-imagemin": "^3.0.0",
     "gulp-rename": "^1.2.2",
-    "gulp-sass": "^2.3.1",
+    "gulp-sass": "^3.0.0",
     "gulp-sourcemaps": "^1.6.0",
-    "gulp-uglify": "^1.5.3",
-    "run-sequence": "^1.1.5"
+    "gulp-svgmin": "^1.2.3",
+    "gulp-uglify": "^2.0.0",
+    "run-sequence": "^1.1.5",
+    "gulp-connect-php": "0.0.8"
+  },
+  "engines": {
+    "node": ">= 4.0.0",
+    "npm": ">= 3.0.0"
   },
   "devDependencies": {},
   "scripts": {
