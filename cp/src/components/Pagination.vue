@@ -13,8 +13,8 @@ div.section.is-fullwidth(v-if="p.last_page")
     ) Next
 
     ul(v-if="5 >= p.last_page")
-      //- li(v-for="page in _.range(1, p.last_page + 1)")
-      li(v-for="page in [...Array(p.lat_page + 1).keys()]")
+      //- li(v-for="page in [...Array(p.lat_page + 1).keys()]")
+      li(v-for="page in _.range(1, p.last_page + 1)")
         span
           a.button(
             @click="goto(page)",

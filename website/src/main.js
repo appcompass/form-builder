@@ -9,7 +9,7 @@ import Bus from './components/Bus'
 import Solutions from './components/Solutions'
 import Projects from './components/Projects'
 
-import '../raw/source/assets/sass/main.scss'
+import './assets/sass/main.scss'
 require('magnific-popup')
 
 Vue.use(VueRouter)
