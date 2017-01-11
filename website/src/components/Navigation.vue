@@ -20,23 +20,29 @@ nav.main-nav
 </template>
 
 <script>
-import Vue from 'vue'
+// import Vue from 'vue'
 
 export default {
   name: 'Navigation',
   data () {
     return {
-      navigation: Object.create({})
+      // navigation: Object.create({})
+      navigation: [
+        {'label': 'Solutions', 'icon': 'solutions', 'to': '/solutions'},
+        {'label': 'Projects', 'icon': 'projects', 'to': '/projects'},
+        {'label': 'Company', 'icon': 'company', 'to': '/company'},
+        {'label': 'Contact Us', 'icon': 'contact', 'to': '/contact-us'}
+      ]
     }
   },
   beforeCreate () {
-    Vue.http.get('https://api.k1cc0.me/api/navigation?api_token=313')
-      .then(function (response) {
-        this.navigation = response.body
-      }.bind(this))
-      .catch(function (err) {
-        console.error(err)
-      })
+    // Vue.http.get('https://api.k1cc0.me/api/navigation?api_token=313')
+    //   .then(function (response) {
+    //     this.navigation = response.body
+    //   }.bind(this))
+    //   .catch(function (err) {
+    //     console.error(err)
+    //   })
   }
 }
 </script>
