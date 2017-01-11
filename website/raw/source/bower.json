@@ -1,0 +1,25 @@
+{
+  "name": "api.p3in.com",
+  "description": "",
+  "main": "",
+  "authors": [
+    "Plus 3 Interactive <support@p3in.com>"
+  ],
+  "license": "ISC",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^3.1.1",
+    "normalize-css": "^5.0.0",
+    "magnific-popup": "^1.1.0",
+    "matchHeight": "^0.7.0",
+    "slick-carousel": "^1.6.0"
+  }
+}
