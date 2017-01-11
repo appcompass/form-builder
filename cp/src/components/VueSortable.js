@@ -242,8 +242,6 @@
     return draggableComponent
   }
 
-  if (typeof exports === 'object') {
-    var Sortable = require('sortablejs')
-    module.exports = buildDraggable(Sortable)
-  }
+  var Sortable = require('sortablejs')
+  module.exports = buildDraggable(Sortable)
 })()

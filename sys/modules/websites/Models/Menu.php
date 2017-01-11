@@ -30,7 +30,7 @@ class Menu extends Model
      */
     public function items()
     {
-        return $this->hasMany(NavItem::class)->with('navigatable')->orderBy('id', 'DESC');
+        return $this->hasMany(NavItem::class)->with('navigatable')->orderBy('id', 'ASC');
     }
 
     /**
@@ -83,7 +83,8 @@ class Menu extends Model
     {
         $items = $this->items->toArray();
 
-        return $this->mapTree($items);
+        // return $this->mapTree($items);
+        return $this->buildTree($items);
 
     }
 
@@ -99,12 +100,11 @@ class Menu extends Model
         $map = [];
         $tree = [];
 
-        $required = ['parent_id', 'label', 'url', 'new_tab', 'clickable', 'icon'];
-
         foreach($dataset as $id => &$node) {
 
             $current =& $map[$node['id']];
 
+            // @TODO better way to assign this? intersect_keys(array_flip) didn't work as expected
             $current['id'] = $node['id'];
             $current['parent_id'] = $node['parent_id'];
             $current['label'] = $node['label'];
@@ -112,8 +112,6 @@ class Menu extends Model
             $current['new_tab'] = $node['new_tab'];
             $current['clickable'] = $node['clickable'];
             $current['icon'] = $node['icon'];
-
-            // $current = array_intersect_key($node, array_flip($required));
 
             if ($node['parent_id'] == null) {
 
@@ -145,8 +143,6 @@ class Menu extends Model
 
         foreach ($items as &$node) {
 
-            // $this->counter++;
-
             if ($node['parent_id'] === $parent_id) {
 
                 $children = $this->buildTree($items, $node['id']);
@@ -154,6 +150,10 @@ class Menu extends Model
                 if ($children) {
 
                     $node['children'] = $children;
+
+                } else {
+
+                    $node['children'] = [];
 
                 }
 

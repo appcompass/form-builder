@@ -50,7 +50,7 @@ class NavItem extends Model
      *
      * @return     <type>     NavItem generator
      */
-    public static function fromModel($model)
+    public static function fromModel($model, array $attributes = null)
     {
         $allowedModels = ['P3in\Models\Page', 'P3in\Models\Link'];
 
@@ -64,10 +64,10 @@ class NavItem extends Model
 
         switch ($model_class) {
             case "P3in\Models\Page":
-                return static::fromPage($model);
+                return static::fromPage($model, $attributes);
                 break;
             case "P3in\Models\Link":
-                return static::fromLink($model);
+                return static::fromLink($model, $attributes);
                 break;
         }
     }
@@ -79,13 +79,13 @@ class NavItem extends Model
      *
      * @return     NavItem
      */
-    private static function fromPage(Page $page)
+    private static function fromPage(Page $page, array $attributes = null)
     {
         return NavItem::create([
             'navigatable_id' => $page->id,
             'navigatable_type' => get_class($page),
-            'label' => $page->title,
-            'alt' => $page->description ?: 'Alt Link Text Placeholder',
+            'label' => isset($attributes['label']) ? $attributes['label'] : $page->title,
+            'alt' => isset($attributes['description']) ? $attributes['description']: 'Alt Link Text Placeholder',
             'new_tab' => false,
             'clickable' => true
         ]);
@@ -117,9 +117,18 @@ class NavItem extends Model
      *
      * @return     <type>   ( description_of_the_return_value )
      */
-    public function setParent(NavItem $item)
+    public function setParent(NavItem $item = null)
     {
-        $this->parent_id = $item->id;
+
+        if (is_null($item)) {
+
+            $this->parent_id = null;
+
+        } else {
+
+            $this->parent_id = $item->id;
+
+        }
 
         if ($this->save()) {
 

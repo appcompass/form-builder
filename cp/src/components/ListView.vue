@@ -131,7 +131,7 @@ export default {
           }
           this.pagination = _.omit(response.data.collection.data, ['data'])
           this.collection = response.data.collection
-          this.resource = this.$resource(api + '/' + this.list.resource)
+          this.resource = this.$resource(api + this.list.resource)
         })
         .catch((response) => {
           this.loading = false
