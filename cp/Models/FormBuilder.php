@@ -34,13 +34,22 @@ class FormBuilder
      */å
     public static function new($name, $resource, Closure $closure = null)
     {
-
         $instance = new static();
 
-        $instance->form = Form::create([
-            'name' => $name,
-            'resource' => $resource
-        ]);
+        if ($resource instanceof Model) {
+
+            $instance->form = $resource->form()->create(['name' => $name]);
+
+         } elseif(is_string($resource)) {
+
+            $instance->form = Form::create([
+                'name' => $name,
+                'resource' => $resource
+            ]);
+
+        }else{
+            throw new \Exception('this resource/owner type is not compatible with the Form Builder.');
+        }
 
         if ($closure) {
 
@@ -174,7 +183,7 @@ class FormBuilder
 
     public function text($label, $name = null, $validation = '')
     {
-        return $this->addField($label, $name, 'text', false, true, $validation);
+        return $this->addField($label, $name, 'text', $validation);
     }
 
     public function boolean($label, $name = null, $validation = '')
