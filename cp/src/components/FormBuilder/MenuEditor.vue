@@ -1,29 +1,67 @@
 <template lang="jade">
 div
-  Sortable(:list="data.menu", :options="{handle: '.handle', animation: 150, group: 'items'}")
-    div.item(v-for="(item, index) in data.menu")
-      small.icon.is-small.handle
-        i.fa.fa-arrows
-      input(v-model="item.label")
-      small.icon.is-small
-        i.fa.fa-trash(@click="remove(index)")
+  .modal(:class="{'is-active': modal.active}")
+    .modal-background
+    .modal-card
+      header.modal-card-head
+        p.modal-card-title Add Link
+        button.delete(@click.prevent="modal.active = false")
+      section.modal-card-body
+        label.label Label
+        p.control
+          input.input(v-model="link.label")
+        label.label Url
+        p.control
+          input.input(v-model="link.url")
+        label.label Alt Text
+        p.control
+          input.input(v-model="link.alt")
+        label.label Icon Name
+        p.control
+          input.input(v-model="link.icon")
+        p.control
+          label.checkbox
+            input(type="checkbox", v-model="link.new_tab")
+            |  New Tab
+        p.control
+          label.checkbox
+            input(type="checkbox", v-model="link.clickable")
+            |  Clickable
+      footer.modal-card-foot
+        a.button.is-primary(@click="storeLink()") Save
+        a.button(@click.prevent="modal.active = false") Cancel
 
-      Sortable(v-if="item.children && item.children.length", :list="item.children", :options="{handle: '.handle', animation: 150, group: 'items'}")
-        div.item(v-for="(child, index) in item.children")
+  div.columns
+    div.column.is-12
+      Sortable(:list="data.menu", :options="{handle: '.handle', animation: 150, group: 'items'}")
+        div.item(v-for="(item, index) in data.menu")
           small.icon.is-small.handle
             i.fa.fa-arrows
-          input(v-model="child.label")
+          input(v-model="item.label")
           small.icon.is-small
-            i.fa.fa-trash(@click="remove(index)")
+            i.fa.fa-trash(@click="remove(index, item)")
 
-      Sortable.empty(v-else, :list="item.children",  :options="{handle: '.handle', animation: 150, group: 'items'}")
+          Sortable(v-if="item.children && item.children.length", :list="item.children", :options="{handle: '.handle', animation: 150, group: 'items'}")
+            div.item(v-for="(child, childIndex) in item.children")
+              small.icon.is-small.handle
+                i.fa.fa-arrows
+              input(v-model="child.label")
+              small.icon.is-small
+                i.fa.fa-trash(@click="remove(childIndex, child, item)")
 
-  Sortable.repodiv(:list="data.repo", :options="{animation: 150, group: 'items'}")
-    div.repo__item(v-for="item in data.repo")
-      small.icon.is-small.handle
-        i.fa.fa-arrows
-      |  {{ item.name || item.label }}
+          Sortable.empty(v-else, :list="item.children",  :options="{handle: '.handle', animation: 150, group: 'items'}")
 
+        p.control
+          a.button.is-small(@click="modal.active = true")
+            span.icon.is-small
+              i.fa.fa-link
+            span New Link
+
+        Sortable.repodiv(:list="data.repo", :options="{animation: 150, group: 'items'}")
+          div.repo__item(v-for="item in data.repo")
+            small.icon.is-small.handle
+              i.fa.fa-arrows
+            |  {{ item.name || item.label }}
 </template>
 
 <script>
@@ -35,16 +73,52 @@ export default {
   components: { Sortable },
   props: [ 'data', 'value', 'pointer' ],
   name: 'menu-editor',
+  data () {
+    return {
+      modal: {
+        active: false
+      },
+      link: {
+        url: 'https://www.google.com',
+        label: 'Google',
+        icon: 'world',
+        new_tab: true,
+        clickable: true,
+        alt: 'google link'
+      }
+    }
+  },
   created () {
+    // parse the available items and sync the structure
     this.data.repo.forEach(function (item) {
-      item.label = item.name.charAt(0).toUpperCase() + item.name.slice(1)
+      if (!item.label && item.name) {
+        item.label = item.name.charAt(0).toUpperCase() + item.name.slice(1)
+      } else if (!item.name) {
+        item.name = item.label
+      }
       item.children = []
     })
-    this.deleted = []
   },
   methods: {
-    remove (index) {
-      this.data.menu.splice(index, 1)
+    // index -> rendering index
+    // parent -> nullable parent (root or children?)
+    //
+    remove (index, item, parent = null) {
+      if (parent) {
+        parent.children.splice(index, 1)
+      } else {
+        this.data.menu.splice(index, 1)
+      }
+      this.data.deletions.push(item.id)
+    },
+    storeLink () {
+      this.$http.post(process.env.API_SERVER + 'menus/', this.link)
+        .then((response) => {
+          let link = response.body
+          link.children = []
+          this.data.repo.push(link)
+          this.modal.active = false
+        })
     }
   }
 }

@@ -30,7 +30,7 @@ class Menu extends Model
      */
     public function items()
     {
-        return $this->hasMany(NavItem::class)->with('navigatable')->orderBy('id', 'ASC');
+        return $this->hasMany(NavItem::class)->with('navigatable')->orderBy('sort', 'ASC');
     }
 
     /**

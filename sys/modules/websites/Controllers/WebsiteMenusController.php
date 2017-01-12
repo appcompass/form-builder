@@ -22,63 +22,43 @@ class WebsiteMenusController extends AbstractChildController
             'id' => $model->id,
             'menu-editor' => [
                 'menu' => $model->render(),
-                'repo' => $parent->pages
+                'repo' => $parent->pages,
+                'deletions' => []
             ]
         ];
 
     }
 
-    public function update(Request $request, $parent, $model)
+    public function update(Request $request, $parent, $menu)
     {
-        $menu = $request->get('menu-editor')['menu'];
 
-        $flattened_shiet = $this->flatten($menu);
+        $menu_structure = $this->flatten($request->get('menu-editor')['menu']);
 
-        foreach ($flattened_shiet as $item) {
+        $deletions = $request->get('menu-editor')['deletions'];
+
+        foreach ($deletions as $deletee_id) {
+
+            // deletions are always NavItems
+            $navitem = NavItem::findOrFail($deletee_id)->delete();
+
+        }
+
+        foreach ($menu_structure as $item) {
 
             if (isset($item['navigatable_id'])) { // this is a NavItem
 
                 // being this a navitem, we're sure the id is a navitem id
 
-                try {
+                // so fetch it
+                $navitem = NavItem::findOrFail($item['id']);
 
-                    $navitem = NavItem::findOrFail($item['id']);
-
-                } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-
-                    dd($item);
-
-                }
-
-
-                if (is_null($navitem)) {
-
-                    dd($item);
-
-                }
-
+                // update it's content
                 $navitem->fill($item)->save();
 
+                // then set parent if applicable, or null it to be sure (setParent takes care of saving as well)
                 if (!is_null($item['parent_id'])) {
 
-                    // echo "$item[id] $item[label] $item[parent_id]<br>";
-
-                    try {
-
                         $parent_item = $navitem->setParent(NavItem::findOrFail($item['parent_id']));
-
-                        if (is_null($parent_item)) {
-
-                            dd("Parent not found: " + $item['parent_id']);
-
-                        }
-
-                    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-
-                        dd($item);
-
-                    }
-
 
                 } else {
 
@@ -86,10 +66,15 @@ class WebsiteMenusController extends AbstractChildController
 
                 }
 
+                // finally, make sure the item belongs to the correct menu (current one obv)
+                if (is_null($navitem->menu_id)) {
+
+                    $menu->add($navitem);
+
+                }
+
 
             } else {
-
-                dd("here");
 
                 // this must be a Page instance (because otherwise...)
 
@@ -101,7 +86,7 @@ class WebsiteMenusController extends AbstractChildController
 
                 // add navitem to current menu
 
-                $model->add($navitem);
+                $menu->add($navitem);
 
             }
 
@@ -109,23 +94,37 @@ class WebsiteMenusController extends AbstractChildController
 
     }
 
-    private function flatten(array $menu, $parent_id = null)
+    private function flatten(array $menu, $parent_id = null, $sort = null)
     {
         $res = [];
+
+        if (is_null($sort)) {
+
+            $sort = 0;
+
+        }
 
         foreach($menu as $branch) {
 
             $branch['parent_id'] = $parent_id;
 
-            if (isset($branch['children']) && count($branch['children']) > 0) {
+            $branch['sort'] = $sort++;
 
-                $res = array_merge($res, $this->flatten($branch['children'], $branch['id']));
+            $children = $branch['children'];
+
+            $branch['children'] = null;
+
+            $res[] = $branch;
+
+            // if (isset($branch['children']) && count($branch['children']) > 0) {
+            if (count($children)) {
+
+                $res = array_merge($res, $this->flatten($children, $branch['id'], $sort));
 
                 $branch['children'] = null;
 
             }
 
-            $res[] = $branch;
 
         }
 

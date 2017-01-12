@@ -14,7 +14,8 @@ class NavItem extends Model
         'navigatable_id',
         'navigatable_type',
         'alt',
-        'new_tab'
+        'new_tab',
+        'sort'
     ];
 
     protected $hidden = [

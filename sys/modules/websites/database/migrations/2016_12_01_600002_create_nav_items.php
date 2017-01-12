@@ -27,6 +27,7 @@ class CreateNavItems extends Migration
             $table->integer('req_perm')->unsigned()->nullable();
             $table->boolean('clickable')->default(true); // sometimes we just want separators
             $table->string('icon')->nullable();
+            $table->integer('sort')->nullable();
             // $table->foreign('req_perms')->references('id')->on('permissions');
 
             $table->integer('navigatable_id')->nullable();
