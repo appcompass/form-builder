@@ -44,6 +44,7 @@ class CreateFormBuilderTables extends Migration
         Schema::create('forms', function(Blueprint $table) {
             $table->increments('id');
             $table->string('name')->unique();
+            $table->nullableMorphs('formable');
             $table->string('list_layout')->default('Table'); // the list view layout [Cards, Table, SelectMulti]
             $table->string('resource')->nullable(); // point to base resource url
             // $table->string('resource')->nullable()->unique(); // point to base resource url

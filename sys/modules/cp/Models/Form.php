@@ -19,6 +19,11 @@ class Form extends Model
 
     protected $with = ['fields'];
 
+    public function formable()
+    {
+        return $this->morphTo();
+    }
+
     public function fields()
     {
         return $this->belongsToMany(Field::class);
