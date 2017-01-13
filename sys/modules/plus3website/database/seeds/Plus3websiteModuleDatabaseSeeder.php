@@ -144,31 +144,89 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
         // Sections
             // Home
+                // Meet our Team (See: Company Version)
+                // Social Activity Feed (See: Company Version)
+                // Customer Testimonials
+                    // Repeatable
+                        // Testimonial (textarea wysiwyg)
+                        // Testimonial Author (text)
             // Solutions
-            // Process
-            // Projects
-            // Company
-            // Contact Us
-                // Thick Page Banner
+                // Thick Page Banner (See: Customer Login)
+                // White Break Callout Multiple Links
                     // Title
                     // Description
-                // Contact Form
-                    // First Name
-                    // Last Name
-                    // Email
-                    // Phone
-                    // Company Name
-                    // Company Website
-                    // Your Message
-                // Map Address
-                    // Map (with lat/lng or address lookup)
+                    // Links (See: Project Services Used)
+                // Provided Solution (repeatable)
+                    // Layout (left/right radio buttons)
+                    // Title (text)
+                    // Solution Photo (file)
+                    // Description (textarea wysiwyg)
+                    // Projects Using Solution (See: Project Services Used)
+                    // Link Description (text)
+                    // Link Text (text)
+                    // Link href (select page | select link | create new link)
+                // Blue Break Callout (See: Projects)
+            // Process
+                // Thick Page Banner (See: Customer Login)
+            // Projects
+                // Thick Page Banner (See: Customer Login)
+                // Project List
+                    // Repeatable
+                        // Background Photo
+                        // Project Logo (file)
+                        // Project Name (text)
+                        // Project Business Area (text)
+                        // Project Services (textarea wysiwyg)
+                        // Project Description (textarea wysiwyg)
+                        // Project Services Used (Index of Page + content_sections links)
+                            // Page select (dropdown)
+                            // Page sections (checkboxes) (only available after page selection)
+                        // Highlighted (boolean)
+                // White Break Callout Single Link
                     // Title
-                    // Address Line 1
-                    // Address Line 2
-                    // City, State Zip
-                    // Phone Number
+                    // Description
+                    // Link Text
+                    // Link href (select page | select link | create new link)
+                // Blue Break Callout
+                    // Link Text
+                    // Link href (select page | select link | create new link)
+            // Company
+                // Thick Page Banner (See: Customer Login)
+                // Meet our Team (Dynamic Model: Plus3Person)
+                    // Person Card
+                        // Card Photo (file)
+                        // Card Name (text)
+                        // Card Title (text)
+                        // Card Modal
+                            // Modal Photo (file - same as above)
+                            // Modal Name (text - same as above)
+                            // Modal Bio (textarea wysiwyg)
+                            // Modal Instagram profile (text)
+                            // Modal Twitter profile (text)
+                            // Modal Facebook profile (text)
+                            // Modal LinkedIn profile (text)
+                // Social Activity Feed
+                    // No Configuration per section, config provided by website settings.
+            // Contact Us
+                // Thick Page Banner (See: Customer Login)
+                // Contact Form (Dynamic Model: Form)
+                    // First Name (text)
+                    // Last Name (text)
+                    // Email (text)
+                    // Phone (text)
+                    // Company Name (text)
+                    // Company Website (text)
+                    // Your Message (textarea wysiwyg)
+                // Map Address
+                    // Map (map)
+                    // Title (text)
+                    // Address Line 1 (text)
+                    // Address Line 2 (text)
+                    // City, State Zip (text)
+                    // Phone Number (text)
             // Customer Login
                 // Thick Page Banner
+                    // Background Image
                     // Title
                     // Description
                 // Login Form
