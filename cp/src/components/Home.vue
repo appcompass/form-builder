@@ -1,4 +1,4 @@
-<template lang="jade">
+<template lang="pug">
 section.section
   router-view
   section.hero.is-primary

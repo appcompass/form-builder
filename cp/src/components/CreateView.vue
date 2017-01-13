@@ -8,8 +8,8 @@ div.columns
         span(
           v-bind:is="'Form' + field.type",
           v-bind:pointer="field.name"
-          v-bind:data="_.get(collection, field.name)"
-          v-bind:value="_.get(collection, field.name)"
+          v-bind:data="value(field.name)"
+          v-bind:value="value(field.name)"
           @input="set"
         )
     footer
@@ -43,20 +43,24 @@ export default {
     }
   },
   created () {
-    var api = '/api/'
+    var api = process.env.API_SERVER
 
+    // this.model = this.$route.params.modelslice(1).split('/').join('_')
     this.model = this.$route.params.model.split('_').join('/')
+    console.log(this.model)
 
-    this.$http.get('/api' + this.$route.path)
+    this.$http.get(api + this.$route.path)
       .then((response) => {
-        this.create = response.data.edit // edit and create form are the same (for now)
-        // this.resource = this.$resource(api + this.create.resource)
+        this.create = response.data.edit
         this.resource = this.$resource(api + this.model)
       })
   },
   methods: {
     set (data) {
       _.set(this.collection, data.pointer, data.value)
+    },
+    value (fieldName) {
+      return _.get(this.collection, fieldName)
     },
     save () {
       this.resource.save(this.collection)

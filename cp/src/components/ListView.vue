@@ -70,7 +70,6 @@ export default {
   watch: {
     'pagination.current_page' (nv, ov) {
       this.update()
-      console.log('from pagination watcher')
     },
     '$route' (to, from) {
       this.search = {}
@@ -90,8 +89,6 @@ export default {
       } else {
         this.pagination.current_page = 1
       }
-
-      console.log('from $route watcher')
     }
   },
 

@@ -60,11 +60,10 @@ import Formmenueditor from './FormBuilder/MenuEditor'
 
 import swal from 'sweetalert'
 import _ from 'lodash'
-import SubComponent from './SubComponent'
 
 export default {
   name: 'EditView',
-  components: { Formstring, Formtext, Formsecret, Formboolean, Formmenueditor, SubComponent },
+  components: { Formstring, Formtext, Formsecret, Formboolean, Formmenueditor },
 
   data () {
     return {
@@ -112,19 +111,15 @@ export default {
           swal({title: 'Error', text: response.data.errors, type: 'error'})
         })
     },
-
     set (data) {
       _.setWith(this.collection, data.pointer, data.value)
     },
-
     value (fieldName) {
       return _.get(this.collection, fieldName)
     },
-
     update () {
       this.loading = true
       this.$http.put(process.env.API_SERVER + this.$route.fullPath.split('_').join('/'), this.collection)
-      // this.resource.update({id: this.collection.id}, this.collection)
         .then((response) => {
           this.loading = false
           swal({title: 'Success', text: response.data.message, type: 'success'}, () => {

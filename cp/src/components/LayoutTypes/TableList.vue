@@ -29,12 +29,12 @@ table.table.is-striped
   tbody(:class="{'is-opaque': $parent.loading}", v-if="collection.data.data.length")
     tr(v-for="row in collection.data.data")
       td(v-for="field in forms.list.fields")
-        {{ row[field.name] }}
+        | {{ row[field.name] }}
       td
         .control.is-grouped
 
           p.control
-            router-link.button.is-small(:to="{name: 'edit', params: {model: $parent.model.slice(1).split('/').join('_'), id: row.id}}")
+            router-link.button.is-small(:to="{name: 'edit', params: {model: $route.fullPath.slice(1).split('/').join('_'), id: row.id}}")
               span.icon.is-small
                 i.fa.fa-edit
               span Edit
@@ -51,7 +51,6 @@ table.table.is-striped
           .title No results found.
 </template>
 
-
 <script>
 export default {
   name: 'TableList',
@@ -60,15 +59,15 @@ export default {
     // @TODO here we should replace nested fields with the actual value in the collection
     // but HOW :)
     // @WARNING a json fields behaves the exact same way
-    this.forms.list.fields.forEach(function (field) {
-      if (/\./.test(field.name)) {
-        let exploded = field.name.split('.')
-        // console.log(this.collection, exploded)
-        this.collection.data.data.forEach(function (data) {
-          console.log(data[exploded[0]][exploded[1]])
-        })
-      }
-    }.bind(this))
+    // this.forms.list.fields.forEach(function (field) {
+    //   if (/\./.test(field.name)) {
+    //     let exploded = field.name.split('.')
+    //     // console.log(this.collection, exploded)
+    //     this.collection.data.data.forEach(function (data) {
+    //       console.log(data[exploded[0]][exploded[1]])
+    //     })
+    //   }
+    // }.bind(this))
   }
 }
 </script>
