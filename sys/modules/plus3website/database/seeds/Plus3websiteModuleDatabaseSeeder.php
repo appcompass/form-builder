@@ -141,5 +141,40 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             ->user()
             ->associate($lazarus)
             ->save();
+
+        // Sections
+            // Home
+            // Solutions
+            // Process
+            // Projects
+            // Company
+            // Contact Us
+                // Thick Page Banner
+                    // Title
+                    // Description
+                // Contact Form
+                    // First Name
+                    // Last Name
+                    // Email
+                    // Phone
+                    // Company Name
+                    // Company Website
+                    // Your Message
+                // Map Address
+                    // Map (with lat/lng or address lookup)
+                    // Title
+                    // Address Line 1
+                    // Address Line 2
+                    // City, State Zip
+                    // Phone Number
+            // Customer Login
+                // Thick Page Banner
+                    // Title
+                    // Description
+                // Login Form
+                    // Email
+                    // Password
+                    // Remember Me
+                    // Forgot Password
     }
 }
