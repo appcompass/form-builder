@@ -3,12 +3,12 @@ div.section.is-fullwidth(v-if="p.last_page")
   nav.pagination
     a.button(
       :class="{'is-disabled': p.current_page === 1}"
-      @click="turn(-1)"
+      @click="turn(-1)",
       :disabled="disabled"
     ) Previous
     a.button(
       @click="turn(1)",
-      :class="{'is-disabled': p.last_page === p.current_page}"
+      :class="{'is-disabled': p.last_page === p.current_page}",
       :disabled="disabled"
     ) Next
 

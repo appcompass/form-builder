@@ -29,7 +29,7 @@ table.table.is-striped
   tbody(:class="{'is-opaque': $parent.loading}", v-if="collection.data.data.length")
     tr(v-for="row in collection.data.data")
       td(v-for="field in forms.list.fields")
-        {{ row[field.name] }}
+        | {{ row[field.name] }}
       td
         .control.is-grouped
 
