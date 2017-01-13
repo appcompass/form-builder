@@ -34,12 +34,6 @@ class UsersModuleDatabaseSeeder extends Seeder
         //
 
         \DB::statement("DELETE FROM forms WHERE name = 'users'");
-        // generate 20 dummy permissions
-        factory(Permission::class, 20)->create();
-        // generate 1000 dummy users and assign 3 random permissions each
-        factory(User::class, 100)->create()->each(function($user) {
-            $user->permissions()->saveMany(Permission::inRandomOrder()->limit(3)->get());
-        });
 
         // @NOTE ResourceBuilder Parameters:
         //      FormName // Resource Pointer (vue-resource syntax) // callback
