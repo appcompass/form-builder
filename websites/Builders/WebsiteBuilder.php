@@ -45,8 +45,6 @@ class WebsiteBuilder
             'url' => $domain,
         ]);
 
-        $instance->setDefaultSettings();
-
         if ($closure) {
 
             $closure($instance);
@@ -91,27 +89,22 @@ class WebsiteBuilder
 
         return new PageBuilder($page);
     }
-    private function setDefaultSettings()
+
+    public function setHeader($template)
     {
-        $this->website->settings = [
-            'modules' => [
-                'websites' => [
-                    'templates' => [
-                        'header' => '',
-                        'footer' => '',
-                    ],
-                    'meta_data' => [
-                        'title' => $this->website->name,
-                        'description' => '',
-                        'keywords' => '',
-                        'custom_header_html' => '',
-                        'robots_txt' => '',
-                    ],
-                ],
-            ]
-        ];
-        $this->website->save();
+        $this->website->update(['config->header' => $template]);
     }
+
+    public function setFooter($template)
+    {
+        $this->website->update(['config->footer' => $template]);
+    }
+
+    public function setMetaData($data)
+    {
+        $this->website->update(['config->meta' => $data]);
+    }
+
     public function getWebsite()
     {
         return $this->website;
