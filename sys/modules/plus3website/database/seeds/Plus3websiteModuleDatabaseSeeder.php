@@ -151,13 +151,13 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
         // Website Builder API Design
 
         // methods with 'build' prefix return instances of what it's building, buildPage, buildMenu, etc.
-        // field type ->href() allows the admin to select page || select link || create new link.
+        // field type ->link() allows the admin to select page || select link || create new link.
         // field validation should match exactly: https://laravel.com/docs/5.3/validation#available-validation-rules
 
         DB::table('websites')->where('url','https://www.plus3interactive.com')->delete();
         DB::table('layouts')->where('name','full')->delete();
 
-        Fieldtype::firstOrCreate(['type' => 'repeatable','label' => 'Repeatable']); // not a field type, repeatable is an attribute
+        Fieldtype::firstOrCreate(['type' => 'fieldset','label' => 'Field Set']);
         Fieldtype::firstOrCreate(['type' => 'file','label' => 'File']);
         Fieldtype::firstOrCreate(['type' => 'wysiwyg','label' => 'WYSIWYG']);
         Fieldtype::firstOrCreate(['type' => 'link','label' => 'Link']);
@@ -172,26 +172,24 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 // we need to figure out how to handle the 'type' field.
                 // the fields internally are created in the order they appear in the builder.
                 $formBuilder->text('Title', 'title', ['required']);
-                $formBuilder->repeatable('Slides', 'slides', [], function($slide){ // not field type, sub section builder.
+                $formBuilder->fieldset('Slides', 'slides', [], function($slide){ // not field type, sub section builder.
                     $slide->file('Banner Image', 'banner_image', Photo::class, ['required']);
                     $slide->text('Title', 'title', ['required']);
                     $slide->wysiwyg('Description', 'description', ['required']);
                     $slide->text('Link Text', 'link_text', ['required']);
-                    $slide->href('Link Destination', 'link_href', ['required']);
-                });
+                    $slide->link('Link Destination', 'link_href', ['required']);
+                })->repeatable();
             });
 
             $box_callouts = SectionBuilder::new($full,'Box Callouts', 'components/BoxCallouts.vue', function($formBuilder){
                 $formBuilder->text('Title', 'title', ['required']);
                 $formBuilder->wysiwyg('Description', 'description', ['required']);
-                $formBuilder->repeatable('Boxes', 'boxes', [], function($box){
+                $formBuilder->fieldset('Boxes', 'boxes', [], function($box){
                     $box->text('Title', 'title', ['required']);
-                    $box->repeatable('List', 'list', [], function($item){
-                        $item->text('Title', 'title');
-                    });
+                    $box->text('Points', 'points', [])->repeatable();
                     $box->text('Link Text', 'link_text', ['required']);
-                    $box->href('Link Destination', 'link_href', ['required']);
-                });
+                    $box->link('Link Destination', 'link_href', ['required']);
+                })->repeatable();
             });
 
             $our_proccess = SectionBuilder::new($full,'Our Process', 'components/OurProcess.vue', function($formBuilder){
@@ -215,22 +213,40 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             });
 
             $customer_testimonials = SectionBuilder::new($full,'Customer Testimonials', 'components/CustomerTestimonials.vue', function($formBuilder){
-                $formBuilder->repeatable('Testimonials', 'testimonials', [], function($testimonial){
+                $formBuilder->fieldset('Testimonials', 'testimonials', [], function($testimonial){
                     $testimonial->text('Author', 'author', ['required']);
                     $testimonial->wysiwyg('Content', 'content', ['required']);
-                });
+
+                    //BEGIN DUMMY: these below are a dummy set to test nesting fieldsets.
+                    $testimonial->fieldset('Testimonials', 'testimonials', [], function($lvl3){
+                        $lvl3->text('Author', 'author', ['required']);
+                        $lvl3->wysiwyg('Content', 'content', ['required']);
+                        $lvl3->fieldset('Testimonials', 'testimonials', [], function($lvl4){
+                            $lvl4->text('Author', 'author', ['required']);
+                            $lvl4->wysiwyg('Content', 'content', ['required']);
+                        })->repeatable();
+
+                    })->repeatable();
+                    // END DUMMY:
+
+                })->repeatable();
             });
 
+            $homeFullSections = [
+                $slider_banner,
+                $box_callouts,
+                $our_proccess,
+                $meet_our_team,
+                $social_stream,
+                $customer_testimonials
+            ];
 
             // Build Pages
-            // $homepage = $websiteBuilder->buildPage('Home Page', '')->setLayout($full, 1, function($layoutBuilder)) //@TODO: layoutBuilder and section adding set to it in callback.
-            //     ->add($slider_banner, 1)
-            //     ->add($box_callouts, 2)
-            //     ->add($our_proccess, 3)
-            //     ->add($meet_our_team, 4)
-            //     ->add($social_stream, 5)
-            //     ->add($customer_testimonials, 6)
-            //     ;
+            $homepage = $websiteBuilder->buildPage('Home Page', '')->setLayout($full, 1, function($pageLayoutBuilder) use ($homeFullSections) {
+                foreach ($homeFullSections as $i => $section) {
+                    $pageLayoutBuilder->addSection($section, $i+1);
+                }
+            });
 
             // $solutions = $websiteBuilder->buildPage('Solutions', 'solutions')->addLayout('full');
 
@@ -262,7 +278,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
         $website_for_renderer = Website::find($website->id);
         $renderer =  new PageRenderer($website_for_renderer);
 
-        $data = $renderer->setPage('/')->render();
+        $data = $renderer->setPage('/')->edit(); // edit() for CP, render() for public.
 
         dd(DB::getQueryLog(), $data);
 

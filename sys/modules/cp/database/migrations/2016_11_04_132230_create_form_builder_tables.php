@@ -24,11 +24,14 @@ class CreateFormBuilderTables extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('label');
+            $table->integer('parent_id')->nullable();
+            $table->foreign('parent_id')->references('id')->on('fields')->onDelete('cascade');
             $table->boolean('to_list')->default(false); // should field show up in list view?
             $table->boolean('to_edit')->default(true); // should the field show up in edit view? default true
             $table->boolean('required')->default(false);
             $table->boolean('sortable')->default(false);
             $table->boolean('searchable')->default(false);
+            $table->boolean('repeatable')->default(false);
             $table->string('validation')->nullable();
 
             $table->string('type');
