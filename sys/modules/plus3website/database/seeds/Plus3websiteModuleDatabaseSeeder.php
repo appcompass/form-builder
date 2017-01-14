@@ -162,8 +162,21 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
         Fieldtype::firstOrCreate(['type' => 'wysiwyg','label' => 'WYSIWYG']);
         Fieldtype::firstOrCreate(['type' => 'link','label' => 'Link']);
 
-
         $website = WebsiteBuilder::new('Plus 3 Interactive, LLC', 'https://www.plus3interactive.com', function($websiteBuilder){
+
+            $websiteBuilder->setHeader('components/Header.vue');
+            $websiteBuilder->setFooter('components/Footer.vue');
+
+            // This is here just to show how it's posssible.
+            $websiteBuilder->setMetaData([
+                'title' => '',
+                'description' => '',
+                'keywords' => '',
+                'custom_header_html' => '',
+                'custom_before_body_end_html' => '',
+                'custom_footer_html' => '',
+                'robots_txt' => '',
+            ]);
 
             // Layouts are not website specific. We just put this here for convenience and since this setup is a single site setup.
             $full = Layout::create(['name' => 'full']);
@@ -273,14 +286,14 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             //     ;
         })->getWebsite();
 
-        // Now lets test the magic!
-        DB::enableQueryLog();
-        $website_for_renderer = Website::find($website->id);
-        $renderer =  new PageRenderer($website_for_renderer);
+        // // Now lets test the magic!
+        // DB::enableQueryLog();
+        // $website_for_renderer = Website::find($website->id);
+        // $renderer =  new PageRenderer($website_for_renderer);
 
-        $data = $renderer->setPage('/')->edit(); // edit() for CP, render() for public.
+        // $data = $renderer->setPage('/')->edit(); // edit() for CP, render() for public.
 
-        dd(DB::getQueryLog(), $data);
+        // dd(DB::getQueryLog(), $data);
 
 /*
         Structure

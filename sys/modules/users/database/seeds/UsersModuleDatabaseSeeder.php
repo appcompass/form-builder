@@ -45,6 +45,7 @@ class UsersModuleDatabaseSeeder extends Seeder
             $builder->string('First Name', 'first_name')->list()->required()->sortable()->searchable();
             $builder->string('Last Name', 'last_name')->list()->required()->sortable()->searchable();
             $builder->string('Email', 'email')->list()->required()->validation('email')->sortable()->searchable();
+            $builder->string('Phone Number', 'phone')->list()->required()->sortable()->searchable();
             $builder->string('Date Added', 'created_at')->list()->edit(false)->sortable();
             $builder->secret()->required();
         })->setAlias([
