@@ -20,10 +20,8 @@ class Page extends Model
         SoftDeletes;
 
     protected $fillable = [
-        'name',
         'slug',
         'title',
-        'description',
     ];
 
     protected $guarded = [

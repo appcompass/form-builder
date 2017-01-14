@@ -10,7 +10,7 @@ class NavItem extends Model
 {
 
     protected $fillable = [
-        'label',
+        'title',
         'navigatable_id',
         'navigatable_type',
         'alt',
@@ -85,7 +85,7 @@ class NavItem extends Model
         return NavItem::create([
             'navigatable_id' => $page->id,
             'navigatable_type' => get_class($page),
-            'label' => isset($attributes['label']) ? $attributes['label'] : $page->title,
+            'title' => isset($attributes['title']) ? $attributes['title'] : $page->title,
             'alt' => isset($attributes['description']) ? $attributes['description']: 'Alt Link Text Placeholder',
             'new_tab' => false,
             'clickable' => true
@@ -104,7 +104,7 @@ class NavItem extends Model
         return NavItem::create([
             'navigatable_id' => $link->id,
             'navigatable_type' => get_class($link),
-            'label' => $link->label,
+            'title' => $link->title,
             'alt' => $link->alt,
             'new_tab' => $link->new_tab,
             'clickable' => $link->clickable ?: true

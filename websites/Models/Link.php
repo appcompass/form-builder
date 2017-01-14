@@ -10,7 +10,7 @@ class Link extends Model
 {
 
     protected $fillable = [
-        'label',
+        'title',
         'url',
         'alt',
         'new_tab',
@@ -19,7 +19,7 @@ class Link extends Model
     ];
 
     private $rules = [
-        'label' => 'required',
+        'title' => 'required',
         'url' => 'required_if:clickable,true',
         'alt' => 'required',
         'new_tab' => 'required',

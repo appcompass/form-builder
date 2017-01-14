@@ -25,6 +25,7 @@ class CreatePages extends Migration
             $table->string('slug');
             $table->string('url', 2083)->nullable(); // this is being derived automatically
             $table->string('title');
+            $table->json('meta')->nullable();
             $table->boolean('dynamic_url')->default(false);
 
             $table->timestamps();
