@@ -1,11 +1,11 @@
 <template lang="jade">
 div
   aside.menu(v-for="cat in navigation")
-    p.menu-label {{ cat.label }}
+    p.menu-label {{ cat.title }}
     ul.menu-list
       li(v-for="item in cat.children")
         router-link(v-bind:to="item.url")
-          span {{ item.label }}
+          span {{ item.title }}
 </template>
 
 <script>

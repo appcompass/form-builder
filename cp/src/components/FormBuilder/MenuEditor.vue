@@ -12,7 +12,7 @@ div
     div.repo__item(v-for="item in data.repo")
       small.icon.is-small.handle
         i.fa.fa-arrows
-      |  {{ item.name || item.label }}
+      |  {{ item.title }}
 
   .modal(:class="{'is-active': modal.active}")
     .modal-background
@@ -66,7 +66,7 @@ export default {
       },
       link: {
         url: 'https://www.google.com',
-        label: 'Google',
+        title: 'Google',
         icon: 'world',
         new_tab: true,
         clickable: true,
@@ -77,11 +77,6 @@ export default {
   created () {
     // parse the available items and sync the structure
     this.data.repo.forEach(function (item) {
-      if (!item.label && item.name) {
-        item.label = item.name.charAt(0).toUpperCase() + item.name.slice(1)
-      } else if (!item.name) {
-        item.name = item.label
-      }
       item.children = []
     })
   },

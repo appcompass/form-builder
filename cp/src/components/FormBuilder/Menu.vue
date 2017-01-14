@@ -1,5 +1,5 @@
 <template lang="jade">
-div.menu.is-11
+div.menu
   Sortable.menu-list(:list="menu", :element="'ul'", :options="options")
     li(v-for="(item, index) in menu")
       a
@@ -19,10 +19,10 @@ div.menu.is-11
             i.fa.fa-trash(@click="remove(item)")
 
         span(v-if="!item.editing") &nbsp;
-          {{ item.label }}
+          {{ item.title }}
 
         span(v-if="item.editing")
-          input.control(v-model="item.label")
+          input.control(v-model="item.title")
 
       MenuElement(v-if="item.children.length", :menu="item.children")
       Sortable.menu-list(v-if="!item.children.length", :list="item.children",  :options="options")

@@ -60,15 +60,15 @@ class WebsitesModuleDatabaseSeeder extends Seeder
 
         MenuBuilder::new('main_nav', $CMS, function(MenuBuilder $builder) use($users, $groups, $permissions, $websites, $galleries) {
 
-            $users_management_category = $builder->add(['url' => '', 'label' => 'Users Management', 'alt' => 'Users Management', 'new_tab' => false, 'clickable' => false]);
+            $users_management_category = $builder->add(['url' => '', 'title' => 'Users Management', 'alt' => 'Users Management', 'new_tab' => false, 'clickable' => false]);
             $builder->add($users)->setParent($users_management_category)->icon('user');
             $builder->add($groups)->setParent($users_management_category)->icon('users');
             $builder->add($permissions)->setParent($users_management_category)->icon('lock');
 
-            $properties_category = $builder->add(['url' => '', 'label' => 'Web Properties', 'alt' => 'Web Properties', 'new_tab' => false, 'clickable' => false]);
+            $properties_category = $builder->add(['url' => '', 'title' => 'Web Properties', 'alt' => 'Web Properties', 'new_tab' => false, 'clickable' => false]);
             $builder->add($websites)->setParent($properties_category)->icon('globe');
 
-            $publications_category = $builder->add(['url' => '', 'label' => 'Publications', 'alt' => 'Publications', 'new_tab' => false, 'clickable' => false]);
+            $publications_category = $builder->add(['url' => '', 'title' => 'Publications', 'alt' => 'Publications', 'new_tab' => false, 'clickable' => false]);
             $builder->add($galleries)->setParent($publications_category)->icon('camera');
         });
 
