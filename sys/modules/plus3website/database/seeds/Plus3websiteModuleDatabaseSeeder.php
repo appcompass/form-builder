@@ -141,8 +141,107 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             ->user()
             ->associate($lazarus)
             ->save();
+
 /*
-        Sections
+        // Website Builder API Design
+
+        // methods with 'build' prefix return instances of what it's building, buildPage, buildMenu, etc.
+        // field type ->href() allows the admin to select page || select link || create new link.
+        // field validation should match exactly: https://laravel.com/docs/5.3/validation#available-validation-rules
+        WebsiteBuilder::new('Plus 3 Interactive, LLC', 'www.plus3interactive.com'), function($websiteBuilder){
+
+            $full = Layout::create(['name' => 'full']); // Layouts are not website specific.
+
+            $slider_banner = SectionBuilder::new($full,'Slider Banner', 'components/SliderBanner.vue', function($sectionBuilder){
+                // we need to figure out how to handle the 'type' field.
+                // the fields internally are created in the order they appear in the builder.
+                $sectionBuilder->text('Title', 'title', ['required']);
+                $sectionBuilder->repeatable('Slides', 'slides', function($slide){ // the name on all repeatables automatically prepend the parent section's name.
+                    $slide->file('Banner Image', 'banner_image', Photo::class, ['required']);
+                    $slide->text('Title', 'title', ['required']);
+                    $slide->wysiwyg('Description', 'description', ['required']);
+                    $slide->text('Link Text', 'link_text', ['required']);
+                    $slide->href('Link Destination', 'link_href', ['required']);
+                });
+            });
+
+            $box_callouts = SectionBuilder::new($full,'Box Callouts', 'components/BoxCallouts.vue', function($sectionBuilder){
+                $sectionBuilder->text('Title', 'title', ['required']);
+                $sectionBuilder->wysiwyg('Description', 'description', ['required']);
+                $sectionBuilder->repeatable('Boxes', 'boxes', function($box){
+                    $box->text('Title', 'title', ['required']);
+                    $box->repeatable('List', 'list', function($item){
+                        $item->text('Title', 'title');
+                    });
+                    $box->text('Link Text', 'link_text', ['required']);
+                    $box->href('Link Destination', 'link_href', ['required']);
+                });
+            });
+
+            $our_proccess = SectionBuilder::new($full,'Our Process', 'components/OurProcess.vue', function($sectionBuilder){
+                $sectionBuilder->text('Title', 'title', ['required']);
+                $sectionBuilder->wysiwyg('Description', 'description', ['required']);
+                // SVG Animation is static, editable in code only.
+            });
+
+            $meet_our_team = SectionBuilder::new($full,'Meet Our Team', 'components/MeetOurTeam.vue', function($sectionBuilder){
+                $sectionBuilder->text('Title', 'title', ['required']);
+                $sectionBuilder->wysiwyg('Description', 'description', ['required']);
+                // Fields
+            });
+
+            $social_stream = SectionBuilder::new($full,'Social Stream', 'components/SocialStream.vue', function($sectionBuilder){
+                $sectionBuilder->text('Title', 'title', ['required']);
+                $sectionBuilder->wysiwyg('Description', 'description', ['required']);
+                // Fields
+            });
+
+            $customer_testimonials = SectionBuilder::new($full,'Customer Testimonials', 'components/CustomerTestimonials.vue', function($sectionBuilder){
+                $sectionBuilder->repeatable('Testimonials', 'testimonials', function($testimonial){
+                    $testimonial->text('Author', 'author', ['required']);
+                    $testimonial->wysiwyg('Content', 'content', ['required']);
+                });
+            });
+
+
+            // Build Pages
+            $homepage = $websiteBuilder->buildPage('Home Page', '')->addLayout($full, 1)
+                 // if the section doesn't fit into any layout that is assigned to the page, it throws an error.
+                // This also means it throws an error if the layout is not set.
+                ->addSection($slider_banner, 1)
+                ->addSection($box_callouts, 2)
+                ->addSection($our_proccess, 3)
+                ->addSection($meet_our_team, 4)
+                ->addSection($social_stream, 5)
+                ->addSection($customer_testimonials, 6)
+                ;
+
+            $solutions = $websiteBuilder->buildPage('Solutions', 'solutions')->addLayout('full');
+
+            $process = $websiteBuilder->buildPage('Our Process', 'our-process')->addLayout('full')->addParent($solutions);
+
+            $projects = $websiteBuilder->buildPage('Projects', 'projects')->addLayout('full');
+
+            $company = $websiteBuilder->buildPage('Company', 'company')->addLayout('full');
+
+            $contact = $websiteBuilder->buildPage('Contact Us', 'contact-us')->addLayout('full');
+
+            $login = $websiteBuilder->buildPage('Customer Login', 'customer-login')->addLayout('full');
+
+
+            $websiteBuilder->buildMenu('main_top_menu')
+                ->addItem($solutions, 1, function($item) use ($our_process) {
+                    // not sure I like the syntax of this but can't think of a better way.
+                    $item->addItem($our_process, 1);
+                })
+                ->addItem($projects, 2)
+                ->addItem($company, 3)
+                ->addItem($contact_us, 4)
+                ->addItem($customer_login, 5)
+                ;
+        });
+
+        Structure
             Home
                 Silder Banner
                     Title
