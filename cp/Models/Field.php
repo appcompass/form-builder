@@ -36,7 +36,7 @@ class Field extends Model
 
     }
 
-    public function Form()
+    public function form()
     {
         return $this->belongsToMany(Form::class);
     }

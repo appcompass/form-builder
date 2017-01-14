@@ -20,14 +20,11 @@ class CreatePages extends Migration
             $table->foreign('parent_id')->references('id')->on('pages');
 
             $table->integer('website_id')->unsigned();
-            $table->foreign('website_id')->references('id')->on('websites');
+            $table->foreign('website_id')->references('id')->on('websites')->onDelete('cascade');
 
-            $table->string('name');
             $table->string('slug');
             $table->string('url', 2083)->nullable(); // this is being derived automatically
             $table->string('title');
-            $table->string('description')->nullable();
-            $table->string('meta')->nullable();
             $table->boolean('dynamic_url')->default(false);
 
             $table->timestamps();

@@ -2,11 +2,17 @@
 
 namespace P3in\Seeders;
 
-use DB;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use P3in\Builders\ResourceBuilder;
+use P3in\Builders\SectionBuilder;
+use P3in\Builders\WebsiteBuilder;
+use P3in\Models\Fieldtype;
+use P3in\Models\Layout;
 use P3in\Models\Plus3Person;
 use P3in\Models\User;
-use P3in\Models\ResourceBuilder;
+use P3in\Models\Website;
+use P3in\Renderers\PageRenderer;
 
 class Plus3websiteModuleDatabaseSeeder extends Seeder
 {
@@ -142,21 +148,31 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             ->associate($lazarus)
             ->save();
 
-/*
         // Website Builder API Design
 
         // methods with 'build' prefix return instances of what it's building, buildPage, buildMenu, etc.
         // field type ->href() allows the admin to select page || select link || create new link.
         // field validation should match exactly: https://laravel.com/docs/5.3/validation#available-validation-rules
-        WebsiteBuilder::new('Plus 3 Interactive, LLC', 'www.plus3interactive.com'), function($websiteBuilder){
 
-            $full = Layout::create(['name' => 'full']); // Layouts are not website specific.
+        DB::table('websites')->where('url','https://www.plus3interactive.com')->delete();
+        DB::table('layouts')->where('name','full')->delete();
 
-            $slider_banner = SectionBuilder::new($full,'Slider Banner', 'components/SliderBanner.vue', function($sectionBuilder){
+        Fieldtype::firstOrCreate(['type' => 'repeatable','label' => 'Repeatable']); // not a field type, repeatable is an attribute
+        Fieldtype::firstOrCreate(['type' => 'file','label' => 'File']);
+        Fieldtype::firstOrCreate(['type' => 'wysiwyg','label' => 'WYSIWYG']);
+        Fieldtype::firstOrCreate(['type' => 'link','label' => 'Link']);
+
+
+        $website = WebsiteBuilder::new('Plus 3 Interactive, LLC', 'https://www.plus3interactive.com', function($websiteBuilder){
+
+            // Layouts are not website specific. We just put this here for convenience and since this setup is a single site setup.
+            $full = Layout::create(['name' => 'full']);
+
+            $slider_banner = SectionBuilder::new($full,'Slider Banner', 'components/SliderBanner.vue', function($formBuilder){
                 // we need to figure out how to handle the 'type' field.
                 // the fields internally are created in the order they appear in the builder.
-                $sectionBuilder->text('Title', 'title', ['required']);
-                $sectionBuilder->repeatable('Slides', 'slides', function($slide){ // the name on all repeatables automatically prepend the parent section's name.
+                $formBuilder->text('Title', 'title', ['required']);
+                $formBuilder->repeatable('Slides', 'slides', [], function($slide){ // not field type, sub section builder.
                     $slide->file('Banner Image', 'banner_image', Photo::class, ['required']);
                     $slide->text('Title', 'title', ['required']);
                     $slide->wysiwyg('Description', 'description', ['required']);
@@ -165,12 +181,12 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 });
             });
 
-            $box_callouts = SectionBuilder::new($full,'Box Callouts', 'components/BoxCallouts.vue', function($sectionBuilder){
-                $sectionBuilder->text('Title', 'title', ['required']);
-                $sectionBuilder->wysiwyg('Description', 'description', ['required']);
-                $sectionBuilder->repeatable('Boxes', 'boxes', function($box){
+            $box_callouts = SectionBuilder::new($full,'Box Callouts', 'components/BoxCallouts.vue', function($formBuilder){
+                $formBuilder->text('Title', 'title', ['required']);
+                $formBuilder->wysiwyg('Description', 'description', ['required']);
+                $formBuilder->repeatable('Boxes', 'boxes', [], function($box){
                     $box->text('Title', 'title', ['required']);
-                    $box->repeatable('List', 'list', function($item){
+                    $box->repeatable('List', 'list', [], function($item){
                         $item->text('Title', 'title');
                     });
                     $box->text('Link Text', 'link_text', ['required']);
@@ -178,26 +194,28 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 });
             });
 
-            $our_proccess = SectionBuilder::new($full,'Our Process', 'components/OurProcess.vue', function($sectionBuilder){
-                $sectionBuilder->text('Title', 'title', ['required']);
-                $sectionBuilder->wysiwyg('Description', 'description', ['required']);
+            $our_proccess = SectionBuilder::new($full,'Our Process', 'components/OurProcess.vue', function($formBuilder){
+                $formBuilder->text('Title', 'title', ['required']);
+                $formBuilder->wysiwyg('Description', 'description', ['required']);
                 // SVG Animation is static, editable in code only.
             });
 
-            $meet_our_team = SectionBuilder::new($full,'Meet Our Team', 'components/MeetOurTeam.vue', function($sectionBuilder){
-                $sectionBuilder->text('Title', 'title', ['required']);
-                $sectionBuilder->wysiwyg('Description', 'description', ['required']);
+            $meet_our_team = SectionBuilder::new($full,'Meet Our Team', 'components/MeetOurTeam.vue', function($formBuilder){
+                $formBuilder->text('Title', 'title', ['required']);
+                $formBuilder->wysiwyg('Description', 'description', ['required']);
+
+            })
+            // ->dynamic(Plus3Person::class) // we need to decide if the section is dynamic, or the field (or both can be)
+            ;
+
+            $social_stream = SectionBuilder::new($full,'Social Stream', 'components/SocialStream.vue', function($formBuilder){
+                $formBuilder->text('Title', 'title', ['required']);
+                $formBuilder->wysiwyg('Description', 'description', ['required']);
                 // Fields
             });
 
-            $social_stream = SectionBuilder::new($full,'Social Stream', 'components/SocialStream.vue', function($sectionBuilder){
-                $sectionBuilder->text('Title', 'title', ['required']);
-                $sectionBuilder->wysiwyg('Description', 'description', ['required']);
-                // Fields
-            });
-
-            $customer_testimonials = SectionBuilder::new($full,'Customer Testimonials', 'components/CustomerTestimonials.vue', function($sectionBuilder){
-                $sectionBuilder->repeatable('Testimonials', 'testimonials', function($testimonial){
+            $customer_testimonials = SectionBuilder::new($full,'Customer Testimonials', 'components/CustomerTestimonials.vue', function($formBuilder){
+                $formBuilder->repeatable('Testimonials', 'testimonials', [], function($testimonial){
                     $testimonial->text('Author', 'author', ['required']);
                     $testimonial->wysiwyg('Content', 'content', ['required']);
                 });
@@ -205,42 +223,50 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
 
             // Build Pages
-            $homepage = $websiteBuilder->buildPage('Home Page', '')->addLayout($full, 1)
-                 // if the section doesn't fit into any layout that is assigned to the page, it throws an error.
-                // This also means it throws an error if the layout is not set.
-                ->addSection($slider_banner, 1)
-                ->addSection($box_callouts, 2)
-                ->addSection($our_proccess, 3)
-                ->addSection($meet_our_team, 4)
-                ->addSection($social_stream, 5)
-                ->addSection($customer_testimonials, 6)
-                ;
+            // $homepage = $websiteBuilder->buildPage('Home Page', '')->setLayout($full, 1, function($layoutBuilder)) //@TODO: layoutBuilder and section adding set to it in callback.
+            //     ->add($slider_banner, 1)
+            //     ->add($box_callouts, 2)
+            //     ->add($our_proccess, 3)
+            //     ->add($meet_our_team, 4)
+            //     ->add($social_stream, 5)
+            //     ->add($customer_testimonials, 6)
+            //     ;
 
-            $solutions = $websiteBuilder->buildPage('Solutions', 'solutions')->addLayout('full');
+            // $solutions = $websiteBuilder->buildPage('Solutions', 'solutions')->addLayout('full');
 
-            $process = $websiteBuilder->buildPage('Our Process', 'our-process')->addLayout('full')->addParent($solutions);
+            // $process = $websiteBuilder->buildPage('Our Process', 'our-process')->addLayout('full')->addParent($solutions);
 
-            $projects = $websiteBuilder->buildPage('Projects', 'projects')->addLayout('full');
+            // $projects = $websiteBuilder->buildPage('Projects', 'projects')->addLayout('full');
 
-            $company = $websiteBuilder->buildPage('Company', 'company')->addLayout('full');
+            // $company = $websiteBuilder->buildPage('Company', 'company')->addLayout('full');
 
-            $contact = $websiteBuilder->buildPage('Contact Us', 'contact-us')->addLayout('full');
+            // $contact = $websiteBuilder->buildPage('Contact Us', 'contact-us')->addLayout('full');
 
-            $login = $websiteBuilder->buildPage('Customer Login', 'customer-login')->addLayout('full');
+            // $login = $websiteBuilder->buildPage('Customer Login', 'customer-login')->addLayout('full');
 
 
-            $websiteBuilder->buildMenu('main_top_menu')
-                ->addItem($solutions, 1, function($item) use ($our_process) {
-                    // not sure I like the syntax of this but can't think of a better way.
-                    $item->addItem($our_process, 1);
-                })
-                ->addItem($projects, 2)
-                ->addItem($company, 3)
-                ->addItem($contact_us, 4)
-                ->addItem($customer_login, 5)
-                ;
-        });
+            // $websiteBuilder->buildMenu('main_top_menu')
+            //     ->addItem($solutions, 1, function($item) use ($our_process) {
+            //         // not sure I like the syntax of this but can't think of a better way.
+            //         $item->addItem($our_process, 1);
+            //     })
+            //     ->addItem($projects, 2)
+            //     ->addItem($company, 3)
+            //     ->addItem($contact_us, 4)
+            //     ->addItem($customer_login, 5)
+            //     ;
+        })->getWebsite();
 
+        // Now lets test the magic!
+        DB::enableQueryLog();
+        $website_for_renderer = Website::find($website->id);
+        $renderer =  new PageRenderer($website_for_renderer);
+
+        $data = $renderer->setPage('/')->render();
+
+        dd(DB::getQueryLog(), $data);
+
+/*
         Structure
             Home
                 Silder Banner

@@ -3,7 +3,7 @@
 namespace P3in\Seeders;
 
 use Illuminate\Database\Seeder;
-use P3in\Models\ResourceBuilder;
+use P3in\Builders\ResourceBuilder;
 use Illuminate\Database\Eloquent\Model;
 use P3in\Models\User;
 use P3in\Models\Permission;

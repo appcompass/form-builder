@@ -1,18 +1,20 @@
 <?php
 
-namespace P3in\Models;
+namespace P3in\Builders;
 
 use Closure;
+use P3in\Models\Field;
+use P3in\Models\Form;
 
-class ResourceBuilder
+class FormBuilder
 {
 
     /**
      * Form instance
      */
-    private $form;
+    public $form;
 
-    private function __construct(Form $form = null)
+    public function __construct(Form $form = null)
     {
         if (!is_null($form)) {
 
@@ -32,15 +34,11 @@ class ResourceBuilder
      *
      * @return     static  ( description_of_the_return_value )
      */
-    public static function new($name, $resource, Closure $closure = null)
+    public static function new($name, Model $parent, Closure $closure = null)
     {
-
         $instance = new static();
 
-        $instance->form = Form::create([
-            'name' => $name,
-            'resource' => $resource
-        ]);
+        $instance->form = $parent->form()->create(['name' => $name]);
 
         if ($closure) {
 
@@ -107,20 +105,20 @@ class ResourceBuilder
      *
      * @return     <type>  The alias.
      */
-    public function getAlias()
-    {
-        return $this->alias;
-    }
+    // public function getAlias()
+    // {
+    //     return $this->alias;
+    // }
 
     /**
      * Sets the alias.
      *
      * @param      <type>  $alias  The alias
      */
-    public function setAlias($alias)
-    {
-        return $this->form->setAlias($alias);
-    }
+    // public function setAlias($alias)
+    // {
+    //     return $this->form->setAlias($alias);
+    // }
 
     /**
      * Drops an Alias
@@ -129,12 +127,12 @@ class ResourceBuilder
      *
      * @return     <type>  ( description_of_the_return_value )
      */
-    public function dropAlias($alias)
-    {
-        $this->form->dropAlias($alias);
+    // public function dropAlias($alias)
+    // {
+    //     $this->form->dropAlias($alias);
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     /**
      * Sets the layout for list view.
@@ -143,10 +141,10 @@ class ResourceBuilder
      *
      * @return     <type>  ( description_of_the_return_value )
      */
-    public function setListLayout($list_type)
-    {
-        return $this->form->setListLayout($list_type);
-    }
+    // public function setListLayout($list_type)
+    // {
+    //     return $this->form->setListLayout($list_type);
+    // }
 
     /**
      * Gets the fields.
@@ -167,29 +165,39 @@ class ResourceBuilder
      *
      * @return     <type>  ( description_of_the_return_value )
      */
-    public function string($label, $name = null, $validation = '')
+    public function string($label, $name = null, $validation = [])
     {
         return $this->addField($label, $name, 'string', $validation);
     }
 
-    public function text($label, $name = null, $validation = '')
+    public function text($label, $name = null, $validation = [])
     {
-        return $this->addField($label, $name, 'text', false, true, $validation);
+        return $this->addField($label, $name, 'text', $validation);
     }
 
-    public function boolean($label, $name = null, $validation = '')
+    public function boolean($label, $name = null, $validation = [])
     {
         return $this->addField($label, $name, 'boolean', $validation);
     }
 
-    public function secret($label = 'Password', $name = 'password', $validation = '')
+    public function secret($label = 'Password', $name = 'password', $validation = [])
     {
         return $this->addField($label, $name, 'secret', $validation);
     }
 
-    public function menuEditor($label = 'Menu Editor', $name = 'menu-editor', $validation = '')
+    public function menuEditor($label = 'Menu Editor', $name = 'menu-editor', $validation = [])
     {
         return $this->addField($label, $name, 'menueditor', $validation);
+    }
+
+    public function wysiwyg($label, $name = null, $validation = [])
+    {
+        return $this->addField($label, $name, 'wysiwyg', $validation);
+    }
+
+    public function repeatable($label, $name = null, $validation = [], Closure $closure = null)
+    {
+        return $this->addField($label, $name, 'repeatable', $validation, $closure);
     }
 
     /**
@@ -202,7 +210,7 @@ class ResourceBuilder
      *
      * @return     <type>  ( description_of_the_return_value )
      */
-    private function addField($label, $name = null, $type = 'string', $validation = '')
+    private function addField($label, $name = null, $type = 'string', $validation = [], Closure $closure = null)
     {
         if (is_null($name)) {
             $name = str_replace(' ', '_', strtolower($label));
@@ -216,6 +224,12 @@ class ResourceBuilder
         ]);
 
         $this->form->fields()->attach($field);
+
+        // if ($closure) {
+
+        //     $closure(new FieldBuilder($field));
+
+        // }
 
         return $field;
     }
