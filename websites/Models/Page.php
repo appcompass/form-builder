@@ -9,23 +9,28 @@ use P3in\Models\Layout;
 use P3in\Models\PageContent;
 use P3in\Models\Section;
 use P3in\Models\Website;
+use P3in\Traits\HasPermissions;
 use P3in\Traits\SettingsTrait;
 
 class Page extends Model
 {
 
-    use SettingsTrait,
-        // Navigatable,
-        // HasPermissions,
-        SoftDeletes;
+    use SoftDeletes
+        // , HasPermissions
+        ;
 
     protected $fillable = [
         'slug',
         'title',
+        'meta'
     ];
 
     protected $guarded = [
         'url', // url are ALWAYS gonna be generated
+    ];
+
+    protected $casts = [
+        'meta' => 'object'
     ];
 
     public function website()
