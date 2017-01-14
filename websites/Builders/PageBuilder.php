@@ -2,12 +2,13 @@
 
 namespace P3in\Builders;
 
-use P3in\Models\Page;
-use P3in\Models\Layout;
-use P3in\Models\Section;
-use P3in\Models\PageContent;
 use Closure;
 use Exception;
+use P3in\Builders\PageLayoutBuilder;
+use P3in\Models\Layout;
+use P3in\Models\Page;
+use P3in\Models\PageContent;
+use P3in\Models\Section;
 
 class PageBuilder
 {
@@ -81,21 +82,17 @@ class PageBuilder
         return new static($page);
     }
 
-    public function add($item, $order = 1)
+    public function setLayout(Layout $layout, $order = 1, Closure $closure = null)
     {
-        if ($item instanceof Layout) {
-            $this->page->layouts()->attach($item, ['order' => $order]);
-        } else if ($item instanceof SectionBuilder) {
-            $section = $item->getSection();
-            if (!$this->page->layouts->contains($section->layout)) {
-                throw new Exception("This page must have a layout assigned to it before adding a section.");
-            }
+        $this->page->layouts()->attach($layout, ['order' => $order]);
 
-            $this->page->sections()->attach($section, ['order' => $order]);
+        if ($closure) {
+            $instance = new PageLayoutBuilder($this->page, $order, $layout);
 
-        } else {
-            throw new Exception("Trying to add something i don't understand.");
+            $closure($instance);
+
         }
+
         return $this;
     }
 

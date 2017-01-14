@@ -61,6 +61,11 @@ class PageRenderer
         return $this->build;
     }
 
+    public function edit()
+    {
+        return $this->render(false);
+    }
+
     private function getSettings()
     {
         // fetch website settings that contain information on the website's header/footer/scripts/etc
@@ -102,6 +107,8 @@ class PageRenderer
                 $this->cleanSections($content->section);
                 $this->cleanLayouts($content->section->layout);
             });
+        }else{
+            $contents->load('section.form');
         }
 
         foreach ($contents as &$content) {

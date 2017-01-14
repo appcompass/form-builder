@@ -116,4 +116,10 @@ class WebsiteBuilder
     {
         return $this->website;
     }
+
+    public function deploy($diskInstance)
+    {
+        // Magic Sauce DevOps logic using the set disk instance and run commands needed on server to get everything configured properly.
+    }
+
 }
