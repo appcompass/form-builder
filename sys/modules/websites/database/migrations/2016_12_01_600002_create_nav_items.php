@@ -19,7 +19,7 @@ class CreateNavItems extends Migration
             $table->foreign('menu_id')->references('id')->on('menus')->onDelete('cascade');
             $table->integer('parent_id')->unsigned()->nullable();
             $table->foreign('parent_id')->references('id')->on('nav_items')->onDelete('cascade');
-            $table->string('label');
+            $table->string('title');
             $table->text('alt');
             $table->boolean('new_tab');
             $table->string('url', 2083)->nullable();
