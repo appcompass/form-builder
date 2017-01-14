@@ -13,17 +13,18 @@ class Field extends Model
         'to_list',
         'to_edit',
         'validation',
-        'required'
+        'required',
+        'repeatable'
     ];
 
     protected $hidden = [
-    //     'to_list',
-    //     'to_edit',
-    //     'pivot',
         'created_at',
         'updated_at'
     ];
 
+    protected $with = [
+        'fields'
+    ];
     /**
      * override boot method
      * @NOTE remember Field::withoutGlobalScope(OrderScope::class)->get();
@@ -46,14 +47,30 @@ class Field extends Model
         return $this->belongsTo(Fieldtype::class);
     }
 
+    public function parent()
+    {
+        return $this->belongsTo(Field::class, 'parent_id');
+    }
+
+    public function fields()
+    {
+        return $this->hasMany(Field::class, 'parent_id');
+    }
+
+    // kill the repetition!
+    private function saveAndReturn()
+    {
+        $this->save();
+
+        return $this;
+    }
+
     // is the field gonna be visible on edit mode?
     public function edit($show = true)
     {
         $this->to_edit = $show;
 
-        $this->save();
-
-        return $this;
+        return $this->saveAndReturn();
     }
 
     // the field visible on list mode?
@@ -61,9 +78,7 @@ class Field extends Model
     {
         $this->to_list = $show;
 
-        $this->save();
-
-        return $this;
+        return $this->saveAndReturn();
     }
 
     /**
@@ -73,9 +88,7 @@ class Field extends Model
     {
         $this->validation = $validation;
 
-        $this->save();
-
-        return $this;
+        return $this->saveAndReturn();
     }
 
     /**
@@ -85,11 +98,15 @@ class Field extends Model
     {
         $this->required = true;
 
-        $this->save();
-
-        return $this;
+        return $this->saveAndReturn();
     }
 
+    public function repeatable($repeatable = true)
+    {
+        $this->repeatable = true;
+
+        return $this->saveAndReturn();
+    }
     /**
      *
      */
@@ -97,9 +114,7 @@ class Field extends Model
     {
         $this->sortable = $sortable;
 
-        $this->save();
-
-        return $this;
+        return $this->saveAndReturn();
     }
 
     /**
@@ -109,9 +124,7 @@ class Field extends Model
     {
         $this->searchable = $searchable;
 
-        $this->save();
-
-        return $this;
+        return $this->saveAndReturn();
     }
 
 }
