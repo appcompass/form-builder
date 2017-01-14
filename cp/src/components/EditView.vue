@@ -35,6 +35,7 @@ div
 
     div
       h1 Sub Navigation
+      {{ navigation }}
       ul
         li
           router-link(:to="{name: 'sub', params: {model: 'users', id: $route.params.id, sub: 'groups'}}") Groups
@@ -57,13 +58,14 @@ import Formtext from './FormBuilder/Text'
 import Formsecret from './FormBuilder/Secret'
 import Formboolean from './FormBuilder/Boolean'
 import Formmenueditor from './FormBuilder/MenuEditor'
+import State from './State'
 
 import swal from 'sweetalert'
 import _ from 'lodash'
 
 export default {
   name: 'EditView',
-  components: { Formstring, Formtext, Formsecret, Formboolean, Formmenueditor },
+  components: { State, Formstring, Formtext, Formsecret, Formboolean, Formmenueditor },
 
   data () {
     return {
@@ -71,7 +73,8 @@ export default {
       edit: {},
       collection: undefined,
       loading: true,
-      model: undefined
+      model: undefined,
+      navigation: State.getNavigation()
     }
   },
 

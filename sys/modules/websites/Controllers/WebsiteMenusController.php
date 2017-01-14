@@ -76,9 +76,11 @@ class WebsiteMenusController extends AbstractChildController
 
             } else {
 
-                // this must be a Page instance (because otherwise...)
+                // this must be a Page instance (because otherwise logic is flawed)
 
-                $navitem = NavItem::fromModel(Page::findOrFail($item['id']), $item); // in order for this to work we must pass an array of overrides to the Navitem::fromModel
+                // in order for this to work we must pass an array of overrides to the Navitem::fromModel (label changes, overrides in general)
+
+                $navitem = NavItem::fromModel(Page::findOrFail($item['id']), $item);
 
                 // set navitem parent
 
@@ -112,11 +114,10 @@ class WebsiteMenusController extends AbstractChildController
 
             $children = $branch['children'];
 
-            $branch['children'] = null;
+            unset($branch['children']);
 
             $res[] = $branch;
 
-            // if (isset($branch['children']) && count($branch['children']) > 0) {
             if (count($children)) {
 
                 $res = array_merge($res, $this->flatten($children, $branch['id'], $sort));

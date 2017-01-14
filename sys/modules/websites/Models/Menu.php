@@ -107,7 +107,7 @@ class Menu extends Model
             // @TODO better way to assign this? intersect_keys(array_flip) didn't work as expected
             $current['id'] = $node['id'];
             $current['parent_id'] = $node['parent_id'];
-            $current['label'] = $node['label'];
+            $current['title'] = $node['title'];
             $current['url'] = $node['url'];
             $current['new_tab'] = $node['new_tab'];
             $current['clickable'] = $node['clickable'];

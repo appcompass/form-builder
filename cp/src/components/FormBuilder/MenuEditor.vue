@@ -1,6 +1,7 @@
 <template lang="jade">
 div
-  MenuElement(:menu="data.menu")
+  MenuElement(:menu="data.menu", @deleted="deleted")
+  Sortable.empty(v-if="!data.menu.length", :list="data.menu",  :options="{handle: '.handle', animation: 150, group: 'items'}") Empty
 
   p.control
   a.button.is-small(@click="modal.active = true")
@@ -8,11 +9,12 @@ div
       i.fa.fa-link
     span New Link
 
-  Sortable.repodiv(:list="data.repo", :options="{animation: 150, group: 'items'}")
-    div.repo__item(v-for="item in data.repo")
-      small.icon.is-small.handle
-        i.fa.fa-arrows
-      |  {{ item.title }}
+  .section
+    h1.title Current Pages
+    Sortable.menu-list(:list="data.repo", :element="'ul'", :options="{handle: '.handle', animation: 150, group: 'items', clone: true}")
+      li(v-for="(item, index) in data.repo")
+        a.handle
+          &nbsp; {{ item.title }}
 
   .modal(:class="{'is-active': modal.active}")
     .modal-background
@@ -21,9 +23,9 @@ div
         p.modal-card-title Add Link
         button.delete(@click.prevent="modal.active = false")
       section.modal-card-body
-        label.label Label
+        label.label Title
         p.control
-          input.input(v-model="link.label")
+          input.input(v-model="link.title")
         label.label Url
         p.control
           input.input(v-model="link.url")
@@ -45,15 +47,11 @@ div
         a.button.is-primary(@click="storeLink()") Save
         a.button(@click.prevent="modal.active = false") Cancel
 
-
-
 </template>
 
 <script>
 import Sortable from '../VueSortable'
 import MenuElement from './Menu'
-
-// @TODO when we get the refreshed menu, we need to re-parse the "repo"
 
 export default {
   components: { Sortable, MenuElement },
@@ -61,34 +59,32 @@ export default {
   name: 'menu-editor',
   data () {
     return {
-      modal: {
-        active: false
-      },
-      link: {
-        url: 'https://www.google.com',
-        title: 'Google',
-        icon: 'world',
-        new_tab: true,
-        clickable: true,
-        alt: 'google link'
-      }
+      modal: {active: false},
+      link: {url: 'https://www.google.com', title: 'Google', icon: 'world', new_tab: true, clickable: true, alt: 'google link'}
     }
   },
-  created () {
-    // parse the available items and sync the structure
-    this.data.repo.forEach(function (item) {
-      item.children = []
-    })
+  watch: {
+    'data.repo': function (nv, ov) {
+      this.setChildren()
+    }
   },
+  created () {},
   methods: {
+    deleted (item) {
+      this.data.deletions.push(item.id)
+    },
     storeLink () {
       this.$http.post(process.env.API_SERVER + 'menus/', this.link)
         .then((response) => {
-          let link = response.body
-          link.children = []
-          this.data.repo.push(link)
+          this.data.repo.push(response.body)
           this.modal.active = false
         })
+    },
+    setChildren () {
+      let vm = this
+      this.data.repo.forEach(function (item, index) {
+        vm.$set(vm.data.repo[index], 'children', [])
+      })
     }
   }
 }
@@ -98,7 +94,7 @@ export default {
 .repo__item
   display: inline-block
   border: 1px solid #ddd
-  width: 8rem
-  height: 5rem
+  width: 12rem
+  height: 2rem
   margin: 1rem
 </style>
