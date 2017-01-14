@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use P3in\Models\FormBuilder;
+use P3in\Builders\FormBuilder;
 use P3in\Models\Gallery;
 use P3in\Models\Layout;
 use P3in\Models\Page;

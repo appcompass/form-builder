@@ -5,10 +5,11 @@ namespace P3in\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
-use P3in\Traits\SettingsTrait;
 use P3in\Models\Layout;
 use P3in\Models\PageContent;
+use P3in\Models\Section;
 use P3in\Models\Website;
+use P3in\Traits\SettingsTrait;
 
 class Page extends Model
 {
@@ -59,6 +60,11 @@ class Page extends Model
         return $this->belongsToMany(Layout::class)
             ->withPivot('order')
             ->orderBy('pivot_order', 'asc');
+    }
+
+    public function sections()
+    {
+        return $this->belongsToMany(Section::class);
     }
 
     public function contents()

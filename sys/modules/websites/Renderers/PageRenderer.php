@@ -1,6 +1,6 @@
 <?php
 
-namespace P3in\Models;
+namespace P3in\Renderers;
 
 use Closure;
 use Exception;

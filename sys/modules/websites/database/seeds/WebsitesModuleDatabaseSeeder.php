@@ -3,10 +3,10 @@
 namespace P3in\Seeders;
 
 use Illuminate\Database\Seeder;
-use P3in\Models\ResourceBuilder;
+use P3in\Builders\ResourceBuilder;
 use P3in\Models\Website;
 use P3in\Models\Page;
-use P3in\Models\MenuBuilder;
+use P3in\Builders\MenuBuilder;
 
 class WebsitesModuleDatabaseSeeder extends Seeder
 {
@@ -52,11 +52,11 @@ class WebsitesModuleDatabaseSeeder extends Seeder
         \DB::statement('TRUNCATE menus CASCADE');
 
         // @NOTE parent_id MUST be defined before slug, otherwise it won't be available when we build the url
-        $users = $CMS->pages()->create(['name' => 'users', 'title' => 'Users', 'slug' => 'users']);
-        $groups = $CMS->pages()->create(['name' => 'groups', 'title' => 'Groups', 'slug' => 'groups']);
-        $permissions = $CMS->pages()->create(['name' => 'permissions', 'title' => 'Permissions', 'slug' => 'permissions']);
-        $websites = $CMS->pages()->create(['name' => 'websites', 'title' => 'Websites', 'slug' => 'websites']);
-        $galleries = $CMS->pages()->create(['name' => 'galleries', 'title' => 'Galleries', 'slug' => 'galleries']);
+        $users = $CMS->pages()->create(['title' => 'Users', 'slug' => 'users']);
+        $groups = $CMS->pages()->create(['title' => 'Groups', 'slug' => 'groups']);
+        $permissions = $CMS->pages()->create(['title' => 'Permissions', 'slug' => 'permissions']);
+        $websites = $CMS->pages()->create(['title' => 'Websites', 'slug' => 'websites']);
+        $galleries = $CMS->pages()->create(['title' => 'Galleries', 'slug' => 'galleries']);
 
         MenuBuilder::new('main_nav', $CMS, function(MenuBuilder $builder) use($users, $groups, $permissions, $websites, $galleries) {
 

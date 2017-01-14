@@ -1,10 +1,13 @@
 <?php
 
-namespace P3in\Models;
+namespace P3in\Builders;
 
-use P3in\Models\Menu;
-use P3in\Models\Link;
 use Closure;
+use P3in\Models\Link;
+use P3in\Models\Menu;
+use P3in\Models\NavItem;
+use P3in\Models\Page;
+use P3in\Models\Website;
 
 class MenuBuilder
 {
@@ -14,7 +17,7 @@ class MenuBuilder
      */
     private $menu;
 
-    private $allowedModels = ['P3in\Models\Page', 'P3in\Models\Link'];
+    private $allowedModels = [Page::class, Link::class];
 
     private function __construct(Menu $menu = null)
     {

@@ -17,10 +17,7 @@ class CreateSections extends Migration
             $table->increments('id');
 
             $table->integer('layout_id')->nullable();
-            $table->foreign('layout_id')->references('id')->on('layouts');
-
-            $table->integer('form_id')->nullable();
-            $table->foreign('form_id')->references('id')->on('forms');
+            $table->foreign('layout_id')->references('id')->on('layouts')->onDelete('cascade');
 
             $table->string("name");
             $table->string("template");
@@ -37,6 +34,6 @@ class CreateSections extends Migration
      */
     public function down()
     {
-    	Schema::drop('sections');
+        Schema::drop('sections');
     }
 }

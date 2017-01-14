@@ -3,7 +3,7 @@
 namespace P3in\Seeders;
 
 use Illuminate\Database\Seeder;
-use P3in\Models\ResourceBuilder;
+use P3in\Builders\ResourceBuilder;
 use DB;
 
 class CpModuleDatabaseSeeder extends Seeder

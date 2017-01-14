@@ -27,6 +27,6 @@ class Section extends Model
 
     public function form()
     {
-        return $this->hasOne(Form::class);
+        return $this->morphOne(Form::class, 'formable');
     }
 }
