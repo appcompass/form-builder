@@ -45,6 +45,10 @@ trait HasFieldsTrait
         return $this->addField($label, $name, 'text', $validation);
     }
 
+    public function radio($label, $name = null, $options = [])
+    {
+        return $this->addField($label, $name, 'radio', $options); // this is just stubbed.
+    }
     public function boolean($label, $name = null, $validation = [])
     {
         return $this->addField($label, $name, 'boolean', $validation);
@@ -76,6 +80,12 @@ trait HasFieldsTrait
         return $this->addField($label, $name, 'file', $validation);
     }
 
+    public function pageSectionSelect($label, $name = null, $validation = [])
+    {
+        // Page select (dropdown)
+        // Page sections (checkboxes) (only available after page selection)
+        return $this->addField($label, $name, 'pagesectionselect', $validation);
+    }
     public function fieldset($label, $name = null, $validation = [], Closure $closure = null)
     {
         return $this->addField($label, $name, 'fieldset', $validation, $closure);
