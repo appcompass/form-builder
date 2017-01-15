@@ -35,6 +35,7 @@ class Wistia
                 ]
             ];
         }
+
         return $this->request('POST', 'https://upload.wistia.com/', $payload);
     }
 
@@ -73,6 +74,7 @@ class Wistia
         }
         $client = new GuzzleClient();
         $response = $client->request('DELETE', $path, $payload);
+
         return json_decode((string) $response->getBody());
     }
 }

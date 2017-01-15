@@ -15,6 +15,7 @@ use Faker\Generator as Faker;
 
 $factory->define(P3in\Models\Permission::class, function (Faker $faker) {
     $word = $faker->unique()->word;
+
     return [
         'label' => $word,
         'type' => $word,

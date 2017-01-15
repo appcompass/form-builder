@@ -161,9 +161,11 @@ class Video extends ModularBaseModel implements GalleryItemInterface
                     'assets' => $rtn->assets,
                 ];
                 $this->save();
+
                 return $this;
             }
         }
+
         return $this;
     }
 

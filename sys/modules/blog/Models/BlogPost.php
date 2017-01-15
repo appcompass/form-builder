@@ -102,6 +102,7 @@ class BlogPost extends ModularBaseModel
                     break;
             }
         }
+
         return $qry->paginate(10);
     }
 

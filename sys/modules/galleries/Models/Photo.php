@@ -252,8 +252,10 @@ class Photo extends ModularBaseModel implements GalleryItemInterface
     {
         if (!empty($this->meta->XResolution)) {
             $res = explode('/', $this->meta->XResolution);
+
             return count($res) == 2 ? $res[0]/$res[1] : null;
         }
+
         return null;
     }
 
@@ -265,8 +267,10 @@ class Photo extends ModularBaseModel implements GalleryItemInterface
     {
         if (!empty($this->meta->YResolution)) {
             $res = explode('/', $this->meta->YResolution);
+
             return count($res) == 2 ? $res[0]/$res[1] : null;
         }
+
         return null;
     }
 
@@ -340,6 +344,7 @@ class Photo extends ModularBaseModel implements GalleryItemInterface
         $disk = Storage::disk($this->storage);
         if ($disk) {
             $base_path = $disk->getAdapter()->getPathPrefix();
+
             return $base_path.$this->photoable->getLocalPhotoPath().$this->attributes['path'];
         }
     }

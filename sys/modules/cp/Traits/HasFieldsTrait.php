@@ -63,6 +63,21 @@ trait HasFieldsTrait
         return $this->addField($label, $name, 'menueditor', $validation);
     }
 
+    public function formBuilder($label, $name = null, $options = [])
+    {
+        return $this->addField($label, $name, 'formbuilder', $options);
+    }
+
+    public function loginForm($label, $name = null, $options = [])
+    {
+        return $this->addField($label, $name, 'loginform', $options);
+    }
+
+    public function map($label = 'Map', $name = null, $options = [])
+    {
+        return $this->addField($label, $name, 'map', $options);
+    }
+
     public function wysiwyg($label, $name = null, $validation = [])
     {
         return $this->addField($label, $name, 'wysiwyg', $validation);

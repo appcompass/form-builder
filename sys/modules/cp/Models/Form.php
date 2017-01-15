@@ -45,6 +45,7 @@ class Form extends Model
         if (isset($this->id)) {
             $query->where('id', $this->id);
         }
+
         return $this->filterBySub($query, 'fields', 'to_list', true);
     }
 
