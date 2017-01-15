@@ -26,7 +26,6 @@ class CreateBlogPostsBlogTagsTable extends Migration
                 ->references('id')
                 ->on('blog_tags')
                 ->onDelete('cascade');
-
         });
     }
 

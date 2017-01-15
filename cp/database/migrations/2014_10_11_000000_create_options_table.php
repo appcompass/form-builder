@@ -20,7 +20,7 @@ class CreateOptionsTable extends Migration
             $table->timestamps();
         });
 
-        Schema::create('options_storage', function(Blueprint $table) {
+        Schema::create('options_storage', function (Blueprint $table) {
             $table->increments('id');
             $table->morphs('optionable');
 

@@ -6,8 +6,8 @@ use P3in\Models\User;
 use P3in\Models\Permission;
 use P3in\Interfaces\UserPermissionsRepositoryInterface;
 
-class UserPermissionsRepository extends AbstractChildRepository implements UserPermissionsRepositoryInterface {
-
+class UserPermissionsRepository extends AbstractChildRepository implements UserPermissionsRepositoryInterface
+{
     public function __construct(Permission $model, User $parent)
     {
         $this->model = $model;
@@ -21,5 +21,4 @@ class UserPermissionsRepository extends AbstractChildRepository implements UserP
         // relation from parent to child
         $this->parentToChild = 'permissions';
     }
-
 }

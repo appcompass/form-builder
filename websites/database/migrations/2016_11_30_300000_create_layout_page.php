@@ -13,7 +13,7 @@ class CreateLayoutPage extends Migration
      */
     public function up()
     {
-        Schema::create('layout_page', function(Blueprint $table) {
+        Schema::create('layout_page', function (Blueprint $table) {
             $table->increments('id');
 
             $table->integer('page_id')->unsigned();
@@ -33,6 +33,6 @@ class CreateLayoutPage extends Migration
      */
     public function down()
     {
-    	Schema::drop('layout_page');
+        Schema::drop('layout_page');
     }
 }

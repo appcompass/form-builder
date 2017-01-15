@@ -8,7 +8,6 @@ use P3in\Models\Section;
 
 class Layout extends Model
 {
-
     public $timestamps = false;
 
     protected $fillable = [

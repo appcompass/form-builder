@@ -24,7 +24,7 @@ class PermissionsSeeder extends Seeder
 
         DB::statement("DELETE FROM forms WHERE name = 'permissions'");
 
-        ResourceBuilder::new('permissions', 'permissions/{id}', function(ResourceBuilder $builder) {
+        ResourceBuilder::new('permissions', 'permissions/{id}', function (ResourceBuilder $builder) {
             // @TODO list layout depends on the relation
             // $builder->setListLayout('MultiSelect');
             $builder->string('Name', 'label')->list()->required()->sortable()->searchable();
@@ -43,13 +43,11 @@ class PermissionsSeeder extends Seeder
             'locked' => true,
         ]);
 
-       Permission::create([
+        Permission::create([
             'type' => 'guest',
             'label' => 'Guest',
             'description' => 'Guest Permission',
             'locked' => true,
         ]);
-
     }
-
 }

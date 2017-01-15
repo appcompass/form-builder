@@ -8,7 +8,6 @@ use P3in\Models\NavItem;
 
 class Menu extends Model
 {
-
     protected $fillable = [
         'name'
     ];
@@ -55,25 +54,16 @@ class Menu extends Model
     public function drop($item)
     {
         if (is_int($item)) {
-
             $nav_item = $this->items()->where('id', $item)->firstOrFail();
-
-        } else if ($item instanceof NavItem) {
-
+        } elseif ($item instanceof NavItem) {
             $nav_item = $this->items()->where('id', $item->id)->firstOrFail();
-
         }
 
         if ($nav_item->delete()) {
-
             return true;
-
         } else {
-
             throw new \Exception("Errors while removing NavItem");
-
         }
-
     }
 
     /**
@@ -85,7 +75,6 @@ class Menu extends Model
 
         // return $this->mapTree($items);
         return $this->buildTree($items);
-
     }
 
     /**
@@ -95,13 +84,12 @@ class Menu extends Model
      *
      * @return     array  Nested Tree structure
      */
-    function mapTree(array $dataset) {
-
+    public function mapTree(array $dataset)
+    {
         $map = [];
         $tree = [];
 
-        foreach($dataset as $id => &$node) {
-
+        foreach ($dataset as $id => &$node) {
             $current =& $map[$node['id']];
 
             // @TODO better way to assign this? intersect_keys(array_flip) didn't work as expected
@@ -114,13 +102,9 @@ class Menu extends Model
             $current['icon'] = $node['icon'];
 
             if ($node['parent_id'] == null) {
-
                 $tree[$node['id']] =& $current;
-
             } else {
-
                 $map[$node['parent_id']]['children'][$node['id']] =& $current;
-
             }
         }
 
@@ -142,31 +126,21 @@ class Menu extends Model
         $tree = [];
 
         foreach ($items as &$node) {
-
             if ($node['parent_id'] === $parent_id) {
-
                 $children = $this->buildTree($items, $node['id']);
 
                 if ($children) {
-
                     $node['children'] = $children;
-
                 } else {
-
                     $node['children'] = [];
-
                 }
 
                 $tree[] = $node;
 
                 unset($node); // mmm doesn't actually unset
-
             }
-
         }
 
         return $tree;
-
     }
-
 }

@@ -13,7 +13,7 @@ class CreateNavItems extends Migration
      */
     public function up()
     {
-        Schema::create('nav_items', function(Blueprint $table) {
+        Schema::create('nav_items', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('menu_id')->unsigned()->nullable();
             $table->foreign('menu_id')->references('id')->on('menus')->onDelete('cascade');

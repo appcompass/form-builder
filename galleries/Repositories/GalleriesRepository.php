@@ -8,7 +8,6 @@ use P3in\Interfaces\GalleriesRepositoryInterface;
 
 class GalleriesRepository extends AbstractRepository implements GalleriesRepositoryInterface
 {
-
     protected $with = ['user', 'photos', 'videos']; // we add photos and videos here because as of current logic,
                                                     // every model fetches the photos and videos, so better to
                                                     // do it in query builder than loop per record...
@@ -29,5 +28,4 @@ class GalleriesRepository extends AbstractRepository implements GalleriesReposit
 
         return parent::create($attributes);
     }
-
 }

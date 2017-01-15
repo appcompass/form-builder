@@ -16,7 +16,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class Video extends ModularBaseModel implements GalleryItemInterface
 {
-
     use OptionableTrait, SettingsTrait, SoftDeletes;
 
     /**
@@ -132,16 +131,12 @@ class Video extends ModularBaseModel implements GalleryItemInterface
         $name = $file->getClientOriginalName();
 
         try {
-
             $video = static::uploadToWistia($name, $file->getRealpath(), $user);
             $video->save();
 
             return $video;
-
         } catch (RequestException $e) {
-
             dd($e);
-
         }
     }
 
@@ -184,7 +179,7 @@ class Video extends ModularBaseModel implements GalleryItemInterface
                     'url' => $real_path,
                 ]
             ];
-        }else{
+        } else {
             $payload = [
                 'multipart' => [
                     [

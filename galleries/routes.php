@@ -4,7 +4,7 @@ Route::group([
     // 'prefix' => 'api',
     'namespace' => 'P3in\Controllers',
     'middleware' => 'api',
-], function($router) {
+], function ($router) {
     $router->resource('galleries', GalleriesController::class);
     $router->resource('galleries.photos', GalleryPhotosController::class);
     $router->resource('galleries.videos', GalleryVideosController::class);

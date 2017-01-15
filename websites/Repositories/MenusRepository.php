@@ -14,5 +14,4 @@ class MenusRepository extends AbstractRepository implements MenusRepositoryInter
     {
         $this->model = $model;
     }
-
 }

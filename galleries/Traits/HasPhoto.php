@@ -4,9 +4,9 @@ namespace P3in\Traits;
 
 use Photo;
 
-Trait HasPhoto {
-
-    abstract function getBasePhotoPath();
+trait HasPhoto
+{
+    abstract public function getBasePhotoPath();
 
     public function linkPhoto(Photo $photo)
     {

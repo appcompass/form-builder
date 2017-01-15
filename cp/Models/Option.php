@@ -11,7 +11,7 @@ use Illuminate\Support\Collection;
 
 class Option extends Model
 {
-  /**
+    /**
    * The database table used by the model.
    *
    * @var string
@@ -51,33 +51,25 @@ class Option extends Model
   */
   public static function set($label, array $new_content, $multiple = false)
   {
-
-    try {
-
-      $options_set = Option::whereLabel($label)
+      try {
+          $options_set = Option::whereLabel($label)
         ->firstOrFail();
 
-        $new_content = static::setIds($new_content, static::getNextId($options_set->content));
+          $new_content = static::setIds($new_content, static::getNextId($options_set->content));
 
-      $options_set->content = array_merge($options_set->content, $new_content);
+          $options_set->content = array_merge($options_set->content, $new_content);
 
-      if ($options_set->save()) {
+          if ($options_set->save()) {
+              return $options_set->content;
+          }
 
-        return $options_set->content;
-
-      }
-
-      return false;
-
-    } catch (ModelNotFoundException $e) {
-
-      return Option::create([
+          return false;
+      } catch (ModelNotFoundException $e) {
+          return Option::create([
         'label' => $label,
         'content' => static::setIds($new_content, 1)
       ])->content;
-
-    }
-
+      }
   }
 
   /**
@@ -86,32 +78,23 @@ class Option extends Model
    */
   public static function remove($label, $id)
   {
-    try {
+      try {
+          $options_set = self::byLabel($label);
 
-      $options_set = self::byLabel($label);
+          $collection = collect($options_set->content);
 
-      $collection = collect($options_set->content);
+          foreach ($collection as $key => $values) {
+              if ($values->_id === $id) {
+                  $collection->forget($key);
+              }
+          }
 
-      foreach($collection as $key => $values) {
+          $options_set->content = $collection->toArray();
 
-        if ($values->_id === $id) {
-
-          $collection->forget($key);
-
-        }
-
+          return $options_set->save();
+      } catch (ModelNotFoundException $e) {
+          return false;
       }
-
-      $options_set->content = $collection->toArray();
-
-      return $options_set->save();
-
-    } catch (ModelNotFoundException $e) {
-
-      return false;
-
-    }
-
   }
 
   /**
@@ -120,21 +103,17 @@ class Option extends Model
    */
   public static function getItemValue($label, $id, $item = '*')
   {
+      $result = static::byLabelAndId($label, $id)->first();
 
-    $result = static::byLabelAndId($label, $id)->first();
-
-    if (count($result)) {
-
-      if ($item == '*') {
-        return $result;
-      } else {
-        return $result->$item;
+      if (count($result)) {
+          if ($item == '*') {
+              return $result;
+          } else {
+              return $result->$item;
+          }
       }
 
-    }
-
-    return $result;
-
+      return $result;
   }
 
   /**
@@ -142,17 +121,13 @@ class Option extends Model
    */
   public static function items($label)
   {
+      $result = static::byLabel($label);
 
-    $result = static::byLabel($label);
+      if (!count($result)) {
+          return null;
+      }
 
-    if (!count($result)) {
-
-      return null;
-
-    }
-
-    return collect($result->content);
-
+      return collect($result->content);
   }
 
   /**
@@ -161,15 +136,12 @@ class Option extends Model
    */
   public static function byLabel($label)
   {
-
-    return Cache::remember($label, 1, function() use($label) {
-
-      return Option::where('label', $label)
+      return Cache::remember($label, 1, function () use ($label) {
+          return Option::where('label', $label)
         ->limit(1)
         ->get(['id', 'content', 'multi'])
         ->first();
-    });
-
+      });
   }
 
   /**
@@ -178,46 +150,36 @@ class Option extends Model
    */
   public static function byLabelAndId($label, $id)
   {
+      if (!is_array($id)) {
+          $id = explode(',', $id);
+      }
 
-    if (!is_array($id)) {
+      $options = static::items($label);
 
-      $id = explode(',', $id);
+      if (is_null($options)) {
+          throw new Exception("Option <$label> appears to be empty.");
+      }
 
-    }
+      $result = new Collection();
 
-    $options = static::items($label);
-
-    if (is_null($options)) {
-
-      throw new Exception("Option <$label> appears to be empty.");
-
-    }
-
-    $result = new Collection();
-
-    foreach ($id as $single_id) {
-
-      $option = $options
+      foreach ($id as $single_id) {
+          $option = $options
         ->where('_id', intval($single_id))
         ->first();
 
-      if (!count($option)) {
-        //   throw new \Exception("One or more stored option(s) not found in <$label>.");
+          if (!count($option)) {
+              //   throw new \Exception("One or more stored option(s) not found in <$label>.");
         return false;
+          }
+
+          $result->push($option);
       }
 
-      $result->push($option);
+      if (static::byLabel($label)->multi) {
+          return $result;
+      }
 
-    }
-
-    if (static::byLabel($label)->multi) {
-
-      return $result;
-
-    }
-
-    return $result->first();
-
+      return $result->first();
   }
 
   /**
@@ -226,15 +188,11 @@ class Option extends Model
    */
   private static function getNextId($items)
   {
+      if (is_array($items) && count($items) > 1) {
+          return max(array_pluck($items, '_id')) + 1;
+      }
 
-    if (is_array($items) && count($items) > 1) {
-
-      return max(array_pluck($items, '_id')) + 1;
-
-    }
-
-    return 1;
-
+      return 1;
   }
 
   /**
@@ -245,25 +203,21 @@ class Option extends Model
    */
   private static function setIds(array $items, $index = 1)
   {
+      $result = [];
 
-    $result = [];
-
-    foreach($items as $key => $value) {
+      foreach ($items as $key => $value) {
 
       // if $key is numeric the input is an array of arrays, which
       // means the programmer wants to set multiple options at once
       if (is_numeric($key)) {
-        array_push($result, ['_id' => $index] + $value );
+          array_push($result, ['_id' => $index] + $value);
       } else {
-        array_push($result, ['_id' => $index] + $items );
+          array_push($result, ['_id' => $index] + $items);
       }
 
-      $index++;
+          $index++;
+      }
 
-    }
-
-    return $result;
-
+      return $result;
   }
-
 }

@@ -40,10 +40,8 @@ class AddUserCommand extends Command
     */
     public function handle()
     {
-
         $this->info('Lets get started!');
         $userInput = $this->fetchInput();
-
     }
 
     private function fetchInput()
@@ -68,7 +66,6 @@ class AddUserCommand extends Command
 
         $user->addToGroup(Group::where('name', 'cp-admin')->firstOrFail());
         $this->info('User created successfully!');
-
     }
     private function fetchEmail()
     {
@@ -79,7 +76,7 @@ class AddUserCommand extends Command
             $email = $this->fetchEmail();
         }
 
-        if(User::where('email', $email)->count()){
+        if (User::where('email', $email)->count()) {
             $this->error('email is already being used, try resetting your password.');
             die();
         }

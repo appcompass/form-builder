@@ -61,29 +61,28 @@ class WebsitesServiceProvider extends ServiceProvider
         Route::model('sections', Section::class);
         Route::model('menus', Menu::class);
 
-        Route::bind('website', function($value) {
+        Route::bind('website', function ($value) {
             return Website::findOrFail($value);
         });
 
-        Route::bind('redirect', function($value) {
+        Route::bind('redirect', function ($value) {
             return Redirect::findOrFail($value);
         });
 
-        Route::bind('setting', function($value) {
+        Route::bind('setting', function ($value) {
             return Setting::findOrFail($value);
         });
 
-        Route::bind('page', function($value) {
+        Route::bind('page', function ($value) {
             return Page::findOrFail($value);
         });
 
-        Route::bind('content', function($value) {
+        Route::bind('content', function ($value) {
             return PageContent::findOrFail($value);
         });
 
-        Route::bind('menu', function($value) {
+        Route::bind('menu', function ($value) {
             return Menu::findOrFail($value);
         });
-
     }
 }

@@ -7,7 +7,6 @@ use P3in\Models\User;
 
 class PhotosPolicy
 {
-
     private $index_perms = [
         'photos.index',
         'galleries.photos.index',
@@ -31,9 +30,7 @@ class PhotosPolicy
     public function before(User $user, $ability)
     {
         if ($user->isRoot() || $user->isManager()) {
-
             return true;
-
         }
     }
 
@@ -57,7 +54,7 @@ class PhotosPolicy
     {
         if ($user->hasPermissions($this->edit_perms)) {
             return true;
-        }elseif(is_object($ability) && $ability->user){
+        } elseif (is_object($ability) && $ability->user) {
             return $user->id == $ability->user->id;
         }
     }
@@ -76,10 +73,9 @@ class PhotosPolicy
     {
         if ($user->hasPermissions($this->destroy_perms)) {
             return true;
-        }elseif(is_object($ability) && $ability->user){
+        } elseif (is_object($ability) && $ability->user) {
             $hour_ago = Carbon::now()->subHours(1);
             return $user->id == $ability->user->id && $hour_ago->lte($ability->created_at);
         }
     }
-
 }

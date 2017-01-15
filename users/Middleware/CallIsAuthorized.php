@@ -27,9 +27,7 @@ class CallIsAuthorized
          * on a single item level, since we have the exact instance resolved
          */
         foreach ($request->route()->parameters() as $key => $value) {
-
             if (is_object($request->route($key))) {
-
                 $model = $request->route($key);
 
                 // \Log::info($model);
@@ -39,7 +37,6 @@ class CallIsAuthorized
                     // @TODO This can be used for automatic validation instead of request
 
                     // \Log::info($model::$rules);
-
                 }
 
                 // \Log::info(get_class($model));
@@ -47,9 +44,7 @@ class CallIsAuthorized
                 // \Log::info($model->id);
 
                 // P3in\Models\Website@2 req user@7
-
             }
-
         }
 
         $route = $request->route();
@@ -57,15 +52,10 @@ class CallIsAuthorized
         $req_perm = PermissionsRequired::retrieve(new Route($route->uri()));
 
         if ($req_perm->count()) {
-
             if ($request->user()->hasPermission($req_perm->type)) {
-
                 return $next($request);
-
             } else {
-
                 return response(['message' => 'Unauthorized.'], 403);
-
             }
         }
 
@@ -82,6 +72,5 @@ class CallIsAuthorized
         }
 
         return $request->route($boundModelName);
-
     }
 }

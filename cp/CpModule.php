@@ -6,8 +6,7 @@ use P3in\BaseModule;
 
 class CpModule extends BaseModule
 {
-
-	public $module_name = 'cp';
+    public $module_name = 'cp';
 
     protected $publishes = [
         'js/components/' => 'components/'
@@ -26,7 +25,7 @@ class CpModule extends BaseModule
     public function register()
     {
         \Log::info('Registering <Cp> Module');
-		// @TODO load stuff here. like caching routes etc
-		// $this->setSeeders();
-	}
+        // @TODO load stuff here. like caching routes etc
+        // $this->setSeeders();
+    }
 }

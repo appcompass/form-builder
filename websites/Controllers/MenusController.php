@@ -9,7 +9,6 @@ use P3in\Models\NavItem;
 
 class MenusController extends AbstractController
 {
-
     public function __construct(MenusRepositoryInterface $repo)
     {
         $this->repo = $repo;
@@ -26,5 +25,4 @@ class MenusController extends AbstractController
         // @TODO validate link
         return NavItem::fromModel(Link::create($request->all()));
     }
-
 }

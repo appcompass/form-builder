@@ -5,7 +5,7 @@ namespace P3in;
 use Modular;
 use P3in\BaseModule;
 
-Class WebsitesModule extends BaseModule
+class WebsitesModule extends BaseModule
 {
     public $module_name = 'websites';
 

@@ -9,7 +9,6 @@ use P3in\Models\Page;
 
 class WebsiteMenusController extends AbstractChildController
 {
-
     public function __construct(WebsiteMenusRepositoryInterface $repo)
     {
         $this->repo = $repo;
@@ -17,7 +16,6 @@ class WebsiteMenusController extends AbstractChildController
 
     public function show($parent, $model)
     {
-
         return [
             'id' => $model->id,
             'menu-editor' => [
@@ -26,12 +24,10 @@ class WebsiteMenusController extends AbstractChildController
                 'deletions' => []
             ]
         ];
-
     }
 
     public function update(Request $request, $parent, $menu)
     {
-
         $menu_structure = $this->flatten($request->get('menu-editor')['menu']);
 
         $deletions = $request->get('menu-editor')['deletions'];
@@ -40,11 +36,9 @@ class WebsiteMenusController extends AbstractChildController
 
             // deletions are always NavItems
             $navitem = NavItem::findOrFail($deletee_id)->delete();
-
         }
 
         foreach ($menu_structure as $item) {
-
             if (isset($item['navigatable_id'])) { // this is a NavItem
 
                 // being this a navitem, we're sure the id is a navitem id
@@ -57,23 +51,15 @@ class WebsiteMenusController extends AbstractChildController
 
                 // then set parent if applicable, or null it to be sure (setParent takes care of saving as well)
                 if (!is_null($item['parent_id'])) {
-
-                        $parent_item = $navitem->setParent(NavItem::findOrFail($item['parent_id']));
-
+                    $parent_item = $navitem->setParent(NavItem::findOrFail($item['parent_id']));
                 } else {
-
                     $navitem->setParent(null);
-
                 }
 
                 // finally, make sure the item belongs to the correct menu (current one obv)
                 if (is_null($navitem->menu_id)) {
-
                     $menu->add($navitem);
-
                 }
-
-
             } else {
 
                 // this must be a Page instance (because otherwise logic is flawed)
@@ -89,11 +75,8 @@ class WebsiteMenusController extends AbstractChildController
                 // add navitem to current menu
 
                 $menu->add($navitem);
-
             }
-
         }
-
     }
 
     private function flatten(array $menu, $parent_id = null, $sort = null)
@@ -101,13 +84,10 @@ class WebsiteMenusController extends AbstractChildController
         $res = [];
 
         if (is_null($sort)) {
-
             $sort = 0;
-
         }
 
-        foreach($menu as $branch) {
-
+        foreach ($menu as $branch) {
             $branch['parent_id'] = $parent_id;
 
             $branch['sort'] = $sort++;
@@ -119,14 +99,10 @@ class WebsiteMenusController extends AbstractChildController
             $res[] = $branch;
 
             if (count($children)) {
-
                 $res = array_merge($res, $this->flatten($children, $branch['id'], $sort));
 
                 $branch['children'] = null;
-
             }
-
-
         }
 
         return $res;

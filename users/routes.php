@@ -4,7 +4,7 @@ Route::group([
     // 'prefix' => 'api',
     'namespace' => 'P3in\Controllers',
     'middleware' => 'api',
-], function($router) {
+], function ($router) {
     $router->resource('users', UsersController::class);
     $router->resource('groups', GroupsController::class);
     $router->resource('permissions', PermissionsController::class);

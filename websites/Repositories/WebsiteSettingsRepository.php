@@ -6,8 +6,8 @@ use P3in\Interfaces\WebsiteSettingsRepositoryInterface;
 use P3in\Models\Setting;
 use P3in\Models\Website;
 
-class WebsiteSettingsRepository extends AbstractChildRepository implements WebsiteSettingsRepositoryInterface {
-
+class WebsiteSettingsRepository extends AbstractChildRepository implements WebsiteSettingsRepositoryInterface
+{
     public function __construct(Setting $model, Website $parent)
     {
         $this->model = $model;
@@ -19,5 +19,4 @@ class WebsiteSettingsRepository extends AbstractChildRepository implements Websi
         // relation from parent to child
         // $this->parentToChild = 'pages';
     }
-
 }

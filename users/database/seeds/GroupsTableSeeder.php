@@ -17,7 +17,6 @@ class GroupsTableSeeder extends Seeder
      */
     public function run()
     {
-
         Group::create(['name' => 'users', 'label' => 'users', 'description' => 'remove description, who cares', 'active' => true]);
         Group::create(['name' => 'admins', 'label' => 'admins', 'description' => 'remove description, who cares', 'active' => true]);
 

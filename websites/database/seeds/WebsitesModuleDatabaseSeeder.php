@@ -17,7 +17,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
 
         \DB::statement("DELETE FROM forms WHERE name = 'websites'");
 
-        ResourceBuilder::new('websites', 'websites/{id}', function(ResourceBuilder $builder) {
+        ResourceBuilder::new('websites', 'websites/{id}', function (ResourceBuilder $builder) {
             $builder->string('Website Name', 'name')->list()->required()->sortable()->searchable();
             $builder->string('Url', 'url')->list()->required()->sortable()->searchable();
             // $builder->json('Auth Key', 'config.key')->list()->required()->sortable()->searchable();
@@ -27,7 +27,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
 
         \DB::statement("DELETE FROM forms WHERE name = 'pages'");
 
-        ResourceBuilder::new('pages', 'pages/{id}', function(ResourceBuilder $builder) {
+        ResourceBuilder::new('pages', 'pages/{id}', function (ResourceBuilder $builder) {
             $builder->string('Page Title', 'title')->list()->required()->sortable()->searchable();
             // $builder->string('Page Title', 'title')->list(false)->required()->sortable()->searchable();
             $builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();
@@ -37,13 +37,13 @@ class WebsitesModuleDatabaseSeeder extends Seeder
 
         \DB::statement("DELETE FROM forms WHERE name = 'menus'");
 
-        ResourceBuilder::new('menus', 'menus/{id}', function(ResourceBuilder $builder) {
+        ResourceBuilder::new('menus', 'menus/{id}', function (ResourceBuilder $builder) {
             $builder->string('Name', 'name')->list()->required()->sortable()->searchable();
         })->setAlias(['websites.menus.index', 'websites.menus.create']);
 
         \DB::statement("DELETE FROM forms WHERE name = 'menus-editor'");
 
-        ResourceBuilder::new('menus-editor', 'menus/{id}', function(ResourceBuilder $builder) {
+        ResourceBuilder::new('menus-editor', 'menus/{id}', function (ResourceBuilder $builder) {
             $builder->menuEditor()->list(false);
         })->setAlias(['websites.menus.show']);
 
@@ -62,8 +62,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
         $pages = $CMS->pages()->create(['title' => 'Pages', 'parent_id' => $websites->id, 'slug' => 'pages']);
         $navigation = $CMS->pages()->create(['title' => 'Navigation', 'parent_id' => $websites->id, 'slug' => 'menus']);
 
-        MenuBuilder::new('main_nav', $CMS, function(MenuBuilder $builder) use($users, $groups, $permissions, $websites, $galleries, $pages, $navigation, $users_permissions) {
-
+        MenuBuilder::new('main_nav', $CMS, function (MenuBuilder $builder) use ($users, $groups, $permissions, $websites, $galleries, $pages, $navigation, $users_permissions) {
             $users_management_category = $builder->add(['url' => '', 'title' => 'Users Management', 'alt' => 'Users Management', 'new_tab' => false, 'clickable' => false]);
             $users = $builder->add($users)->setParent($users_management_category)->icon('user');
             $builder->add($users_permissions)->setParent($users)->icon('user');
@@ -78,7 +77,5 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             $publications_category = $builder->add(['url' => '', 'title' => 'Publications', 'alt' => 'Publications', 'new_tab' => false, 'clickable' => false]);
             $builder->add($galleries)->setParent($publications_category)->icon('camera');
         });
-
-
     }
 }

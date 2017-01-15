@@ -29,7 +29,7 @@ class UsersModuleDatabaseSeeder extends Seeder
         $this->call(PermissionsSeeder::class);
         // $this->call(UsersTableSeeder::class);
         // $this->call(UserUiFieldsSeeder::class);
-        factory(User::class, 1000)->create()->each(function($user) {
+        factory(User::class, 1000)->create()->each(function ($user) {
             $user->permissions()->saveMany(Permission::inRandomOrder()->limit(3)->get());
         });
 
@@ -46,7 +46,7 @@ class UsersModuleDatabaseSeeder extends Seeder
         // $builder->actions('edit')->permissions('users.own.edit');
         // $builder->datetime('End of absence', 'settings.absent.end'); <- working
 
-        ResourceBuilder::new('users', 'users/{id}', function(ResourceBuilder $builder) {
+        ResourceBuilder::new('users', 'users/{id}', function (ResourceBuilder $builder) {
             $builder->string('First Name', 'first_name')->list()->required()->sortable()->searchable();
             $builder->string('Last Name', 'last_name')->list()->required()->sortable()->searchable();
             $builder->string('Email', 'email')->list()->required()->validation('email')->sortable()->searchable();
@@ -64,7 +64,7 @@ class UsersModuleDatabaseSeeder extends Seeder
         //
         \DB::statement("DELETE FROM forms WHERE name = 'groups'");
 
-        ResourceBuilder::new('groups', 'groups/{id}', function(ResourceBuilder $builder) {
+        ResourceBuilder::new('groups', 'groups/{id}', function (ResourceBuilder $builder) {
             $builder->string('Group Name', 'name')->list()->required()->sortable()->searchable();
             $builder->string('Group Label', 'label')->list()->required()->sortable()->searchable();
             $builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();

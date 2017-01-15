@@ -22,5 +22,4 @@ class GalleryVideosRepository extends AbstractChildRepository implements Gallery
         // relation from parent to child
         // $this->parentToChild = 'pages';
     }
-
 }

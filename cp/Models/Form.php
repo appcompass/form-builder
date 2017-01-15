@@ -43,9 +43,7 @@ class Form extends Model
     public function scopeToList(Builder $query)
     {
         if (isset($this->id)) {
-
             $query->where('id', $this->id);
-
         }
         return $this->filterBySub($query, 'fields', 'to_list', true);
     }
@@ -57,9 +55,7 @@ class Form extends Model
     {
         // we often wanna call that on an instenaced model
         if (isset($this->id)) {
-
             $query->where('id', $this->id);
-
         }
 
         return $this->filterBySub($query, 'fields', 'to_edit', true);
@@ -75,9 +71,7 @@ class Form extends Model
         $this->list_layout = $list_layout;
 
         if ($this->save()) {
-
             return $this;
-
         }
 
         throw new \Exception("Unable to set ListLayout for this Form.");
@@ -98,10 +92,8 @@ class Form extends Model
     {
         return $query->with([
 
-            $sub => function($query) use($param, $val) {
-
+            $sub => function ($query) use ($param, $val) {
                 $query->where($param, $val);
-
             }
         ]);
     }
@@ -111,12 +103,10 @@ class Form extends Model
      */
     public function setAlias($alias)
     {
-        foreach((array) $alias as $single) {
-
+        foreach ((array) $alias as $single) {
             $form_alias = new FormAlias(['alias' => $single]);
 
             $form_alias->form()->associate($this)->save();
-
         }
 
         return $this;
@@ -132,5 +122,4 @@ class Form extends Model
             ->firstOrFail()
             ->delete();
     }
-
 }

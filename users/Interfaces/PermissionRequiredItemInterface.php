@@ -11,5 +11,4 @@ interface PermissionRequiredItemInterface
      * How
      */
     public function how(Builder $query);
-
 }

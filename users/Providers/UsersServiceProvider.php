@@ -12,11 +12,13 @@ use \Illuminate\Routing\Router;
 // use P3in\Commands\AddUserCommand;
 // use P3in\Models\Group;
 use P3in\Models\User;
+
 // use P3in\Policies\ControllersPolicy;
 // use P3in\Policies\ResourcesPolicy;
 // use P3in\Profiles\Profile;
 
-Class UsersServiceProvider extends ServiceProvider {
+class UsersServiceProvider extends ServiceProvider
+{
 
     // protected $policies = [
     //     User::class => ResourcesPolicy::class,
@@ -80,15 +82,15 @@ Class UsersServiceProvider extends ServiceProvider {
         //     );
         // }
 
-        \Route::bind('user', function($value) {
+        \Route::bind('user', function ($value) {
             return \P3in\Models\User::findOrFail($value);
         });
 
-        \Route::bind('permission', function($value) {
+        \Route::bind('permission', function ($value) {
             return \P3in\Models\Permission::findOrFail($value);
         });
 
-        \Route::bind('group', function($value) {
+        \Route::bind('group', function ($value) {
             return \P3in\Models\Group::findOrFail($value);
         });
 
@@ -112,5 +114,4 @@ Class UsersServiceProvider extends ServiceProvider {
             \P3in\Interfaces\PermissionsRepositoryInterface::class, \P3in\Repositories\PermissionsRepository::class
         );
     }
-
 }

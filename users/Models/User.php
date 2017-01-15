@@ -29,7 +29,6 @@ class User extends ModularBaseModel implements
     AuthorizableContract,
     CanResetPasswordContract
 {
-
     use
         Authenticatable,
         Authorizable,
@@ -108,11 +107,11 @@ class User extends ModularBaseModel implements
 
     public function photos()
     {
-      return $this->hasMany(Photo::class);
+        return $this->hasMany(Photo::class);
     }
     public function galleries()
     {
-      return $this->hasMany(Gallery::class);
+        return $this->hasMany(Gallery::class);
     }
 
     /**
@@ -141,8 +140,8 @@ class User extends ModularBaseModel implements
     {
         switch ($field_name) {
             case 'users_list':
-                $users = User::select(\DB::raw("concat(first_name,' ',last_name) as name"),'id')->get();
-                return $users->pluck('name','id');
+                $users = User::select(\DB::raw("concat(first_name,' ',last_name) as name"), 'id')->get();
+                return $users->pluck('name', 'id');
                 break;
             default:
                 return [];
@@ -161,9 +160,7 @@ class User extends ModularBaseModel implements
      */
     public function getFullNameAttribute()
     {
-
         return sprintf("%s %s", $this->first_name, $this->last_name);
-
     }
 
     /**
@@ -183,7 +180,6 @@ class User extends ModularBaseModel implements
     {
         return Group::managers()->users
             ->contains($this->id);
-
     }
 
     /**
@@ -225,7 +221,6 @@ class User extends ModularBaseModel implements
         // }
 
         // return $this->morphOne(Photo::class, 'photoable');
-
     }
 
     /**

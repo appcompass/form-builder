@@ -37,11 +37,9 @@ class PageLayoutBuilder
             }
 
             $this->page->sections()->attach($section, ['order' => $order]);
-
         } else {
             throw new Exception("Trying to add something i don't understand.");
         }
         return $this;
     }
-
 }

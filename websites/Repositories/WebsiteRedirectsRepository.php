@@ -6,8 +6,8 @@ use P3in\Interfaces\WebsiteRedirectsRepositoryInterface;
 use P3in\Models\Redirect;
 use P3in\Models\Website;
 
-class WebsiteRedirectsRepository extends AbstractChildRepository implements WebsiteRedirectsRepositoryInterface {
-
+class WebsiteRedirectsRepository extends AbstractChildRepository implements WebsiteRedirectsRepositoryInterface
+{
     public function __construct(Redirect $model, Website $parent)
     {
         $this->model = $model;
@@ -19,5 +19,4 @@ class WebsiteRedirectsRepository extends AbstractChildRepository implements Webs
         // relation from parent to child
         // $this->parentToChild = 'pages';
     }
-
 }

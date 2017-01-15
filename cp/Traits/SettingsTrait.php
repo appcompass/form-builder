@@ -7,7 +7,6 @@ use P3in\Models\Setting;
 
 trait SettingsTrait
 {
-
     private $settings = null;
 
     private $json = null;
@@ -32,7 +31,7 @@ trait SettingsTrait
         if ($this->settingsRel()->count()) {
             $this->settingsRel->data = $value;
             $this->settingsRel->save();
-        }else{
+        } else {
             $this->settingsRel()->create([
                 'data' => $value,
             ]);

@@ -73,6 +73,5 @@ class CpModuleDatabaseSeeder extends Seeder
         //     $builder->string('Posted At', 'created_at')->edit(false)->list()->sortable();
 
         // })->setAlias(['comments.index', 'comments.show', 'comments.edit']);
-
     }
 }

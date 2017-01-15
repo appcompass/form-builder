@@ -10,26 +10,26 @@ use P3in\ModularBaseModel;
 class BlogTag extends ModularBaseModel
 {
 
-	/**
-	 * The database table used by the model.
-	 *
-	 * @var string
-	 */
-	protected $table = 'blog_tags';
+    /**
+     * The database table used by the model.
+     *
+     * @var string
+     */
+    protected $table = 'blog_tags';
 
-	/**
-	 * The attributes that are mass assignable.
-	 *
-	 * @var array
-	 */
-	protected $guarded = [
-	];
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = [
+    ];
 
-	/**
-	*	Fields that needs to be treated as a date
-	*
-	*/
-	protected $dates = [];
+    /**
+    *	Fields that needs to be treated as a date
+    *
+    */
+    protected $dates = [];
 
     public function posts()
     {
@@ -50,10 +50,8 @@ class BlogTag extends ModularBaseModel
     {
         $website = $website ?: Website::current();
 
-        return $query->whereHas('website',function($q) use ($website) {
-
+        return $query->whereHas('website', function ($q) use ($website) {
             $q->where('id', $website->id);
-
         });
     }
 

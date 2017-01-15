@@ -20,9 +20,7 @@ class WebsiteBuilder
     public function __construct(Website $website = null)
     {
         if (!is_null($website)) {
-
             $this->website = $website;
-
         }
 
         return $this;
@@ -37,7 +35,6 @@ class WebsiteBuilder
      */
     public static function new($name, $domain, Closure $closure = null)
     {
-
         $instance = new static();
 
         $instance->website = Website::create([
@@ -46,9 +43,7 @@ class WebsiteBuilder
         ]);
 
         if ($closure) {
-
             $closure($instance);
-
         }
 
         return $instance;
@@ -66,15 +61,11 @@ class WebsiteBuilder
     public static function edit($website)
     {
         if (!$website instanceof Website && !is_int($website)) {
-
             throw new \Exception('Must pass id or Website instance');
-
         }
 
         if (is_int($website)) {
-
             $website = Website::findOrFail($website);
-
         }
 
         return new static($website);
@@ -114,5 +105,4 @@ class WebsiteBuilder
     {
         // Magic Sauce DevOps logic using the set disk instance and run commands needed on server to get everything configured properly.
     }
-
 }

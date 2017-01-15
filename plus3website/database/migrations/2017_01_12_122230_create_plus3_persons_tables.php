@@ -14,7 +14,7 @@ class CreatePlus3PersonsTables extends Migration
     public function up()
     {
         // This only provides constraints and easy Vue components matching
-        Schema::create('plus3_people', function(Blueprint $table) {
+        Schema::create('plus3_people', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

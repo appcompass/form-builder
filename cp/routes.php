@@ -4,7 +4,7 @@ Route::group([
     // 'prefix' => 'api',
     'namespace' => 'P3in\Controllers',
     'middleware' => 'api',
-], function($router) {
+], function ($router) {
     // $router->get('notification-center', 'CpController@getNotificationCenter');
     // $router->get('dashboard', 'CpController@getDashboard');
 });

@@ -7,10 +7,8 @@ use P3in\Interfaces\UsersRepositoryInterface;
 
 class UsersController extends AbstractController
 {
-
     public function __construct(UsersRepositoryInterface $repo)
     {
         $this->repo = $repo;
     }
-
 }

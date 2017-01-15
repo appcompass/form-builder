@@ -7,10 +7,8 @@ use P3in\Interfaces\WebsitesRepositoryInterface;
 
 class WebsitesController extends AbstractController
 {
-
     public function __construct(WebsitesRepositoryInterface $repo)
     {
         $this->repo = $repo;
     }
-
 }

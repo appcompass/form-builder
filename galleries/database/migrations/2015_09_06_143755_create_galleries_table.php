@@ -13,7 +13,7 @@ class CreateGalleriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('galleries', function(Blueprint $table) {
+        Schema::create('galleries', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users'); // we don't delete galleries on user deletion
@@ -24,7 +24,7 @@ class CreateGalleriesTable extends Migration
             $table->softDeletes();
         });
 
-        Schema::create('gallery_items', function(Blueprint $table) {
+        Schema::create('gallery_items', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('gallery_id')->unsigned();
             $table->foreign('gallery_id')

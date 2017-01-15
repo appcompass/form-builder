@@ -28,136 +28,117 @@ use P3in\Models\OptionStorage;
 trait OptionableTrait
 {
 
-	/**
-	 *	Set an option
-	 *
-	 *	Add:
-	 *	<Model>->setOption('option-label', [<ids>]/<id>)
-	 *	Remove:
-	 *	<Model>->setOption('option-label', null)
-	 *
-	 *	@param (mixed) $label Option label
-	 *	@param (mixed)	$id 	Single/Multi Option ids to store. NULL deletes
-	 *	@return (bool)
-	 */
-	public function setOption($label, $id)
-	{
+    /**
+     *	Set an option
+     *
+     *	Add:
+     *	<Model>->setOption('option-label', [<ids>]/<id>)
+     *	Remove:
+     *	<Model>->setOption('option-label', null)
+     *
+     *	@param (mixed) $label Option label
+     *	@param (mixed)	$id 	Single/Multi Option ids to store. NULL deletes
+     *	@return (bool)
+     */
+    public function setOption($label, $id)
+    {
+        if (is_array($label) || is_array($id)) {
+            return $this->setOptions([$label => $id]);
+        }
 
-		if (is_array($label) || is_array($id)) {
-			return $this->setOptions([$label => $id]);
-		}
+        if (!is_null($id) && !$this->checkOption($label, $id)) {
+            throw new Exception("One or more options _id <$id> don't exist in <$label>");
+        }
 
-		if (!is_null($id) && !$this->checkOption($label, $id)) {
-			throw new Exception("One or more options _id <$id> don't exist in <$label>");
-		}
+        $optStored = $this->options()
+            ->firstOrNew(['option_label' => $label]);
 
-		$optStored = $this->options()
-			->firstOrNew(['option_label' => $label]);
+        if (is_null($id)) {
+            return $optStored->delete();
+        }
 
-		if (is_null($id)) {
+        $optStored->option_id = $id;
+        $optStored->option_label = $label;
 
-			return $optStored->delete();
+        $this->options()->save($optStored);
 
-		}
+        return true;
+    }
 
-		$optStored->option_id = $id;
-		$optStored->option_label = $label;
+    /**
+     *  Get option
+     *
+     *
+     */
+    public function getOption($label, $item = null)
+    {
+        $option = $this->singleOption($label);
 
-		$this->options()->save($optStored);
+        if (is_null($option)) {
+            return;
+        }
 
-		return true;
-	}
+        $selected = Option::byLabelAndId($option->option_label, $option->option_id);
 
-	/**
-	 *  Get option
-	 *
-	 *
-	 */
-	public function getOption($label, $item = null)
-	{
+        if (!is_null($item) && count($selected) == 1) {
+            return $selected->$item;
+        }
 
-		$option = $this->singleOption($label);
+        return $selected;
+    }
 
-		if (is_null($option)) {
-			return;
-		}
+    /**
+     *	Options relation
+     *
+     *
+     */
+    public function options()
+    {
+        return $this->morphMany(OptionStorage::class, 'optionable');
+    }
 
-		$selected = Option::byLabelAndId($option->option_label, $option->option_id);
+    /**
+     *	Set multiple options at once
+     *
+     */
+    private function setOptions(array $options)
+    {
+        foreach ($options as $label => $id) {
+            $option = Option::byLabel($label);
 
-		if (!is_null($item) && count($selected) == 1) {
+            if (is_array($id)) {
+                if (!$option->multi) {
+                    throw new Exception("This setting doesn't take multiple items.");
+                }
 
-				return $selected->$item;
+                $id = implode(',', $id);
+            }
 
-		}
+            $this->setOption($label, $id);
+        }
 
-		return $selected;
+        return true;
+    }
 
-	}
+    /**
+     *	Chek if an option exists
+     *
+     *
+     */
+    private function checkOption($label, $id)
+    {
+        return count(Option::byLabelAndId($label, $id)) === count(explode(',', $id));
+    }
 
-	/**
-	 *	Options relation
-	 *
-	 *
-	 */
-	public function options()
-	{
-	  return $this->morphMany(OptionStorage::class, 'optionable');
-	}
-
-	/**
-	 *	Set multiple options at once
-	 *
-	 */
-	private function setOptions(array $options)
-	{
-
-		foreach($options as $label => $id) {
-
-			$option = Option::byLabel($label);
-
-			if (is_array($id) ) {
-
-				if (!$option->multi) {
-
-					throw new Exception("This setting doesn't take multiple items.");
-
-				}
-
-				$id = implode(',', $id);
-
-			}
-
-			$this->setOption($label, $id);
-
-		}
-
-		return true;
-
-	}
-
-	/**
-	 *	Chek if an option exists
-	 *
-	 *
-	 */
-	private function checkOption($label, $id)
-	{
-		return count(Option::byLabelAndId($label, $id)) === count(explode(',', $id));
-	}
-
-	/**
-	 *	Single option getter
-	 *
-	 *
-	 */
-	private function singleOption($option_label)
-	{
-
-		return $this->options
-			->where('option_label', $option_label)
-			->first();
-
-	}
-
-
+    /**
+     *	Single option getter
+     *
+     *
+     */
+    private function singleOption($option_label)
+    {
+        return $this->options
+            ->where('option_label', $option_label)
+            ->first();
+    }
 }

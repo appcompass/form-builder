@@ -21,7 +21,7 @@ trait HasGallery
     /**
      * Client code provides means for storing the gallery name
      */
-    abstract function getGalleryName();
+    abstract public function getGalleryName();
 
     /**
      * Set it to true to make sure it returns a gallery
@@ -35,7 +35,6 @@ trait HasGallery
      */
     public function gallery()
     {
-
         return $this->morphOne(Gallery::class, 'galleryable');
 
         // if ($this->forceCreateGallery && $this->id && !$rel->get()->count()) {
@@ -59,9 +58,7 @@ trait HasGallery
             return Gallery::where('galleryable_id', $this->{$this->primaryKey})
                 ->where('galleryable_type', get_class($this))
                 ->firstOrFail();
-
         } catch (ModelNotFoundException $e) {
-
             if (!\Auth::check()) {
                 $default_user_email = config('app.default_gallery_user_email');
                 try {
@@ -69,8 +66,7 @@ trait HasGallery
                 } catch (\Exception $e) {
                     throw new \Exception('User must be logged in order to create a gallery.');
                 }
-
-            }else{
+            } else {
                 $user = \Auth::user();
             }
 
@@ -81,7 +77,6 @@ trait HasGallery
                 'galleryable_id' => $this->{$this->primaryKey},
                 'galleryable_type' => get_class($this)
             ]);
-
         }
     }
 

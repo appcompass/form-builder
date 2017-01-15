@@ -7,11 +7,12 @@ use Modular;
 // use P3in\Models\Permission;
 // use P3in\Models\Website;
 use P3in\BaseModule;
+
 // use P3in\Models\Profiles\Facebook;
 // use P3in\Models\Profiles\Profile;
 // use P3in\Traits\NavigatableTrait as Navigatable;
 
-Class UsersModule extends BaseModule
+class UsersModule extends BaseModule
 {
 
     // use Navigatable;
@@ -141,5 +142,4 @@ Class UsersModule extends BaseModule
     //         ],
     //     ];
     // }
-
 }

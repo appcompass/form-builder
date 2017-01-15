@@ -9,7 +9,6 @@ use P3in\ModularBaseModel;
 
 class Permission extends ModularBaseModel
 {
-
     protected $table = 'permissions';
 
     protected $fillable = [
@@ -77,5 +76,4 @@ class Permission extends ModularBaseModel
 
         return $perm->type;
     }
-
 }

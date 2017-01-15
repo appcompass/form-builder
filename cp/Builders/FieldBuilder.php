@@ -8,7 +8,6 @@ use P3in\Traits\HasFieldsTrait;
 
 class FieldBuilder
 {
-
     use HasFieldsTrait;
     /**
      * Field instance
@@ -18,9 +17,7 @@ class FieldBuilder
     public function __construct(Field $field = null)
     {
         if (!is_null($field)) {
-
             $this->setField($field);
-
         }
 
         return $this;
@@ -59,5 +56,4 @@ class FieldBuilder
 
         return $this;
     }
-
 }

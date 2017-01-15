@@ -13,7 +13,7 @@ class CreateSections extends Migration
      */
     public function up()
     {
-        Schema::create('sections', function(Blueprint $table) {
+        Schema::create('sections', function (Blueprint $table) {
             $table->increments('id');
 
             $table->integer('layout_id')->nullable();

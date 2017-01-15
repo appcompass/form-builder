@@ -38,17 +38,16 @@ class GalleriesServiceProvider extends ServiceProvider
         Route::model('photos', Photo::class);
         Route::model('videos', Video::class);
 
-        Route::bind('gallery', function($value) {
+        Route::bind('gallery', function ($value) {
             return Gallery::findOrFail($value);
         });
 
-        Route::bind('photo', function($value) {
+        Route::bind('photo', function ($value) {
             return Photo::findOrFail($value);
         });
 
-        Route::bind('video', function($value) {
+        Route::bind('video', function ($value) {
             return Video::findOrFail($value);
         });
-
     }
 }

@@ -11,7 +11,6 @@ use P3in\Models\Field;
 
 trait HasFieldsTrait
 {
-
     public function setFieldParent($parent)
     {
         $this->fields_parent = $parent;
@@ -118,14 +117,13 @@ trait HasFieldsTrait
 
         if ($rel instanceof BelongsToMany) {
             $rel->attach($field);
-        } else if ($rel instanceof HasMany) {
+        } elseif ($rel instanceof HasMany) {
             $rel->save($field);
         }
 
         if ($closure) {
             $fieldBuilder = new FieldBuilder($field);
             $closure($fieldBuilder);
-
         }
 
         return $field;
@@ -146,35 +144,23 @@ trait HasFieldsTrait
         $field = $this->fields_parent->fields->where('name', $name);
 
         if (! count($field)) {
-
             return $this;
-
         }
 
-        if (count($field) > 1 AND is_null($type)) {
-
+        if (count($field) > 1 and is_null($type)) {
             throw new Exception("Multiple <{$name}> found, please add type");
-
-        } else if (count($field) > 1 AND ! is_null($type)) {
-
+        } elseif (count($field) > 1 and ! is_null($type)) {
             $field = $field->where('type', $type);
 
             if (count($field) > 1) {
-
                 throw new Exception("Sorry there doesn't seem to be an enough specific combination to get a single result. Halting.");
-
             } else {
-
                 $field->first()->delete();
 
                 return $this;
-
             }
-        } else if (count($field) === 1) {
-
+        } elseif (count($field) === 1) {
             $field->first()->delete();
-
         }
     }
-
 }

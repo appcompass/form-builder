@@ -2,4 +2,6 @@
 
 namespace P3in\Interfaces;
 
-interface GalleryPhotosRepositoryInterface extends AbstractRepositoryInterface {}
+interface GalleryPhotosRepositoryInterface extends AbstractRepositoryInterface
+{
+}

@@ -6,7 +6,6 @@ use P3in\BaseModule;
 
 class Plus3websiteModule extends BaseModule
 {
-
     public $module_name = 'plus3website';
 
     protected $publishes = [
