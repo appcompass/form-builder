@@ -21,9 +21,7 @@ class PageBuilder
     public function __construct(Page $page = null)
     {
         if (!is_null($page)) {
-
             $this->page = $page;
-
         }
 
         return $this;
@@ -38,7 +36,6 @@ class PageBuilder
      */
     public static function new($title, Website $website, Closure $closure = null)
     {
-
         $instance = new static();
 
         $instance->page = $website->pages()->create([
@@ -48,9 +45,7 @@ class PageBuilder
         ]);
 
         if ($closure) {
-
             $closure($instance);
-
         }
 
         return $instance;
@@ -68,15 +63,11 @@ class PageBuilder
     public static function edit($page)
     {
         if (!$page instanceof Page && !is_int($page)) {
-
             throw new Exception('Must pass id or page instance');
-
         }
 
         if (is_int($page)) {
-
             $page = Page::findOrFail($page);
-
         }
 
         return new static($page);
@@ -93,10 +84,9 @@ class PageBuilder
                 foreach ($closure as $i => $section) {
                     $instance->addSection($section, $i+1);
                 }
-            } else if ($closure instanceof Closure) {
+            } elseif ($closure instanceof Closure) {
                 $closure($instance);
             }
-
         }
 
         return $this;
@@ -173,5 +163,4 @@ class PageBuilder
     //     }
 
     // }
-
 }

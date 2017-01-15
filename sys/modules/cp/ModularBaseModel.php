@@ -25,7 +25,7 @@ class ModularBaseModel extends Model
     public function replicateWithRelations()
     {
         $clone = $this->replicate();
-        foreach($this->getRelations() as $relationName => $relation) {
+        foreach ($this->getRelations() as $relationName => $relation) {
             $rel = $this->$relationName();
             switch (true) {
                 case $rel instanceof HasMany:
@@ -70,7 +70,7 @@ class ModularBaseModel extends Model
      **/
     public function scopeOf($query, $relationship, $model)
     {
-        return $query->whereHas($relationship, function($q) use ($model) {
+        return $query->whereHas($relationship, function ($q) use ($model) {
             if ($key = $model->getKey()) {
                 $q->where($model->getKeyName(), $key);
             }
@@ -165,4 +165,3 @@ class ModularBaseModel extends Model
         return $query->whereRaw("json_extract_path_text({$field}, '{$chain}') {$operator} '{$value}'");
     }
 }
-

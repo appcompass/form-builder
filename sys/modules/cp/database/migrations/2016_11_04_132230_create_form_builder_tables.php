@@ -14,13 +14,13 @@ class CreateFormBuilderTables extends Migration
     public function up()
     {
         // This only provides constraints and easy Vue components matching
-        Schema::create('fieldtypes', function(Blueprint $table) {
+        Schema::create('fieldtypes', function (Blueprint $table) {
             $table->string('type');
             $table->string('label');
             $table->primary('type');
         });
 
-        Schema::create('fields', function(Blueprint $table) {
+        Schema::create('fields', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->string('label');
@@ -44,7 +44,7 @@ class CreateFormBuilderTables extends Migration
             $table->index('name');
         });
 
-        Schema::create('forms', function(Blueprint $table) {
+        Schema::create('forms', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->unique();
             $table->nullableMorphs('formable');
@@ -56,7 +56,7 @@ class CreateFormBuilderTables extends Migration
             $table->index('name');
         });
 
-        Schema::create('field_form', function(Blueprint $table) {
+        Schema::create('field_form', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('form_id')->unsigned();
             $table->foreign('form_id')->references('id')->on('forms')->onDelete('cascade');
@@ -69,7 +69,7 @@ class CreateFormBuilderTables extends Migration
             $table->index('field_id');
         });
 
-        Schema::create('form_alias', function(Blueprint $table) {
+        Schema::create('form_alias', function (Blueprint $table) {
             $table->increments('id');
             $table->string('alias');
             $table->integer('form_id')->unsigned();
@@ -79,7 +79,6 @@ class CreateFormBuilderTables extends Migration
             $table->index('alias');
             $table->index('form_id');
         });
-
     }
 
     /**

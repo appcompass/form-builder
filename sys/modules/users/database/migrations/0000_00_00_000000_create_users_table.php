@@ -59,7 +59,6 @@ class CreateUsersTable extends Migration
         //     $table->primary(['permission_id', 'user_id']);
         //     $table->timestamps();
         // });
-
     }
 
     /**

@@ -8,7 +8,6 @@ use P3in\Traits\SettingsTrait;
 
 class GalleryItem extends Model
 {
-
     use SettingsTrait;
 
     /**
@@ -72,13 +71,11 @@ class GalleryItem extends Model
      */
     public function scopeByType($query, $type)
     {
-
         if (is_object($type)) {
             $type = get_class($type);
         }
 
         return $query->where('itemable_type', '=', $type);
-
     }
 
     /**
@@ -90,7 +87,6 @@ class GalleryItem extends Model
      */
     public function scopeByGallery($query, Gallery $gallery, $item = null)
     {
-
         $query->where('gallery_id', $gallery->id);
 
         if (is_null($item)) {
@@ -98,7 +94,5 @@ class GalleryItem extends Model
         } else {
             return $query->where('itemable_type', $item);
         }
-
     }
-
 }

@@ -2,4 +2,6 @@
 
 namespace P3in\Interfaces;
 
-interface WebsitesRepositoryInterface extends AbstractRepositoryInterface {}
+interface WebsitesRepositoryInterface extends AbstractRepositoryInterface
+{
+}

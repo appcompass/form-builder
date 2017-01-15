@@ -2,6 +2,6 @@
 
 Route::group([
     'middleware' => 'api',
-], function($router) {
+], function ($router) {
     // $router->resource('addresses', 'AddressesController');
 });

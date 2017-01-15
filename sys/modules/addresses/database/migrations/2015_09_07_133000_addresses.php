@@ -14,12 +14,11 @@ class Addresses extends Migration
      */
     public function up()
     {
-        if(DB::connection('pgsql')->table("pg_extension")->where('extname','postgis')->count() === 0){
+        if (DB::connection('pgsql')->table("pg_extension")->where('extname', 'postgis')->count() === 0) {
             DB::connection('pgsql')->statement('CREATE EXTENSION postgis;');
         }
 
-        Schema::connection('pgsql')->create('addresses', function(Blueprint $table) {
-
+        Schema::connection('pgsql')->create('addresses', function (Blueprint $table) {
             $table->increments('id');
             $table->string('number');
             $table->string('street');

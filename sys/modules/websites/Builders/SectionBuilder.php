@@ -8,6 +8,7 @@ use P3in\Models\Form;
 use P3in\Models\Layout;
 use P3in\Models\Section;
 use \Exception;
+
 class SectionBuilder
 {
 
@@ -20,13 +21,11 @@ class SectionBuilder
     private function __construct(Form $form = null)
     {
         if (!is_null($form)) {
-
             if (!$form->formable instanceof Section) {
                 throw new Exception('This form doesn\'t belong to a section');
             }
 
             $this->form = $form;
-
         }
 
         return $this;
@@ -66,9 +65,7 @@ class SectionBuilder
         $formBuilder = new FormBuilder($form);
 
         if ($closure) {
-
             $closure($formBuilder);
-
         }
 
         return $instance;

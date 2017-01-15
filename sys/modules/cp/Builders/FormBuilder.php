@@ -8,7 +8,6 @@ use P3in\Traits\HasFieldsTrait;
 
 class FormBuilder
 {
-
     use HasFieldsTrait;
 
     /**
@@ -19,9 +18,7 @@ class FormBuilder
     public function __construct(Form $form = null)
     {
         if (!is_null($form)) {
-
             $this->setForm($form);
-
         }
 
         return $this;
@@ -44,9 +41,7 @@ class FormBuilder
         $instance->setForm($form);
 
         if ($closure) {
-
             $closure($instance);
-
         }
 
         return $instance;
@@ -67,14 +62,10 @@ class FormBuilder
     public static function edit($form)
     {
         if ($form instanceof Form) {
-
             $instance = new static($form);
-
-        } else if (is_string($form)) {
-
+        } elseif (is_string($form)) {
             $instance = new static(Form::whereName($form)
                 ->firstOrFail());
-
         }
 
         return $instance;

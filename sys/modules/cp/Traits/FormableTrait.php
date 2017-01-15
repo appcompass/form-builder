@@ -7,7 +7,6 @@ use P3in\Models\Form;
 
 trait FormableTrait
 {
-
     private $settings = null;
 
     private $json = null;
@@ -16,5 +15,4 @@ trait FormableTrait
     {
         return $this->morphOne(Form::class, 'formable');
     }
-
 }

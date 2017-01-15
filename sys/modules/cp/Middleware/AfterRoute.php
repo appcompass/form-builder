@@ -44,11 +44,9 @@ class AfterRoute
             }
 
             return response()->json($result, $response->getStatusCode());
-
         }
 
         if ($response->getStatusCode() === 200 && in_array($request->getMethod(), $methods)) {
-
             $content = [
 
                 'collection' => json_decode($response->getContent()),
@@ -56,15 +54,12 @@ class AfterRoute
             ];
 
             if (count($alias)) {
-
                 $content['edit'] = $alias->form->toEdit()->first();
 
                 $content['list'] = $alias->form->toList()->first();
-
             }
 
             $response->setContent($content);
-
         }
 
 

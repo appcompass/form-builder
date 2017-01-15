@@ -34,7 +34,6 @@ class Field extends Model
         parent::boot();
 
         static::addGlobalScope(new OrderScope('id', 'asc'));
-
     }
 
     public function form()
@@ -126,5 +125,4 @@ class Field extends Model
 
         return $this->saveAndReturn();
     }
-
 }

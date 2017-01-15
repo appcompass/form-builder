@@ -6,7 +6,6 @@ use P3in\Models\User;
 
 trait IsProfileTrait
 {
-
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -16,5 +15,4 @@ trait IsProfileTrait
     {
         return $query->leftJoin('users', 'users.id', '=', $this->table.'.user_id');
     }
-
 }

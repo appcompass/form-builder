@@ -6,8 +6,8 @@ use P3in\Interfaces\PageContentsRepositoryInterface;
 use P3in\Models\Page;
 use P3in\Models\PageContent;
 
-class PageContentsRepository extends AbstractChildRepository implements PageContentsRepositoryInterface {
-
+class PageContentsRepository extends AbstractChildRepository implements PageContentsRepositoryInterface
+{
     public function __construct(PageContent $model, Page $parent)
     {
         $this->model = $model;
@@ -19,5 +19,4 @@ class PageContentsRepository extends AbstractChildRepository implements PageCont
         // relation from parent to child
         // $this->parentToChild = 'pages';
     }
-
 }

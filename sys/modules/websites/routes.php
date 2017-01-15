@@ -4,7 +4,7 @@ Route::group([
     // 'prefix' => 'api',
     'namespace' => 'P3in\Controllers',
     'middleware' => 'api',
-], function($router) {
+], function ($router) {
     $router->resource('websites', WebsitesController::class);
     $router->resource('websites.menus', WebsiteMenusController::class);
     $router->resource('websites.navigation', WebsiteMenusController::class);
@@ -19,12 +19,11 @@ Route::group([
     $router->group([
         'prefix' => 'render',
         'middleware' => 'web',
-    ], function($router){
+    ], function ($router) {
 
         // $router->post('form-submissions', 'PagesController@submitForm');
         // $router->get('sitemap.{type}', 'PagesController@renderSitemap')->where('type', '(xml|html|txt|ror-rss|ror-rdf)');
         // $router->get('robots.txt', 'PagesController@renderRobotsTxt');
         // $router->any('{path?}', 'PagesController@renderPage')->where('path', '(.*)');
-
     });
 });

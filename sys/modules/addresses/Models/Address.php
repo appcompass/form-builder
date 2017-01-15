@@ -63,8 +63,7 @@ class Address extends Model
         $address_lookup = Address::lookup($address_object);
         $found_address = [];
 
-        if(!empty($address_lookup->results)){
-
+        if (!empty($address_lookup->results)) {
             $found_address['number'] = $address_object['number'];
             $found_address['street'] = $address_object['street'];
             $found_address['city'] = $address_object['city'];
@@ -79,7 +78,6 @@ class Address extends Model
         if (!empty($found_address)) {
             return static::create($found_address);
         }
-
     }
 
     public static function structureGoogleResult($address)
@@ -138,7 +136,7 @@ class Address extends Model
             }
 
             return json_decode($res->getBody());
-        }else{
+        } else {
             return [];
         }
     }
@@ -147,7 +145,7 @@ class Address extends Model
     {
         $lookup = Address::lookup($address);
 
-        if(!empty($lookup->results)){
+        if (!empty($lookup->results)) {
             $structued = Address::structureGoogleResult($lookup->results[0]);
 
             $address = Address::firstOrNew([
@@ -185,7 +183,7 @@ class Address extends Model
     public function scopeWhereDistance(Builder $query, Point $point, $operator = null, $distance = null, $boolean = 'and')
     {
         $field = DB::raw(
-            sprintf( "ST_Distance(%s.location, ST_GeogFromText('%s'))",
+            sprintf("ST_Distance(%s.location, ST_GeogFromText('%s'))",
                 $this->getTable(),
                 $point->toWKT()
             )

@@ -14,7 +14,6 @@ use P3in\Traits\SettingsTrait;
 
 class Page extends Model
 {
-
     use SoftDeletes
         // , HasPermissions
         ;
@@ -85,7 +84,7 @@ class Page extends Model
                 "*",
                 DB::raw("NULLIF(substring($escaped_url from url), url) AS dynamic_segment")
             )
-            ->where($raw_url,'SIMILAR TO', DB::raw('url'));
+            ->where($raw_url, 'SIMILAR TO', DB::raw('url'));
     }
 
     /**
@@ -100,13 +99,10 @@ class Page extends Model
         $this->attributes['url'] = $this->buildUrl();
 
         if ($this->exists) {
-
             $this->save();
 
             $this->updateChildrenUrl();
-
         }
-
     }
 
     /**
@@ -117,12 +113,10 @@ class Page extends Model
      */
     private function updateChildrenUrl()
     {
-        foreach($this->children as $child) {
-
+        foreach ($this->children as $child) {
             $child->url = $child->buildUrl();
 
             $child->save();
-
         }
     }
 
@@ -137,16 +131,12 @@ class Page extends Model
 
         $slugs = [$this->slug];
 
-        while($page->parent_id !== NULL) {
-
+        while ($page->parent_id !== null) {
             $page = $page->parent;
 
             array_push($slugs, $page->slug);
-
         }
 
         return '/' . implode('/', array_reverse($slugs));
     }
-
-
 }

@@ -9,13 +9,8 @@ class Facebook extends ModularBaseModel
 {
     use IsProfileTrait;
 
-  public function __construct($data)
-  {
-
-    $this->attributes = $data;
-
-  }
-
-
-
+    public function __construct($data)
+    {
+        $this->attributes = $data;
+    }
 }

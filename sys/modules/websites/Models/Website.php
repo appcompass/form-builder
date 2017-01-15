@@ -13,7 +13,6 @@ use P3in\Traits\SettingsTrait;
 
 class Website extends Model
 {
-
     use SettingsTrait, HasGallery, HasPermissions, SoftDeletes;
 
     protected $fillable = [
@@ -150,7 +149,7 @@ class Website extends Model
 
     public function scopeIsLive($query)
     {
-        return $query->whereHas('settings', function($query){
+        return $query->whereHas('settings', function ($query) {
             $query->where("data->>'live'", 'true');
         });
     }

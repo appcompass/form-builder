@@ -56,7 +56,5 @@ class PhotoObserver extends BaseObserver
 
         // BaseObserver@fire
         return $this->fire($alert, null, true, 5);
-
     }
-
 }

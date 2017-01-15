@@ -8,7 +8,6 @@ use P3in\Models\Layout;
 
 class Section extends Model
 {
-
     protected $fillable = [
         'name',
         'template',

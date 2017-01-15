@@ -56,11 +56,8 @@ class Group extends Model
       */
     public function addUser(User $user)
     {
-
         if (!$this->users->contains($user->id)) {
-
             return $this->users()->attach($user);
-
         }
 
         return false;
@@ -95,37 +92,22 @@ class Group extends Model
       */
     public function grantPermissions($perm)
     {
-
         if (is_null($perm)) {
-
             return;
-
-        } else if ($perm instanceof \Illuminate\Database\Eloquent\Collection) {
-
+        } elseif ($perm instanceof \Illuminate\Database\Eloquent\Collection) {
             return $this->permissions()->sync($perm);
-
-        } else if (is_string($perm)) {
-
+        } elseif (is_string($perm)) {
             return $this->grantPermissions(Permission::byType($perm)->firstOrFail());
-
-        } else if ($perm instanceof Permission) {
-
+        } elseif ($perm instanceof Permission) {
             if (!$this->permissions->contains($perm->id)) {
-
                 return $this->permissions()->attach($perm);
-
             }
 
             return false;
-
-        } else if (is_array($perm)) {
-
-            foreach($perm as $single_permission) {
-
+        } elseif (is_array($perm)) {
+            foreach ($perm as $single_permission) {
                 $this->grantPermissions($single_permission);
-
             }
-
         }
     }
 
@@ -161,25 +143,15 @@ class Group extends Model
     public function revokePermissions($perm)
     {
         if (is_null($perm)) {
-
             return;
-
-        } else if ( is_string($perm)) {
-
+        } elseif (is_string($perm)) {
             return $this->revokePermissions(Permission::byType($perm)->firstOrFail());
-
-        } else if ($perm instanceof Permission) {
-
+        } elseif ($perm instanceof Permission) {
             return $this->permissions()->detach($perm);
-
-        }  else if (is_array($perm)) {
-
-            foreach($perm as $single_permission) {
-
+        } elseif (is_array($perm)) {
+            foreach ($perm as $single_permission) {
                 $this->revokePermissions($single_permission);
-
             }
-
         }
     }
 }

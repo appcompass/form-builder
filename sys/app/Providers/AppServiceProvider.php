@@ -16,7 +16,7 @@ class AppServiceProvider extends ServiceProvider
         // \DB::listen(function($query) { \Log::info($query->sql, $query->bindings); });
         // \DB::listen(function($query) { \Log::info($query->time); });
 
-        $this->app->bind('path.public', function() {
+        $this->app->bind('path.public', function () {
             return base_path() . '/../public/src';
         });
     }

@@ -10,14 +10,12 @@ use P3in\Models\PageContent;
 use P3in\Models\Section;
 use P3in\Models\Website;
 
-
 /**
  * Examples:
  * new PageRenderer(Website::current())->render($url);
  */
 class PageRenderer
 {
-
     private $website;
     private $pages;
     private $page;
@@ -35,10 +33,8 @@ class PageRenderer
     public function setPage($url)
     {
         if (is_string($url)) {
-
             $page = $this->getPageFromUrl($url);
-
-        }else{
+        } else {
             throw new Exception('Must pass a url.');
         }
 
@@ -49,7 +45,6 @@ class PageRenderer
 
     public function render($filtered = true)
     {
-
         if (!$this->page) {
             throw new Exception('A page must be set.');
         }
@@ -71,7 +66,7 @@ class PageRenderer
         // fetch website settings that contain information on the website's header/footer/scripts/etc
         if ($settings = $this->website->settings) {
             $this->build['settings'] = $this->getModulesData($settings->modules);
-        }else{
+        } else {
             throw new Exception('Website settings are not complete.');
         }
     }
@@ -103,19 +98,18 @@ class PageRenderer
         if ($filtered) {
             $this->cleanContents($contents);
 
-            $contents->each(function($content){
+            $contents->each(function ($content) {
                 $this->cleanSections($content->section);
                 $this->cleanLayouts($content->section->layout);
             });
-        }else{
+        } else {
             $contents->load('section.form');
         }
 
         foreach ($contents as &$content) {
             $config = $content->section->config;
 
-            if (!empty($config->class) && !empty($config->method))
-            {
+            if (!empty($config->class) && !empty($config->method)) {
                 $content->content = $this->callMethod($config->class, $config->method, $content->content);
             }
         }

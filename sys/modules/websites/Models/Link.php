@@ -8,7 +8,6 @@ use Exception;
 
 class Link extends Model
 {
-
     protected $fillable = [
         'title',
         'url',
@@ -25,5 +24,4 @@ class Link extends Model
         'new_tab' => 'required',
         // 'clickable' => ''
     ];
-
 }

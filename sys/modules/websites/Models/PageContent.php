@@ -42,6 +42,4 @@ class PageContent extends Model
     // {
     //     return $this->morphMany(Photo::class, 'photoable');
     // }
-
-
 }

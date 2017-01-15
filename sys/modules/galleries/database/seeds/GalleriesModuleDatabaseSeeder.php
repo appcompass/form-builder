@@ -13,13 +13,10 @@ class GalleriesModuleDatabaseSeeder extends Seeder
         \DB::statement('TRUNCATE galleries CASCADE');
 
         \DB::statement("DELETE FROM forms WHERE name = 'galleries'");
-        ResourceBuilder::new('galleries', 'galleries/{id}', function(ResourceBuilder $builder) {
-
+        ResourceBuilder::new('galleries', 'galleries/{id}', function (ResourceBuilder $builder) {
             $builder->string('Gallery Name', 'name')->list()->required()->sortable()->searchable();
 
             $builder->string('Owner', 'user.email')->list()->edit(false);
-
         })->setAlias(['galleries.index', 'galleries.show', 'galleries.create']);
-
     }
 }

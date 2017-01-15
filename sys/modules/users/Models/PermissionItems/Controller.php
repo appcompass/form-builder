@@ -42,5 +42,4 @@ class Controller extends PermissionItem implements PermissionRequiredItemInterfa
             ->firstOrFail()
             ->permission;
     }
-
 }

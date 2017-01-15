@@ -9,7 +9,7 @@ class Wistia
     private $project_id;
     private $multipart;
 
-    function __construct($project_id, $password)
+    public function __construct($project_id, $password)
     {
         $this->multipart = false;
         $this->project_id = $project_id;
@@ -23,7 +23,7 @@ class Wistia
                 'name' => $name,
                 'url' => $path,
             ];
-        }else{
+        } else {
             $this->multipart = false;
             $payload = [
                 [
@@ -63,7 +63,7 @@ class Wistia
                     ]
                 ], $params),
             ];
-        }else{
+        } else {
             $payload = [
                 'form_params' => array_merge_recursive([
                     'api_password' => $this->password,
@@ -74,6 +74,5 @@ class Wistia
         $client = new GuzzleClient();
         $response = $client->request('DELETE', $path, $payload);
         return json_decode((string) $response->getBody());
-
     }
 }

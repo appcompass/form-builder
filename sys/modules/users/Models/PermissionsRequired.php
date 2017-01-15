@@ -59,18 +59,12 @@ class PermissionsRequired extends Model
      */
     public function scopeRetrieve(Builder $query, PermissionItemContract $perm)
     {
-
         try {
-
             $requires = $perm->how($query);
 
             return $requires;
-
         } catch (ModelNotFoundException $e) {
-
             return null;
-
         }
-
     }
 }

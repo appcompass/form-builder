@@ -17,9 +17,7 @@ class ResourceBuilder
     private function __construct(Form $form = null)
     {
         if (!is_null($form)) {
-
             $this->form = $form;
-
         }
 
         return $this;
@@ -36,7 +34,6 @@ class ResourceBuilder
      */
     public static function new($name, $resource, Closure $closure = null)
     {
-
         $instance = new static();
 
         $instance->form = Form::create([
@@ -45,9 +42,7 @@ class ResourceBuilder
         ]);
 
         if ($closure) {
-
             $closure($instance);
-
         }
 
         return $instance;
@@ -63,14 +58,10 @@ class ResourceBuilder
     public static function edit($form)
     {
         if ($form instanceof Form) {
-
             $instance = new static($form);
-
-        } else if (is_string($form)) {
-
+        } elseif (is_string($form)) {
             $instance = new static(Form::whereName($form)
                 ->firstOrFail());
-
         }
 
         return $instance;
@@ -237,36 +228,24 @@ class ResourceBuilder
         $field = $this->form->fields->where('name', $name);
 
         if (! count($field)) {
-
             return $this;
-
         }
 
-        if (count($field) > 1 AND is_null($type)) {
-
+        if (count($field) > 1 and is_null($type)) {
             throw new \Exception("Multiple <{$name}> found, please add type");
-
-        } else if (count($field) > 1 AND ! is_null($type)) {
-
+        } elseif (count($field) > 1 and ! is_null($type)) {
             $field = $field->where('type', $type);
 
 
             if (count($field) > 1) {
-
                 throw new \Exception("Sorry there doesn't seem to be an enough specific combination to get a single result. Halting.");
-
             } else {
-
                 $field->first()->delete();
 
                 return $this;
-
             }
-        } else if (count($field) === 1) {
-
+        } elseif (count($field) === 1) {
             $field->first()->delete();
-
         }
     }
-
 }

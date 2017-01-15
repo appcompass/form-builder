@@ -8,14 +8,12 @@ use P3in\Models\Website;
 
 class PermissionItem
 {
-
     public function __construct($pointer)
     {
         // @TODO find out what we're pointing at, now we rely on client code to be aware
         // @TODO this should be delegated to the specific class
 
         $this->pointer = $pointer;
-
     }
 
     public function getPointer()
@@ -33,11 +31,8 @@ class PermissionItem
      */
     public function how(Builder $query)
     {
-
         if (!Website::getCurrent()) {
-
             Website::setCurrent(Website::admin());
-
         }
 
         return $query
@@ -47,5 +42,4 @@ class PermissionItem
             ->firstOrFail()
             ->permission;
     }
-
 }

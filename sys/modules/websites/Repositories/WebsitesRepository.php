@@ -7,10 +7,8 @@ use P3in\Models\Website;
 
 class WebsitesRepository extends AbstractRepository implements WebsitesRepositoryInterface
 {
-
     public function __construct(Website $model)
     {
         $this->model = $model;
     }
-
 }

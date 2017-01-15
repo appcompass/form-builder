@@ -77,9 +77,7 @@ class Redirect extends Model
         $acc = '';
 
         foreach (Redirect::forWebsite($websites)->get() as $redirect) {
-
             $acc .= $redirect->render($websites->site_url) . ";\n";
-
         }
 
         return $acc;

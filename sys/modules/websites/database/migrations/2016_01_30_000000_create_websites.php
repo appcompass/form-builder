@@ -13,7 +13,7 @@ class CreateWebsites extends Migration
      */
     public function up()
     {
-        Schema::create('websites', function(Blueprint $table) {
+        Schema::create('websites', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name', 64);
             $table->string('url', 128)->unique();
@@ -31,6 +31,6 @@ class CreateWebsites extends Migration
      */
     public function down()
     {
-    	Schema::drop('websites');
+        Schema::drop('websites');
     }
 }

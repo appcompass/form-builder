@@ -17,7 +17,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class Photo extends ModularBaseModel implements GalleryItemInterface
 {
-
     use OptionableTrait, SettingsTrait, SoftDeletes, HasPermissions;
 
     const DEFAULT_STATUS = Photo::STATUSES_PENDING;
@@ -184,8 +183,7 @@ class Photo extends ModularBaseModel implements GalleryItemInterface
             $attributes['meta']['width'] = $image->width();
 
             // THis is because this object can (and seems to often) contain non UTF8 encoded characters resulting in a json_encode that fails.
-            $encode_fix = function(&$item, $key)
-            {
+            $encode_fix = function (&$item, $key) {
                 $item = utf8_encode($item);
             };
 
@@ -194,9 +192,7 @@ class Photo extends ModularBaseModel implements GalleryItemInterface
 
 
         if (is_null($disk)) {
-
             $disk = \Storage::disk(config('app.default_storage'));
-
         }
 
         $disk->put(
@@ -224,21 +220,14 @@ class Photo extends ModularBaseModel implements GalleryItemInterface
      */
     public function unlink()
     {
-
         if (in_array($this->storage, array_keys(config('filesystems.disks')))) {
-
             $disk = \Storage::disk($this->storage);
 
-            if ( $disk->delete($this->getOriginal('path')) ) {
-
+            if ($disk->delete($this->getOriginal('path'))) {
                 return $this->delete();
-
             } else {
-
                 throw new \Exception("Unable to unlink file.");
-
             }
-
         }
 
         // @TODO We don't treat the case where storage is different. For now at least.
@@ -297,7 +286,6 @@ class Photo extends ModularBaseModel implements GalleryItemInterface
     */
     public function getHeightAttribute()
     {
-
         return !empty($this->meta->height) ? $this->meta->height : null;
     }
 
@@ -334,24 +322,17 @@ class Photo extends ModularBaseModel implements GalleryItemInterface
     */
     public function getPathAttribute()
     {
-
         $schema = \Request::secure() ? 'https://' : 'http://';
 
         if (preg_match('/^[a-z0-9]+([._-][a-z0-9]+)+$/i', $this->storage, $matches)) {
-
             return $schema.$this->storage.'/' . $this->attributes['path'];
-
-        } else if ($this->photoable instanceof Model) {
-
+        } elseif ($this->photoable instanceof Model) {
             if (method_exists($this->photoable, 'getBasePhotoPath')) {
-
                 return $this->photoable->getBasePhotoPath($this) . $this->attributes['path'];
-
             }
         }
 
         return $this->attributes['path'];
-
     }
 
     public function getLocalPathAttribute()
@@ -361,7 +342,6 @@ class Photo extends ModularBaseModel implements GalleryItemInterface
             $base_path = $disk->getAdapter()->getPathPrefix();
             return $base_path.$this->photoable->getLocalPhotoPath().$this->attributes['path'];
         }
-
     }
 
     /**

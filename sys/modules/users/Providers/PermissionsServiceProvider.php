@@ -7,7 +7,9 @@ use P3in\Providers\BaseServiceProvider as ServiceProvider;
 
 class PermissionsServiceProvider extends ServiceProvider
 {
-	public function boot(Gate $gate) {}
+    public function boot(Gate $gate)
+    {
+    }
 
     public function register()
     {
@@ -18,5 +20,4 @@ class PermissionsServiceProvider extends ServiceProvider
             \P3in\Interfaces\PermissionsRepositoryInterface::class, \P3in\Repositories\PermissionsRepository::class
         );
     }
-
 }

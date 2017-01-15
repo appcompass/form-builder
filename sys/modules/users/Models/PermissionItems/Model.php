@@ -13,6 +13,4 @@ class Model extends PermissionItem implements PermissionRequiredItemInterface
     protected $pointer;
 
     protected $type = 'model';
-
-
 }

@@ -13,7 +13,7 @@ class CreatePages extends Migration
      */
     public function up()
     {
-        Schema::create('pages', function(Blueprint $table) {
+        Schema::create('pages', function (Blueprint $table) {
             $table->increments('id');
 
             $table->integer('parent_id')->nullable();
@@ -32,7 +32,6 @@ class CreatePages extends Migration
             $table->softDeletes();
 
             $table->unique(['website_id', 'url']);
-
         });
     }
 

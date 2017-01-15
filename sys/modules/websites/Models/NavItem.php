@@ -8,7 +8,6 @@ use Exception;
 
 class NavItem extends Model
 {
-
     protected $fillable = [
         'title',
         'navigatable_id',
@@ -58,9 +57,7 @@ class NavItem extends Model
         $model_class = get_class($model);
 
         if (! in_array($model_class, $allowedModels)) {
-
             throw new Exception("Model not allowed: {$model_class}");
-
         }
 
         switch ($model_class) {
@@ -120,25 +117,16 @@ class NavItem extends Model
      */
     public function setParent(NavItem $item = null)
     {
-
         if (is_null($item)) {
-
             $this->parent_id = null;
-
         } else {
-
             $this->parent_id = $item->id;
-
         }
 
         if ($this->save()) {
-
             return $this;
-
         } else {
-
             throw new \Exception('Unable to set Parent');
-
         }
     }
 
@@ -154,15 +142,10 @@ class NavItem extends Model
         $this->clickable = $clickable;
 
         if ($this->save()) {
-
             return $this;
-
         } else {
-
             throw new \Exception('Unable to set clickable on NavItem');
-
         }
-
     }
 
     /**
@@ -175,14 +158,9 @@ class NavItem extends Model
         $this->icon = $name;
 
         if ($this->save()) {
-
             return $this;
-
         } else {
-
             throw new \Exception('Unable to set icon');
-
         }
     }
-
 }

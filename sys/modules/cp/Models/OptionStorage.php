@@ -7,7 +7,7 @@ use P3in\Models\Option;
 
 class OptionStorage extends Model
 {
-  /**
+    /**
    * The database table used by the model.
    *
    * @var string
@@ -44,7 +44,7 @@ class OptionStorage extends Model
    */
   public function optionable()
   {
-    return $this->morphTo();
+      return $this->morphTo();
   }
 
   /**
@@ -53,7 +53,7 @@ class OptionStorage extends Model
    */
   public function option()
   {
-    return $this->belongsTo(Option::class, 'option_label', 'label');
+      return $this->belongsTo(Option::class, 'option_label', 'label');
   }
 
   /**
@@ -62,7 +62,6 @@ class OptionStorage extends Model
    */
   public function value($item = '*')
   {
-    return Option::getItemValue($this->option_label, $this->option_id, $item);
+      return Option::getItemValue($this->option_label, $this->option_id, $item);
   }
-
 }

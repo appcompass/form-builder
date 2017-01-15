@@ -13,26 +13,26 @@ use Carbon\Carbon;
 class BlogPost extends ModularBaseModel
 {
 
-	/**
-	 * The database table used by the model.
-	 *
-	 * @var string
-	 */
-	protected $table = 'blog_posts';
+    /**
+     * The database table used by the model.
+     *
+     * @var string
+     */
+    protected $table = 'blog_posts';
 
-	/**
-	 * The attributes that are mass assignable.
-	 *
-	 * @var array
-	 */
-	protected $guarded = [
-	];
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = [
+    ];
 
-	/**
-	*	Fields that needs to be treated as a date
-	*
-	*/
-	protected $dates = ['published_at'];
+    /**
+    *	Fields that needs to be treated as a date
+    *
+    */
+    protected $dates = ['published_at'];
 
 
     public function author()
@@ -65,28 +65,22 @@ class BlogPost extends ModularBaseModel
     {
         $website = $website ?: Website::current();
 
-        return $query->whereHas('website',function($q) use ($website) {
-
+        return $query->whereHas('website', function ($q) use ($website) {
             $q->where('id', $website->id);
-
         });
     }
 
     public function scopeOfCategoryBySlug($query, $slug)
     {
-        return $query->whereHas('category',function($q) use ($slug) {
-
+        return $query->whereHas('category', function ($q) use ($slug) {
             $q->where('slug', $slug);
-
         });
     }
 
     public function scopeOfTagBySlug($query, $slug)
     {
-        return $query->whereHas('tags',function($q) use ($slug) {
-
+        return $query->whereHas('tags', function ($q) use ($slug) {
             $q->where('slug', $slug);
-
         });
     }
 
@@ -143,5 +137,4 @@ class BlogPost extends ModularBaseModel
     {
         return '/blog/';
     }
-
 }
