@@ -1,19 +1,34 @@
-export default {
+import Vue from 'vue'
+import VueResource from 'vue-resource'
+
+Vue.use(VueResource)
+
+/* eslint-disable no-new */
+const State = new Vue({
   name: 'State',
-  // data () {
-  //   return {
-  //     navigation: undefined
-  //   }
-  // },
-  setNavigation (navigation) {
-    this.navigation = navigation
+  data () {
+    return {
+      navigation: undefined
+    }
   },
-  getNavigation () {
-    return this.navigation
+  methods: {
+    getNavigation () {
+      const api = process.env.API_SERVER
+      if (!this.navigation) {
+        return this.$http.get(api + 'menus/1')
+          .then(response => {
+            this.navigation = response.body.collection
+            return new Promise((resolve, reject) => {
+              return resolve(this.navigation)
+            })
+          })
+      } else {
+        return new Promise((resolve, reject) => {
+          return resolve(this.navigation)
+        })
+      }
+    }
   }
-  // methods: {
-  //   setNavigation (navigation) {
-  //     this.navigation = navigation
-  //   }
-  // }
-}
+})
+
+export default State

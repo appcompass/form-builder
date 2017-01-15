@@ -53,20 +53,27 @@ class WebsitesModuleDatabaseSeeder extends Seeder
 
         // @NOTE parent_id MUST be defined before slug, otherwise it won't be available when we build the url
         $users = $CMS->pages()->create(['title' => 'Users', 'slug' => 'users']);
+        $users_permissions = $CMS->pages()->create(['title' => 'User Permissions', 'parent_id' => $users->id, 'slug' => 'permissions']);
+
         $groups = $CMS->pages()->create(['title' => 'Groups', 'slug' => 'groups']);
         $permissions = $CMS->pages()->create(['title' => 'Permissions', 'slug' => 'permissions']);
         $websites = $CMS->pages()->create(['title' => 'Websites', 'slug' => 'websites']);
         $galleries = $CMS->pages()->create(['title' => 'Galleries', 'slug' => 'galleries']);
+        $pages = $CMS->pages()->create(['title' => 'Pages', 'parent_id' => $websites->id, 'slug' => 'pages']);
+        $navigation = $CMS->pages()->create(['title' => 'Navigation', 'parent_id' => $websites->id, 'slug' => 'menus']);
 
-        MenuBuilder::new('main_nav', $CMS, function(MenuBuilder $builder) use($users, $groups, $permissions, $websites, $galleries) {
+        MenuBuilder::new('main_nav', $CMS, function(MenuBuilder $builder) use($users, $groups, $permissions, $websites, $galleries, $pages, $navigation, $users_permissions) {
 
             $users_management_category = $builder->add(['url' => '', 'title' => 'Users Management', 'alt' => 'Users Management', 'new_tab' => false, 'clickable' => false]);
-            $builder->add($users)->setParent($users_management_category)->icon('user');
+            $users = $builder->add($users)->setParent($users_management_category)->icon('user');
+            $builder->add($users_permissions)->setParent($users)->icon('user');
             $builder->add($groups)->setParent($users_management_category)->icon('users');
             $builder->add($permissions)->setParent($users_management_category)->icon('lock');
 
             $properties_category = $builder->add(['url' => '', 'title' => 'Web Properties', 'alt' => 'Web Properties', 'new_tab' => false, 'clickable' => false]);
-            $builder->add($websites)->setParent($properties_category)->icon('globe');
+            $websites = $builder->add($websites)->setParent($properties_category)->icon('globe');
+            $builder->add($pages)->setParent($websites)->icon('page');
+            $builder->add($navigation)->setParent($websites)->icon('bars');
 
             $publications_category = $builder->add(['url' => '', 'title' => 'Publications', 'alt' => 'Publications', 'new_tab' => false, 'clickable' => false]);
             $builder->add($galleries)->setParent($publications_category)->icon('camera');

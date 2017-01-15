@@ -139,9 +139,9 @@ class Page extends Model
 
         while($page->parent_id !== NULL) {
 
-            array_push($slugs, $page->slug);
-
             $page = $page->parent;
+
+            array_push($slugs, $page->slug);
 
         }
 

@@ -9,17 +9,13 @@ div
 </template>
 
 <script>
-import State from './State'
-
 export default {
   name: 'Navigation',
-  components: { State },
   created () {
     const api = process.env.API_SERVER
     this.$http.get(api + 'menus/1')
       .then(response => {
         this.navigation = response.body.collection
-        State.setNavigation(this.navigation)
       })
   },
   data () {

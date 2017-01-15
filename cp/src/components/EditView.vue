@@ -35,16 +35,10 @@ div
 
     div
       h1 Sub Navigation
-      {{ navigation }}
-      ul
-        li
-          router-link(:to="{name: 'sub', params: {model: 'users', id: $route.params.id, sub: 'groups'}}") Groups
-          br
-          router-link(:to="{name: 'sub', params: {model: 'users', id: $route.params.id, sub: 'permissions'}}") Permissions
-          br
-          router-link(:to="{name: 'sub', params: {model: 'websites', id: $route.params.id, sub: 'pages'}}") Pages
-          br
-          router-link(:to="{name: 'sub', params: {model: 'websites', id: $route.params.id, sub: 'menus'}}") Navigation
+      aside.menu
+        ul.menu-list
+          li(v-for="item in navigation")
+            router-link(:to="{name: 'sub', params: {model: item.url.split('/')[1], id: $route.params.id, sub: item.url.split('/')[item.url.split('/').length - 1]}}") {{ item.title }}
 
   div.columns
     .column.is-12
@@ -63,6 +57,19 @@ import State from './State'
 import swal from 'sweetalert'
 import _ from 'lodash'
 
+function findObject (title, haystack, res) {
+  for (let i = 0; i < haystack.length; i++) {
+    let current = haystack[i]
+    if (current.title === title) {
+      res = current.children
+    } else if (current.children.length) {
+      res = findObject(title, current.children, res)
+    }
+  }
+
+  return res
+}
+
 export default {
   name: 'EditView',
   components: { State, Formstring, Formtext, Formsecret, Formboolean, Formmenueditor },
@@ -74,7 +81,8 @@ export default {
       collection: undefined,
       loading: true,
       model: undefined,
-      navigation: State.getNavigation()
+      route: undefined,
+      navigation: undefined
     }
   },
 
@@ -85,6 +93,20 @@ export default {
 
   created () {
     // @TODO review this
+    State.getNavigation()
+      .then(navigation => {
+        this.navigation = navigation
+        let route
+        // here we look at path length after splitting (i think) depending on that we take either the 1st, 3rd, 5th param /websites/1/pages/1/
+        this.$route.path.slice(1).split('_').join('/').split('/').forEach((element, index) => {
+          if (index % 2 === 0) {
+            route = element
+          }
+        })
+        this.route = route
+        route = route.charAt(0).toUpperCase() + route.slice(1)
+        this.navigation = findObject(route, navigation)
+      })
     this.model = this.$route.params.model.split('_').join('/') + '/' + this.$route.params.id
     this.refresh()
   },
