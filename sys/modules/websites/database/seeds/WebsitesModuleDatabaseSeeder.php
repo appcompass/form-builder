@@ -28,8 +28,8 @@ class WebsitesModuleDatabaseSeeder extends Seeder
         \DB::statement("DELETE FROM forms WHERE name = 'pages'");
 
         ResourceBuilder::new('pages', 'pages/{id}', function(ResourceBuilder $builder) {
-            $builder->string('Name', 'name')->list()->required()->sortable()->searchable();
-            $builder->string('Page Title', 'title')->list(false)->required()->sortable()->searchable();
+            $builder->string('Page Title', 'title')->list()->required()->sortable()->searchable();
+            // $builder->string('Page Title', 'title')->list(false)->required()->sortable()->searchable();
             $builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();
             $builder->string('Slug', 'slug')->list(false)->required()->sortable()->searchable();
             $builder->string('Layout', 'layout')->list(false)->required()->sortable()->searchable();

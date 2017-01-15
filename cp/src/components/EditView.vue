@@ -104,6 +104,7 @@ export default {
           }
         })
         this.route = route
+        console.log(route)
         route = route.charAt(0).toUpperCase() + route.slice(1)
         this.navigation = findObject(route, navigation)
       })
