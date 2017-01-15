@@ -23,129 +23,129 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
      */
     public function run()
     {
-        DB::statement("TRUNCATE TABLE plus3_people RESTART IDENTITY CASCADE");
-        DB::statement("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
+        // DB::statement("TRUNCATE TABLE plus3_people RESTART IDENTITY CASCADE");
+        // DB::statement("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
 
-        // Imene
-        $imene = User::create([
-            'first_name' => 'Imene',
-            'last_name' => 'Saidi',
-            'email' => 'imene.saidi@p3in.com',
-            'phone' => '617-470-6003',
-            'password' => 'd3velopment',
-            'active' => true,
-        ]);
+        // // Imene
+        // $imene = User::create([
+        //     'first_name' => 'Imene',
+        //     'last_name' => 'Saidi',
+        //     'email' => 'imene.saidi@p3in.com',
+        //     'phone' => '617-470-6003',
+        //     'password' => 'd3velopment',
+        //     'active' => true,
+        // ]);
 
-        (new Plus3Person([
-            'title' => 'Co-Founder and CEO',
-            'meta_keywords' => 'words',
-            'meta_description' => 'desc',
-            'bio' => 'imene\'s Bio',
-            'instagram' => 'imenebsaidi',
-            'twitter' => 'imenesaidi',
-            'facebook' => 'Imene.Saidi',
-            'linkedin' => 'imenesaidi',
-        ]))
-            ->user()
-            ->associate($imene)
-            ->save();
+        // (new Plus3Person([
+        //     'title' => 'Co-Founder and CEO',
+        //     'meta_keywords' => 'words',
+        //     'meta_description' => 'desc',
+        //     'bio' => 'imene\'s Bio',
+        //     'instagram' => 'imenebsaidi',
+        //     'twitter' => 'imenesaidi',
+        //     'facebook' => 'Imene.Saidi',
+        //     'linkedin' => 'imenesaidi',
+        // ]))
+        //     ->user()
+        //     ->associate($imene)
+        //     ->save();
 
-        // Jubair
-        $jubair = User::create([
-            'first_name' => 'Jubair',
-            'last_name' => 'Saidi',
-            'email' => 'jubair.saidi@p3in.com',
-            'phone' => '617-755-7012',
-            'password' => 'd3velopment',
-            'active' => true,
-        ]);
+        // // Jubair
+        // $jubair = User::create([
+        //     'first_name' => 'Jubair',
+        //     'last_name' => 'Saidi',
+        //     'email' => 'jubair.saidi@p3in.com',
+        //     'phone' => '617-755-7012',
+        //     'password' => 'd3velopment',
+        //     'active' => true,
+        // ]);
 
-        (new Plus3Person([
-            'title' => 'Co-Founder and CTO',
-            'meta_keywords' => 'words',
-            'meta_description' => 'desc',
-            'bio' => 'Jubair\'s Bio',
-            'instagram' => 'jubairsaidi',
-            'twitter' => 'jubairsaidi',
-            'facebook' => 'jubairsaidi',
-            'linkedin' => 'jsaidi',
-        ]))
-            ->user()
-            ->associate($jubair)
-            ->save();
+        // (new Plus3Person([
+        //     'title' => 'Co-Founder and CTO',
+        //     'meta_keywords' => 'words',
+        //     'meta_description' => 'desc',
+        //     'bio' => 'Jubair\'s Bio',
+        //     'instagram' => 'jubairsaidi',
+        //     'twitter' => 'jubairsaidi',
+        //     'facebook' => 'jubairsaidi',
+        //     'linkedin' => 'jsaidi',
+        // ]))
+        //     ->user()
+        //     ->associate($jubair)
+        //     ->save();
 
-        // Aisha
-        $aisha = User::create([
-            'first_name' => 'Aisha',
-            'last_name' => 'Saidi',
-            'email' => 'aisha.saidi@p3in.com',
-            'phone' => '',
-            'password' => 'd3velopment',
-            'active' => true,
-        ]);
+        // // Aisha
+        // $aisha = User::create([
+        //     'first_name' => 'Aisha',
+        //     'last_name' => 'Saidi',
+        //     'email' => 'aisha.saidi@p3in.com',
+        //     'phone' => '',
+        //     'password' => 'd3velopment',
+        //     'active' => true,
+        // ]);
 
-        (new Plus3Person([
-            'title' => 'Information Architect',
-            'meta_keywords' => 'words',
-            'meta_description' => 'desc',
-            'bio' => 'aisha\'s Bio',
-            'instagram' => '',
-            'twitter' => '',
-            'facebook' => '',
-            'linkedin' => '',
-        ]))
-            ->user()
-            ->associate($aisha)
-            ->save();
+        // (new Plus3Person([
+        //     'title' => 'Information Architect',
+        //     'meta_keywords' => 'words',
+        //     'meta_description' => 'desc',
+        //     'bio' => 'aisha\'s Bio',
+        //     'instagram' => '',
+        //     'twitter' => '',
+        //     'facebook' => '',
+        //     'linkedin' => '',
+        // ]))
+        //     ->user()
+        //     ->associate($aisha)
+        //     ->save();
 
-        // Federico
-        $federico = User::create([
-            'first_name' => 'Federico',
-            'last_name' => 'Francescato',
-            'email' => 'federico@p3in.com',
-            'phone' => '',
-            'password' => 'd3velopment',
-            'active' => true,
-        ]);
+        // // Federico
+        // $federico = User::create([
+        //     'first_name' => 'Federico',
+        //     'last_name' => 'Francescato',
+        //     'email' => 'federico@p3in.com',
+        //     'phone' => '',
+        //     'password' => 'd3velopment',
+        //     'active' => true,
+        // ]);
 
-        (new Plus3Person([
-            'title' => 'Application Developer',
-            'meta_keywords' => 'words',
-            'meta_description' => 'desc',
-            'bio' => 'federico\'s Bio',
-            'instagram' => '',
-            'twitter' => '',
-            'facebook' => '',
-            'linkedin' => '',
-        ]))
-            ->user()
-            ->associate($federico)
-            ->save();
+        // (new Plus3Person([
+        //     'title' => 'Application Developer',
+        //     'meta_keywords' => 'words',
+        //     'meta_description' => 'desc',
+        //     'bio' => 'federico\'s Bio',
+        //     'instagram' => '',
+        //     'twitter' => '',
+        //     'facebook' => '',
+        //     'linkedin' => '',
+        // ]))
+        //     ->user()
+        //     ->associate($federico)
+        //     ->save();
 
 
-        // Lazarus
-        $lazarus = User::create([
-            'first_name' => 'Lazarus',
-            'last_name' => 'Morrison',
-            'email' => 'lazarus@p3in.com',
-            'phone' => '',
-            'password' => 'd3velopment',
-            'active' => true,
-        ]);
+        // // Lazarus
+        // $lazarus = User::create([
+        //     'first_name' => 'Lazarus',
+        //     'last_name' => 'Morrison',
+        //     'email' => 'lazarus@p3in.com',
+        //     'phone' => '',
+        //     'password' => 'd3velopment',
+        //     'active' => true,
+        // ]);
 
-        (new Plus3Person([
-            'title' => 'Web Developer',
-            'meta_keywords' => 'words',
-            'meta_description' => 'desc',
-            'bio' => 'lazarus\'s Bio',
-            'instagram' => '',
-            'twitter' => '',
-            'facebook' => '',
-            'linkedin' => '',
-        ]))
-            ->user()
-            ->associate($lazarus)
-            ->save();
+        // (new Plus3Person([
+        //     'title' => 'Web Developer',
+        //     'meta_keywords' => 'words',
+        //     'meta_description' => 'desc',
+        //     'bio' => 'lazarus\'s Bio',
+        //     'instagram' => '',
+        //     'twitter' => '',
+        //     'facebook' => '',
+        //     'linkedin' => '',
+        // ]))
+        //     ->user()
+        //     ->associate($lazarus)
+        //     ->save();
 
         // Website Builder API Design
 
@@ -162,6 +162,9 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
         Fieldtype::firstOrCreate(['type' => 'link','label' => 'Link']);
         Fieldtype::firstOrCreate(['type' => 'pagesectionselect', 'label' => 'Page Section Select']);
         Fieldtype::firstOrCreate(['type' => 'radio', 'label' => 'Radio Selection']);
+        Fieldtype::firstOrCreate(['type' => 'formbuilder', 'label' => 'Form Builder']);
+        Fieldtype::firstOrCreate(['type' => 'map', 'label' => 'Map']);
+        Fieldtype::firstOrCreate(['type' => 'loginform', 'label' => 'Login Form']);
 
         $website = WebsiteBuilder::new('Plus 3 Interactive, LLC', 'https://www.plus3interactive.com', function ($websiteBuilder) {
             $websiteBuilder->setHeader('components/Header.vue');
@@ -244,22 +247,29 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $thick_page_banner = SectionBuilder::new($full, 'Thick Page Banner', 'components/ThickPageBanner.vue', function ($formBuilder) {
                 $formBuilder->file('Background Image', 'background_image', []);
-                $formBuilder->string('Title', 'title', []);
-                $formBuilder->wysiwyg('Description', 'description', []);
+                $formBuilder->string('Title', 'title', ['required']);
+                $formBuilder->wysiwyg('Description', 'description', ['required']);
             });
 
             $white_break_w_section_links = SectionBuilder::new($full, 'White Break Callout Section Links', 'components/WhiteBreakCalloutSectionLinks.vue', function ($formBuilder) {
-                $formBuilder->string('Title', 'title', []);
-                $formBuilder->wysiwyg('Description', 'description', []);
-                $formBuilder->pageSectionSelect('Page Section Quick Links', 'quick_links', [])->repeatable();
+                $formBuilder->string('Title', 'title', ['required']);
+                $formBuilder->wysiwyg('Description', 'description', ['required']);
+                $formBuilder->fieldset('Page Section Quick Links', 'quick_links', [], function ($quickLinks) {
+                    $quickLinks->radio('Link Format', 'link_format', [
+                        'ol' => 'Ordered List',
+                        'ul' => 'Un Ordered List',
+                        'arrow' => 'Link with Arrow'
+                    ])->required();
+                    $quickLinks->pageSectionSelect('Page Section Quick Links', 'quick_links', [])->repeatable();
+                });
             });
 
             $provided_solution = SectionBuilder::new($full, 'Provided Solution', 'components/ProvidedSolution.vue', function ($formBuilder) {
                 $formBuilder->fieldset('Solution', 'solution', [], function ($solution) {
                     $solution->radio('Layout', 'layout', ['left' => 'Left', 'right' => 'Right'])->required();
-                    $solution->string('Title', 'title', []);
+                    $solution->string('Title', 'title', ['required']);
                     $solution->file('Solution Photo', 'solution_photo', []);
-                    $solution->wysiwyg('Description', 'description', [])->required();
+                    $solution->wysiwyg('Description', 'description', ['required'])->required();
                     $solution->pageSectionSelect('Projects Using Solution', 'projects_using_solution', [])->repeatable();
                     $solution->text('Link Description', 'link_description', [])->required();
                     $solution->string('Link Title', 'link_title', [])->required();
@@ -272,6 +282,66 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 $formBuilder->link('Link Destination', 'link_href', [])->required();
             });
 
+            $breadcrumb_with_right_link = SectionBuilder::new($full, 'BreadCrumb With Right Side Link', 'components/BreadCrumbRightSideLink.vue', function ($formBuilder) {
+                $formBuilder->string('Link Title', 'link_title', [])->required();
+                $formBuilder->link('Link Destination', 'link_href', [])->required();
+            });
+
+            $process_timeline = SectionBuilder::new($full, 'Process Timeline', 'components/ProcessTimeline.vue', function ($formBuilder) {
+                $formBuilder->string('Title', 'title', ['required']);
+                $formBuilder->wysiwyg('Description', 'description', ['required']);
+                $formBuilder->fieldset('Process Steps', 'process_steps', [], function ($process) {
+                    $process->file('Image File', 'image', ['type:svg']);
+                    $process->string('Image width', 'image_width', []);
+                    $process->string('Image Height', 'image_height', []);
+                    $process->string('Title', 'title', ['required']);
+                    $process->wysiwyg('Description', 'description', ['required']);
+                })->repeatable();
+            });
+
+            $process_maintenance_details = SectionBuilder::new($full, 'Maintenance Details', 'components/MaintenanceDetails.vue', function ($formBuilder) {
+                $formBuilder->string('Title', 'title', ['required']);
+                $formBuilder->wysiwyg('Description', 'description', ['required']);
+                $formBuilder->file('Image File', 'image', ['type:svg']);
+                $formBuilder->string('Image width', 'image_width', []);
+                $formBuilder->string('Image Height', 'image_height', []);
+                $formBuilder->string('Link Title', 'link_title', [])->required();
+                $formBuilder->link('Link Destination', 'link_href', [])->required();
+            });
+
+            $project_list = SectionBuilder::new($full, 'Project List', 'components/ProjectList.vue', function ($formBuilder) {
+                $formBuilder->fieldset('Projects', 'projects', [], function ($project) {
+                    $project->file('Background Image', 'background_image', ['required']);
+                    $project->file('Logo', 'logo', ['required']);
+                    $project->string('Name', 'name', ['required']);
+                    $project->string('Business Area', 'business_area', ['required']);
+                    $project->wysiwyg('Description', 'description', ['required']);
+                    $project->pageSectionSelect('Page Section Quick Links', 'quick_links', [])->repeatable();
+                    $project->boolean('Highlighted', 'highlighted', ['required']);
+                })->repeatable();
+            });
+
+            $contact_form = SectionBuilder::new($full, 'Contact Us', 'components/ContactUs.vue', function ($formBuilder) {
+                $formBuilder->formBuilder('Contact Form', 'contact_form', []);
+            });
+
+            $map_address = SectionBuilder::new($full, 'Map Address', 'components/MapAddress.vue', function ($formBuilder) {
+                $formBuilder->string('Title', 'title', []);
+                $formBuilder->string('Phone Number', 'phone', []);
+                $formBuilder->string('Address Line 1', 'address_1', []);
+                $formBuilder->string('Address Line 2', 'address_2', []);
+                $formBuilder->string('City', 'city', []);
+                $formBuilder->string('State', 'state', []);
+                $formBuilder->string('Zip', 'zip', []);
+                $formBuilder->map('Map', 'map', ['address_1','address_2','city','state','zip']);
+            });
+
+            // We might want to consider having this section be dynamic rather than set a field to be the dynamic piece?
+            // Fields: Email, Password, Remember Me
+            // Links: Forgot Password
+            $login_form = SectionBuilder::new($full, 'Customer Login', 'components/CustomerLogin.vue', function ($formBuilder) {
+                $formBuilder->loginForm('Customer Login', 'customer_login', []);
+            });
 
             $homeFullSections = [
                 $slider_banner,
@@ -288,6 +358,36 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 $provided_solution,
                 $blue_break_callout
             ];
+            $processFullSections = [
+                $thick_page_banner,
+                $breadcrumb_with_right_link,
+                $process_timeline,
+                $process_maintenance_details
+            ];
+
+            $projectsFullSections = [
+                $thick_page_banner,
+                $project_list,
+                $blue_break_callout,
+                $white_break_w_section_links
+            ];
+
+            $companyFullSections = [
+                $thick_page_banner,
+                $meet_our_team,
+                $social_stream
+            ];
+
+            $contactFullSections = [
+                $thick_page_banner,
+                $contact_form,
+                $map_address,
+            ];
+
+            $loginFullSections = [
+                $thick_page_banner,
+                $login_form,
+            ];
 
             // Build Pages
             $homepage = $websiteBuilder
@@ -298,15 +398,26 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->buildPage('Solutions', 'solutions')
                 ->setLayout($full, 1, $solutionsFullSections);
 
-            // $process = $websiteBuilder->buildPage('Our Process', 'our-process')->addLayout('full')->addParent($solutions);
+            $process = $websiteBuilder
+                ->buildPage('Our Process', 'our-process')
+                ->setLayout($full, 1, $processFullSections)
+                ->addParent($solutions);
 
-            // $projects = $websiteBuilder->buildPage('Projects', 'projects')->addLayout('full');
+            $projects = $websiteBuilder
+                ->buildPage('Projects', 'projects')
+                ->setLayout($full, 1, $projectsFullSections);
 
-            // $company = $websiteBuilder->buildPage('Company', 'company')->addLayout('full');
+            $company = $websiteBuilder
+                ->buildPage('Company', 'company')
+                ->setLayout($full, 1, $companyFullSections);
 
-            // $contact = $websiteBuilder->buildPage('Contact Us', 'contact-us')->addLayout('full');
+            $contact = $websiteBuilder
+                ->buildPage('Contact Us', 'contact')
+                ->setLayout($full, 1, $contactFullSections);
 
-            // $login = $websiteBuilder->buildPage('Customer Login', 'customer-login')->addLayout('full');
+            $login = $websiteBuilder
+                ->buildPage('Customer Login', 'customer-login')
+                ->setLayout($full, 1, $loginFullSections);
 
 
             // $websiteBuilder->buildMenu('main_top_menu')
@@ -331,114 +442,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
         // dd(DB::getQueryLog(), $data);
 
 /*
-        Structure
-            Process
-                Thick Page Banner (See: Customer Login)
-                BreadCrumb Right Side Link
-                    Link Text (text)
-                    Link href (select page | select link | create new link)
-                Process Timeline
-                    Title (text)
-                    Description (textarea wysiwyg)
-                    Process Steps
-                        Discovery
-                            Title (text)
-                            Content
-                        Client Consultation
-                            Title (text)
-                            Content
-                        Kick Off Meeting
-                            Title (text)
-                            Content
-                        Information Architecture
-                            Title (text)
-                            Content
-                        Design
-                            Title (text)
-                            Content
-                        Front-end Development
-                            Title (text)
-                            Content
-                        Back-end & Middleware Development
-                            Title (text)
-                            Content
-                        Quality Assurance Testing
-                            Title (text)
-                            Content
-                        Launch
-                            Title (text)
-                            Content
-                    Maintenance Details
-                        Title (text)
-                        Description (textarea wysiwyg)
-                        Link Text
-                        Link Href (select page | select link | create new link)
-            Projects
-                Thick Page Banner (See: Customer Login)
-                Project List
-                    Repeatable
-                        Background Photo
-                        Project Logo (file)
-                        Project Name (text)
-                        Project Business Area (text)
-                        Project Services (textarea wysiwyg)
-                        Project Description (textarea wysiwyg)
-                        Project Services Used (Index of Page + content_sections links)
-                            Page select (dropdown)
-                            Page sections (checkboxes) (only available after page selection)
-                        Highlighted (boolean)
-                White Break Callout Single Link
-                    Title
-                    Description
-                    Link Text
-                    Link href (select page | select link | create new link)
-                Blue Break Callout
-                    Link Text
-                    Link href (select page | select link | create new link)
-            Company
-                Thick Page Banner (See: Customer Login)
-                Meet our Team (Dynamic Model: Plus3Person)
-                    Person Card
-                        Card Photo (file)
-                        Card Name (text)
-                        Card Title (text)
-                        Card Modal
-                            Modal Photo (file - same as above)
-                            Modal Name (text - same as above)
-                            Modal Bio (textarea wysiwyg)
-                            Modal Instagram profile (text)
-                            Modal Twitter profile (text)
-                            Modal Facebook profile (text)
-                            Modal LinkedIn profile (text)
-                Social Activity Feed
-                    No Configuration per section, config provided by website settings.
-            Contact Us
-                Thick Page Banner (See: Customer Login)
-                Contact Form (Dynamic Model: Form)
-                    First Name (text)
-                    Last Name (text)
-                    Email (text)
-                    Phone (text)
-                    Company Name (text)
-                    Company Website (text)
-                    Your Message (textarea wysiwyg)
-                Map Address
-                    Map (map)
-                    Title (text)
-                    Address Line 1 (text)
-                    Address Line 2 (text)
-                    City, State Zip (text)
-                    Phone Number (text)
-            Customer Login
-                Thick Page Banner
-                    Background Image
-                    Title
-                    Description
-                Login Form (Static Functionality: Authentication)
-                    Email
-                    Password
-                    Remember Me
-                    Forgot Password
+
 */
     }
 }

@@ -59,6 +59,7 @@ class ModularBaseModel extends Model
         if ($last) {
             return $last;
         }
+
         return $query;
     }
 
@@ -156,12 +157,14 @@ class ModularBaseModel extends Model
     public function scopeWithJson($query, $field, $outKey, $search)
     {
         $chain = is_array($search) ? implode("','", $search) : $search;
+
         return $query->selectRaw("*, json_extract_path_text({$field}, '{$chain}') as {$outKey}");
     }
 
     public function scopeWhereJson($query, $field, $search, $operator, $value)
     {
         $chain = is_array($search) ? implode("','", $search) : $search;
+
         return $query->whereRaw("json_extract_path_text({$field}, '{$chain}') {$operator} '{$value}'");
     }
 }

@@ -42,6 +42,7 @@ class PhotosPolicy
     public function create(User $user, $ability)
     {
         \Log::info($user->allPermissions());
+
         return $user->hasPermissions($this->create_perms);
     }
 
@@ -75,6 +76,7 @@ class PhotosPolicy
             return true;
         } elseif (is_object($ability) && $ability->user) {
             $hour_ago = Carbon::now()->subHours(1);
+
             return $user->id == $ability->user->id && $hour_ago->lte($ability->created_at);
         }
     }

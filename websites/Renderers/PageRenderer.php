@@ -84,6 +84,7 @@ class PageRenderer
                 $rtn[$module_name] = $this->callMethod($module->class_name, $method, [$settings]);
             }
         }
+
         return $rtn;
     }
 
@@ -155,6 +156,7 @@ class PageRenderer
     {
         if (method_exists($class, $method)) {
             $instance = App::make($class);
+
             return call_user_func_array([$instance, $method], $params);
         }
     }

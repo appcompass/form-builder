@@ -133,6 +133,7 @@ class User extends ModularBaseModel implements
     public function profile($model_name)
     {
         $base_profile = $this->profiles()->where('profileable_type', $model_name)->first();
+
         return $base_profile ? $base_profile->profileable : null;
     }
 
@@ -141,6 +142,7 @@ class User extends ModularBaseModel implements
         switch ($field_name) {
             case 'users_list':
                 $users = User::select(\DB::raw("concat(first_name,' ',last_name) as name"), 'id')->get();
+
                 return $users->pluck('name', 'id');
                 break;
             default:
@@ -348,6 +350,7 @@ class User extends ModularBaseModel implements
                 $config[$key]->value = $random_lib[$val->value_key];
             }
         }
+
         return $config;
     }
     public function latestActivity($count)

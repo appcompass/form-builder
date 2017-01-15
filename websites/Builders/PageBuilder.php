@@ -92,6 +92,18 @@ class PageBuilder
         return $this;
     }
 
+    public function addParent(PageBuilder $parent)
+    {
+        $this->page->parent()->associate($parent->getPage());
+        $this->page->save();
+
+        return $this;
+    }
+
+    public function getPage()
+    {
+        return $this->page;
+    }
     // /**
     //  * add factory
     //  *
