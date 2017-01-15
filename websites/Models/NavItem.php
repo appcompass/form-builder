@@ -2,16 +2,15 @@
 
 namespace P3in\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use P3in\Models\Page;
 use Exception;
+use Illuminate\Database\Eloquent\Model;
+use P3in\Models\Menu;
+use P3in\Models\Page;
 
 class NavItem extends Model
 {
     protected $fillable = [
         'title',
-        'navigatable_id',
-        'navigatable_type',
         'alt',
         'new_tab',
         'sort'
@@ -30,6 +29,37 @@ class NavItem extends Model
     {
         return $this->morphTo();
     }
+
+    /**
+     * parent
+     *
+     * @return     BelongsTo
+     */
+    public function menu()
+    {
+        return $this->belongsTo(Menu::class);
+    }
+
+    /**
+     * parent
+     *
+     * @return     BelongsTo
+     */
+    public function parent()
+    {
+        return $this->belongsTo(NavItem::class, 'parent_id');
+    }
+
+    /**
+     * children
+     *
+     * @return     HasMany
+     */
+    public function children()
+    {
+        return $this->hasMany(NavItem::class, 'parent_id');
+    }
+
 
     /**
      * Gets the url attribute.
