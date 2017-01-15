@@ -161,6 +161,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
         Fieldtype::firstOrCreate(['type' => 'file','label' => 'File']);
         Fieldtype::firstOrCreate(['type' => 'wysiwyg','label' => 'WYSIWYG']);
         Fieldtype::firstOrCreate(['type' => 'link','label' => 'Link']);
+        Fieldtype::firstOrCreate(['type' => 'pagesectionselect', 'label' => 'Page Section Select']);
+        Fieldtype::firstOrCreate(['type' => 'radio', 'label' => 'Radio Selection']);
 
         $website = WebsiteBuilder::new('Plus 3 Interactive, LLC', 'https://www.plus3interactive.com', function($websiteBuilder){
 
@@ -184,35 +186,35 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             $slider_banner = SectionBuilder::new($full,'Slider Banner', 'components/SliderBanner.vue', function($formBuilder){
                 // we need to figure out how to handle the 'type' field.
                 // the fields internally are created in the order they appear in the builder.
-                $formBuilder->text('Title', 'title', ['required']);
+                $formBuilder->string('Title', 'title', ['required']);
                 $formBuilder->fieldset('Slides', 'slides', [], function($slide){ // not field type, sub section builder.
                     $slide->file('Banner Image', 'banner_image', Photo::class, ['required']);
-                    $slide->text('Title', 'title', ['required']);
+                    $slide->string('Title', 'title', ['required']);
                     $slide->wysiwyg('Description', 'description', ['required']);
-                    $slide->text('Link Text', 'link_text', ['required']);
+                    $slide->string('Link Text', 'link_text', ['required']);
                     $slide->link('Link Destination', 'link_href', ['required']);
                 })->repeatable();
             });
 
             $box_callouts = SectionBuilder::new($full,'Box Callouts', 'components/BoxCallouts.vue', function($formBuilder){
-                $formBuilder->text('Title', 'title', ['required']);
+                $formBuilder->string('Title', 'title', ['required']);
                 $formBuilder->wysiwyg('Description', 'description', ['required']);
                 $formBuilder->fieldset('Boxes', 'boxes', [], function($box){
-                    $box->text('Title', 'title', ['required']);
-                    $box->text('Points', 'points', [])->repeatable();
-                    $box->text('Link Text', 'link_text', ['required']);
+                    $box->string('Title', 'title', ['required']);
+                    $box->string('Points', 'points', [])->repeatable();
+                    $box->string('Link Text', 'link_text', ['required']);
                     $box->link('Link Destination', 'link_href', ['required']);
                 })->repeatable();
             });
 
             $our_proccess = SectionBuilder::new($full,'Our Process', 'components/OurProcess.vue', function($formBuilder){
-                $formBuilder->text('Title', 'title', ['required']);
+                $formBuilder->string('Title', 'title', ['required']);
                 $formBuilder->wysiwyg('Description', 'description', ['required']);
                 // SVG Animation is static, editable in code only.
             });
 
             $meet_our_team = SectionBuilder::new($full,'Meet Our Team', 'components/MeetOurTeam.vue', function($formBuilder){
-                $formBuilder->text('Title', 'title', ['required']);
+                $formBuilder->string('Title', 'title', ['required']);
                 $formBuilder->wysiwyg('Description', 'description', ['required']);
 
             })
@@ -220,22 +222,22 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             ;
 
             $social_stream = SectionBuilder::new($full,'Social Stream', 'components/SocialStream.vue', function($formBuilder){
-                $formBuilder->text('Title', 'title', ['required']);
+                $formBuilder->string('Title', 'title', ['required']);
                 $formBuilder->wysiwyg('Description', 'description', ['required']);
                 // Fields
             });
 
             $customer_testimonials = SectionBuilder::new($full,'Customer Testimonials', 'components/CustomerTestimonials.vue', function($formBuilder){
                 $formBuilder->fieldset('Testimonials', 'testimonials', [], function($testimonial){
-                    $testimonial->text('Author', 'author', ['required']);
-                    $testimonial->wysiwyg('Content', 'content', ['required']);
+                    $testimonial->string('Author', 'author', ['required'])->required();
+                    $testimonial->wysiwyg('Content', 'content', ['required'])->required();
 
                     //BEGIN DUMMY: these below are a dummy set to test nesting fieldsets.
                     $testimonial->fieldset('Testimonials', 'testimonials', [], function($lvl3){
-                        $lvl3->text('Author', 'author', ['required']);
+                        $lvl3->string('Author', 'author', ['required']);
                         $lvl3->wysiwyg('Content', 'content', ['required']);
                         $lvl3->fieldset('Testimonials', 'testimonials', [], function($lvl4){
-                            $lvl4->text('Author', 'author', ['required']);
+                            $lvl4->string('Author', 'author', ['required']);
                             $lvl4->wysiwyg('Content', 'content', ['required']);
                         })->repeatable();
 
@@ -244,6 +246,37 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
                 })->repeatable();
             });
+
+            $thick_page_banner = SectionBuilder::new($full, 'Thick Page Banner', 'components/ThickPageBanner.vue', function($formBuilder){
+                $formBuilder->file('Background Image', 'background_image', []);
+                $formBuilder->string('Title', 'title', []);
+                $formBuilder->wysiwyg('Description', 'description', []);
+            });
+
+            $white_break_w_section_links = SectionBuilder::new($full, 'White Break Callout Section Links', 'components/WhiteBreakCalloutSectionLinks.vue', function($formBuilder){
+                $formBuilder->string('Title', 'title', []);
+                $formBuilder->wysiwyg('Description', 'description', []);
+                $formBuilder->pageSectionSelect('Page Section Quick Links', 'quick_links', [])->repeatable();
+            });
+
+            $provided_solution = SectionBuilder::new($full, 'Provided Solution', 'components/ProvidedSolution.vue', function($formBuilder){
+                $formBuilder->fieldset('Solution', 'solution', [], function($solution){
+                    $solution->radio('Layout', 'layout', ['left' => 'Left', 'right' => 'Right'])->required();
+                    $solution->string('Title', 'title', []);
+                    $solution->file('Solution Photo', 'solution_photo', []);
+                    $solution->wysiwyg('Description', 'description', [])->required();
+                    $solution->pageSectionSelect('Projects Using Solution', 'projects_using_solution', [])->repeatable();
+                    $solution->text('Link Description', 'link_description', [])->required();
+                    $solution->string('Link Title', 'link_title', [])->required();
+                    $solution->link('Link Destination', 'link_href', [])->required();
+                })->repeatable();
+            });
+
+            $blue_break_callout = SectionBuilder::new($full, 'Blue Break Callout', 'components/BlueBreakCallout.vue', function($formBuilder){
+                $formBuilder->string('Link Title', 'link_title', [])->required();
+                $formBuilder->link('Link Destination', 'link_href', [])->required();
+            });
+
 
             $homeFullSections = [
                 $slider_banner,
@@ -254,14 +287,21 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 $customer_testimonials
             ];
 
-            // Build Pages
-            $homepage = $websiteBuilder->buildPage('Home Page', '')->setLayout($full, 1, function($pageLayoutBuilder) use ($homeFullSections) {
-                foreach ($homeFullSections as $i => $section) {
-                    $pageLayoutBuilder->addSection($section, $i+1);
-                }
-            });
+            $solutionsFullSections = [
+                $thick_page_banner,
+                $white_break_w_section_links,
+                $provided_solution,
+                $blue_break_callout
+            ];
 
-            // $solutions = $websiteBuilder->buildPage('Solutions', 'solutions')->addLayout('full');
+            // Build Pages
+            $homepage = $websiteBuilder
+                ->buildPage('Home Page', '')
+                ->setLayout($full, 1, $homeFullSections);
+
+            $solutions = $websiteBuilder
+                ->buildPage('Solutions', 'solutions')
+                ->setLayout($full, 1, $solutionsFullSections);
 
             // $process = $websiteBuilder->buildPage('Our Process', 'our-process')->addLayout('full')->addParent($solutions);
 
@@ -297,54 +337,6 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
 /*
         Structure
-            Home
-                Silder Banner
-                    Title
-                    Slides
-                        Repeatable
-                            Image (file)
-                            Title (text)
-                            Description (textarea wysiwyg)
-                            Link Text
-                            Link Href (select page | select link | create new link)
-                Box Callouts
-                    Title (text)
-                    Description (textarea wysiwyg)
-                    Boxes
-                        Repeatable
-                            Title
-                            List
-                                Repeatable
-                                    Title
-                            Link Text
-                            Link Href (select page | select link | create new link)
-                Our Process
-                    Title (text)
-                    Description (textarea wysiwyg)
-                    SVG Animation (Static editable in code only)
-                Meet our Team (See: Company Version)
-                Social Activity Feed (See: Company Version)
-                Customer Testimonials
-                    Repeatable
-                        Testimonial (textarea wysiwyg)
-                        Testimonial Author (text)
-            Solutions
-                Thick Page Banner (See: Customer Login)
-                White Break Callout Multiple Links
-                    Title
-                    Description
-                    Links (See: Project Services Used)
-                Provided Solution
-                    Repeatable
-                        Layout (left/right radio buttons)
-                        Title (text)
-                        Solution Photo (file)
-                        Description (textarea wysiwyg)
-                        Projects Using Solution (See: Project Services Used)
-                        Link Description (text)
-                        Link Text (text)
-                        Link href (select page | select link | create new link)
-                Blue Break Callout (See: Projects)
             Process
                 Thick Page Banner (See: Customer Login)
                 BreadCrumb Right Side Link

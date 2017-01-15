@@ -82,14 +82,20 @@ class PageBuilder
         return new static($page);
     }
 
-    public function setLayout(Layout $layout, $order = 1, Closure $closure = null)
+    public function setLayout(Layout $layout, $order = 1, $closure = null)
     {
         $this->page->layouts()->attach($layout, ['order' => $order]);
 
         if ($closure) {
             $instance = new PageLayoutBuilder($this->page, $order, $layout);
 
-            $closure($instance);
+            if (is_array($closure)) {
+                foreach ($closure as $i => $section) {
+                    $instance->addSection($section, $i+1);
+                }
+            } else if ($closure instanceof Closure) {
+                $closure($instance);
+            }
 
         }
 
