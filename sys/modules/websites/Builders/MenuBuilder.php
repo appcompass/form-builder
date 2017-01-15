@@ -3,6 +3,7 @@
 namespace P3in\Builders;
 
 use Closure;
+use P3in\Builders\PageBuilder;
 use P3in\Models\Link;
 use P3in\Models\Menu;
 use P3in\Models\NavItem;
@@ -16,13 +17,19 @@ class MenuBuilder
      * Menu instance
      */
     private $menu;
+    private $parent_item;
 
     private $allowedModels = [Page::class, Link::class];
 
-    private function __construct(Menu $menu = null)
+    // we only set the NavItem second param when we are looking to add child items to a parent item
+    // not sure how I feel about this aproach here though.
+    public function __construct(Menu $menu = null, NavItem $parent_item = null)
     {
         if (!is_null($menu)) {
             $this->menu = $menu;
+        }
+        if (!is_null($parent_item)) {
+            $this->parent_item = $parent_item;
         }
 
         return $this;
@@ -39,18 +46,65 @@ class MenuBuilder
     {
         $instance = new static();
 
-        $instance->menu = Menu::create([
-
+        $menu = new Menu([
             'name' => $name,
-            'website_id' => $website->id
-
         ]);
+
+        $menu->website()->associate($website);
+
+        $menu->save();
+
+        $instance->menu = $menu;
 
         if ($closure) {
             $closure($instance);
         }
 
         return $instance;
+    }
+
+    public function addItem($item, $order = 1, $attributes = [], Closure $closure = null)
+    {
+        if (!$this->menu) {
+            throw new \Exception('Menu not selected.');
+        }
+
+        if (is_array($item)) {
+            $item = Link::create($item);
+        }
+
+        if ($item instanceof PageBuilder) {
+            $item = $item->getPage();
+        }
+
+        if (!in_array(get_class($item), $this->allowedModels)) {
+            throw new \Exception("Model " . get_class($item) ." is not allowed");
+        }
+
+        $nav_item = NavItem::create([
+            'title' => isset($attributes['title']) ? $attributes['title'] : $item->title,
+            'alt' => isset($attributes['alt']) ? $attributes['alt'] : $item->alt,
+            'new_tab' => isset($attributes['new_tab']) ? $attributes['new_tab'] : $item->new_tab,
+            'sort' => $order,
+            'clickable' => isset($attributes['clickable']) ? $attributes['clickable'] : true
+        ]);
+
+        $nav_item->menu()->associate($this->menu);
+        $nav_item->navigatable()->associate($item);
+
+        if ($this->parent_item) {
+            $nav_item->parent()->associate($this->parent_item);
+        }
+
+        $nav_item->save();
+
+        if ($closure) {
+            $instance = new static($this->menu, $nav_item);
+
+            $closure($instance);
+        }
+
+        return $this;
     }
 
     /**

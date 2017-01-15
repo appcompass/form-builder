@@ -81,6 +81,15 @@ class WebsiteBuilder
         return new PageBuilder($page);
     }
 
+    public function buildMenu($name)
+    {
+        $menu = $this->website->menus()->create([
+            'name' => $name,
+        ]);
+
+        return new MenuBuilder($menu);
+    }
+
     public function setHeader($template)
     {
         $this->website->update(['config->header' => $template]);

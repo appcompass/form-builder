@@ -420,16 +420,25 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->setLayout($full, 1, $loginFullSections);
 
 
-            // $websiteBuilder->buildMenu('main_top_menu')
-            //     ->addItem($solutions, 1, function($item) use ($our_process) {
-            //         // not sure I like the syntax of this but can't think of a better way.
-            //         $item->addItem($our_process, 1);
-            //     })
-            //     ->addItem($projects, 2)
-            //     ->addItem($company, 3)
-            //     ->addItem($contact_us, 4)
-            //     ->addItem($customer_login, 5)
-            //     ;
+            $websiteBuilder->buildMenu('main_header_menu')
+                ->addItem($solutions, 1, [], function($item) use ($process) {
+                    $item->addItem($process, 1);
+                })
+                ->addItem($projects, 2)
+                ->addItem($company, 3)
+                ->addItem($contact, 4)
+                ->addItem($login, 5)
+                ;
+
+            $websiteBuilder->buildMenu('main_footer_menu')
+                ->addItem($solutions, 1)
+                ->addItem($process, 2)
+                ->addItem($projects, 3)
+                ->addItem($company, 4)
+                ->addItem($contact, 5)
+                ->addItem($login, 6)
+                ;
+
         })->getWebsite();
 
         // // Now lets test the magic!

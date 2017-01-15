@@ -105,6 +105,18 @@ class Page extends Model
         }
     }
 
+    // Menu related attribtute.
+    public function getAltAttribute()
+    {
+        return $this->title;
+    }
+
+    // Menu related attribtute.
+    public function getNewTabAttribute()
+    {
+        return false;
+    }
+
     /**
      * updateChildrenUrl
      *
