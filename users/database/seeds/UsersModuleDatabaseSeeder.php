@@ -23,11 +23,16 @@ class UsersModuleDatabaseSeeder extends Seeder
 
         \DB::statement('TRUNCATE users CASCADE');
         \DB::statement('TRUNCATE permissions CASCADE');
+        \DB::statement('TRUNCATE groups CASCADE');
 
         $this->call(GroupsTableSeeder::class);
         $this->call(PermissionsSeeder::class);
         // $this->call(UsersTableSeeder::class);
         // $this->call(UserUiFieldsSeeder::class);
+        factory(User::class, 1000)->create()->each(function($user) {
+            $user->permissions()->saveMany(Permission::inRandomOrder()->limit(3)->get());
+        });
+
 
         //
         //  USERS
