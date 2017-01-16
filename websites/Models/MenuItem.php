@@ -81,62 +81,9 @@ class MenuItem extends Model
      *
      * @return     <type>     MenuItem generator
      */
-    public static function fromModel($model, array $attributes = null)
+    public static function fromModel($model)
     {
-        $allowedModels = ['P3in\Models\Page', 'P3in\Models\Link'];
-
-        $model_class = get_class($model);
-
-        if (! in_array($model_class, $allowedModels)) {
-            throw new Exception("Model not allowed: {$model_class}");
-        }
-
-        switch ($model_class) {
-            case "P3in\Models\Page":
-                return static::fromPage($model, $attributes);
-                break;
-            case "P3in\Models\Link":
-                return static::fromLink($model, $attributes);
-                break;
-        }
-    }
-
-    /**
-     * fromPage
-     *
-     * @param      \App\Page  $page   The page
-     *
-     * @return     MenuItem
-     */
-    private static function fromPage(Page $page, array $attributes = null)
-    {
-        return MenuItem::create([
-            'navigatable_id' => $page->id,
-            'navigatable_type' => get_class($page),
-            'title' => isset($attributes['title']) ? $attributes['title'] : $page->title,
-            'alt' => isset($attributes['description']) ? $attributes['description']: 'Alt Link Text Placeholder',
-            'new_tab' => false,
-            'clickable' => true
-        ]);
-    }
-
-    /**
-     * fromLink
-     *
-     * @param      Link    $link   The link
-     *
-     * @return     MenuItem
-     */
-    private static function fromLink(Link $link)
-    {
-        return MenuItem::create([
-            'navigatable_id' => $link->id,
-            'navigatable_type' => get_class($link),
-            'title' => $link->title,
-            'alt' => $link->alt,
-            'new_tab' => $link->new_tab,
-            'clickable' => $link->clickable ?: true
-        ]);
+        return $model->makeMenuItem();
     }
 
     /**
