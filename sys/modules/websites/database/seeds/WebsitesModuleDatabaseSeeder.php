@@ -69,22 +69,6 @@ class WebsitesModuleDatabaseSeeder extends Seeder
 
         });
 
-            // MenuBuilder::new('main_nav', $CMS, function (MenuBuilder $builder) use ($users, $groups, $permissions, $websites, $galleries, $pages, $navigation, $users_permissions) {
-            //     $users_management_category = $builder->add(['url' => '', 'title' => 'Users Management', 'alt' => 'Users Management', 'new_tab' => false, 'clickable' => false]);
-            //     $users = $builder->add($users)->setParent($users_management_category)->icon('user');
-            //     $builder->add($users_permissions)->setParent($users)->icon('user');
-            //     $builder->add($groups)->setParent($users_management_category)->icon('users');
-            //     $builder->add($permissions)->setParent($users_management_category)->icon('lock');
-
-            //     $properties_category = $builder->add(['url' => '', 'title' => 'Web Properties', 'alt' => 'Web Properties', 'new_tab' => false, 'clickable' => false]);
-            //     $websites = $builder->add($websites)->setParent($properties_category)->icon('globe');
-            //     $builder->add($pages)->setParent($websites)->icon('page');
-            //     $builder->add($navigation)->setParent($websites)->icon('bars');
-
-            //     $publications_category = $builder->add(['url' => '', 'title' => 'Publications', 'alt' => 'Publications', 'new_tab' => false, 'clickable' => false]);
-            //     $builder->add($galleries)->setParent($publications_category)->icon('camera');
-            // });
-
         DB::statement("DELETE FROM forms WHERE name = 'websites'");
 
         ResourceBuilder::new('websites', 'websites/{id}', function (ResourceBuilder $builder) {

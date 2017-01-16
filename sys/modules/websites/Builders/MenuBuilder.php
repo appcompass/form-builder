@@ -87,16 +87,7 @@ class MenuBuilder
 
         $menu_item->setParent($this->item);
 
-        // setParent() saves the record.
-        // $menu_item->save();
-
-        // if ($closure) {
-        //     $instance = new static($this->menu, $menu_item);
-
-        //     $closure($instance);
-        // }
         return new static($this->menu, $menu_item);
-        // return $this;
     }
 
 
