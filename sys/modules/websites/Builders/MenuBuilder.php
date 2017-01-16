@@ -17,19 +17,19 @@ class MenuBuilder
      * Menu instance
      */
     private $menu;
-    private $parent_item;
+    private $item;
 
     private $allowedModels = [Page::class, Link::class];
 
     // we only set the MenuItem second param when we are looking to add child items to a parent item
     // not sure how I feel about this aproach here though.
-    public function __construct(Menu $menu = null, MenuItem $parent_item = null)
+    public function __construct(Menu $menu = null, MenuItem $item = null)
     {
         if (!is_null($menu)) {
             $this->menu = $menu;
         }
-        if (!is_null($parent_item)) {
-            $this->parent_item = $parent_item;
+        if (!is_null($item)) {
+            $this->item = $item;
         }
 
         return $this;
@@ -63,7 +63,7 @@ class MenuBuilder
         return $instance;
     }
 
-    public function addItem($item, $order = 1, Closure $closure = null)
+    public function addItem($item, $order = 1)
     {
         if (!$this->menu) {
             throw new \Exception('Menu not selected.');
@@ -85,19 +85,28 @@ class MenuBuilder
 
         $menu_item->menu()->associate($this->menu);
 
-        $menu_item->setParent($this->parent_item);
+        $menu_item->setParent($this->item);
 
         // setParent() saves the record.
         // $menu_item->save();
 
-        if ($closure) {
-            $instance = new static($this->menu, $menu_item);
+        // if ($closure) {
+        //     $instance = new static($this->menu, $menu_item);
 
-            $closure($instance);
-        }
+        //     $closure($instance);
+        // }
+        return new static($this->menu, $menu_item);
+        // return $this;
+    }
+
+
+    public function setIcon($name = '')
+    {
+        $this->item->icon($name);
 
         return $this;
     }
+
 
     /**
      * edit
