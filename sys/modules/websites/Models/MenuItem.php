@@ -96,16 +96,14 @@ class MenuItem extends Model
     public function setParent(MenuItem $item = null)
     {
         if (is_null($item)) {
-            $this->parent_id = null;
+            $this->parent()->dissociate();
         } else {
-            $this->parent_id = $item->id;
+            $this->parent()->associate($item);
         }
 
-        if ($this->save()) {
-            return $this;
-        } else {
-            throw new \Exception('Unable to set Parent');
-        }
+        // $this->save();
+
+        return $this;
     }
 
     /**

@@ -421,7 +421,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
 
             $websiteBuilder->buildMenu('main_header_menu')
-                ->addItem($solutions, 1, [], function($item) use ($process) {
+                ->addItem($solutions, 1, [], function ($item) use ($process) {
                     $item->addItem($process, 1);
                 })
                 ->addItem($projects, 2)
@@ -438,7 +438,6 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->addItem($contact, 5)
                 ->addItem($login, 6)
                 ;
-
         })->getWebsite();
 
         // // Now lets test the magic!

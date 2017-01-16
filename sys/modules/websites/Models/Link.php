@@ -27,15 +27,20 @@ class Link extends Model implements Linkable
         // 'clickable' => ''
     ];
 
-    public function makeMenuItem(): MenuItem
+    public function makeMenuItem($order = 0): MenuItem
     {
-        return MenuItem::create([
+        $item = new MenuItem([
             'title' => $this->title,
             'alt' => $this->alt,
+            'order' => $order,
             'new_tab' => $this->new_tab,
             'url' => $this->url,
             'clickable' => $this->clickable,
             'icon' => $this->icon
         ]);
+
+        $item->navigatable()->associate($this);
+
+        return $item;
     }
 }
