@@ -63,7 +63,7 @@ class MenuBuilder
         return $instance;
     }
 
-    public function addItem($item, $order = 1, $attributes = [], Closure $closure = null)
+    public function addItem($item, $order = 1, Closure $closure = null)
     {
         if (!$this->menu) {
             throw new \Exception('Menu not selected.');
@@ -87,7 +87,8 @@ class MenuBuilder
 
         $menu_item->setParent($this->parent_item);
 
-        $menu_item->save();
+        // setParent() saves the record.
+        // $menu_item->save();
 
         if ($closure) {
             $instance = new static($this->menu, $menu_item);

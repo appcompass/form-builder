@@ -101,7 +101,7 @@ class MenuItem extends Model
             $this->parent()->associate($item);
         }
 
-        // $this->save();
+        $this->save();
 
         return $this;
     }

@@ -421,7 +421,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
 
             $websiteBuilder->buildMenu('main_header_menu')
-                ->addItem($solutions, 1, [], function ($item) use ($process) {
+                ->addItem($solutions, 1, function ($item) use ($process) {
                     $item->addItem($process, 1);
                 })
                 ->addItem($projects, 2)
