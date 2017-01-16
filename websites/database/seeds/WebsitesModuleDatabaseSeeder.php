@@ -51,23 +51,22 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             $pages = $websiteBuilder->buildPage('Pages', 'pages', $websites);
             $navigation = $websiteBuilder->buildPage('Navigation', 'menus', $websites);
 
-            // this workflow is way too complicated IMO.
-            $websiteBuilder->buildMenu('main_nav')->addItem($users_management, 1, function ($section) use ($users, $users_permissions, $groups, $permissions) {
-                $section->addItem($users, 1, function ($item) use ($users_permissions) {
-                    $item->addItem($users_permissions, 1);
-                });
+            $main_nav = $websiteBuilder->buildMenu('main_nav');
 
-                $section->addItem($groups, 2);
-                $section->addItem($permissions, 3);
-            })->addItem($web_properties, 2, function ($section) use ($websites, $pages, $navigation) {
-                $section->addItem($websites, 1, function ($item) use ($pages, $navigation) {
-                    $item->addItem($pages, 1);
-                    $item->addItem($navigation, 2);
-                });
-            })->addItem($publications, 3, function ($section) use ($galleries) {
-                $section->addItem($galleries, 1);
-            })
-            ;
+            $user_management_item = $main_nav->addItem($users_management, 1);
+            $user_item = $user_management_item->addItem($users, 1)->setIcon('user');
+            $user_item->addItem($users_permissions, 1)->setIcon('user');
+            $user_management_item->addItem($groups, 2)->setIcon('users');
+            $user_management_item->addItem($permissions, 3)->setIcon('lock');
+
+            $web_properties_item = $main_nav->addItem($web_properties, 2)->setIcon('globe');
+            $websites_item = $web_properties_item->addItem($websites, 1);
+            $websites_item->addItem($pages, 1)->setIcon('page');
+            $websites_item->addItem($navigation, 2)->setIcon('bars');
+
+            $publications_item = $main_nav->addItem($publications, 3);
+            $publications_item->addItem($galleries, 1)->setIcon('camera');
+
         });
 
             // MenuBuilder::new('main_nav', $CMS, function (MenuBuilder $builder) use ($users, $groups, $permissions, $websites, $galleries, $pages, $navigation, $users_permissions) {
