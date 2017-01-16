@@ -106,18 +106,6 @@ class Page extends Model implements Linkable
         }
     }
 
-    // Menu related attribtute.
-    public function getAltAttribute()
-    {
-        return $this->title;
-    }
-
-    // Menu related attribtute.
-    public function getNewTabAttribute()
-    {
-        return false;
-    }
-
     /**
      * updateChildrenUrl
      *
@@ -158,16 +146,20 @@ class Page extends Model implements Linkable
      *
      * @return     MenuItem
      */
-    public function makeMenuItem(): MenuItem
+    public function makeMenuItem($order = 0): MenuItem
     {
-        return MenuItem::create([
+        $item = new MenuItem([
             'title' => $this->title,
-            'alt' => $this->alt,
-            'new_tab' => $this->new_tab,
-            'url' => $this->url,
-            'clickable' => $this->clickable,
-            'icon' => $this->icon
+            'alt' => $this->title,
+            'order' => $order,
+            'new_tab' => false,
+            'url' => $this->url, // isn't this null? more over, isn't this field not supposed to exist here? All links come from the model now.
+            'clickable' => true,
+            'icon' => null
         ]);
-    }
 
+        $item->navigatable()->associate($this);
+
+        return $item;
+    }
 }

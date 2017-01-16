@@ -6,7 +6,5 @@ use P3in\Models\MenuItem;
 
 interface Linkable
 {
-
     public function makeMenuItem(): MenuItem;
-
 }

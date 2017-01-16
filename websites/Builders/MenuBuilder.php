@@ -81,20 +81,11 @@ class MenuBuilder
             throw new \Exception("Model " . get_class($item) ." is not allowed");
         }
 
-        $menu_item = MenuItem::create([
-            'title' => isset($attributes['title']) ? $attributes['title'] : $item->title,
-            'alt' => isset($attributes['alt']) ? $attributes['alt'] : $item->alt,
-            'new_tab' => isset($attributes['new_tab']) ? $attributes['new_tab'] : $item->new_tab,
-            'sort' => $order,
-            'clickable' => isset($attributes['clickable']) ? $attributes['clickable'] : true
-        ]);
+        $menu_item = $item->makeMenuItem($order);
 
         $menu_item->menu()->associate($this->menu);
-        $menu_item->navigatable()->associate($item);
 
-        if ($this->parent_item) {
-            $menu_item->parent()->associate($this->parent_item);
-        }
+        $menu_item->setParent($this->parent_item);
 
         $menu_item->save();
 
