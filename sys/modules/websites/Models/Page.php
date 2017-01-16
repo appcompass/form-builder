@@ -11,8 +11,9 @@ use P3in\Models\Section;
 use P3in\Models\Website;
 use P3in\Traits\HasPermissions;
 use P3in\Traits\SettingsTrait;
+use P3in\Interfaces\Linkable;
 
-class Page extends Model
+class Page extends Model implements Linkable
 {
     use SoftDeletes
         // , HasPermissions
@@ -151,4 +152,22 @@ class Page extends Model
 
         return '/' . implode('/', array_reverse($slugs));
     }
+
+    /**
+     * Makes a menu item.
+     *
+     * @return     MenuItem
+     */
+    public function makeMenuItem(): MenuItem
+    {
+        return MenuItem::create([
+            'title' => $this->title,
+            'alt' => $this->alt,
+            'new_tab' => $this->new_tab,
+            'url' => $this->url,
+            'clickable' => $this->clickable,
+            'icon' => $this->icon
+        ]);
+    }
+
 }
