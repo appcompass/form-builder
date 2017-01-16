@@ -420,24 +420,24 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->setLayout($full, 1, $loginFullSections);
 
 
-            $websiteBuilder->buildMenu('main_header_menu')
-                ->addItem($solutions, 1, function ($item) use ($process) {
-                    $item->addItem($process, 1);
-                })
-                ->addItem($projects, 2)
-                ->addItem($company, 3)
-                ->addItem($contact, 4)
-                ->addItem($login, 5)
-                ;
+            $main_header_menu = $websiteBuilder->buildMenu('main_header_menu');
 
-            $websiteBuilder->buildMenu('main_footer_menu')
-                ->addItem($solutions, 1)
-                ->addItem($process, 2)
-                ->addItem($projects, 3)
-                ->addItem($company, 4)
-                ->addItem($contact, 5)
-                ->addItem($login, 6)
-                ;
+            $solutions_item = $main_header_menu->addItem($solutions, 1);
+            $solutions_item->addItem($process, 1);
+
+            $main_header_menu->addItem($projects, 2);
+            $main_header_menu->addItem($company, 3);
+            $main_header_menu->addItem($contact, 4);
+            $main_header_menu->addItem($login, 5);
+
+            $main_footer_menu = $websiteBuilder->buildMenu('main_footer_menu');
+            $main_footer_menu->addItem($solutions, 1);
+            $main_footer_menu->addItem($process, 2);
+            $main_footer_menu->addItem($projects, 3);
+            $main_footer_menu->addItem($company, 4);
+            $main_footer_menu->addItem($contact, 5);
+            $main_footer_menu->addItem($login, 6);
+
         })->getWebsite();
 
         // // Now lets test the magic!
