@@ -31,13 +31,14 @@ class FormBuilder
      * @param      string  $resource The resource the form points to
      * @param      Closure $closure called and receives the ResourceBuilder instance
      *
-     * @return     static  ( description_of_the_return_value )
+     * @return     static  Form Instance
      */
     public static function new($name, Model $parent, Closure $closure = null)
     {
         $instance = new static();
 
         $form = $parent->form()->create(['name' => $name]);
+
         $instance->setForm($form);
 
         if ($closure) {
@@ -47,11 +48,18 @@ class FormBuilder
         return $instance;
     }
 
+    /**
+     * Sets the form.
+     *
+     * @param      <type>  $form   The form
+     */
     private function setForm($form)
     {
         $this->form = $form;
+
         $this->setFieldParent($form);
     }
+
     /**
      * Edit a form
      *

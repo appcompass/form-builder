@@ -6,7 +6,7 @@ use Closure;
 use P3in\Builders\PageBuilder;
 use P3in\Models\Link;
 use P3in\Models\Menu;
-use P3in\Models\NavItem;
+use P3in\Models\MenuItem;
 use P3in\Models\Page;
 use P3in\Models\Website;
 
@@ -21,9 +21,9 @@ class MenuBuilder
 
     private $allowedModels = [Page::class, Link::class];
 
-    // we only set the NavItem second param when we are looking to add child items to a parent item
+    // we only set the MenuItem second param when we are looking to add child items to a parent item
     // not sure how I feel about this aproach here though.
-    public function __construct(Menu $menu = null, NavItem $parent_item = null)
+    public function __construct(Menu $menu = null, MenuItem $parent_item = null)
     {
         if (!is_null($menu)) {
             $this->menu = $menu;
@@ -81,7 +81,7 @@ class MenuBuilder
             throw new \Exception("Model " . get_class($item) ." is not allowed");
         }
 
-        $nav_item = NavItem::create([
+        $menu_item = MenuItem::create([
             'title' => isset($attributes['title']) ? $attributes['title'] : $item->title,
             'alt' => isset($attributes['alt']) ? $attributes['alt'] : $item->alt,
             'new_tab' => isset($attributes['new_tab']) ? $attributes['new_tab'] : $item->new_tab,
@@ -89,17 +89,17 @@ class MenuBuilder
             'clickable' => isset($attributes['clickable']) ? $attributes['clickable'] : true
         ]);
 
-        $nav_item->menu()->associate($this->menu);
-        $nav_item->navigatable()->associate($item);
+        $menu_item->menu()->associate($this->menu);
+        $menu_item->navigatable()->associate($item);
 
         if ($this->parent_item) {
-            $nav_item->parent()->associate($this->parent_item);
+            $menu_item->parent()->associate($this->parent_item);
         }
 
-        $nav_item->save();
+        $menu_item->save();
 
         if ($closure) {
-            $instance = new static($this->menu, $nav_item);
+            $instance = new static($this->menu, $menu_item);
 
             $closure($instance);
         }
@@ -136,7 +136,7 @@ class MenuBuilder
      *
      * @throws     \Exception   (description)
      *
-     * @return     NavItem      NavItem instance
+     * @return     MenuItem      MenuItem instance
      */
     public function add($item)
     {
@@ -152,32 +152,32 @@ class MenuBuilder
             throw new \Exception("Model " . get_class($item) ." is not allowed");
         }
 
-        $nav_item = NavItem::fromModel($item);
+        $menu_item = MenuItem::fromModel($item);
 
-        if ($this->menu->add($nav_item)) {
-            return $nav_item;
+        if ($this->menu->add($menu_item)) {
+            return $menu_item;
         } else {
-            throw new \Exception("Something went wrong while adding the NavItem {$nav_item->id} to Menu {$this->menu->id}");
+            throw new \Exception("Something went wrong while adding the MenuItem {$menu_item->id} to Menu {$this->menu->id}");
         }
     }
 
     /**
-     * Drop NavItem
+     * Drop MenuItem
      *
-     * @param      \App\NavItem  $nav_item  The navigation item
+     * @param      \App\MenuItem  $menu_item  The navigation item
      */
     public function drop($item)
     {
         if (is_int($item)) {
-            $nav_item = $this->menu->items()->where('id', $item)->firstOrFail();
-        } elseif ($item instanceof NavItem) {
-            $nav_item = $this->menu->items()->where('id', $item->id)->firstOrFail();
+            $menu_item = $this->menu->items()->where('id', $item)->firstOrFail();
+        } elseif ($item instanceof MenuItem) {
+            $menu_item = $this->menu->items()->where('id', $item->id)->firstOrFail();
         }
 
-        if ($nav_item->delete()) {
+        if ($menu_item->delete()) {
             return true;
         } else {
-            throw new \Exception("Errors while removing NavItem");
+            throw new \Exception("Errors while removing MenuItem");
         }
     }
 }

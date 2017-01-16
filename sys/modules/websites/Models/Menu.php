@@ -4,7 +4,7 @@ namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use P3in\Models\Website;
-use P3in\Models\NavItem;
+use P3in\Models\MenuItem;
 
 class Menu extends Model
 {
@@ -25,44 +25,42 @@ class Menu extends Model
     /**
      * items
      *
-     * @return     HasMany  [NavItem]
+     * @return     HasMany  [MenuItem]
      */
     public function items()
     {
-        return $this->hasMany(NavItem::class)->with('navigatable')->orderBy('sort', 'ASC');
+        return $this->hasMany(MenuItem::class)->with('navigatable')->orderBy('sort', 'ASC');
     }
 
     /**
      * add
      *
-     * @param      \App\NavItem  $nav_item  The navigation item
+     * @param      \App\MenuItem  $nav_item  The navigation item
      *
-     * @return     boolean
+     * @return     MenuItem instance
      */
-    public function add(NavItem $nav_item)
+    public function add(MenuItem $menu_item)
     {
-        $nav_item->menu_id = $this->id;
-
-        return $nav_item->save();
+        return $menu_item->menu()->associate($this)->save();
     }
 
     /**
-     * Drop NavItem
+     * Drop MenuItem
      *
-     * @param      \App\NavItem  $nav_item  The navigation item
+     * @param      \App\MenuItem  $nav_item  The navigation item
      */
     public function drop($item)
     {
         if (is_int($item)) {
             $nav_item = $this->items()->where('id', $item)->firstOrFail();
-        } elseif ($item instanceof NavItem) {
+        } elseif ($item instanceof MenuItem) {
             $nav_item = $this->items()->where('id', $item->id)->firstOrFail();
         }
 
         if ($nav_item->delete()) {
             return true;
         } else {
-            throw new \Exception("Errors while removing NavItem");
+            throw new \Exception("Errors while removing MenuItem");
         }
     }
 

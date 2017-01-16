@@ -5,7 +5,7 @@ namespace P3in\Controllers;
 use Illuminate\Http\Request;
 use P3in\Interfaces\MenusRepositoryInterface;
 use P3in\Models\Link;
-use P3in\Models\NavItem;
+use P3in\Models\MenuItem;
 
 class MenusController extends AbstractController
 {
@@ -23,6 +23,6 @@ class MenusController extends AbstractController
     public function store(Request $request)
     {
         // @TODO validate link
-        return NavItem::fromModel(Link::create($request->all()));
+        return MenuItem::fromModel(Link::create($request->all()));
     }
 }
