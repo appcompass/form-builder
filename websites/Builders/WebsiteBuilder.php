@@ -71,12 +71,20 @@ class WebsiteBuilder
         return new static($website);
     }
 
-    public function buildPage($title, $slug)
+    public function buildPage($title, $slug, PageBuilder $parent = null)
     {
-        $page = $this->website->pages()->create([
+        $page = new Page;
+
+        if ($parent) {
+            $page->parent()->associate($parent->getPage());
+        }
+
+        $page->fill([
             'title' => $title,
             'slug' => $slug,
         ]);
+
+        $page = $this->website->pages()->save($page);
 
         return new PageBuilder($page);
     }
