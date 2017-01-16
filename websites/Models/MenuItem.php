@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use P3in\Models\Menu;
 use P3in\Models\Page;
 
-class NavItem extends Model
+class MenuItem extends Model
 {
     protected $fillable = [
         'title',
@@ -47,7 +47,7 @@ class NavItem extends Model
      */
     public function parent()
     {
-        return $this->belongsTo(NavItem::class, 'parent_id');
+        return $this->belongsTo(MenuItem::class, 'parent_id');
     }
 
     /**
@@ -57,7 +57,7 @@ class NavItem extends Model
      */
     public function children()
     {
-        return $this->hasMany(NavItem::class, 'parent_id');
+        return $this->hasMany(MenuItem::class, 'parent_id');
     }
 
 
@@ -68,17 +68,18 @@ class NavItem extends Model
      */
     public function getUrlAttribute()
     {
+        // return $this->navigatable->url;
         return isset($this->navigatable_id) ? $this->navigatable->url : $this->attributes['url'];
     }
 
     /**
-     * NavItems factory
+     * MenuItems factory
      *
      * @param      <type>     $model  The model
      *
      * @throws     Exception  Model not allowed
      *
-     * @return     <type>     NavItem generator
+     * @return     <type>     MenuItem generator
      */
     public static function fromModel($model, array $attributes = null)
     {
@@ -105,11 +106,11 @@ class NavItem extends Model
      *
      * @param      \App\Page  $page   The page
      *
-     * @return     NavItem
+     * @return     MenuItem
      */
     private static function fromPage(Page $page, array $attributes = null)
     {
-        return NavItem::create([
+        return MenuItem::create([
             'navigatable_id' => $page->id,
             'navigatable_type' => get_class($page),
             'title' => isset($attributes['title']) ? $attributes['title'] : $page->title,
@@ -124,11 +125,11 @@ class NavItem extends Model
      *
      * @param      Link    $link   The link
      *
-     * @return     NavItem
+     * @return     MenuItem
      */
     private static function fromLink(Link $link)
     {
-        return NavItem::create([
+        return MenuItem::create([
             'navigatable_id' => $link->id,
             'navigatable_type' => get_class($link),
             'title' => $link->title,
@@ -141,11 +142,11 @@ class NavItem extends Model
     /**
      * Sets the parent.
      *
-     * @param      NavItem  $item   The item
+     * @param      MenuItem  $item   The item
      *
      * @return     <type>   ( description_of_the_return_value )
      */
-    public function setParent(NavItem $item = null)
+    public function setParent(MenuItem $item = null)
     {
         if (is_null($item)) {
             $this->parent_id = null;
@@ -161,7 +162,7 @@ class NavItem extends Model
     }
 
     /**
-     * Makes a NavItem unclickable
+     * Makes a MenuItem unclickable
      *
      * clickable defaults to true, so we revert it with this method
      *
@@ -174,7 +175,7 @@ class NavItem extends Model
         if ($this->save()) {
             return $this;
         } else {
-            throw new \Exception('Unable to set clickable on NavItem');
+            throw new \Exception('Unable to set clickable on MenuItem');
         }
     }
 

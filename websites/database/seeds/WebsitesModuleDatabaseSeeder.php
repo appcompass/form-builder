@@ -48,7 +48,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
         })->setAlias(['websites.menus.show']);
 
         \DB::statement('TRUNCATE pages CASCADE');
-        \DB::statement('TRUNCATE nav_items CASCADE');
+        \DB::statement('TRUNCATE menu_items CASCADE');
         \DB::statement('TRUNCATE menus CASCADE');
 
         // @NOTE parent_id MUST be defined before slug, otherwise it won't be available when we build the url
