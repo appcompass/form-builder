@@ -5,7 +5,8 @@ section
       .control.is-info
         label.checkbox
           input(type="checkbox", v-bind:checked="has(item.id)", @click="toggle(item.id)")
-          |  {{ item.label.charAt(0).toUpperCase() + item.label.slice(1) }}
+          //- |  {{ item.label.charAt(0).toUpperCase() + item.label.slice(1) }}
+          |  {{ item.name || item.label }}
 </template>
 
 <script>
