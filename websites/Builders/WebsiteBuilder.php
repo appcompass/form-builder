@@ -71,15 +71,9 @@ class WebsiteBuilder
         return new static($website);
     }
 
-    public function buildPage($title, $slug, PageBuilder $parent = null)
+    public function addPage($title, $slug)
     {
-        $page = new Page;
-
-        if ($parent) {
-            $page->parent()->associate($parent->getPage());
-        }
-
-        $page->fill([
+        $page = new Page([
             'title' => $title,
             'slug' => $slug,
         ]);
@@ -89,7 +83,7 @@ class WebsiteBuilder
         return new PageBuilder($page);
     }
 
-    public function buildMenu($name)
+    public function addMenu($name)
     {
         $menu = $this->website->menus()->create([
             'name' => $name,

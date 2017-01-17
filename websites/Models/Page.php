@@ -112,7 +112,7 @@ class Page extends Model implements Linkable
      *  Updates children's url
      *
      */
-    private function updateChildrenUrl()
+    public function updateChildrenUrl()
     {
         foreach ($this->children as $child) {
             $child->url = $child->buildUrl();

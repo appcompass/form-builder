@@ -149,7 +149,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
         // Website Builder API Design
 
-        // methods with 'build' prefix return instances of what it's building, buildPage, buildMenu, etc.
+        // methods with 'build' prefix return instances of what it's building, addPage, addMenu, etc.
         // field type ->link() allows the admin to select page || select link || create new link.
         // field validation should match exactly: https://laravel.com/docs/5.3/validation#available-validation-rules
 
@@ -391,36 +391,35 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             // Build Pages
             $homepage = $websiteBuilder
-                ->buildPage('Home Page', '')
+                ->addPage('Home Page', '')
                 ->setLayout($full, 1, $homeFullSections);
 
             $solutions = $websiteBuilder
-                ->buildPage('Solutions', 'solutions')
+                ->addPage('Solutions', 'solutions')
                 ->setLayout($full, 1, $solutionsFullSections);
 
-            $process = $websiteBuilder
-                ->buildPage('Our Process', 'our-process')
-                ->setLayout($full, 1, $processFullSections)
-                ->addParent($solutions);
+            $process = $solutions
+                ->addPage('Our Process', 'our-process')
+                ->setLayout($full, 1, $processFullSections);
 
             $projects = $websiteBuilder
-                ->buildPage('Projects', 'projects')
+                ->addPage('Projects', 'projects')
                 ->setLayout($full, 1, $projectsFullSections);
 
             $company = $websiteBuilder
-                ->buildPage('Company', 'company')
+                ->addPage('Company', 'company')
                 ->setLayout($full, 1, $companyFullSections);
 
             $contact = $websiteBuilder
-                ->buildPage('Contact Us', 'contact')
+                ->addPage('Contact Us', 'contact')
                 ->setLayout($full, 1, $contactFullSections);
 
             $login = $websiteBuilder
-                ->buildPage('Customer Login', 'customer-login')
+                ->addPage('Customer Login', 'customer-login')
                 ->setLayout($full, 1, $loginFullSections);
 
 
-            $main_header_menu = $websiteBuilder->buildMenu('main_header_menu');
+            $main_header_menu = $websiteBuilder->addMenu('main_header_menu');
 
             $solutions_item = $main_header_menu->addItem($solutions, 1);
             $solutions_item->addItem($process, 1);
@@ -430,14 +429,13 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             $main_header_menu->addItem($contact, 4);
             $main_header_menu->addItem($login, 5);
 
-            $main_footer_menu = $websiteBuilder->buildMenu('main_footer_menu');
+            $main_footer_menu = $websiteBuilder->addMenu('main_footer_menu');
             $main_footer_menu->addItem($solutions, 1);
             $main_footer_menu->addItem($process, 2);
             $main_footer_menu->addItem($projects, 3);
             $main_footer_menu->addItem($company, 4);
             $main_footer_menu->addItem($contact, 5);
             $main_footer_menu->addItem($login, 6);
-
         })->getWebsite();
 
         // // Now lets test the magic!

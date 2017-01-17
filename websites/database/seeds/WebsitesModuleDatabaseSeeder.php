@@ -42,16 +42,17 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 'clickable' => false
             ];
 
-            $users = $websiteBuilder->buildPage('Users', 'users');
-            $users_permissions = $websiteBuilder->buildPage('User Permissions', 'permissions', $users);
-            $groups = $websiteBuilder->buildPage('Groups', 'groups');
-            $permissions = $websiteBuilder->buildPage('Permissions', 'permissions');
-            $websites = $websiteBuilder->buildPage('Websites', 'websites');
-            $galleries = $websiteBuilder->buildPage('Galleries', 'galleries');
-            $pages = $websiteBuilder->buildPage('Pages', 'pages', $websites);
-            $navigation = $websiteBuilder->buildPage('Navigation', 'menus', $websites);
+            $users = $websiteBuilder->addPage('Users', 'users');
+            $users_permissions = $users->addPage('User Permissions', 'permissions');
+            $groups = $websiteBuilder->addPage('Groups', 'groups');
+            $permissions = $websiteBuilder->addPage('Permissions', 'permissions');
+            $websites = $websiteBuilder->addPage('Websites', 'websites');
+            $galleries = $websiteBuilder->addPage('Galleries', 'galleries');
+            $pages = $websites->addPage('Pages', 'pages');
+            $contents = $pages->addPage('Contents', 'contents');
+            $navigation = $websites->addPage('Navigation', 'menus');
 
-            $main_nav = $websiteBuilder->buildMenu('main_nav');
+            $main_nav = $websiteBuilder->addMenu('main_nav');
 
             $user_management_item = $main_nav->addItem($users_management, 1);
             $user_item = $user_management_item->addItem($users, 1)->setIcon('user');
@@ -66,7 +67,6 @@ class WebsitesModuleDatabaseSeeder extends Seeder
 
             $publications_item = $main_nav->addItem($publications, 3);
             $publications_item->addItem($galleries, 1)->setIcon('camera');
-
         });
 
         DB::statement("DELETE FROM forms WHERE name = 'websites'");
