@@ -3,9 +3,10 @@
 namespace P3in\Middleware;
 
 use Closure;
-use Route;
 use P3in\Models\Form;
-use P3in\Models\FormAlias; // links a view to a form
+use P3in\Models\FormAlias;
+use P3in\Models\PageContent;
+use Route; // links a view to a form
 
 class AfterRoute
 {
@@ -53,7 +54,13 @@ class AfterRoute
 
             ];
 
-            if (count($alias)) {
+            // was getting impatient o.O
+            // I know, this is getting wiped out and replaced, I just wanted to see the output for now :)
+            // prob should have PageContent implement Formable Interface so we just check for the interface.
+            $model = $response->getOriginalContent();
+            if ($model instanceof PageContent) {
+                $content['edit'] = $model->section->form;
+            } elseif (count($alias)) {
                 $content['edit'] = $alias->form->toEdit()->first();
 
                 $content['list'] = $alias->form->toList()->first();

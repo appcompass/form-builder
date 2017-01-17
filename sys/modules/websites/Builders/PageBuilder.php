@@ -73,6 +73,23 @@ class PageBuilder
         return new static($page);
     }
 
+    public function addPage($title, $slug)
+    {
+        $page = new Page;
+
+        $page->parent()->associate($this->page);
+        $page->website()->associate($this->page->website);
+
+        $page->fill([
+            'title' => $title,
+            'slug' => $slug,
+        ]);
+
+        $page->save();
+
+        return new PageBuilder($page);
+    }
+
     public function setLayout(Layout $layout, $order = 1, $closure = null)
     {
         $this->page->layouts()->attach($layout, ['order' => $order]);
@@ -92,10 +109,14 @@ class PageBuilder
         return $this;
     }
 
-    public function addParent(PageBuilder $parent)
+    public function setParent(PageBuilder $parent)
     {
         $this->page->parent()->associate($parent->getPage());
         $this->page->save();
+
+        // we fire this here because otherwise the ULR won't be updated.
+        // We really should create an event listener on the child Page model.
+        $this->page->parent->updateChildrenUrl();
 
         return $this;
     }

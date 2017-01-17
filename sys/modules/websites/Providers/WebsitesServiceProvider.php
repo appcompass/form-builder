@@ -15,6 +15,7 @@ use P3in\Interfaces\WebsiteSettingsRepositoryInterface;
 use P3in\Interfaces\WebsitesRepositoryInterface;
 use P3in\Models\Menu;
 use P3in\Models\Page;
+use P3in\Models\PageContent;
 use P3in\Models\Redirect;
 use P3in\Models\Section;
 use P3in\Models\Setting;
