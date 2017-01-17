@@ -176,7 +176,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder {
 			// Layouts are not website specific. We just put this here for convenience and since this setup is a single site setup.
 			$full = Layout::create(['name' => 'full']);
 
-			$slider_banner = SectionBuilder::new ($full, 'Slider Banner', 'components/SliderBanner.vue', function ($formBuilder) {
+			$slider_banner = SectionBuilder::new($full, 'Slider Banner', 'components/SliderBanner.vue', function ($formBuilder) {
 				// we need to figure out how to handle the 'type' field.
 				// the fields internally are created in the order they appear in the builder.
 				$formBuilder->string('Title', 'title', ['required']);
