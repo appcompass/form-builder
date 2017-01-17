@@ -37,6 +37,7 @@ class SectionBuilder {
 	 * @return     <type>   ( description_of_the_return_value )
 	 */
 	public static function new (Layout $layout, $name, $template, Closure $closure = null) {
+
 		$instance = new static();
 
 		$section_name = camel_case($layout->name . ' ' . $name);
@@ -56,15 +57,18 @@ class SectionBuilder {
 		// 	'name' => $section_name,
 		// ]);
 
-		$form->formable()->associate($instance->section);
-		$form->save();
+        $instance->formBuilder = FormBuilder::new($section_name);
 
-        $this->formBuilder = FormBuilder::new($section_name);
+        $form = $instance->formBuilder->getForm();
+
+        $form->formable()->associate($instance->section);
+
+        $form->save();
 
 		// $formBuilder = new FormBuilder($form);
 
 		if ($closure) {
-			$closure($this->formBuilder);
+			$closure($instance->formBuilder);
 		}
 
 		return $instance;

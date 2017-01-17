@@ -22,17 +22,9 @@ class Resource extends Model
 
 	}
 
-
     public function setForm(Form $form)
     {
         return $this->associate($form);
     }
 
-	/**
-	 *
-	 */
-	public function scopeByResource(Builder $query, $view) {
-		// @TODO try to make ths a bit less redundant/smarter -> pass the CRUD endpoint and a root?
-		return $query->where('resource', $view);
-	}
 }
