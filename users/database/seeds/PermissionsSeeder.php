@@ -26,11 +26,21 @@ class PermissionsSeeder extends Seeder
 
         FormBuilder::new('permissions', function (FormBuilder $builder) {
             // @TODO list layout depends on the relation
-            $builder->setListLayout('MultiSelect');
+            // $builder->setListLayout('MultiSelect');
             $builder->string('Name', 'label')->list()->required()->sortable()->searchable();
             $builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();
             $builder->string('Created', 'created_at')->list()->edit(false)->required()->sortable()->searchable();
         })->linkToResources(['permissions.index', 'permissions.show', 'permissions.create']);
+
+        DB::statement("DELETE FROM forms WHERE name = 'user-permissions'");
+
+        FormBuilder::new('user-permissions', function (FormBuilder $builder) {
+            // @TODO list layout depends on the relation
+            $builder->setListLayout('MultiSelect');
+            $builder->string('Name', 'label')->list()->required()->sortable()->searchable();
+            // $builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();
+            // $builder->string('Created', 'created_at')->list()->edit(false)->required()->sortable()->searchable();
+        })->linkToResources(['users.permissions.index']);
 
         Permission::create([
             'type' => 'logged-user',
