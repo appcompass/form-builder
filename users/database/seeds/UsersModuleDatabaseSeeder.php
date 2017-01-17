@@ -58,18 +58,14 @@ class UsersModuleDatabaseSeeder extends Seeder
         //
         //  GROUPS
         //
-        // \DB::statement("DELETE FROM forms WHERE name = 'groups'");
+        \DB::statement("DELETE FROM forms WHERE name = 'groups'");
 
-        // ResourceBuilder::new('groups', 'groups/{id}', function (ResourceBuilder $builder) {
-        //     $builder->string('Group Name', 'name')->list()->required()->sortable()->searchable();
-        //     $builder->string('Group Label', 'label')->list()->required()->sortable()->searchable();
-        //     $builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();
-        //     $builder->string('Date Added', 'created_at')->list()->edit(false)->sortable();
-        // })->setAlias([
-        //     'groups.index',
-        //     'groups.show',
-        //     'groups.create',
-        // ]);
+        FormBuilder::new('groups', function (FormBuilder $builder) {
+            $builder->string('Group Name', 'name')->list()->required()->sortable()->searchable();
+            $builder->string('Group Label', 'label')->list()->required()->sortable()->searchable();
+            $builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();
+            $builder->string('Date Added', 'created_at')->list()->edit(false)->sortable();
+        })->linkToResources(['groups.index', 'groups.show', 'groups.create', ]);
 
         Model::reguard();
     }
