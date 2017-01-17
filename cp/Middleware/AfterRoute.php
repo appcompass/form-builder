@@ -50,7 +50,8 @@ class AfterRoute {
 				$result['trace'] = $response->exception->getTrace();
 			}
 
-			return response()->json($result, $response->getStatusCode())->first();
+            return response()->json($result, $response->getStatusCode());
+			// return response()->json($result, $response->getStatusCode())->first();
 		}
 
 		if ($response->getStatusCode() === 200 && in_array($request->getMethod(), $methods)) {

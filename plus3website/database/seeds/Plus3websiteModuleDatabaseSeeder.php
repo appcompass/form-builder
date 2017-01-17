@@ -5,6 +5,7 @@ namespace P3in\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use P3in\Builders\SectionBuilder;
+use P3in\Builders\FormBuilder;
 use P3in\Builders\WebsiteBuilder;
 use P3in\Models\Fieldtype;
 use P3in\Models\Layout;
@@ -176,7 +177,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder {
 			// Layouts are not website specific. We just put this here for convenience and since this setup is a single site setup.
 			$full = Layout::create(['name' => 'full']);
 
-			$slider_banner = SectionBuilder::new($full, 'Slider Banner', 'components/SliderBanner.vue', function ($formBuilder) {
+			$slider_banner = SectionBuilder::new($full, 'Slider Banner', 'components/SliderBanner.vue', function (FormBuilder $formBuilder) {
 				// we need to figure out how to handle the 'type' field.
 				// the fields internally are created in the order they appear in the builder.
 				$formBuilder->string('Title', 'title', ['required']);
@@ -190,7 +191,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder {
 				})->repeatable();
 			});
 
-			$box_callouts = SectionBuilder::new ($full, 'Box Callouts', 'components/BoxCallouts.vue', function ($formBuilder) {
+			$box_callouts = SectionBuilder::new ($full, 'Box Callouts', 'components/BoxCallouts.vue', function (FormBuilder $formBuilder) {
 				$formBuilder->string('Title', 'title', ['required']);
 				$formBuilder->wysiwyg('Description', 'description', ['required']);
 				$formBuilder->fieldset('Boxes', 'boxes', [], function ($box) {
@@ -201,26 +202,26 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder {
 				})->repeatable();
 			});
 
-			$our_proccess = SectionBuilder::new ($full, 'Our Process', 'components/OurProcess.vue', function ($formBuilder) {
+			$our_proccess = SectionBuilder::new ($full, 'Our Process', 'components/OurProcess.vue', function (FormBuilder $formBuilder) {
 				$formBuilder->string('Title', 'title', ['required']);
 				$formBuilder->wysiwyg('Description', 'description', ['required']);
 				// SVG Animation is static, editable in code only.
 			});
 
-			$meet_our_team = SectionBuilder::new ($full, 'Meet Our Team', 'components/MeetOurTeam.vue', function ($formBuilder) {
+			$meet_our_team = SectionBuilder::new ($full, 'Meet Our Team', 'components/MeetOurTeam.vue', function (FormBuilder $formBuilder) {
 				$formBuilder->string('Title', 'title', ['required']);
 				$formBuilder->wysiwyg('Description', 'description', ['required']);
 			})
 			// ->dynamic(Plus3Person::class) // we need to decide if the section is dynamic, or the field (or both can be)
 			;
 
-			$social_stream = SectionBuilder::new ($full, 'Social Stream', 'components/SocialStream.vue', function ($formBuilder) {
+			$social_stream = SectionBuilder::new ($full, 'Social Stream', 'components/SocialStream.vue', function (FormBuilder $formBuilder) {
 				$formBuilder->string('Title', 'title', ['required']);
 				$formBuilder->wysiwyg('Description', 'description', ['required']);
 				// Fields
 			});
 
-			$customer_testimonials = SectionBuilder::new ($full, 'Customer Testimonials', 'components/CustomerTestimonials.vue', function ($formBuilder) {
+			$customer_testimonials = SectionBuilder::new ($full, 'Customer Testimonials', 'components/CustomerTestimonials.vue', function (FormBuilder $formBuilder) {
 				$formBuilder->fieldset('Testimonials', 'testimonials', [], function ($testimonial) {
 					$testimonial->string('Author', 'author', ['required'])->required();
 					$testimonial->wysiwyg('Content', 'content', ['required'])->required();
@@ -238,13 +239,13 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder {
 				})->repeatable();
 			});
 
-			$thick_page_banner = SectionBuilder::new ($full, 'Thick Page Banner', 'components/ThickPageBanner.vue', function ($formBuilder) {
+			$thick_page_banner = SectionBuilder::new ($full, 'Thick Page Banner', 'components/ThickPageBanner.vue', function (FormBuilder $formBuilder) {
 				$formBuilder->file('Background Image', 'background_image', []);
 				$formBuilder->string('Title', 'title', ['required']);
 				$formBuilder->wysiwyg('Description', 'description', ['required']);
 			});
 
-			$white_break_w_section_links = SectionBuilder::new ($full, 'White Break Callout Section Links', 'components/WhiteBreakCalloutSectionLinks.vue', function ($formBuilder) {
+			$white_break_w_section_links = SectionBuilder::new ($full, 'White Break Callout Section Links', 'components/WhiteBreakCalloutSectionLinks.vue', function (FormBuilder $formBuilder) {
 				$formBuilder->string('Title', 'title', ['required']);
 				$formBuilder->wysiwyg('Description', 'description', ['required']);
 				$formBuilder->fieldset('Page Section Quick Links', 'quick_links', [], function ($quickLinks) {
@@ -257,7 +258,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder {
 				});
 			});
 
-			$provided_solution = SectionBuilder::new ($full, 'Provided Solution', 'components/ProvidedSolution.vue', function ($formBuilder) {
+			$provided_solution = SectionBuilder::new ($full, 'Provided Solution', 'components/ProvidedSolution.vue', function (FormBuilder $formBuilder) {
 				$formBuilder->fieldset('Solution', 'solution', [], function ($solution) {
 					$solution->radio('Layout', 'layout', ['left' => 'Left', 'right' => 'Right'])->required();
 					$solution->string('Title', 'title', ['required']);
@@ -270,17 +271,17 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder {
 				})->repeatable();
 			});
 
-			$blue_break_callout = SectionBuilder::new ($full, 'Blue Break Callout', 'components/BlueBreakCallout.vue', function ($formBuilder) {
+			$blue_break_callout = SectionBuilder::new ($full, 'Blue Break Callout', 'components/BlueBreakCallout.vue', function (FormBuilder $formBuilder) {
 				$formBuilder->string('Link Title', 'link_title', [])->required();
 				$formBuilder->link('Link Destination', 'link_href', [])->required();
 			});
 
-			$breadcrumb_with_right_link = SectionBuilder::new ($full, 'BreadCrumb With Right Side Link', 'components/BreadCrumbRightSideLink.vue', function ($formBuilder) {
+			$breadcrumb_with_right_link = SectionBuilder::new ($full, 'BreadCrumb With Right Side Link', 'components/BreadCrumbRightSideLink.vue', function (FormBuilder $formBuilder) {
 				$formBuilder->string('Link Title', 'link_title', [])->required();
 				$formBuilder->link('Link Destination', 'link_href', [])->required();
 			});
 
-			$process_timeline = SectionBuilder::new ($full, 'Process Timeline', 'components/ProcessTimeline.vue', function ($formBuilder) {
+			$process_timeline = SectionBuilder::new ($full, 'Process Timeline', 'components/ProcessTimeline.vue', function (FormBuilder $formBuilder) {
 				$formBuilder->string('Title', 'title', ['required']);
 				$formBuilder->wysiwyg('Description', 'description', ['required']);
 				$formBuilder->fieldset('Process Steps', 'process_steps', [], function ($process) {
@@ -292,7 +293,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder {
 				})->repeatable();
 			});
 
-			$process_maintenance_details = SectionBuilder::new ($full, 'Maintenance Details', 'components/MaintenanceDetails.vue', function ($formBuilder) {
+			$process_maintenance_details = SectionBuilder::new ($full, 'Maintenance Details', 'components/MaintenanceDetails.vue', function (FormBuilder $formBuilder) {
 				$formBuilder->string('Title', 'title', ['required']);
 				$formBuilder->wysiwyg('Description', 'description', ['required']);
 				$formBuilder->file('Image File', 'image', ['type:svg']);
@@ -302,7 +303,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder {
 				$formBuilder->link('Link Destination', 'link_href', [])->required();
 			});
 
-			$project_list = SectionBuilder::new ($full, 'Project List', 'components/ProjectList.vue', function ($formBuilder) {
+			$project_list = SectionBuilder::new ($full, 'Project List', 'components/ProjectList.vue', function (FormBuilder $formBuilder) {
 				$formBuilder->fieldset('Projects', 'projects', [], function ($project) {
 					$project->file('Background Image', 'background_image', ['required']);
 					$project->file('Logo', 'logo', ['required']);
@@ -314,11 +315,11 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder {
 				})->repeatable();
 			});
 
-			$contact_form = SectionBuilder::new ($full, 'Contact Us', 'components/ContactUs.vue', function ($formBuilder) {
+			$contact_form = SectionBuilder::new ($full, 'Contact Us', 'components/ContactUs.vue', function (FormBuilder $formBuilder) {
 				$formBuilder->formBuilder('Contact Form', 'contact_form', []);
 			});
 
-			$map_address = SectionBuilder::new ($full, 'Map Address', 'components/MapAddress.vue', function ($formBuilder) {
+			$map_address = SectionBuilder::new ($full, 'Map Address', 'components/MapAddress.vue', function (FormBuilder $formBuilder) {
 				$formBuilder->string('Title', 'title', []);
 				$formBuilder->string('Phone Number', 'phone', []);
 				$formBuilder->string('Address Line 1', 'address_1', []);
@@ -332,7 +333,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder {
 			// We might want to consider having this section be dynamic rather than set a field to be the dynamic piece?
 			// Fields: Email, Password, Remember Me
 			// Links: Forgot Password
-			$login_form = SectionBuilder::new ($full, 'Customer Login', 'components/CustomerLogin.vue', function ($formBuilder) {
+			$login_form = SectionBuilder::new ($full, 'Customer Login', 'components/CustomerLogin.vue', function (FormBuilder $formBuilder) {
 				$formBuilder->loginForm('Customer Login', 'customer_login', []);
 			});
 
