@@ -19,22 +19,66 @@ class Form extends Model
 
     protected $with = ['fields'];
 
+    /**
+     * Links to models
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
     public function formable()
     {
         return $this->morphTo();
     }
 
+    /**
+     * Fields
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
     public function fields()
     {
         return $this->belongsToMany(Field::class);
     }
 
     /**
+     * resources connected to the form
      *
+     * @return     <type>  ( description_of_the_return_value )
      */
-    public function aliases()
+    public function resources()
     {
-        return $this->hasMany(FormAlias::class);
+        return $this->hasMany(Resource::class);
+    }
+
+    /**
+     * Sets the owner.
+     *
+     * @param      \Illuminate\Database\Eloquent\Model  $owner  The owner
+     *
+     * @return     <type>                               ( description_of_the_return_value )
+     */
+    public function setOwner(Model $owner)
+    {
+        // @TODO look up the associate() equivalent, no time now
+        return $this->update([
+            'formable_id' => $owner->id,
+            'formable_type' => get_class($owner)
+        ]);
+    }
+
+
+    /**
+     * like website.create or page.content
+     *
+     * @param      \Illuminate\Database\Eloquent\Builder  $query          The query
+     * @param      <type>                                 $resource_name  The resource name
+     *
+     * @return     <type>                                 ( description_of_the_return_value )
+     */
+    public function scopeByResource(Builder $query, $resource_name)
+    {
+        return $query->whereHas('resources', function(Builder $query) use($resource_name) {
+            return $query->where('resource', $resource_name);
+        });
     }
 
     /**
@@ -74,8 +118,6 @@ class Form extends Model
         if ($this->save()) {
             return $this;
         }
-
-        throw new \Exception("Unable to set ListLayout for this Form.");
     }
 
     /**

@@ -38,7 +38,7 @@ div
       aside.menu
         ul.menu-list
           li(v-for="item in navigation")
-            router-link(:to="{name: 'sub', params: {model: item.url.split('/')[1], id: $route.params.id, sub: item.url.split('/')[item.url.split('/').length - 1]}}") {{ item.title }}
+            router-link(:to="{name: 'sub', params: {model: model.split('/')[model.split('/').length - 2], id: $route.params.id, sub: item.url.split('/')[item.url.split('/').length - 1]}}") {{ item.title }}
 
   div.columns
     .column.is-12
@@ -56,19 +56,6 @@ import State from './State'
 
 import swal from 'sweetalert'
 import _ from 'lodash'
-
-function findObject (title, haystack, res) {
-  for (let i = 0; i < haystack.length; i++) {
-    let current = haystack[i]
-    if (current.title === title) {
-      res = current.children
-    } else if (current.children.length) {
-      res = findObject(title, current.children, res)
-    }
-  }
-
-  return res
-}
 
 export default {
   name: 'EditView',
@@ -92,22 +79,6 @@ export default {
   },
 
   created () {
-    // @TODO review this
-    State.getNavigation()
-      .then(navigation => {
-        this.navigation = navigation
-        let route
-        // here we look at path length after splitting (i think) depending on that we take either the 1st, 3rd, 5th param /websites/1/pages/1/
-        this.$route.path.slice(1).split('_').join('/').split('/').forEach((element, index) => {
-          if (index % 2 === 0) {
-            route = element
-          }
-        })
-        this.route = route
-        console.log(route)
-        route = route.charAt(0).toUpperCase() + route.slice(1)
-        this.navigation = findObject(route, navigation)
-      })
     this.model = this.$route.params.model.split('_').join('/') + '/' + this.$route.params.id
     this.refresh()
   },
@@ -131,6 +102,19 @@ export default {
           this.collection = response.data.collection
           this.edit = response.data.edit
           this.resource = this.$resource(api + this.edit.resource)
+
+          // we want the last bit of model
+          this.route = this.model.split('/')[this.model.split('/').length - 2]
+          // this.model.split('/').forEach((element, index) => {
+          //   if (index % 2 === 0) {
+          //     this.route = element
+          //   }
+          // })
+
+          State.getNavigation(this.route)
+            .then(navigation => {
+              this.navigation = navigation
+            })
         })
         .catch((response) => {
           this.loading = false
