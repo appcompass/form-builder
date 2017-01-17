@@ -74,26 +74,26 @@ class WebsitesModuleDatabaseSeeder extends Seeder {
 			// $builder->json('Auth Key', 'config.key')->list()->required()->sortable()->searchable();
         })->linkToResources(['websites.index', 'websites.show', 'websites.create']);
 
-		// DB::statement("DELETE FROM forms WHERE name = 'pages'");
+		DB::statement("DELETE FROM forms WHERE name = 'pages'");
 
-		// ResourceBuilder::new ('pages', 'pages/{id}', function (ResourceBuilder $builder) {
-		// 	$builder->string('Page Title', 'title')->list()->required()->sortable()->searchable();
-		// 	// $builder->string('Page Title', 'title')->list(false)->required()->sortable()->searchable();
-		// 	$builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();
-		// 	$builder->string('Slug', 'slug')->list(false)->required()->sortable()->searchable();
-		// 	$builder->string('Layout', 'layout')->list(false)->required()->sortable()->searchable();
-		// })->setAlias(['pages.show', 'websites.pages.index', 'websites.pages.create', 'websites.pages.show']);
+		FormBuilder::new ('pages', function (FormBuilder $builder) {
+			$builder->string('Page Title', 'title')->list()->required()->sortable()->searchable();
+			// $builder->string('Page Title', 'title')->list(false)->required()->sortable()->searchable();
+			$builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();
+			$builder->string('Slug', 'slug')->list(false)->required()->sortable()->searchable();
+			$builder->string('Layout', 'layout')->list(false)->required()->sortable()->searchable();
+		})->linkToResources(['pages.show', 'websites.pages.index', 'websites.pages.create', 'websites.pages.show']);
 
-		// DB::statement("DELETE FROM forms WHERE name = 'menus'");
+		DB::statement("DELETE FROM forms WHERE name = 'menus'");
 
-		// ResourceBuilder::new ('menus', 'menus/{id}', function (ResourceBuilder $builder) {
-		// 	$builder->string('Name', 'name')->list()->required()->sortable()->searchable();
-		// })->setAlias(['websites.menus.index', 'websites.menus.create']);
+		FormBuilder::new ('menus', function (FormBuilder $builder) {
+			$builder->string('Name', 'name')->list()->required()->sortable()->searchable();
+		})->linkToResources(['websites.menus.index', 'websites.menus.create']);
 
-		// DB::statement("DELETE FROM forms WHERE name = 'menus-editor'");
+		DB::statement("DELETE FROM forms WHERE name = 'menus-editor'");
 
-		// ResourceBuilder::new ('menus-editor', 'menus/{id}', function (ResourceBuilder $builder) {
-		// 	$builder->menuEditor()->list(false);
-		// })->setAlias(['websites.menus.show']);
+		FormBuilder::new ('menus-editor', function (FormBuilder $builder) {
+			$builder->menuEditor()->list(false);
+		})->linkToResources(['websites.menus.show']);
 	}
 }
