@@ -29,9 +29,9 @@ class UsersModuleDatabaseSeeder extends Seeder
         $this->call(PermissionsSeeder::class);
         // $this->call(UsersTableSeeder::class);
         // $this->call(UserUiFieldsSeeder::class);
-        factory(User::class, 30)->create()->each(function ($user) {
-            $user->permissions()->saveMany(Permission::inRandomOrder()->limit(3)->get());
-        });
+        // factory(User::class, 30)->create()->each(function ($user) {
+        //     $user->permissions()->saveMany(Permission::inRandomOrder()->limit(3)->get());
+        // });
 
 
         //

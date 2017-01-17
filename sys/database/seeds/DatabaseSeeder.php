@@ -25,8 +25,10 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
 
-
-
+        // moved this here since it's install specific.
+        factory(User::class, 100)->create()->each(function ($user) {
+            $user->permissions()->saveMany(Permission::inRandomOrder()->limit(3)->get());
+        });
 
 
         // // I'm using this to stub out some data and
