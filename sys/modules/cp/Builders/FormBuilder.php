@@ -14,28 +14,9 @@ class FormBuilder {
 	 */
 	public $form;
 
-	// public function __construct(Form $form = null) {
-
-	// 	if (!is_null($form)) {
-
-	// 		$this->setForm($form);
-
-	// 	}
-
-	// 	return $this;
-	// }
-
-	// public static function new ($name, Model $parent, Closure $closure = null) {
 	public static function new ($name, Closure $closure = null) {
 
 		$instance = new static();
-
-		// @TODO doing this prevents us from creating generic forms -> add a setParent method to Form to set the formable, this also skips the need to add formable() to each model
-		// $form = $owner->form()->create(['name' => $name]);
-
-		// $form = Form::create([
-		//     'name' => $name
-		// ]);
 
 		$instance->form = Form::firstOrCreate([
 			'name' => $name,
@@ -92,17 +73,6 @@ class FormBuilder {
         $this->form->setOwner($owner);
 
     }
-
-	/**
-	 * Sets the form.
-	 *
-	 * @param      <type>  $form   The form
-	 */
-	// private function setForm($form) {
-	// 	$this->form = $form;
-
-	// 	$this->setFieldParent($form);
-	// }
 
     /**
      * Links to resources.

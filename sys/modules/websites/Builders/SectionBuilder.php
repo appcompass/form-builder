@@ -17,17 +17,18 @@ class SectionBuilder {
 	private $form;
 	private $section;
 
-	private function __construct(Form $form = null) {
-		if (!is_null($form)) {
-			if (!$form->formable instanceof Section) {
-				throw new Exception('This form doesn\'t belong to a section');
-			}
+    // @TODO Not being used
+	// private function __construct(Form $form = null) {
+	// 	if (!is_null($form)) {
+	// 		if (!$form->formable instanceof Section) {
+	// 			throw new Exception('This form doesn\'t belong to a section');
+	// 		}
 
-			$this->form = $form;
-		}
+	// 		$this->form = $form;
+	// 	}
 
-		return $this;
-	}
+	// 	return $this;
+	// }
 
 	/**
 	 * new
@@ -51,12 +52,6 @@ class SectionBuilder {
 
 		$instance->section->save();
 
-		// Form::where('name', $section_name)->delete(); //This prob shouldn't be here, but it is to reloading faster.
-
-		// $form = Form::create([
-		// 	'name' => $section_name,
-		// ]);
-
         $instance->formBuilder = FormBuilder::new($section_name);
 
         $form = $instance->formBuilder->getForm();
@@ -64,8 +59,6 @@ class SectionBuilder {
         $form->formable()->associate($instance->section);
 
         $form->save();
-
-		// $formBuilder = new FormBuilder($form);
 
 		if ($closure) {
 			$closure($instance->formBuilder);

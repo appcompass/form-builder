@@ -8,7 +8,6 @@ use P3in\Traits\HasFieldsTrait;
 
 class FieldBuilder
 {
-    use HasFieldsTrait;
     /**
      * Field instance
      */
