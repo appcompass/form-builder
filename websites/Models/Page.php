@@ -33,6 +33,11 @@ class Page extends Model implements Linkable
         'meta' => 'object'
     ];
 
+    /**
+     * website
+     *
+     * @return     BelongsTo
+     */
     public function website()
     {
         return $this->belongsTo(Website::class);
@@ -58,6 +63,11 @@ class Page extends Model implements Linkable
         return $this->hasMany(Page::class, 'parent_id');
     }
 
+    /**
+     * layouts
+     *
+     * @return     BelongsToMany
+     */
     public function layouts()
     {
         return $this->belongsToMany(Layout::class)
@@ -65,16 +75,34 @@ class Page extends Model implements Linkable
             ->orderBy('pivot_order', 'asc');
     }
 
+    /**
+     * Page Sections
+     *
+     * @return     BelongsToMany
+     */
     public function sections()
     {
         return $this->belongsToMany(Section::class);
     }
 
+    /**
+     * content
+     *
+     * @return     HasMany
+     */
     public function contents()
     {
         return $this->hasMany(PageContent::class)->orderBy('order', 'asc');
     }
 
+    /**
+     * get the Page via it's url
+     *
+     * @param      <type>  $query  The query Builder instance
+     * @param      <type>  $url    The url
+     *
+     * @return     Builder
+     */
     public function scopeByUrl($query, $url)
     {
         $escaped_url = DB::connection()->getPdo()->quote($url);
