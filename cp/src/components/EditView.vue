@@ -122,7 +122,10 @@ export default {
         })
     },
     set (data) {
-      _.setWith(this.collection, data.pointer, data.value)
+      // console.log(data)
+      // console.log(this.collection[data.pointer])
+      this.$set(this.collection, data.pointer, data.value)
+      // _.setWith(this.collection, data.pointer, data.value)
     },
     value (fieldName) {
       return _.get(this.collection, fieldName)
