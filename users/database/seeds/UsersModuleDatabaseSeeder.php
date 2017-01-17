@@ -3,7 +3,7 @@
 namespace P3in\Seeders;
 
 use Illuminate\Database\Seeder;
-use P3in\Builders\ResourceBuilder;
+use P3in\Builders\FormBuilder;
 use Illuminate\Database\Eloquent\Model;
 use P3in\Models\User;
 use P3in\Models\Permission;
@@ -29,7 +29,7 @@ class UsersModuleDatabaseSeeder extends Seeder
         $this->call(PermissionsSeeder::class);
         // $this->call(UsersTableSeeder::class);
         // $this->call(UserUiFieldsSeeder::class);
-        factory(User::class, 100)->create()->each(function ($user) {
+        factory(User::class, 30)->create()->each(function ($user) {
             $user->permissions()->saveMany(Permission::inRandomOrder()->limit(3)->get());
         });
 
@@ -46,34 +46,30 @@ class UsersModuleDatabaseSeeder extends Seeder
         // $builder->actions('edit')->permissions('users.own.edit');
         // $builder->datetime('End of absence', 'settings.absent.end'); <- working
 
-        ResourceBuilder::new('users', 'users/{id}', function (ResourceBuilder $builder) {
+        FormBuilder::new('users', function(FormBuilder $builder) {
             $builder->string('First Name', 'first_name')->list()->required()->sortable()->searchable();
             $builder->string('Last Name', 'last_name')->list()->required()->sortable()->searchable();
             $builder->string('Email', 'email')->list()->required()->validation('email')->sortable()->searchable();
             $builder->string('Phone Number', 'phone')->list()->required()->sortable()->searchable();
             $builder->string('Date Added', 'created_at')->list()->edit(false)->sortable();
             $builder->secret()->required();
-        })->setAlias([
-            'users.index',
-            'users.show',
-            'users.create',
-        ]);
+        })->linkToResources(['users.index', 'users.show', 'users.create']);
 
         //
         //  GROUPS
         //
-        \DB::statement("DELETE FROM forms WHERE name = 'groups'");
+        // \DB::statement("DELETE FROM forms WHERE name = 'groups'");
 
-        ResourceBuilder::new('groups', 'groups/{id}', function (ResourceBuilder $builder) {
-            $builder->string('Group Name', 'name')->list()->required()->sortable()->searchable();
-            $builder->string('Group Label', 'label')->list()->required()->sortable()->searchable();
-            $builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();
-            $builder->string('Date Added', 'created_at')->list()->edit(false)->sortable();
-        })->setAlias([
-            'groups.index',
-            'groups.show',
-            'groups.create',
-        ]);
+        // ResourceBuilder::new('groups', 'groups/{id}', function (ResourceBuilder $builder) {
+        //     $builder->string('Group Name', 'name')->list()->required()->sortable()->searchable();
+        //     $builder->string('Group Label', 'label')->list()->required()->sortable()->searchable();
+        //     $builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();
+        //     $builder->string('Date Added', 'created_at')->list()->edit(false)->sortable();
+        // })->setAlias([
+        //     'groups.index',
+        //     'groups.show',
+        //     'groups.create',
+        // ]);
 
         Model::reguard();
     }

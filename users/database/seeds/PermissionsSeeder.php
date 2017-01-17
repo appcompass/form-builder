@@ -3,7 +3,7 @@
 namespace P3in\Seeders;
 
 use Illuminate\Database\Seeder;
-use P3in\Builders\ResourceBuilder;
+use P3in\Builders\FormBuilder;
 use P3in\Models\Permission;
 use DB;
 
@@ -24,17 +24,13 @@ class PermissionsSeeder extends Seeder
 
         DB::statement("DELETE FROM forms WHERE name = 'permissions'");
 
-        ResourceBuilder::new('permissions', 'permissions/{id}', function (ResourceBuilder $builder) {
+        FormBuilder::new('permissions', function (FormBuilder $builder) {
             // @TODO list layout depends on the relation
-            // $builder->setListLayout('MultiSelect');
+            $builder->setListLayout('MultiSelect');
             $builder->string('Name', 'label')->list()->required()->sortable()->searchable();
             $builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();
             $builder->string('Created', 'created_at')->list()->edit(false)->required()->sortable()->searchable();
-        })->setAlias([
-            'permissions.index',
-            'permissions.show',
-            'permissions.create',
-        ]);
+        })->linkToResources(['permissions.index', 'permissions.show', 'permissions.create']);
 
         Permission::create([
             'type' => 'logged-user',

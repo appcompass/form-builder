@@ -4,28 +4,24 @@ namespace P3in;
 
 use P3in\BaseModule;
 
-class CpModule extends BaseModule
-{
-    public $module_name = 'cp';
+class CpModule extends BaseModule {
+	public $module_name = 'cp';
 
-    protected $publishes = [
-        'js/components/' => 'components/'
-    ];
+	protected $publishes = [
+		'js/components/' => 'components/',
+	];
 
-    public function __construct()
-    {
-        \Log::info('Loading <Cp> Module');
-    }
+	public function __construct() {
+		// \Log::info('Loading <Cp> Module');
+	}
 
-    public function bootstrap()
-    {
-        \Log::info('Bootstrapping <Cp> Module');
-    }
+	public function bootstrap() {
+		// \Log::info('Bootstrapping <Cp> Module');
+	}
 
-    public function register()
-    {
-        \Log::info('Registering <Cp> Module');
-        // @TODO load stuff here. like caching routes etc
-        // $this->setSeeders();
-    }
+	public function register() {
+		// \Log::info('Registering <Cp> Module');
+		// @TODO load stuff here. like caching routes etc
+		// $this->setSeeders();
+	}
 }

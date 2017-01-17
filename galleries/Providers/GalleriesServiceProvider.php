@@ -15,39 +15,35 @@ use P3in\Repositories\GalleriesRepository;
 use P3in\Repositories\GalleryPhotosRepository;
 use P3in\Repositories\GalleryVideosRepository;
 
-class GalleriesServiceProvider extends ServiceProvider
-{
-    public function boot(Gate $gate)
-    {
-        \Log::info('booting <Galleries> module');
-    }
+class GalleriesServiceProvider extends ServiceProvider {
+	public function boot(Gate $gate) {
+	}
 
-    public function register()
-    {
-        $this->app->bind(
-            GalleriesRepositoryInterface::class, GalleriesRepository::class
-        );
-        $this->app->bind(
-            GalleryPhotosRepositoryInterface::class, GalleryPhotosRepository::class
-        );
-        $this->app->bind(
-            GalleryVideosRepositoryInterface::class, GalleryVideosRepository::class
-        );
+	public function register() {
+		$this->app->bind(
+			GalleriesRepositoryInterface::class, GalleriesRepository::class
+		);
+		$this->app->bind(
+			GalleryPhotosRepositoryInterface::class, GalleryPhotosRepository::class
+		);
+		$this->app->bind(
+			GalleryVideosRepositoryInterface::class, GalleryVideosRepository::class
+		);
 
-        Route::model('galleries', Gallery::class);
-        Route::model('photos', Photo::class);
-        Route::model('videos', Video::class);
+		Route::model('galleries', Gallery::class);
+		Route::model('photos', Photo::class);
+		Route::model('videos', Video::class);
 
-        Route::bind('gallery', function ($value) {
-            return Gallery::findOrFail($value);
-        });
+		Route::bind('gallery', function ($value) {
+			return Gallery::findOrFail($value);
+		});
 
-        Route::bind('photo', function ($value) {
-            return Photo::findOrFail($value);
-        });
+		Route::bind('photo', function ($value) {
+			return Photo::findOrFail($value);
+		});
 
-        Route::bind('video', function ($value) {
-            return Video::findOrFail($value);
-        });
-    }
+		Route::bind('video', function ($value) {
+			return Video::findOrFail($value);
+		});
+	}
 }

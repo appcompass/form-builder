@@ -3,78 +3,98 @@
 namespace P3in\Middleware;
 
 use Closure;
+use Illuminate\Http\Request;
 use P3in\Models\Form;
 use P3in\Models\FormAlias;
 use P3in\Models\PageContent;
-use Route; // links a view to a form
+use Route;
 
-class AfterRoute
-{
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @return mixed
-     */
-    public function handle($request, Closure $next)
-    {
-        $route = Route::current();
+class AfterRoute {
 
-        $methods = ['GET'];
+	/**
+	 * Handle an incoming request.
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 * @param  \Closure  $next
+	 * @return mixed
+	 */
+	public function handle(Request $request, Closure $next) {
 
-        // removes everything up to first / so we don't have to store the api/ prefix
-        // in the alias table
-        $uri = preg_replace("/^([a-z]*\/)/", '', $route->getName());
+		$route = Route::current();
 
-        \Log::info("FormAlias is looking for: " . $uri);
+		$methods = ['GET'];
 
-        $alias = FormAlias::byAlias($uri)->first();
+		// removes everything up to first / so we don't have to store the api/ prefix
+		// in the alias table
+		$uri = preg_replace("/^([a-z]*\/)/", '', $route->getName());
 
-        $response = $next($request);
+		// resolve form by uri
+		// $alias = FormAlias::byAlias($uri)->first();
+        $form = Form::byResource($uri);
 
-        if ($response->exception) {
-            $result = [
-                'errors' => $response->exception->getMessage()
-            ];
+        \Log::info('AfterRequest is looking for: ' . $uri);
 
-            if (env('APP_DEBUG')) {
-                $result['file'] = $response->exception->getFile();
-                $result['line'] = $response->exception->getLine();
-                $result['trace'] = $response->exception->getTrace();
-            }
+		// get response
+		$response = $next($request);
 
-            return response()->json($result, $response->getStatusCode());
-        }
+		// return for exceptions
+		if ($response->exception) {
 
-        if ($response->getStatusCode() === 200 && in_array($request->getMethod(), $methods)) {
-            $content = [
+			$result = [
+				'errors' => $response->exception->getMessage(),
+			];
 
-                'collection' => json_decode($response->getContent()),
+			if (env('APP_DEBUG')) {
+				$result['file'] = $response->exception->getFile();
+				$result['line'] = $response->exception->getLine();
+				$result['trace'] = $response->exception->getTrace();
+			}
 
-            ];
+			return response()->json($result, $response->getStatusCode())->first();
+		}
 
-            // was getting impatient o.O
-            // I know, this is getting wiped out and replaced, I just wanted to see the output for now :)
-            // prob should have PageContent implement Formable Interface so we just check for the interface.
-            $model = $response->getOriginalContent();
-            if ($model instanceof PageContent) {
-                $content['edit'] = $model->section->form;
-            } elseif (count($alias)) {
-                $content['edit'] = $alias->form->toEdit()->first();
+		if ($response->getStatusCode() === 200 && in_array($request->getMethod(), $methods)) {
 
-                $content['list'] = $alias->form->toList()->first();
-            }
+			$content = [
 
-            $response->setContent($content);
-        }
+				'collection' => json_decode($response->getContent()),
 
+			];
 
+			$original_content = $response->getOriginalContent();
 
-        return $response;
-    }
+			// dd($model);
 
-    public function terminate()
-    {
-    }
+			// here we can have either a single model or a collection
+
+			// if ($original_content instanceof Model) {
+
+			// 	dd($original_content);
+
+			// } elseif (isset($original_content['data']) && $original_content['data'] instanceof LengthAwarePaginator) {
+
+			// 	dd('paginated stuff');
+
+			// }
+
+			if ($original_content instanceof PageContent) {
+
+				$content['edit'] = $original_content->section->form;
+
+			} elseif (!is_null($form)) {
+
+				$content['edit'] = $form->toEdit()->first();
+
+				$content['list'] = $form->toList()->first();
+
+			}
+
+			$response->setContent($content);
+		}
+
+		return $response;
+	}
+
+	public function terminate() {
+	}
 }
