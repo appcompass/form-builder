@@ -21,8 +21,4 @@ class Section extends Model {
 		return $this->belongsTo(Layout::class);
 	}
 
-	// public function form()
-	// {
-	//     return $this->morphOne(Form::class, 'formable');
-	// }
 }
