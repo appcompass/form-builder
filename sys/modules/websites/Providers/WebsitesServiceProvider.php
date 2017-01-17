@@ -13,6 +13,7 @@ use P3in\Interfaces\WebsitePagesRepositoryInterface;
 use P3in\Interfaces\WebsiteRedirectsRepositoryInterface;
 use P3in\Interfaces\WebsiteSettingsRepositoryInterface;
 use P3in\Interfaces\WebsitesRepositoryInterface;
+use P3in\Interfaces\PageSectionsRepositoryInterface;
 use P3in\Models\Menu;
 use P3in\Models\Page;
 use P3in\Models\PageContent;
@@ -26,6 +27,7 @@ use P3in\Repositories\PagesRepository;
 use P3in\Repositories\WebsiteMenusRepository;
 use P3in\Repositories\WebsitePagesRepository;
 use P3in\Repositories\WebsiteRedirectsRepository;
+use P3in\Repositories\PageSectionsRepository;
 use P3in\Repositories\WebsiteSettingsRepository;
 use P3in\Repositories\WebsitesRepository;
 
@@ -41,6 +43,7 @@ class WebsitesServiceProvider extends ServiceProvider {
 			WebsiteRedirectsRepositoryInterface::class => WebsiteRedirectsRepository::class,
 			WebsiteSettingsRepositoryInterface::class => WebsiteSettingsRepository::class,
 			PageContentsRepositoryInterface::class => PageContentsRepository::class,
+			PageSectionsRepositoryInterface::class => PageSectionsRepository::class,
 			PagesRepositoryInterface::class => PagesRepository::class,
 			MenusRepositoryInterface::class => MenusRepository::class,
 			WebsiteMenusRepositoryInterface::class => WebsiteMenusRepository::class,

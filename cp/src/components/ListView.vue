@@ -123,9 +123,9 @@ export default {
             return
           }
           this.list = response.data.list
-          if (response.data.collection.view != null) {
-            this.list.list_layout = response.data.collection.view
-          }
+          // if (response.data.collection.view != null) {
+          //   this.list.list_layout = response.data.collection.view
+          // }
           this.pagination = _.omit(response.data.collection.data, ['data'])
           this.collection = response.data.collection
           this.resource = this.$resource(api + this.list.resource)

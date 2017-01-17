@@ -9,7 +9,9 @@ Route::group([
     $router->resource('websites.menus', WebsiteMenusController::class);
     $router->resource('websites.navigation', WebsiteMenusController::class);
     $router->resource('websites.pages', WebsitePagesController::class);
+    $router->resource('pages', PagesController::class);
     $router->resource('pages.contents', PageContentsController::class); // @TODO: websites.pages.contents
+    $router->resource('pages.sections', PageSectionsController::class); // @TODO: websites.pages.sections
     $router->resource('websites.settings', WebsiteSettingsController::class);
     $router->resource('websites.redirects', WebsiteRedirectsController::class);
 
