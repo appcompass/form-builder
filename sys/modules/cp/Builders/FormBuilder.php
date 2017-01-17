@@ -37,7 +37,7 @@ class FormBuilder {
 		//     'name' => $name
 		// ]);
 
-		$instance->form = Form::create([
+		$instance->form = Form::firstOrCreate([
 			'name' => $name,
 		]);
 
