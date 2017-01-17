@@ -46,6 +46,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder {
 			$galleries = $websiteBuilder->addPage('Galleries', 'galleries');
 			$pages = $websites->addPage('Pages', 'pages');
 			$contents = $pages->addPage('Contents', 'contents');
+			$sections = $pages->addPage('Sections', 'sections');
 			$navigation = $websites->addPage('Navigation', 'menus');
 
 			$main_nav = $websiteBuilder->addMenu('main_nav');
@@ -59,7 +60,8 @@ class WebsitesModuleDatabaseSeeder extends Seeder {
 			$web_properties_item = $main_nav->addItem($web_properties, 2)->setIcon('globe');
 			$websites_item = $web_properties_item->addItem($websites, 1);
 			$pages_menuitem = $websites_item->addItem($pages, 1)->setIcon('page');
-			$pages_menuitem->addItem($contents, 2)->setIcon('bars');
+			$pages_menuitem->addItem($sections, 2)->setIcon('bars');
+			$pages_menuitem->addItem($contents, 3)->setIcon('bars');
 			$websites_item->addItem($navigation, 2)->setIcon('bars');
 
 			$publications_item = $main_nav->addItem($publications, 3);
@@ -81,19 +83,27 @@ class WebsitesModuleDatabaseSeeder extends Seeder {
 			// $builder->string('Page Title', 'title')->list(false)->required()->sortable()->searchable();
 			$builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();
 			$builder->string('Slug', 'slug')->list(false)->required()->sortable()->searchable();
-			$builder->string('Layout', 'layout')->list(false)->required()->sortable()->searchable();
+			// $builder->string('Layout', 'layout')->list(false)->required()->sortable()->searchable(); // page contains a list of stacked layouts (ordered)
 		})->linkToResources(['pages.show', 'websites.pages.index', 'websites.pages.create', 'websites.pages.show']);
 
 		DB::statement("DELETE FROM forms WHERE name = 'menus'");
 
-		FormBuilder::new ('menus', function (FormBuilder $builder) {
+		FormBuilder::new('menus', function (FormBuilder $builder) {
 			$builder->string('Name', 'name')->list()->required()->sortable()->searchable();
 		})->linkToResources(['websites.menus.index', 'websites.menus.create']);
 
 		DB::statement("DELETE FROM forms WHERE name = 'menus-editor'");
 
-		FormBuilder::new ('menus-editor', function (FormBuilder $builder) {
+		FormBuilder::new('menus-editor', function (FormBuilder $builder) {
 			$builder->menuEditor()->list(false);
 		})->linkToResources(['websites.menus.show']);
+
+		DB::statement("DELETE FROM forms WHERE name = 'page-sections'");
+
+		FormBuilder::new('page-sections', function (FormBuilder $builder) {
+			$builder->string('Section Name', 'name')->list()->edit(false)->sortable()->searchable();
+			$builder->string('Template', 'template')->list()->edit(false)->sortable()->searchable();
+		})->linkToResources(['pages.sections.index']);
+
 	}
 }
