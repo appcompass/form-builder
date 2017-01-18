@@ -1,7 +1,7 @@
 <?php
 
 Route::group([
-    'middleware' => 'api',
+    'middleware' => 'auth:api',
 ], function ($router) {
     // $router->resource('addresses', 'AddressesController');
 });

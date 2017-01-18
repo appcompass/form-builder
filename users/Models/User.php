@@ -4,16 +4,16 @@ namespace P3in\Models;
 
 use Cache;
 use Exception;
-use Illuminate\Auth\Authenticatable;
-use Illuminate\Auth\Passwords\CanResetPassword;
-use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Tymon\JWTAuth\Contracts\JWTSubject as AuthenticatableUserContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use Illuminate\Contracts\Container\Container;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Foundation\Auth\Access\Authorizable;
+use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Modular;
 use P3in\Models\Gallery;
 use P3in\Models\Group;
@@ -26,6 +26,7 @@ use P3in\Traits\OptionableTrait;
 
 class User extends ModularBaseModel implements
     AuthenticatableContract,
+    AuthenticatableUserContract,
     AuthorizableContract,
     CanResetPasswordContract
 {
@@ -71,7 +72,13 @@ class User extends ModularBaseModel implements
      *
      *  @var array
      */
-    protected $hidden = ['password', 'remember_token'];
+    protected $hidden = [
+        'password',
+        'remember_token',
+        'system',
+        'activated_at',
+        'activation_code'
+    ];
 
     /**
      * Stuff to append to each request
@@ -190,6 +197,21 @@ class User extends ModularBaseModel implements
     public function isSystem()
     {
         return $this->system_user;
+    }
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [
+             'user' => [
+                'id' => $this->id,
+                'name' => $this->full_name,
+             ]
+        ];
     }
 
     /**

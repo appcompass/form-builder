@@ -102,5 +102,7 @@ class UsersServiceProvider extends ServiceProvider {
 		$this->app->bind(
 			\P3in\Interfaces\PermissionsRepositoryInterface::class, \P3in\Repositories\PermissionsRepository::class
 		);
+
+        $this->app->register(\Tymon\JWTAuth\Providers\LaravelServiceProvider::class);
 	}
 }

@@ -1,9 +1,8 @@
 <?php
 
 Route::group([
-    // 'prefix' => 'api',
     'namespace' => 'P3in\Controllers',
-    'middleware' => 'api',
+    'middleware' => 'auth:api',
 ], function ($router) {
     $router->resource('websites', WebsitesController::class);
     $router->resource('websites.menus', WebsiteMenusController::class);
@@ -12,20 +11,22 @@ Route::group([
     $router->resource('pages', PagesController::class);
     $router->resource('pages.contents', PageContentsController::class); // @TODO: websites.pages.contents
     $router->resource('pages.sections', PageSectionsController::class); // @TODO: websites.pages.sections
-    $router->resource('websites.settings', WebsiteSettingsController::class);
+    $router->resource('websites.settings', WebsiteSettingsController::class); // @TODO:  Discuss this, not sure it's needed anymore since L5.3 fixed their Json field API.
     $router->resource('websites.redirects', WebsiteRedirectsController::class);
 
     $router->resource('menus', MenusController::class);
 
-    // Public Front-end website endpoints
-    $router->group([
-        'prefix' => 'render',
-        'middleware' => 'web',
-    ], function ($router) {
+});
 
-        // $router->post('form-submissions', 'PagesController@submitForm');
-        // $router->get('sitemap.{type}', 'PagesController@renderSitemap')->where('type', '(xml|html|txt|ror-rss|ror-rdf)');
-        // $router->get('robots.txt', 'PagesController@renderRobotsTxt');
-        // $router->any('{path?}', 'PagesController@renderPage')->where('path', '(.*)');
-    });
+// Public Front-end website endpoints
+Route::group([
+    'prefix' => 'render',
+    'namespace' => 'P3in\Controllers',
+    'middleware' => ['web', 'api'],
+], function ($router) {
+
+    // $router->post('form-submissions', 'PagesController@submitForm');
+    // $router->get('sitemap.{type}', 'PagesController@renderSitemap')->where('type', '(xml|html|txt|ror-rss|ror-rdf)');
+    // $router->get('robots.txt', 'PagesController@renderRobotsTxt');
+    // $router->any('{path?}', 'PagesController@renderPage')->where('path', '(.*)');
 });
