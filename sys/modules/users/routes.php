@@ -4,8 +4,9 @@ Route::group([
     'prefix' => 'auth',
     'namespace' => 'P3in\Controllers',
 ], function ($router) {
-    $router->post('login', 'AuthController@login')->middleware('guest');
+    $router->post('login', 'AuthController@login');
     $router->get('logout', 'AuthController@logout')->middleware('auth:api');
+    $router->get('user', 'AuthController@user')->middleware('auth:api');
 });
 
 Route::group([

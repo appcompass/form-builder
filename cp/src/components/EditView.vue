@@ -92,7 +92,6 @@ export default {
   },
 
   methods: {
-    // we refresh in a decent number of instances, but have to make sure after PUTting we propagate the refreshed stuff down to the actual items
     refresh () {
       var api = process.env.API_SERVER
       this.loading = true
@@ -105,27 +104,19 @@ export default {
 
           // we want the last bit of model
           this.route = this.model.split('/')[this.model.split('/').length - 2]
-          // this.model.split('/').forEach((element, index) => {
-          //   if (index % 2 === 0) {
-          //     this.route = element
-          //   }
-          // })
 
-          State.getNavigation(this.route)
-            .then(navigation => {
-              this.navigation = navigation
+          State.get(this.route)
+            .then(subnav => {
+              this.navigation = subnav
+            }, (response) => {
+              swal({title: 'Error', text: 'Can\'t fetch subnav', type: 'error'})
             })
-        })
-        .catch((response) => {
-          this.loading = false
+        }, (response) => {
           swal({title: 'Error', text: response.data.errors, type: 'error'})
         })
     },
     set (data) {
-      // console.log(data)
-      // console.log(this.collection[data.pointer])
       this.$set(this.collection, data.pointer, data.value)
-      // _.setWith(this.collection, data.pointer, data.value)
     },
     value (fieldName) {
       return _.get(this.collection, fieldName)

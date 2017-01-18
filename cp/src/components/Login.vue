@@ -7,7 +7,7 @@
       span.icon.is-small
         i.fa.fa-envelope
     p.control.has-icon
-      input.input(type="password", placeholder="Password", v-model="password")
+      input.input(type="password", placeholder="Password", v-model="password", @keyup.enter="login")
       span.icon.is-small
         i.fa.fa-lock
     p.control

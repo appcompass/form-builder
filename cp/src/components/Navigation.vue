@@ -1,6 +1,6 @@
 <template lang="jade">
 div
-  aside.menu(v-for="cat in navigation")
+  aside.menu(v-for="cat in navigation.full")
     p.menu-label {{ cat.title }}
     ul.menu-list
       li(v-for="item in cat.children")
@@ -9,18 +9,13 @@ div
 </template>
 
 <script>
+import State from './State'
+
 export default {
   name: 'Navigation',
-  created () {
-    const api = process.env.API_SERVER
-    this.$http.get(api + 'menus/1')
-      .then(response => {
-        this.navigation = response.body.collection
-      })
-  },
   data () {
     return {
-      navigation: {}
+      navigation: State
     }
   }
 }

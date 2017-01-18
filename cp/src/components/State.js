@@ -1,7 +1,4 @@
-import Vue from 'vue'
-import VueResource from 'vue-resource'
-
-Vue.use(VueResource)
+import Vue from '../main.js'
 
 function findObject (title, haystack, res) {
   for (let i = 0; i < haystack.length; i++) {
@@ -12,51 +9,39 @@ function findObject (title, haystack, res) {
       res = findObject(title, current.children, res)
     }
   }
-
   return res
 }
 
-/* eslint-disable no-new */
-const State = new Vue({
-  name: 'State',
-  data () {
-    return {
-      navigation: undefined
+export default {
+  full: null,
+  init () {
+    const api = process.env.API_SERVER
+    return Vue.http.get(api + 'menus/1')
+      .then(response => {
+        this.full = response.body.collection
+      })
+  },
+  get (route) {
+    if (this.full === null) {
+      return this.init()
+        .then(() => {
+          return this.search(route)
+        })
+    } else {
+      return this.search(route)
     }
   },
-  methods: {
-    getNavigation (route) {
-      const api = process.env.API_SERVER
-      console.log(route)
-      if (!this.navigation) {
-        return this.$http.get(api + 'menus/1')
-          .then(response => {
-            this.navigation = response.body.collection
-            return new Promise((resolve, reject) => {
-              if (route) {
-                // console.log('returning specific nav')
-                let navigation = findObject(route.charAt(0).toUpperCase() + route.slice(1), this.navigation)
-                return resolve(navigation)
-              } else {
-                // console.log('returning full navigation')
-                return resolve(this.navigation)
-              }
-            })
-          })
+  search (route) {
+    return new Promise((resolve, reject) => {
+      if (route) {
+        let part = findObject(route.charAt(0).toUpperCase() + route.slice(1), this.full)
+        return resolve(part)
       } else {
-        return new Promise((resolve, reject) => {
-          if (route) {
-            // console.log('returning specific nav')
-            let navigation = findObject(route.charAt(0).toUpperCase() + route.slice(1), this.navigation)
-            return resolve(navigation)
-          } else {
-            // console.log('returning full navigation')
-            return resolve(this.navigation)
-          }
-        })
+        return resolve(this.full)
       }
-    }
+    })
+  },
+  clear () {
+    this.full = null
   }
-})
-
-export default State
+}

@@ -51,7 +51,7 @@ div
 
 <script>
 import Sortable from '../VueSortable'
-import MenuElement from './Menu'
+import MenuElement from './MenuElement'
 
 export default {
   components: { Sortable, MenuElement },

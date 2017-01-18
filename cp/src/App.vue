@@ -1,12 +1,17 @@
 <template lang="jade">
 #app
-  div.hero.is-primary
-    .hero-head
-      .container
-        .nav.has-shadow
-          .nav-left
-            router-link.nav-item.is-brand(to="/")
-              img(src="./assets/images/content/p3_logo-01.png")
+  .nav.has-shadow
+    .container
+      .nav-left
+        router-link.nav-item(to="/")
+          img(src="./assets/images/content/p3_logo-01.png")
+      .nav-right
+        a.nav-item(v-if="!auth.user.authenticated") Login
+        a.nav-item.is-tab(v-if="auth.user.authenticated", @click="auth.logout()")
+          figure.image.is-32x32
+            img(src="https://www.gravatar.com/avatar/73191ba9d56203146b1551d71a1065e3")
+          | &nbsp; Logout
+        a.nav-item.is-tab(v-if="auth.user.authenticated") Profile
   div.section
     .columns
       .column.is-2
@@ -50,7 +55,6 @@ export default {
     }
   },
   mounted () {
-    console.log('check auth')
     auth.check()
   }
 }
@@ -72,4 +76,7 @@ export default {
 
 i.fa.fa-heart
   color: red
+
+figure img
+  border-radius: 5px
 </style>

@@ -1,5 +1,6 @@
 /* global localStorage: false */
 import Vue, {router} from '../main.js'
+import State from './State'
 
 export default {
   user: {
@@ -8,32 +9,29 @@ export default {
   },
   check () {
     if (localStorage.getItem('id_token') !== null) {
-      // Vue.http.get(
-      //   process.env.API_SERVER + 'api/user',
-      //   ).then(response => {
-      //     this.user.authenticated = true
-      //     this.user.profile = response.data.data
-      //   })
+      Vue.http.get(process.env.API_SERVER + 'auth/user')
+        .then(response => {
+          this.user.authenticated = true
+          this.user.profile = response.data.data
+          State.init()
+        }, response => {
+          router.push({ name: 'login' })
+        })
     } else {
       router.push({ name: 'login' })
     }
   },
   login (context, email, password) {
-    Vue.http.post(
-      process.env.API_SERVER + 'auth/login',
-      // 'https://api.p3in.com/auth/login',
-      {
-        email: email,
-        password: password
-      }
-      ).then(response => {
+    Vue.http.post(process.env.API_SERVER + 'auth/login', { email: email, password: password })
+      .then(response => {
         context.error = false
-        console.log(response.data.access_token)
         localStorage.setItem('id_token', response.data.access_token)
-        Vue.http.headers.common['access_token'] = 'Bearer ' + localStorage.getItem('id_token')
+        Vue.http.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('id_token')
 
         this.user.authenticated = true
         this.user.profile = response.data.data
+
+        State.init()
 
         router.push({
           name: 'dashboard'
@@ -47,19 +45,20 @@ export default {
     this.user.authenticated = false
     this.user.profile = null
 
+    State.clear()
+
     router.push({
-      name: 'home'
+      name: 'login'
     })
   },
   register (context, name, email, password) {
-    Vue.http.post(
-      process.env.API_SERVER + 'api/register',
-      {
-        name: name,
-        email: email,
-        password: password
-      }
-      ).then(response => {
+    let payload = {
+      name: name,
+      email: email,
+      password: password
+    }
+    Vue.http.post(process.env.API_SERVER + 'api/register', payload)
+      .then(response => {
         context.success = true
       }, response => {
         context.response = response.data
