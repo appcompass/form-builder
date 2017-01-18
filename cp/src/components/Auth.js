@@ -12,7 +12,7 @@ export default {
       Vue.http.get(process.env.API_SERVER + 'auth/user')
         .then(response => {
           this.user.authenticated = true
-          this.user.profile = response.data.data
+          this.user.profile = response.data
           State.init()
         }, response => {
           router.push({ name: 'login' })

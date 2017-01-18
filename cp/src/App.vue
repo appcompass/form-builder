@@ -8,8 +8,8 @@
       .nav-right
         a.nav-item(v-if="!auth.user.authenticated") Login
         a.nav-item.is-tab(v-if="auth.user.authenticated", @click="auth.logout()")
-          figure.image.is-32x32
-            img(src="https://www.gravatar.com/avatar/73191ba9d56203146b1551d71a1065e3")
+          figure.image.is-16x16
+            img(:src="auth.user.profile.gravatar_url")
           | &nbsp; Logout
         a.nav-item.is-tab(v-if="auth.user.authenticated") Profile
   div.section
