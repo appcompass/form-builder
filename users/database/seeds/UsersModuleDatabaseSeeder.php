@@ -46,7 +46,7 @@ class UsersModuleDatabaseSeeder extends Seeder
         // $builder->actions('edit')->permissions('users.own.edit');
         // $builder->datetime('End of absence', 'settings.absent.end'); <- working
 
-        FormBuilder::new('users', function(FormBuilder $builder) {
+        FormBuilder::new('users', function (FormBuilder $builder) {
             $builder->string('First Name', 'first_name')->list()->required()->sortable()->searchable();
             $builder->string('Last Name', 'last_name')->list()->required()->sortable()->searchable();
             $builder->string('Email', 'email')->list()->required()->validation('email')->sortable()->searchable();
