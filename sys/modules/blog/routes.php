@@ -2,7 +2,7 @@
 
 Route::group([
     'namespace' => 'P3in\Controllers',
-    'middleware' => 'api',
+    'middleware' => 'auth:api',
 ], function ($router) {
 
     // $router->resource('websites.blog-entries', 'CpWebsiteBlogEntriesController');

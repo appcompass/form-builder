@@ -1,9 +1,8 @@
 <?php
 
 Route::group([
-    // 'prefix' => 'api',
     'namespace' => 'P3in\Controllers',
-    'middleware' => 'api',
+    'middleware' => 'auth:api',
 ], function ($router) {
     $router->resource('galleries', GalleriesController::class);
     $router->resource('galleries.photos', GalleryPhotosController::class);

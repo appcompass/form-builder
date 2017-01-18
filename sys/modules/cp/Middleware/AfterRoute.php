@@ -38,7 +38,7 @@ class AfterRoute {
 		$response = $next($request);
 
 		// return for exceptions
-		if ($response->exception) {
+		if (isset($response->exception)) {
 
 			$result = [
 				'errors' => $response->exception->getMessage(),

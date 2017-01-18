@@ -177,8 +177,10 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        P3in\Providers\ModuleServiceProvider::class
 
+        // Plus 3 CMS
+        P3in\Providers\ModuleServiceProvider::class,
+        Laravel\Passport\PassportServiceProvider::class,
     ],
 
     /*
