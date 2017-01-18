@@ -76,7 +76,7 @@ class Form extends Model
      */
     public function scopeByResource(Builder $query, $resource_name)
     {
-        return $query->whereHas('resources', function(Builder $query) use($resource_name) {
+        return $query->whereHas('resources', function (Builder $query) use ($resource_name) {
             return $query->where('resource', $resource_name);
         });
     }

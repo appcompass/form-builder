@@ -93,5 +93,4 @@ class AuthController extends Controller
     {
         return Auth::guard();
     }
-
 }

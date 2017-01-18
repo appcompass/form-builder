@@ -8,25 +8,26 @@ use P3in\Models\Page;
 
 class Section extends Model
 {
-	protected $fillable = [
-		'name',
-		'template',
-		'type',
-		'config',
-	];
+    protected $fillable = [
+        'name',
+        'template',
+        'type',
+        'config',
+    ];
 
-	protected $casts = [
-		'config' => 'object',
-	];
+    protected $casts = [
+        'config' => 'object',
+    ];
 
-	public function layout() {
-		return $this->belongsTo(Layout::class);
-	}
+    public function layout()
+    {
+        return $this->belongsTo(Layout::class);
+    }
 
-	public function pages()
-	{
-		return $this->belongsToMany(Page::class);
-	}
+    public function pages()
+    {
+        return $this->belongsToMany(Page::class);
+    }
 
     public function form()
     {

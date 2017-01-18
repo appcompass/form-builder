@@ -31,58 +31,61 @@ use P3in\Repositories\PageSectionsRepository;
 use P3in\Repositories\WebsiteSettingsRepository;
 use P3in\Repositories\WebsitesRepository;
 
-class WebsitesServiceProvider extends ServiceProvider {
-	public function boot(Gate $gate) {
-	}
+class WebsitesServiceProvider extends ServiceProvider
+{
+    public function boot(Gate $gate)
+    {
+    }
 
-	public function register() {
-		// we shoudl prob make this a method that runs through $this->bindings
-		foreach ([
-			WebsitesRepositoryInterface::class => WebsitesRepository::class,
-			WebsitePagesRepositoryInterface::class => WebsitePagesRepository::class,
-			WebsiteRedirectsRepositoryInterface::class => WebsiteRedirectsRepository::class,
-			WebsiteSettingsRepositoryInterface::class => WebsiteSettingsRepository::class,
-			PageContentsRepositoryInterface::class => PageContentsRepository::class,
-			PageSectionsRepositoryInterface::class => PageSectionsRepository::class,
-			PagesRepositoryInterface::class => PagesRepository::class,
-			MenusRepositoryInterface::class => MenusRepository::class,
-			WebsiteMenusRepositoryInterface::class => WebsiteMenusRepository::class,
-		] as $interface => $repo) {
-			$this->app->bind(
-				$interface, $repo
-			);
-		}
+    public function register()
+    {
+        // we shoudl prob make this a method that runs through $this->bindings
+        foreach ([
+            WebsitesRepositoryInterface::class => WebsitesRepository::class,
+            WebsitePagesRepositoryInterface::class => WebsitePagesRepository::class,
+            WebsiteRedirectsRepositoryInterface::class => WebsiteRedirectsRepository::class,
+            WebsiteSettingsRepositoryInterface::class => WebsiteSettingsRepository::class,
+            PageContentsRepositoryInterface::class => PageContentsRepository::class,
+            PageSectionsRepositoryInterface::class => PageSectionsRepository::class,
+            PagesRepositoryInterface::class => PagesRepository::class,
+            MenusRepositoryInterface::class => MenusRepository::class,
+            WebsiteMenusRepositoryInterface::class => WebsiteMenusRepository::class,
+        ] as $interface => $repo) {
+            $this->app->bind(
+                $interface, $repo
+            );
+        }
 
-		Route::model('websites', Website::class);
-		Route::model('redirects', Redirect::class);
-		Route::model('settings', Setting::class);
-		Route::model('pages', Page::class);
-		Route::model('contents', PageContent::class);
-		Route::model('sections', Section::class);
-		Route::model('menus', Menu::class);
+        Route::model('websites', Website::class);
+        Route::model('redirects', Redirect::class);
+        Route::model('settings', Setting::class);
+        Route::model('pages', Page::class);
+        Route::model('contents', PageContent::class);
+        Route::model('sections', Section::class);
+        Route::model('menus', Menu::class);
 
-		Route::bind('website', function ($value) {
-			return Website::findOrFail($value);
-		});
+        Route::bind('website', function ($value) {
+            return Website::findOrFail($value);
+        });
 
-		Route::bind('redirect', function ($value) {
-			return Redirect::findOrFail($value);
-		});
+        Route::bind('redirect', function ($value) {
+            return Redirect::findOrFail($value);
+        });
 
-		Route::bind('setting', function ($value) {
-			return Setting::findOrFail($value);
-		});
+        Route::bind('setting', function ($value) {
+            return Setting::findOrFail($value);
+        });
 
-		Route::bind('page', function ($value) {
-			return Page::findOrFail($value);
-		});
+        Route::bind('page', function ($value) {
+            return Page::findOrFail($value);
+        });
 
-		Route::bind('content', function ($value) {
-			return PageContent::findOrFail($value);
-		});
+        Route::bind('content', function ($value) {
+            return PageContent::findOrFail($value);
+        });
 
-		Route::bind('menu', function ($value) {
-			return Menu::findOrFail($value);
-		});
-	}
+        Route::bind('menu', function ($value) {
+            return Menu::findOrFail($value);
+        });
+    }
 }

@@ -15,7 +15,6 @@ Route::group([
     $router->resource('websites.redirects', WebsiteRedirectsController::class);
 
     $router->resource('menus', MenusController::class);
-
 });
 
 // Public Front-end website endpoints
