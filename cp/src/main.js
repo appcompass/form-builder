@@ -1,6 +1,7 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import VueResource from 'vue-resource'
+/* global localStorage: false */
+var Vue = require('vue')
+var VueRouter = require('vue-router')
+var VueResource = require('vue-resource')
 
 import routes from './routes'
 import App from './App'
@@ -10,7 +11,12 @@ import '../src/assets/sass/main.sass'
 Vue.use(VueRouter)
 Vue.use(VueResource)
 
-const router = new VueRouter({
+Vue.http.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('id_token')
+// Vue.http.options.root = ''
+
+export default Vue
+
+export var router = new VueRouter({
   mode: 'history',
   routes
 })

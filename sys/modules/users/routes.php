@@ -11,7 +11,7 @@ Route::group([
 Route::group([
     // 'prefix' => 'api',
     'namespace' => 'P3in\Controllers',
-    'middleware' => 'auth:api',
+    'middleware' => ['auth', 'api']
 ], function ($router) {
     $router->resource('users', UsersController::class);
     $router->resource('groups', GroupsController::class);

@@ -12,7 +12,6 @@
       .column.is-2
         Navigation
       .column
-        //- {{ breadcrumbs.join(' / ')}}
         transition(name="route", mode="out-in")
           router-view
   footer.footer
@@ -33,30 +32,27 @@
 </template>
 
 <script>
+import auth from './components/Auth.js'
 import Navigation from './components/Navigation'
-import { mapGetters, mapActions } from 'vuex'
+// import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'app',
+  components: { Navigation },
   data () {
     return {
-      // breadcrumbs: [ 'Main /' ]
+      auth: auth
     }
   },
-  computed: mapGetters([
-    'count'
-  ]),
-  methods: mapActions([
-    'increment',
-    'decrement'
-  ]),
-  watch: {
-    '$route' (route) {
-      // console.log('route changed')
-      // console.log(this.$router.getMatchedComponents()) // @TODO breadcrumbs
+  methods: {
+    logout () {
+      auth.logout()
     }
   },
-  components: { Navigation }
+  mounted () {
+    console.log('check auth')
+    auth.check()
+  }
 }
 </script>
 

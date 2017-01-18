@@ -109,7 +109,7 @@ export default {
       var api = process.env.API_SERVER
       this.loading = true
       this.model = this.$route.path
-      this.$http.get(api + this.$route.path, {
+      this.$http.get(api + this.$route.path.slice(1), {
         params: {
           page: this.pagination.current_page,
           search: this.search,

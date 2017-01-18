@@ -2,8 +2,9 @@
 
 Route::group([
     'namespace' => 'P3in\Controllers',
-    'middleware' => 'auth:api',
+    'middleware' => ['auth', 'api'],
 ], function ($router) {
+    $router->resource('menus', MenusController::class);
     $router->resource('websites', WebsitesController::class);
     $router->resource('websites.menus', WebsiteMenusController::class);
     $router->resource('websites.navigation', WebsiteMenusController::class);
@@ -13,8 +14,6 @@ Route::group([
     $router->resource('pages.sections', PageSectionsController::class); // @TODO: websites.pages.sections
     $router->resource('websites.settings', WebsiteSettingsController::class); // @TODO:  Discuss this, not sure it's needed anymore since L5.3 fixed their Json field API.
     $router->resource('websites.redirects', WebsiteRedirectsController::class);
-
-    $router->resource('menus', MenusController::class);
 });
 
 // Public Front-end website endpoints
