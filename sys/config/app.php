@@ -180,7 +180,6 @@ return [
 
         // Plus 3 CMS
         P3in\Providers\ModuleServiceProvider::class,
-        Laravel\Passport\PassportServiceProvider::class,
     ],
 
     /*
