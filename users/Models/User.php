@@ -85,9 +85,7 @@ class User extends ModularBaseModel implements
      *
      *
      */
-    protected $appends = ['full_name'];
-
-
+    protected $appends = ['full_name', 'gravatar_url'];
 
     public static $rules = [
         'first_name' => 'required|max:255',
@@ -107,15 +105,31 @@ class User extends ModularBaseModel implements
         return $this->belongsToMany(Group::class)->withTimestamps();
     }
 
+    /**
+     * Permissions
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
     public function permissions()
     {
         return $this->belongsToMany(Permission::class)->withTimestamps();
     }
 
+    /**
+     * Photos
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
     public function photos()
     {
         return $this->hasMany(Photo::class);
     }
+
+    /**
+     * Galleries
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
     public function galleries()
     {
         return $this->hasMany(Gallery::class);
@@ -127,7 +141,6 @@ class User extends ModularBaseModel implements
      *
      *  TODO: this needs to be refactored a little
      */
-
     public function linkProfile(Model $model)
     {
         $profile = $this->profiles()->firstOrNew([
@@ -137,6 +150,13 @@ class User extends ModularBaseModel implements
         $profile->save();
     }
 
+    /**
+     * { function_description }
+     *
+     * @param      <type>  $model_name  The model name
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
     public function profile($model_name)
     {
         $base_profile = $this->profiles()->where('profileable_type', $model_name)->first();
@@ -144,6 +164,13 @@ class User extends ModularBaseModel implements
         return $base_profile ? $base_profile->profileable : null;
     }
 
+    /**
+     * { function_description }
+     *
+     * @param      <type>  $field_name  The field name
+     *
+     * @return     array   ( description_of_the_return_value )
+     */
     public function populateField($field_name)
     {
         switch ($field_name) {
@@ -158,6 +185,11 @@ class User extends ModularBaseModel implements
         }
     }
 
+    /**
+     * Sets the password attribute.
+     *
+     * @param      <type>  $value  The value
+     */
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = bcrypt($value);
@@ -170,6 +202,15 @@ class User extends ModularBaseModel implements
     public function getFullNameAttribute()
     {
         return sprintf("%s %s", $this->first_name, $this->last_name);
+    }
+
+    /**
+     *  Get user's full name
+     *
+     */
+    public function getGravatarUrlAttribute()
+    {
+        return "https://www.gravatar.com/avatar/" . md5($this->email);
     }
 
     /**
