@@ -339,80 +339,81 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 $formBuilder->loginForm('Customer Login', 'customer_login', []);
             });
 
-            $homeFullSections = [
-                $slider_banner,
-                $box_callouts,
-                $our_proccess,
-                $meet_our_team,
-                $social_stream,
-                $customer_testimonials,
-            ];
-
-            $solutionsFullSections = [
-                $thick_page_banner,
-                $white_break_w_section_links,
-                $provided_solution,
-                $blue_break_callout,
-            ];
-            $processFullSections = [
-                $thick_page_banner,
-                $breadcrumb_with_right_link,
-                $process_timeline,
-                $process_maintenance_details,
-            ];
-
-            $projectsFullSections = [
-                $thick_page_banner,
-                $project_list,
-                $blue_break_callout,
-                $white_break_w_section_links,
-            ];
-
-            $companyFullSections = [
-                $thick_page_banner,
-                $meet_our_team,
-                $social_stream,
-            ];
-
-            $contactFullSections = [
-                $thick_page_banner,
-                $contact_form,
-                $map_address,
-            ];
-
-            $loginFullSections = [
-                $thick_page_banner,
-                $login_form,
-            ];
-
             // Build Pages
             $homepage = $websiteBuilder
-                ->addPage('Home Page', '')
-                ->setLayout($full, 1, $homeFullSections);
+                ->addPage('Home Page', '');
+
+            $homepage->setPageLayout($full, 1)
+                ->addSections([
+                    $slider_banner,
+                    $box_callouts,
+                    $our_proccess,
+                    $meet_our_team,
+                    $social_stream,
+                    $customer_testimonials,
+                ]);
 
             $solutions = $websiteBuilder
-                ->addPage('Solutions', 'solutions')
-                ->setLayout($full, 1, $solutionsFullSections);
+                ->addPage('Solutions', 'solutions');
+
+            $solutions->setPageLayout($full, 1)
+                ->addSections([
+                    $thick_page_banner,
+                    $white_break_w_section_links,
+                    $provided_solution,
+                    $blue_break_callout,
+                ]);
 
             $process = $solutions
-                ->addPage('Our Process', 'our-process')
-                ->setLayout($full, 1, $processFullSections);
+                ->addPage('Our Process', 'our-process');
+
+            $process->setPageLayout($full, 1)
+                ->addSections([
+                    $thick_page_banner,
+                    $breadcrumb_with_right_link,
+                    $process_timeline,
+                    $process_maintenance_details,
+                ]);
 
             $projects = $websiteBuilder
-                ->addPage('Projects', 'projects')
-                ->setLayout($full, 1, $projectsFullSections);
+                ->addPage('Projects', 'projects');
+
+            $projects->setPageLayout($full, 1)
+                ->addSections([
+                    $thick_page_banner,
+                    $project_list,
+                    $blue_break_callout,
+                    $white_break_w_section_links,
+                ]);
 
             $company = $websiteBuilder
-                ->addPage('Company', 'company')
-                ->setLayout($full, 1, $companyFullSections);
+                ->addPage('Company', 'company');
+
+            $company->setPageLayout($full, 1)
+                ->addSections([
+                    $thick_page_banner,
+                    $meet_our_team,
+                    $social_stream,
+                ]);
 
             $contact = $websiteBuilder
-                ->addPage('Contact Us', 'contact')
-                ->setLayout($full, 1, $contactFullSections);
+                ->addPage('Contact Us', 'contact');
+
+            $contact->setPageLayout($full, 1)
+                ->addSections([
+                    $thick_page_banner,
+                    $contact_form,
+                    $map_address,
+                ]);
 
             $login = $websiteBuilder
-                ->addPage('Customer Login', 'customer-login')
-                ->setLayout($full, 1, $loginFullSections);
+                ->addPage('Customer Login', 'customer-login');
+
+            $login->setPageLayout($full, 1)
+                ->addSections([
+                    $thick_page_banner,
+                    $login_form,
+                ]);
 
             $main_header_menu = $websiteBuilder->addMenu('main_header_menu');
 

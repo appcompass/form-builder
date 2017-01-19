@@ -80,6 +80,7 @@ class PageBuilder
         $page->parent()->associate($this->page);
         $page->website()->associate($this->page->website);
 
+        // the order of this is due to needing the parent to be defined before the slug.
         $page->fill([
             'title' => $title,
             'slug' => $slug,
@@ -90,36 +91,29 @@ class PageBuilder
         return new PageBuilder($page);
     }
 
-    public function setLayout(Layout $layout, $order = 1, $closure = null)
+    public function setPageLayout(Layout $layout, $order = 1)
     {
         $this->page->layouts()->attach($layout, ['order' => $order]);
 
-        if ($closure) {
-            $instance = new PageLayoutBuilder($this->page, $order, $layout);
-
-            if (is_array($closure)) {
-                foreach ($closure as $i => $section) {
-                    $instance->addSection($section, $i+1);
-                }
-            } elseif ($closure instanceof Closure) {
-                $closure($instance);
-            }
-        }
-
-        return $this;
+        return new PageLayoutBuilder($this->page, $layout, $order);
     }
 
-    public function setParent(PageBuilder $parent)
-    {
-        $this->page->parent()->associate($parent->getPage());
-        $this->page->save();
+    // public function setLayout(Layout $layout, $order = 1, $closure = null)
+    // {
+    //     $this->page->layouts()->attach($layout, ['order' => $order]);
 
-        // we fire this here because otherwise the ULR won't be updated.
-        // We really should create an event listener on the child Page model.
-        $this->page->parent->updateChildrenUrl();
+    //     if ($closure) {
+    //         $instance = new PageLayoutBuilder($this->page, $order, $layout);
 
-        return $this;
-    }
+    //         if (is_array($closure)) {
+    //             $instance->addSections($closure);
+    //         } elseif ($closure instanceof Closure) {
+    //             $closure($instance);
+    //         }
+    //     }
+
+    //     return $this;
+    // }
 
     public function getPage()
     {
