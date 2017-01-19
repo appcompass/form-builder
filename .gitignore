@@ -25,5 +25,6 @@ config.codekit
 sys/database/migrations
 sys/resources/node-scripts
 supervisord.conf
+npm-debug.log
 
 cp/config/server.env.js
