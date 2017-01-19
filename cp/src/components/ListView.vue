@@ -17,7 +17,7 @@
             i.fa.fa-plus
           span Create
 
-      h1.title.is-4 List: {{ $route.params.model }}
+      h1.title.is-4 List: {{ $route.params.sub || $route.params.model }}
 
       Pagination(:p="pagination", :disabled="loading", v-if="pagination.last_page > 1")
 

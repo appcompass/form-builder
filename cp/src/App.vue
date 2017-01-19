@@ -25,7 +25,9 @@ export default {
   min-height: 100vh
   display: flex
   flex-direction: column
+  background: white
 
 .main
+  margin-top: auto
   flex: 1
 </style>

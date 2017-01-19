@@ -7,33 +7,34 @@ div
           h1.title Missing List View Form
           h2.subtitle List Form not provided, please provide one.
 
-    .column.is-8(v-else)
+    .column(v-else, :class="{'is-8': navigation && navigation.length, 'is-10': !navigation || !navigation.length}")
       h1.title.is-4 Edit: {{ $route.params.model.split('_').pop() }}
         a.button.is-pulled-right(@click="$router.go(-1)")
           span.icon.is-small
             span.fa.fa-angle-left
           .span Back
 
-      form
-        .control(v-for="field in edit.fields")
-          label.label {{ field.label }}
-          span(
-            v-bind:is="'Form' + field.type",
-            v-bind:pointer="field.name"
-            v-bind:data="value(field.name)"
-            v-bind:value="value(field.name)"
-            @input="set"
-          )
-      footer
-        p.control
-          .pull-right
-            a.button.is-primary(
-              v-bind:class="{'is-loading': loading}",
-              v-bind:disable="loading",
-              @click="update"
-            ) Save
+      .section
+        form
+          .control(v-for="field in edit.fields")
+            label.label {{ field.label }}
+            span(
+              v-bind:is="'Form' + field.type",
+              v-bind:pointer="field.name"
+              v-bind:data="value(field.name)"
+              v-bind:value="value(field.name)"
+              @input="set"
+            )
+        footer
+          p.control
+            .pull-right
+              a.button.is-primary(
+                v-bind:class="{'is-loading': loading}",
+                v-bind:disable="loading",
+                @click="update"
+              ) Save
 
-    .column.is-3.is-offset-1
+    .column.is-3.is-offset-1(v-if="navigation && navigation.length")
       h1.menu-label Sub Navigation
       aside.menu
         ul.menu-list

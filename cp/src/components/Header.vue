@@ -34,3 +34,8 @@ export default {
   }
 }
 </script>
+
+<style lang="sass" scoped>
+.nav
+  background: rgb(243, 243, 243)
+</style>

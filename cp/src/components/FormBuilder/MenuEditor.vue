@@ -1,16 +1,16 @@
 <template lang="jade">
-div
-  MenuElement(:menu="data.menu", @deleted="deleted")
-  Sortable.empty(v-if="!data.menu.length", :list="data.menu",  :options="{handle: '.handle', animation: 150, group: 'items'}") Empty
+.columns
+  .column.is-8
+    MenuElement(:menu="data.menu", @deleted="deleted")
+    Sortable.empty(v-if="!data.menu.length", :list="data.menu",  :options="{handle: '.handle', animation: 150, group: 'items'}") Empty
 
-  p.control
-  a.button.is-small(@click="modal.active = true")
-    span.icon.is-small
-      i.fa.fa-link
-    span New Link
+    p.control
+    a.button.is-small(@click="modal.active = true")
+      span.icon.is-small
+        i.fa.fa-link
+      span New Link
 
-  .section
-    h1.title Current Pages
+  .column.is-4
     Sortable.menu-list(:list="data.repo", :element="'ul'", :options="{handle: '.handle', animation: 150, group: 'items', clone: true}")
       li(v-for="(item, index) in data.repo")
         a.handle
@@ -68,7 +68,9 @@ export default {
       this.setChildren()
     }
   },
-  created () {},
+  created () {
+    this.setChildren()
+  },
   methods: {
     deleted (item) {
       this.data.deletions.push(item.id)
@@ -83,7 +85,9 @@ export default {
     setChildren () {
       let vm = this
       this.data.repo.forEach(function (item, index) {
-        vm.$set(vm.data.repo[index], 'children', [])
+        if (!item.children) {
+          vm.$set(vm.data.repo[index], 'children', [])
+        }
       })
     }
   }
