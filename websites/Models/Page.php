@@ -167,6 +167,20 @@ class Page extends Model implements Linkable
         return '/' . implode('/', array_reverse($slugs));
     }
 
+    public function createChild($data)
+    {
+        $page = new static;
+
+        $page->parent()->associate($this);
+        $page->website()->associate($this->website);
+
+        // the order of this is due to needing the parent to be defined before the slug.
+        $page->fill($data);
+
+        $page->save();
+
+        return $page;
+    }
     /**
      * Makes a menu item.
      *

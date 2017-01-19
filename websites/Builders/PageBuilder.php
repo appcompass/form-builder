@@ -75,18 +75,10 @@ class PageBuilder
 
     public function addPage($title, $slug)
     {
-        $page = new Page;
-
-        $page->parent()->associate($this->page);
-        $page->website()->associate($this->page->website);
-
-        // the order of this is due to needing the parent to be defined before the slug.
-        $page->fill([
+        $page = $this->page->createChild([
             'title' => $title,
             'slug' => $slug,
         ]);
-
-        $page->save();
 
         return new PageBuilder($page);
     }
