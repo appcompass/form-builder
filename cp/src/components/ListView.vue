@@ -118,19 +118,23 @@ export default {
       })
         .then((response) => {
           this.loading = false
+
           if (!response.data.list) {
             this.list = undefined
             return
           }
+
           this.list = response.data.list
+
+          // check if collection sets it's own view layout [Card, Table, MultiSelect]
           if (response.data.collection.view != null) {
             this.list.list_layout = response.data.collection.view
           }
+
           this.pagination = _.omit(response.data.collection.data, ['data'])
           this.collection = response.data.collection
           this.resource = this.$resource(api + this.list.resource)
-        })
-        .catch((response) => {
+        }, (response) => {
           this.loading = false
           swal('Error!', response.data.errors, 'error')
         })

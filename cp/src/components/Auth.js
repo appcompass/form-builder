@@ -5,11 +5,13 @@ import State from './State'
 export default {
   user: {
     authenticated: false,
-    profile: null
+    profile: {
+      gravatar_url: null
+    }
   },
   check () {
     if (localStorage.getItem('id_token') !== null) {
-      Vue.http.get(process.env.API_SERVER + 'auth/user')
+      return Vue.http.get(process.env.API_SERVER + 'auth/user')
         .then(response => {
           this.user.authenticated = true
           this.user.profile = response.data
@@ -29,7 +31,7 @@ export default {
         Vue.http.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('id_token')
 
         this.user.authenticated = true
-        this.user.profile = response.data.data
+        this.user.profile = response.data.user
 
         State.init()
 

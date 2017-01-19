@@ -33,8 +33,8 @@ div
               @click="update"
             ) Save
 
-    div
-      h1 Sub Navigation
+    .column.is-3.is-offset-1
+      h1.menu-label Sub Navigation
       aside.menu
         ul.menu-list
           li(v-for="item in navigation")
