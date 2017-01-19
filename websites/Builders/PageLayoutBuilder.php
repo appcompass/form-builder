@@ -18,7 +18,7 @@ class PageLayoutBuilder
     private $page;
     private $layout;
 
-    public function __construct(Page &$page, $order = 1, Layout $layout)
+    public function __construct(Page &$page, Layout $layout, $order = 1)
     {
         $page->layouts()->attach($layout, ['order' => $order]);
 
@@ -39,6 +39,15 @@ class PageLayoutBuilder
             $this->page->sections()->attach($section, ['order' => $order]);
         } else {
             throw new Exception("Trying to add something i don't understand.");
+        }
+
+        return $this;
+    }
+
+    public function addSections(array $sections)
+    {
+        foreach ($sections as $i => $section) {
+            $this->addSection($section, $i+1);
         }
 
         return $this;

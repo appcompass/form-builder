@@ -13,7 +13,7 @@ class MenuItem extends Model
         'title',
         'alt',
         'new_tab',
-        'sort'
+        'order'
     ];
 
     protected $hidden = [
