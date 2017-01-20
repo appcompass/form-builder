@@ -14,11 +14,11 @@ class CreateFormBuilderTables extends Migration
     public function up()
     {
         // This only provides constraints and easy Vue components matching
-        Schema::create('fieldtypes', function (Blueprint $table) {
-            $table->string('type');
-            $table->string('label');
-            $table->primary('type');
-        });
+        // Schema::create('fieldtypes', function (Blueprint $table) {
+        //     $table->string('type');
+        //     $table->string('label');
+        //     $table->primary('type');
+        // });
 
         Schema::create('fields', function (Blueprint $table) {
             $table->increments('id');
@@ -33,14 +33,15 @@ class CreateFormBuilderTables extends Migration
             $table->boolean('searchable')->default(false);
             $table->boolean('repeatable')->default(false);
             $table->string('validation')->nullable();
-
             $table->string('type');
-            $table->foreign('type')
-                ->references('type')
-                ->on('fieldtypes')
-                ->onCascade('delete');
 
-            $table->timestamps();
+            // $table->string('type');
+            // $table->foreign('type')
+            //     ->references('type')
+            //     ->on('fieldtypes')
+            //     ->onCascade('delete');
+
+            // $table->timestamps();
             $table->index('name');
         });
 
@@ -92,6 +93,6 @@ class CreateFormBuilderTables extends Migration
         Schema::drop('field_form');
         Schema::drop('forms');
         Schema::drop('fields');
-        Schema::drop('fieldtypes');
+        // Schema::drop('fieldtypes');
     }
 }

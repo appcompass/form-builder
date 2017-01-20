@@ -3,11 +3,11 @@
   .column.is-half.is-offset-one-quarter
     p.is-danger(v-if="error") Login Error, fucko!
     p.control.has-icon
-      input.input(type="email", placeholder="Email", v-model="email")
+      input.input(type="email", placeholder="Email", v-model="email", @keydown="error = false", @keyup.enter="login")
       span.icon.is-small
         i.fa.fa-envelope
     p.control.has-icon
-      input.input(type="password", placeholder="Password", v-model="password", @keyup.enter="login")
+      input.input(type="password", placeholder="Password", v-model="password", @keyup.enter="login", @keydown="error = false")
       span.icon.is-small
         i.fa.fa-lock
     p.control

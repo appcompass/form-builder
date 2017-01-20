@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use P3in\Models\Field;
 use P3in\Models\Form;
 use P3in\Models\Resource;
+use P3in\Models\Types\BaseField;
 
 class FormBuilder
 {
@@ -16,13 +17,20 @@ class FormBuilder
      */
     public $form;
 
+    private function __construct(Form $form)
+    {
+        $this->form = $form;
+
+        return $this;
+    }
+
     public static function new($name, Closure $closure = null)
     {
-        $instance = new static();
-
-        $instance->form = Form::firstOrCreate([
+        $form = Form::firstOrCreate([
             'name' => $name,
         ]);
+
+        $instance = new static($form);
 
         if ($closure) {
             $closure($instance);
@@ -41,10 +49,13 @@ class FormBuilder
     public static function edit($form)
     {
         if ($form instanceof Form) {
+
             $instance = new static($form);
+
         } elseif (is_string($form)) {
-            $instance = new static(Form::whereName($form)
-                ->firstOrFail());
+
+            $instance = new static(Form::whereName($form)->firstOrFail());
+
         }
 
         return $instance;
@@ -137,6 +148,34 @@ class FormBuilder
         return $this;
     }
 
+    public function __call($method, array $args)
+    {
+        // we'll try to new ucfirst that class, if that works we got it already
+        $field_name = ucfirst($method) . 'Type';
+
+        $class_name = '\P3in\Models\Types\\' . $field_name;
+
+        if (!class_exists($class_name)) {
+
+            die("The FieldType: <$field_name> does not exist. Do Something!");
+
+        }
+
+        // return $this->addField(new $class_name($args[0]));
+        return $this->addField($class_name::make($args[0]));
+    }
+
+    /**
+     * Adds a field.
+     *
+     */
+    private function addField(BaseField $field_type)
+    {
+        $this->form->fields()->attach($field_type->field);
+
+        return $field_type->field;
+    }
+
     /**
      * Gets the fields.
      *
@@ -156,118 +195,77 @@ class FormBuilder
      *
      * @return     <type>  ( description_of_the_return_value )
      */
-    public function string($label, $name = null, $validation = [])
-    {
-        return $this->addField($label, $name, 'string', $validation);
-    }
+    // public function string($label, $name = null, $validation = [])
+    // {
+    //     return $this->addField($label, $name, 'string', $validation);
+    // }
 
-    public function text($label, $name = null, $validation = [])
-    {
-        return $this->addField($label, $name, 'text', $validation);
-    }
+    // public function text($label, $name = null, $validation = [])
+    // {
+    //     return $this->addField($label, $name, 'text', $validation);
+    // }
 
-    public function radio($label, $name = null, $options = [])
-    {
-        return $this->addField($label, $name, 'radio', $options); // this is just stubbed.
-    }
-    public function boolean($label, $name = null, $validation = [])
-    {
-        return $this->addField($label, $name, 'boolean', $validation);
-    }
+    // public function radio($label, $name = null, $options = [])
+    // {
+    //     return $this->addField($label, $name, 'radio', $options); // this is just stubbed.
+    // }
+    // public function boolean($label, $name = null, $validation = [])
+    // {
+    //     return $this->addField($label, $name, 'boolean', $validation);
+    // }
 
-    public function secret($label = 'Password', $name = 'password', $validation = [])
-    {
-        return $this->addField($label, $name, 'secret', $validation);
-    }
+    // public function secret($label = 'Password', $name = 'password', $validation = [])
+    // {
+    //     return $this->addField($label, $name, 'secret', $validation);
+    // }
 
-    public function menuEditor($label = 'Menu Editor', $name = 'menu-editor', $validation = [])
-    {
-        return $this->addField($label, $name, 'menueditor', $validation);
-    }
+    // public function menuEditor($label = 'Menu Editor', $name = 'menu-editor', $validation = [])
+    // {
+    //     return $this->addField($label, $name, 'menueditor', $validation);
+    // }
 
-    public function formBuilder($label, $name = null, $options = [])
-    {
-        return $this->addField($label, $name, 'formbuilder', $options);
-    }
+    // public function formBuilder($label, $name = null, $options = [])
+    // {
+    //     return $this->addField($label, $name, 'formbuilder', $options);
+    // }
 
-    public function loginForm($label, $name = null, $options = [])
-    {
-        return $this->addField($label, $name, 'loginform', $options);
-    }
+    // public function loginForm($label, $name = null, $options = [])
+    // {
+    //     return $this->addField($label, $name, 'loginform', $options);
+    // }
 
-    public function map($label = 'Map', $name = null, $options = [])
-    {
-        return $this->addField($label, $name, 'map', $options);
-    }
+    // public function map($label = 'Map', $name = null, $options = [])
+    // {
+    //     return $this->addField($label, $name, 'map', $options);
+    // }
 
-    public function wysiwyg($label, $name = null, $validation = [])
-    {
-        return $this->addField($label, $name, 'wysiwyg', $validation);
-    }
+    // public function wysiwyg($label, $name = null, $validation = [])
+    // {
+    //     return $this->addField($label, $name, 'wysiwyg', $validation);
+    // }
 
-    public function link($label, $name = null, $validation = [])
-    {
-        return $this->addField($label, $name, 'link', $validation);
-    }
+    // public function link($label, $name = null, $validation = [])
+    // {
+    //     return $this->addField($label, $name, 'link', $validation);
+    // }
 
-    public function file($label, $name = null, $modelName, $validation = [])
-    {
-        // something wih the $modelName
-        return $this->addField($label, $name, 'file', $validation);
-    }
+    // public function file($label, $name = null, $modelName, $validation = [])
+    // {
+    //     // something wih the $modelName
+    //     return $this->addField($label, $name, 'file', $validation);
+    // }
 
-    public function pageSectionSelect($label, $name = null, $validation = [])
-    {
-        // Page select (dropdown)
-        // Page sections (checkboxes) (only available after page selection)
-        return $this->addField($label, $name, 'pagesectionselect', $validation);
-    }
+    // public function pageSectionSelect($label, $name = null, $validation = [])
+    // {
+    //     // Page select (dropdown)
+    //     // Page sections (checkboxes) (only available after page selection)
+    //     return $this->addField($label, $name, 'pagesectionselect', $validation);
+    // }
 
-    public function fieldset($label, $name = null, $validation = [], Closure $closure = null)
-    {
-        return $this->addField($label, $name, 'fieldset', $validation, $closure);
-    }
-
-    /**
-     * Adds a field.
-     *
-     * @param      <type>  $label       The label
-     * @param      <type>  $name        The name
-     * @param      string  $type        The type
-     * @param      string  $validation  The validation
-     *
-     * @return     <type>  ( description_of_the_return_value )
-     */
-    // private function addField($label, $name = null, $type = 'string', $validation = [], Closure $closure = null) {
-    private function addField($label, $name = null, $type = 'string', $validation = [])
-    {
-        if (is_null($name)) {
-            $name = str_replace(' ', '_', strtolower($label));
-        }
-
-        $field = Field::create([
-            'label' => $label,
-            'name' => $name,
-            'type' => $type,
-            // 'validation' => ''
-        ]);
-
-        $this->form->fields()->attach($field);
-
-        // $rel = $this->fields_parent->fields();
-
-        // if ($rel instanceof BelongsToMany) {
-        // } elseif ($rel instanceof HasMany) {
-        // 	$rel->save($field);
-        // }
-
-        // if ($closure) {
-        // 	$fieldBuilder = new FieldBuilder($field);
-        // 	$closure($fieldBuilder);
-        // }
-
-        return $field;
-    }
+    // public function fieldset($label, $name = null, $validation = [], Closure $closure = null)
+    // {
+    //     return $this->addField($label, $name, 'fieldset', $validation, $closure);
+    // }
 
     /**
      * drops a field by name or name/type
@@ -288,19 +286,28 @@ class FormBuilder
         }
 
         if (count($field) > 1 and is_null($type)) {
+
             throw new Exception("Multiple <{$name}> found, please add type");
+
         } elseif (count($field) > 1 and !is_null($type)) {
+
             $field = $field->where('type', $type);
 
             if (count($field) > 1) {
+
                 throw new Exception("Sorry there doesn't seem to be an enough specific combination to get a single result. Halting.");
+
             } else {
+
                 $field->first()->delete();
 
                 return $this;
+
             }
         } elseif (count($field) === 1) {
+
             $field->first()->delete();
+
         }
     }
 }
