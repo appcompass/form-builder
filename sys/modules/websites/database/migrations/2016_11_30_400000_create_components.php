@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateLayouts extends Migration
+class CreateComponents extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,14 @@ class CreateLayouts extends Migration
      */
     public function up()
     {
-        Schema::create('layouts', function (Blueprint $table) {
+        Schema::create('components', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->string('name');
+            $table->string("name");
+            $table->string("template");
+            $table->string('type'); //container, section, (form?), etc?
+            $table->json("config")->nullable();
+            $table->timestamps();
         });
     }
 
@@ -27,6 +31,6 @@ class CreateLayouts extends Migration
      */
     public function down()
     {
-        Schema::drop('layouts');
+        Schema::drop('components');
     }
 }

@@ -58,11 +58,10 @@ class Form extends Model
      */
     public function setOwner(Model $owner)
     {
-        // @TODO look up the associate() equivalent, no time now
-        return $this->update([
-            'formable_id' => $owner->id,
-            'formable_type' => get_class($owner)
-        ]);
+        $this->formable()->associate($owner);
+        $this->save();
+
+        return $this;
     }
 
 

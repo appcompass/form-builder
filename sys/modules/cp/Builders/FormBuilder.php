@@ -3,8 +3,9 @@
 namespace P3in\Builders;
 
 use Closure;
-use P3in\Models\Form;
+use Illuminate\Database\Eloquent\Model;
 use P3in\Models\Field;
+use P3in\Models\Form;
 use P3in\Models\Resource;
 
 class FormBuilder

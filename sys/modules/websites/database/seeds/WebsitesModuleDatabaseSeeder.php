@@ -31,10 +31,18 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 'clickable' => false,
             ];
 
-            $publications = [
+            $blog = [
                 'url' => '',
-                'title' => 'Publications',
-                'alt' => 'Publications',
+                'title' => 'Blog',
+                'alt' => 'Blog',
+                'new_tab' => false,
+                'clickable' => false,
+            ];
+
+            $media_management = [
+                'url' => '',
+                'title' => 'Media Management',
+                'alt' => 'Media Management',
                 'new_tab' => false,
                 'clickable' => false,
             ];
@@ -44,11 +52,14 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             $groups = $websiteBuilder->addPage('Groups', 'groups');
             $permissions = $websiteBuilder->addPage('Permissions', 'permissions');
             $websites = $websiteBuilder->addPage('Websites', 'websites');
-            $galleries = $websiteBuilder->addPage('Galleries', 'galleries');
-            $pages = $websites->addPage('Pages', 'pages');
-            $contents = $pages->addPage('Contents', 'contents');
-            $sections = $pages->addPage('Sections', 'sections');
             $navigation = $websites->addPage('Navigation', 'menus');
+            $pages = $websites->addPage('Pages', 'pages');
+            $components = $pages->addPage('Components', 'components');
+            $contents = $pages->addPage('Contents', 'contents');
+            $blogEntries = $websites->addPage('Entries', 'blog-entries');
+            $blogCategories = $websites->addPage('Categories', 'blog-categories');
+            $blogTags = $websites->addPage('Tags', 'blog-tags');
+            $galleries = $websiteBuilder->addPage('Galleries', 'galleries');
 
             $main_nav = $websiteBuilder->addMenu('main_nav');
 
@@ -60,13 +71,17 @@ class WebsitesModuleDatabaseSeeder extends Seeder
 
             $web_properties_item = $main_nav->addItem($web_properties, 2)->setIcon('globe');
             $websites_item = $web_properties_item->addItem($websites, 1);
-            $pages_menuitem = $websites_item->addItem($pages, 1)->setIcon('page');
-            $pages_menuitem->addItem($sections, 2)->setIcon('bars');
-            $pages_menuitem->addItem($contents, 3)->setIcon('bars');
-            $websites_item->addItem($navigation, 2)->setIcon('bars');
+            $websites_item->addItem($navigation, 1)->setIcon('bars');
+            $pages_menuitem = $websites_item->addItem($pages, 2)->setIcon('page');
+            $pages_menuitem->addItem($components, 1)->setIcon('bars');
+            $pages_menuitem->addItem($contents, 2)->setIcon('bars');
+            $blog_menuitem = $websites_item->addItem($blog, 3)->setIcon('page');
+            $blog_menuitem->addItem($blogEntries, 1)->setIcon('page');
+            $blog_menuitem->addItem($blogCategories, 2)->setIcon('page');
+            $blog_menuitem->addItem($blogTags, 3)->setIcon('page');
 
-            $publications_item = $main_nav->addItem($publications, 3);
-            $publications_item->addItem($galleries, 1)->setIcon('camera');
+            $media_management_item = $main_nav->addItem($media_management, 3);
+            $media_management_item->addItem($galleries, 1)->setIcon('camera');
         });
 
         DB::statement("DELETE FROM forms WHERE name = 'websites'");

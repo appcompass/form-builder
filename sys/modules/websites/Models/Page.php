@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use P3in\Interfaces\Linkable;
 use P3in\Models\Layout;
-use P3in\Models\PageContent;
-use P3in\Models\Section;
+use P3in\Models\PageComponentContent;
+use P3in\Models\Component;
 use P3in\Models\Website;
 
 class Page extends Model implements Linkable
@@ -62,25 +62,13 @@ class Page extends Model implements Linkable
     }
 
     /**
-     * layouts
+     * Page Components
      *
      * @return     BelongsToMany
      */
-    public function layouts()
+    public function components()
     {
-        return $this->belongsToMany(Layout::class)
-            ->withPivot('order')
-            ->orderBy('pivot_order', 'asc');
-    }
-
-    /**
-     * Page Sections
-     *
-     * @return     BelongsToMany
-     */
-    public function sections()
-    {
-        return $this->belongsToMany(Section::class);
+        return $this->belongsToMany(Component::class, 'page_component_content');
     }
 
     /**
@@ -90,9 +78,30 @@ class Page extends Model implements Linkable
      */
     public function contents()
     {
-        return $this->hasMany(PageContent::class)->orderBy('order', 'asc');
+        return $this->hasMany(PageComponentContent::class)->orderBy('order', 'asc');
     }
 
+
+    /**
+     * So this is here temporarily (unless we end up liking it) to allow us to
+     * fetch only the top level containers of a page. This is because as of
+     * right now, all PageComponentContent instances have a page_id, even if
+     * it is a child of another PageComponentContent, so when querying a page,
+     * it's contents, and the associated components, you get a a lot of
+     * redundant data.  This method lets us recursivly fetch the whole tree
+     * without having to build a tree builder, and without removing page_id from
+     * the PageComponentContent instances that are sections (children of containers)
+     * @return hasMany
+     */
+    public function containers()
+    {
+        return $this->hasMany(PageComponentContent::class)
+        ->orderBy('order', 'asc')
+        ->whereHas('component', function($query){
+            $query->where('type','container');
+        })->whereNull('parent_id')
+        ->with('component.form');
+    }
     /**
      * get the Page via it's url
      *
@@ -115,10 +124,26 @@ class Page extends Model implements Linkable
     }
 
     /**
+     * Add a Container to the page.
+     * @param int $columns
+     * @param int $order
+     * @return Model PageComponentContent
+     */
+    public function addContainer($columns, $order)
+    {
+        $container = $this->contents()
+            ->findOrNew(null); //I have no idea why they don't have a ->new() method...
+
+        $container->saveAsContainer($columns, $order);
+
+        return $container;
+    }
+    /**
      * Sets the url based on slug
      *
      * @param      <type>  $slug   The slug
      */
+
     public function setSlugAttribute($slug)
     {
         $this->attributes['slug'] = $slug;

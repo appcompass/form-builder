@@ -73,6 +73,7 @@ class PageBuilder
         return new static($page);
     }
 
+
     public function addPage($title, $slug)
     {
         $page = $this->page->createChild([
@@ -80,106 +81,24 @@ class PageBuilder
             'slug' => $slug,
         ]);
 
-        return new PageBuilder($page);
+        return new static($page);
     }
 
-    public function setPageLayout(Layout $layout, $order = 1)
+    /**
+     * Add a Container to a page and return it's PageComponentContent model instance
+     * since we will probably want to add sections to the container.
+     * @param int $columns
+     * @param int $order
+     * @return Model PageComponentContent
+     */
+    public function addContainer($columns = 1, $order = 0)
     {
-        $this->page->layouts()->attach($layout, ['order' => $order]);
-
-        return new PageLayoutBuilder($this->page, $layout, $order);
+        return $this->page->addContainer($columns, $order);
     }
-
-    // public function setLayout(Layout $layout, $order = 1, $closure = null)
-    // {
-    //     $this->page->layouts()->attach($layout, ['order' => $order]);
-
-    //     if ($closure) {
-    //         $instance = new PageLayoutBuilder($this->page, $order, $layout);
-
-    //         if (is_array($closure)) {
-    //             $instance->addSections($closure);
-    //         } elseif ($closure instanceof Closure) {
-    //             $closure($instance);
-    //         }
-    //     }
-
-    //     return $this;
-    // }
 
     public function getPage()
     {
         return $this->page;
     }
-    // /**
-    //  * add factory
-    //  *
-    //  * @param      $item        Mixed
-    //  *
-    //  * @throws     Exception   (description)
-    //  *
-    //  * @return     PageContent      PageContent instance
-    //  */
-    // public function add($item)
-    // {
 
-    //     if (!$this->page) {
-
-    //         throw new Exception('Page not selected.');
-
-    //     }
-
-    //     if ($item instanceof PageContent) {
-
-    //         $page_section = $item;
-
-    //     } else if (is_int($item)) {
-
-    //         $page_section = new PageContent($item);
-
-    //     } else {
-
-    //         throw new Exception("Trying to add something i don't understand");
-
-    //     }
-
-    //     if ($this->page->add($page_section)) {
-
-    //         return $page_section;
-
-    //     } else {
-
-    //         throw new Exception("Something went wrong while adding the PageContent {$page_section->id} to Page {$this->page->id}");
-
-    //     }
-    // }
-
-    // /**
-    //  * Drop PageContent
-    //  *
-    //  * @param      \App\PageContent  $page_section  The navigation item
-    //  */
-    // public function drop($item)
-    // {
-    //     if (is_int($item)) {
-
-    //         $page_section = $this->page->sections()->findOrFail($item);
-
-    //     } else if ($item instanceof PageContent) {
-
-    //         $page_section = $this->page->sections()->findOrFail($item->id);
-
-    //     }
-
-    //     if ($page_section->delete()) {
-
-    //         return true;
-
-    //     } else {
-
-    //         throw new Exception("Errors while removing PageContent");
-
-    //     }
-
-    // }
 }
