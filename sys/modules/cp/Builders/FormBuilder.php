@@ -161,8 +161,7 @@ class FormBuilder
 
         }
 
-        // return $this->addField(new $class_name($args[0]));
-        return $this->addField($class_name::make($args[0]));
+        return $this->addField($class_name::make($args[0], $args[1]));
     }
 
     /**

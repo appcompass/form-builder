@@ -1,10 +1,4 @@
-<template lang="jade">
-textarea.textarea(@input="$emit('input', {value: $event.target.value, pointer: pointer})")
-</template>
-
-<script>
-export default {
-  name: 'Formtext',
+{
+  template: "<textarea class=\"textarea\" @input=\"$emit('input', {value: $event.target.value, pointer: pointer})\"></textarea>",
   props: ['pointer', 'data']
 }
-</script>

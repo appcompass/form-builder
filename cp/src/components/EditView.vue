@@ -19,7 +19,7 @@ div
           .control(v-for="field in edit.fields")
             label.label {{ field.label }}
             span(
-              v-bind:is="'Form' + field.type",
+              v-bind:is="'Test'",
               v-bind:pointer="field.name"
               v-bind:data="value(field.name)"
               v-bind:value="value(field.name)"
@@ -52,15 +52,16 @@ import Formstring from './FormBuilder/String'
 import Formtext from './FormBuilder/Text'
 import Formsecret from './FormBuilder/Secret'
 import Formboolean from './FormBuilder/Boolean'
-import Formmenueditor from './FormBuilder/MenuEditor'
+// import Formmenueditor from './FormBuilder/MenuEditor'
 import State from './State'
+import Vue from 'vue'
 
 import swal from 'sweetalert'
 import _ from 'lodash'
 
 export default {
   name: 'EditView',
-  components: { State, Formstring, Formtext, Formsecret, Formboolean, Formmenueditor },
+  components: { State, Formstring, Formtext, Formsecret, Formboolean },
 
   data () {
     return {
@@ -92,6 +93,10 @@ export default {
 
   },
 
+  beforeCreate () {
+    // console.log(this.components)
+  },
+
   methods: {
     refresh () {
       var api = process.env.API_SERVER
@@ -102,6 +107,21 @@ export default {
           this.collection = response.data.collection
           this.edit = response.data.edit
           this.resource = this.$resource(api + this.edit.resource)
+
+          // console.log(this)
+
+          response.data.edit.fields.forEach((item) => {
+            // console.log(item.template)
+            // let component = Vue.compile(item.template)
+            Vue.component('Test', Vue.compile(item.template))
+
+            // console.log(component)
+            // console.log(this.$components)
+            // Vue.component(item.label, Vue.compile(item.template))
+            // console.log(item.label, c)
+            // this.$compile(item.template)
+            // console.log(item.template)
+          })
 
           // we want the last bit of model
           this.route = this.model.split('/')[this.model.split('/').length - 2]
