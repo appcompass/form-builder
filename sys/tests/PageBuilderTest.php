@@ -8,7 +8,6 @@ class PageBuilderTest extends TestCase
 {
     public function setUp()
     {
-
     }
 
     /** @test */
@@ -16,5 +15,4 @@ class PageBuilderTest extends TestCase
     {
         $this->assertTrue(true);
     }
-
 }

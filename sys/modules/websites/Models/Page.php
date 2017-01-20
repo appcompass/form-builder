@@ -97,8 +97,8 @@ class Page extends Model implements Linkable
     {
         return $this->hasMany(PageComponentContent::class)
         ->orderBy('order', 'asc')
-        ->whereHas('component', function($query){
-            $query->where('type','container');
+        ->whereHas('component', function ($query) {
+            $query->where('type', 'container');
         })->whereNull('parent_id')
         ->with('component.form');
     }
