@@ -49,7 +49,7 @@ class PageRenderer
         if ($filtered) {
             $this->filterData();
         } else {
-            $this->page->load('containers.component.form');
+            $this->page->load('containers');
         }
 
         $this->build = $this->page;

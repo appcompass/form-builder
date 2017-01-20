@@ -5,10 +5,8 @@ namespace P3in\Builders;
 use Closure;
 use Exception;
 use P3in\Builders\PageLayoutBuilder;
-use P3in\Models\Layout;
+use P3in\Models\Component;
 use P3in\Models\Page;
-use P3in\Models\PageContent;
-use P3in\Models\Section;
 
 class PageBuilder
 {
@@ -17,6 +15,7 @@ class PageBuilder
      * Page instance
      */
     private $page;
+    private $container;
 
     public function __construct(Page $page = null)
     {
@@ -74,7 +73,7 @@ class PageBuilder
     }
 
 
-    public function addPage($title, $slug)
+    public function addChild($title, $slug)
     {
         $page = $this->page->createChild([
             'title' => $title,
@@ -89,11 +88,28 @@ class PageBuilder
      * since we will probably want to add sections to the container.
      * @param int $columns
      * @param int $order
-     * @return Model PageComponentContent
+     * @return PageBuilder PageBuilder instance
      */
     public function addContainer($columns = 1, $order = 0)
     {
         return $this->page->addContainer($columns, $order);
+    }
+
+    /**
+     * Add a section to a container.
+     * @param Component $component
+     * @param int $columns
+     * @param int $order
+     * @return PageBuilder PageBuilder instance
+     */
+    public function addSection(Component $component, int $columns, int $order)
+    {
+        if ($this->container) {
+            $this->container->addSection($component, $columns, $order);
+            return $this;
+        } else {
+            throw new Exception('a Container must be set to add Sections.');
+        }
     }
 
     public function getPage()

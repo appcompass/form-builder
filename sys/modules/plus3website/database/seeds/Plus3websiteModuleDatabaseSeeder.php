@@ -153,19 +153,9 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
         DB::table('websites')->where('url', 'https://www.plus3interactive.com')->delete();
 
-        // Fieldtype::firstOrCreate(['type' => 'fieldset', 'label' => 'Field Set']);
-        // Fieldtype::firstOrCreate(['type' => 'file', 'label' => 'File']);
-        // Fieldtype::firstOrCreate(['type' => 'wysiwyg', 'label' => 'WYSIWYG']);
-        // Fieldtype::firstOrCreate(['type' => 'link', 'label' => 'Link']);
-        // Fieldtype::firstOrCreate(['type' => 'pagesectionselect', 'label' => 'Page Section Select']);
-        // Fieldtype::firstOrCreate(['type' => 'radio', 'label' => 'Radio Selection']);
-        // Fieldtype::firstOrCreate(['type' => 'formbuilder', 'label' => 'Form Builder']);
-        // Fieldtype::firstOrCreate(['type' => 'map', 'label' => 'Map']);
-        // Fieldtype::firstOrCreate(['type' => 'loginform', 'label' => 'Login Form']);
-
         $website = WebsiteBuilder::new('Plus 3 Interactive, LLC', 'https://www.plus3interactive.com', function ($websiteBuilder) {
-            $websiteBuilder->setHeader('components/Header.vue')
-                ->setFooter('components/Footer.vue')
+            $websiteBuilder->setHeader('SiteHeader.vue')
+                ->setFooter('SiteFooter.vue')
                 ->setMetaData([
                     'title' => '',
                     'description' => '',
@@ -180,13 +170,13 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             // This one should prob be build with websites module load.
             Component::create([
                 'name' => 'Container',
-                'template' => 'components/container.vue', //not sure about this, do containers need templates? I feel there are good arguments for both yes and no.
+                'template' => 'container.vue', //not sure about this, do containers need templates? I feel there are good arguments for both yes and no.
                 'type' => 'container',
             ]);
 
             $slider_banner = Component::create([
                 'name' => 'Slider Banner',
-                'template' => 'components/SliderBanner.vue',
+                'template' => 'SliderBanner.vue',
                 'type' => 'section'
             ]);
 
@@ -204,15 +194,24 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 })->repeatable();
             })->setOwner($slider_banner);
 
+            $section_heading = Component::create([
+                'name' => 'Section Heading',
+                'template' => 'SectionHeading.vue',
+                'type' => 'section'
+            ]);
+
+            FormBuilder::new('SectionHeading', function ($formBuilder) {
+                $formBuilder->string('Title', 'title', ['required']);
+                $formBuilder->wysiwyg('Description', 'description', ['required']);
+            })->setOwner($section_heading);
+
             $box_callouts = Component::create([
                 'name' => 'Box Callouts',
-                'template' => 'components/BoxCallouts.vue',
+                'template' => 'BoxCallouts.vue',
                 'type' => 'section'
             ]);
 
             FormBuilder::new('BoxCallouts', function ($formBuilder) {
-                $formBuilder->string('Title', 'title', ['required']);
-                $formBuilder->wysiwyg('Description', 'description', ['required']);
                 $formBuilder->fieldset('Boxes', 'boxes', [], function ($box) {
                     $box->string('Title', 'title', ['required']);
                     $box->string('Points', 'points', [])->repeatable();
@@ -223,7 +222,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $our_proccess = Component::create([
                 'name' => 'Our Process',
-                'template' => 'components/OurProcess.vue',
+                'template' => 'OurProcess.vue',
                 'type' => 'section'
             ]);
 
@@ -235,7 +234,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $meet_our_team = Component::create([
                 'name' => 'Meet Our Team',
-                'template' => 'components/MeetOurTeam.vue',
+                'template' => 'MeetOurTeam.vue',
                 'type' => 'section'
             ]);
 
@@ -248,7 +247,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $social_stream = Component::create([
                 'name' => 'Social Stream',
-                'template' => 'components/SocialStream.vue',
+                'template' => 'SocialStream.vue',
                 'type' => 'section'
             ]);
 
@@ -260,7 +259,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $customer_testimonials = Component::create([
                 'name' => 'Customer Testimonials',
-                'template' => 'components/CustomerTestimonials.vue',
+                'template' => 'CustomerTestimonials.vue',
                 'type' => 'section'
             ]);
 
@@ -284,7 +283,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $thick_page_banner = Component::create([
                 'name' => 'Thick Page Banner',
-                'template' => 'components/ThickPageBanner.vue',
+                'template' => 'ThickPageBanner.vue',
                 'type' => 'section'
             ]);
 
@@ -296,7 +295,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $white_break_w_section_links = Component::create([
                 'name' => 'White Break Callout Section Links',
-                'template' => 'components/WhiteBreakCalloutSectionLinks.vue',
+                'template' => 'WhiteBreakCalloutSectionLinks.vue',
                 'type' => 'section'
             ]);
 
@@ -315,7 +314,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $provided_solution = Component::create([
                 'name' => 'Provided Solution',
-                'template' => 'components/ProvidedSolution.vue',
+                'template' => 'ProvidedSolution.vue',
                 'type' => 'section'
             ]);
 
@@ -334,7 +333,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $blue_break_callout = Component::create([
                 'name' => 'Blue Break Callout',
-                'template' => 'components/BlueBreakCallout.vue',
+                'template' => 'BlueBreakCallout.vue',
                 'type' => 'section'
             ]);
 
@@ -345,7 +344,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $breadcrumb_with_right_link = Component::create([
                 'name' => 'BreadCrumb With Right Side Link',
-                'template' => 'components/BreadCrumbRightSideLink.vue',
+                'template' => 'BreadCrumbRightSideLink.vue',
                 'type' => 'section'
             ]);
 
@@ -356,7 +355,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $process_timeline = Component::create([
                 'name' => 'Process Timeline',
-                'template' => 'components/ProcessTimeline.vue',
+                'template' => 'ProcessTimeline.vue',
                 'type' => 'section'
             ]);
 
@@ -374,7 +373,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $process_maintenance_details = Component::create([
                 'name' => 'Maintenance Details',
-                'template' => 'components/MaintenanceDetails.vue',
+                'template' => 'MaintenanceDetails.vue',
                 'type' => 'section'
             ]);
 
@@ -390,7 +389,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $project_list = Component::create([
                 'name' => 'Project List',
-                'template' => 'components/ProjectList.vue',
+                'template' => 'ProjectList.vue',
                 'type' => 'section'
             ]);
 
@@ -408,7 +407,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $contact_form = Component::create([
                 'name' => 'Contact Us',
-                'template' => 'components/ContactUs.vue',
+                'template' => 'ContactUs.vue',
                 'type' => 'section'
             ]);
 
@@ -418,7 +417,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $map_address = Component::create([
                 'name' => 'Map Address',
-                'template' => 'components/MapAddress.vue',
+                'template' => 'MapAddress.vue',
                 'type' => 'section'
             ]);
 
@@ -438,7 +437,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             // Links: Forgot Password
             $login_form = Component::create([
                 'name' => 'Customer Login',
-                'template' => 'components/CustomerLogin.vue',
+                'template' => 'CustomerLogin.vue',
                 'type' => 'section'
             ]);
 
@@ -458,34 +457,41 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             $homepage = $websiteBuilder
                 ->addPage('Home Page', '');
 
-            $homepage_container = $homepage->addContainer(12, 1);
-            $homepage_container->addSection($slider_banner, 12, 1);
-            $box_callouts_container_one = $homepage_container->addContainer(6, 1);
-            $box_callouts_container_one->addSection($box_callouts, 6, 1);
-            $box_callouts_container_two = $homepage_container->addContainer(6, 2);
-            $box_callouts_container_two->addSection($box_callouts, 6, 1);
-            $homepage_container->addSection($our_proccess, 12, 3);
-            $homepage_container->addSection($meet_our_team, 12, 4);
-            $homepage_container->addSection($social_stream, 12, 5);
-            $homepage_container->addSection($customer_testimonials, 12, 6);
+            $homepage_container = $homepage->addContainer(12, 1)
+                ->addSection($slider_banner, 12, 1);
+
+            $home_box_callout_container = $homepage->addContainer(12, 2)
+                ->addSection($section_heading, 12, 1);
+
+            $home_box_callout_container->addContainer(6, 2)
+                ->addSection($box_callouts, 6, 1);
+
+            $home_box_callout_container->addContainer(6, 3)
+                ->addSection($box_callouts, 6, 1);
+
+            $homepage_container
+                ->addSection($our_proccess, 12, 4)
+                ->addSection($meet_our_team, 12, 5)
+                ->addSection($social_stream, 12, 6)
+                ->addSection($customer_testimonials, 12, 7);
 
             $solutions = $websiteBuilder
                 ->addPage('Solutions', 'solutions');
 
-            $solutions_container = $solutions->addContainer(12, 1);
-            $solutions_container->addSection($thick_page_banner, 12, 1);
-            $solutions_container->addSection($white_break_w_section_links, 12, 2);
-            $solutions_container->addSection($provided_solution, 12, 3);
-            $solutions_container->addSection($blue_break_callout, 12, 4);
+            $solutions->addContainer(12, 1)
+                ->addSection($thick_page_banner, 12, 1)
+                ->addSection($white_break_w_section_links, 12, 2)
+                ->addSection($provided_solution, 12, 3)
+                ->addSection($blue_break_callout, 12, 4);
 
             $process = $solutions
-                ->addPage('Our Process', 'our-process');
+                ->addChild('Our Process', 'our-process');
 
-            $process_container = $process->addContainer(12, 1);
-            $process_container->addSection($thick_page_banner, 12, 1);
-            $process_container->addSection($breadcrumb_with_right_link, 12, 2);
-            $process_container->addSection($process_timeline, 12, 3);
-            $process_container->addSection($process_maintenance_details, 12, 4);
+            $process_container = $process->addContainer(12, 1)
+                ->addSection($thick_page_banner, 12, 1)
+                ->addSection($breadcrumb_with_right_link, 12, 2)
+                ->addSection($process_timeline, 12, 3)
+                ->addSection($process_maintenance_details, 12, 4);
 
             $projects = $websiteBuilder
                 ->addPage('Projects', 'projects');
@@ -544,7 +550,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
         $website_for_renderer = Website::find($website->id);
         $renderer =  new PageRenderer($website_for_renderer);
 
-        $data = $renderer->setPage('/')->edit(); // edit() for CP, render() for public.
+        $data = $renderer->setPage('/')->render(); // edit() for CP, render() for public.
 
         dd(DB::getQueryLog(), $data->toArray());
 
