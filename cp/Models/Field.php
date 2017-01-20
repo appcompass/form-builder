@@ -10,21 +10,24 @@ class Field extends Model
         'name',
         'label',
         'type',
-        'to_list',
-        'to_edit',
-        'validation',
-        'required',
-        'repeatable'
+        // 'to_list',
+        // 'to_edit',
+        // 'validation',
+        // 'required',
+        // 'repeatable'
     ];
 
     protected $hidden = [
-        'created_at',
-        'updated_at'
+        // 'created_at',
+        // 'updated_at'
     ];
 
     protected $with = [
         'fields'
     ];
+
+    public $timestamps = false; // we don't need ts on fields
+
     /**
      * override boot method
      * @NOTE remember Field::withoutGlobalScope(OrderScope::class)->get();
@@ -39,11 +42,6 @@ class Field extends Model
     public function form()
     {
         return $this->belongsToMany(Form::class);
-    }
-
-    public function fieldType()
-    {
-        return $this->belongsTo(Fieldtype::class);
     }
 
     public function parent()
@@ -124,5 +122,10 @@ class Field extends Model
         $this->searchable = $searchable;
 
         return $this->saveAndReturn();
+    }
+
+    public function getTemplateAttribute()
+    {
+        return (new $this->type())->template();
     }
 }
