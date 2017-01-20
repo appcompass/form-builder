@@ -100,5 +100,4 @@ class PageBuilder
     {
         return $this->page;
     }
-
 }

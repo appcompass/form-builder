@@ -117,7 +117,7 @@ class PageComponentContent extends Model
             $this->children()->save($child);
 
             return $child;
-        }else{
+        } else {
             throw new Exception('a Section can only be added to a Container.');
         }
     }
