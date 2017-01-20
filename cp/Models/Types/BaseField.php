@@ -10,13 +10,16 @@ abstract class BaseField
 
     public $field;
 
-    public static function make(array $attributes)
+    public static function make($label, $name)
     {
         $instance = new static();
 
-        $attributes['type'] = get_class($instance);
-
-        $instance->field = Field::firstOrCreate($attributes);
+        // @TODO add setField to close access to property
+        $instance->field = Field::firstOrCreate([
+            'label' => $label,
+            'name' => $name,
+            'type' => get_class($instance)
+        ]);
 
         return $instance;
     }

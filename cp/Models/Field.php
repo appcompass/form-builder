@@ -26,6 +26,10 @@ class Field extends Model
         'fields'
     ];
 
+    protected $appends = [
+        'template'
+    ];
+
     public $timestamps = false; // we don't need ts on fields
 
     /**
@@ -52,6 +56,16 @@ class Field extends Model
     public function fields()
     {
         return $this->hasMany(Field::class, 'parent_id');
+    }
+
+    /**
+     * Gets the template from the corresponding field.
+     *
+     * @return     $this  The template attribute.
+     */
+    public function getTemplateAttribute()
+    {
+        return (new $this->type())->template();
     }
 
     // kill the repetition!
@@ -122,10 +136,5 @@ class Field extends Model
         $this->searchable = $searchable;
 
         return $this->saveAndReturn();
-    }
-
-    public function getTemplateAttribute()
-    {
-        return (new $this->type())->template();
     }
 }

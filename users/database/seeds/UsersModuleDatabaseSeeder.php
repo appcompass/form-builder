@@ -52,7 +52,7 @@ class UsersModuleDatabaseSeeder extends Seeder
             $builder->string('Email', 'email')->list()->required()->validation('email')->sortable()->searchable();
             $builder->string('Phone Number', 'phone')->list()->required()->sortable()->searchable();
             $builder->string('Date Added', 'created_at')->list()->edit(false)->sortable();
-            $builder->secret()->required();
+            $builder->secret('Password', 'password')->required();
         })->linkToResources(['users.index', 'users.show', 'users.create']);
 
         //

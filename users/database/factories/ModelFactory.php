@@ -31,7 +31,7 @@ $factory->define(P3in\Models\User::class, function (Faker $faker) {
         'last_name' => $faker->lastName,
         'email' => $faker->unique()->safeEmail,
         'phone' => $faker->phoneNumber,
-        'password' => $password ?: $password = bcrypt('secret'),
+        'password' => 'd3velopment', //$password ?: $password = bcrypt('secret'),
         'active' => true,
         'activation_code' => str_random(64),
         'remember_token' => str_random(10)
