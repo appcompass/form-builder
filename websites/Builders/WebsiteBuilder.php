@@ -3,6 +3,8 @@
 namespace P3in\Builders;
 
 use Closure;
+use P3in\Builders\MenuBuilder;
+use P3in\Builders\PageBuilder;
 use P3in\Models\Layout;
 use P3in\Models\Page;
 use P3in\Models\PageContent;
@@ -95,16 +97,19 @@ class WebsiteBuilder
     public function setHeader($template)
     {
         $this->website->update(['config->header' => $template]);
+        return $this;
     }
 
     public function setFooter($template)
     {
         $this->website->update(['config->footer' => $template]);
+        return $this;
     }
 
     public function setMetaData($data)
     {
         $this->website->update(['config->meta' => $data]);
+        return $this;
     }
 
     public function getWebsite()
