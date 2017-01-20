@@ -48,17 +48,17 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             ];
 
             $users = $websiteBuilder->addPage('Users', 'users');
-            $users_permissions = $users->addPage('User Permissions', 'permissions');
+            $users_permissions = $users->addChild('User Permissions', 'permissions');
             $groups = $websiteBuilder->addPage('Groups', 'groups');
             $permissions = $websiteBuilder->addPage('Permissions', 'permissions');
             $websites = $websiteBuilder->addPage('Websites', 'websites');
-            $navigation = $websites->addPage('Navigation', 'menus');
-            $pages = $websites->addPage('Pages', 'pages');
-            $components = $pages->addPage('Components', 'components');
-            $contents = $pages->addPage('Contents', 'contents');
-            $blogEntries = $websites->addPage('Entries', 'blog-entries');
-            $blogCategories = $websites->addPage('Categories', 'blog-categories');
-            $blogTags = $websites->addPage('Tags', 'blog-tags');
+            $navigation = $websites->addChild('Navigation', 'menus');
+            $pages = $websites->addChild('Pages', 'pages');
+            $components = $pages->addChild('Components', 'components');
+            $contents = $pages->addChild('Contents', 'contents');
+            $blogEntries = $websites->addChild('Entries', 'blog-entries');
+            $blogCategories = $websites->addChild('Categories', 'blog-categories');
+            $blogTags = $websites->addChild('Tags', 'blog-tags');
             $galleries = $websiteBuilder->addPage('Galleries', 'galleries');
 
             $main_nav = $websiteBuilder->addMenu('main_nav');

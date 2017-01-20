@@ -5,6 +5,7 @@ namespace P3in\Models;
 use Illuminate\Database\Eloquent\Model;
 use P3in\Models\Component;
 use P3in\Models\Page;
+use Exception;
 
 class PageComponentContent extends Model
 {
@@ -20,7 +21,10 @@ class PageComponentContent extends Model
         'content' => 'object'
     ];
 
-    protected $with = ['children','component.form']; // for automatic recursion. I hate the component.form here btw so def refactoring.
+    protected $with = [
+        'children',
+        'component'
+    ];
     /**
      *
      */
@@ -66,8 +70,7 @@ class PageComponentContent extends Model
     // }
 
     /**
-     * Set the current section to a container type. It will fail if a page is
-     * not previously associated with it though. (prob needs some refactoring)
+     * Set the current section to a container type.
      * @param int $columns
      * @param int $order
      * @return Model PageComponentContent
@@ -95,7 +98,7 @@ class PageComponentContent extends Model
     {
         $container = Component::getContainer();
 
-        return $this->addSection($container, $columns, $order);
+        return $this->addSection($container, $columns, $order, true);
     }
 
     /**
@@ -105,18 +108,20 @@ class PageComponentContent extends Model
      * @param int $order
      * @return Model PageComponentContent
      */
-    public function addSection(Component $component, int $columns, int $order)
+    public function addSection(Component $component, int $columns, int $order, $returnChild = false)
     {
         if ($this->isContainer()) {
             $child = new static(['columns' => $columns, 'order' => $order]);
 
             $child->component()->associate($component);
 
-            $child->page()->associate($this->page);
-
             $this->children()->save($child);
 
-            return $child;
+            if ($returnChild) {
+                return $child;
+            }
+
+            return $this;
         } else {
             throw new Exception('a Section can only be added to a Container.');
         }

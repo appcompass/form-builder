@@ -76,7 +76,7 @@ class Page extends Model implements Linkable
      *
      * @return     HasMany
      */
-    public function contents()
+    public function containers()
     {
         return $this->hasMany(PageComponentContent::class)->orderBy('order', 'asc');
     }
@@ -93,14 +93,14 @@ class Page extends Model implements Linkable
      * the PageComponentContent instances that are sections (children of containers)
      * @return hasMany
      */
-    public function containers()
-    {
-        return $this->hasMany(PageComponentContent::class)
-        ->orderBy('order', 'asc')
-        ->whereHas('component', function ($query) {
-            $query->where('type', 'container');
-        })->whereNull('parent_id');
-    }
+    // public function containers()
+    // {
+    //     return $this->hasMany(PageComponentContent::class)
+    //     ->orderBy('order', 'asc')
+    //     ->whereHas('component', function ($query) {
+    //         $query->where('type', 'container');
+    //     })->whereNull('parent_id');
+    // }
     /**
      * get the Page via it's url
      *
@@ -130,8 +130,8 @@ class Page extends Model implements Linkable
      */
     public function addContainer($columns, $order)
     {
-        $container = $this->contents()
-            ->findOrNew(null); //I have no idea why they don't have a ->new() method...
+        //I have no idea why they don't have a ->new() method...
+        $container = $this->containers()->findOrNew(null);
 
         $container->saveAsContainer($columns, $order);
 
