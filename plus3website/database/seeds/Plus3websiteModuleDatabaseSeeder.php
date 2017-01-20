@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use P3in\Builders\FormBuilder;
 use P3in\Builders\WebsiteBuilder;
 use P3in\Models\Component;
-use P3in\Models\Fieldtype;
+// use P3in\Models\Fieldtype;
 use P3in\Models\Plus3Person;
 use P3in\Models\User;
 use P3in\Models\Website;
@@ -153,15 +153,15 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
         DB::table('websites')->where('url', 'https://www.plus3interactive.com')->delete();
 
-        Fieldtype::firstOrCreate(['type' => 'fieldset', 'label' => 'Field Set']);
-        Fieldtype::firstOrCreate(['type' => 'file', 'label' => 'File']);
-        Fieldtype::firstOrCreate(['type' => 'wysiwyg', 'label' => 'WYSIWYG']);
-        Fieldtype::firstOrCreate(['type' => 'link', 'label' => 'Link']);
-        Fieldtype::firstOrCreate(['type' => 'pagesectionselect', 'label' => 'Page Section Select']);
-        Fieldtype::firstOrCreate(['type' => 'radio', 'label' => 'Radio Selection']);
-        Fieldtype::firstOrCreate(['type' => 'formbuilder', 'label' => 'Form Builder']);
-        Fieldtype::firstOrCreate(['type' => 'map', 'label' => 'Map']);
-        Fieldtype::firstOrCreate(['type' => 'loginform', 'label' => 'Login Form']);
+        // Fieldtype::firstOrCreate(['type' => 'fieldset', 'label' => 'Field Set']);
+        // Fieldtype::firstOrCreate(['type' => 'file', 'label' => 'File']);
+        // Fieldtype::firstOrCreate(['type' => 'wysiwyg', 'label' => 'WYSIWYG']);
+        // Fieldtype::firstOrCreate(['type' => 'link', 'label' => 'Link']);
+        // Fieldtype::firstOrCreate(['type' => 'pagesectionselect', 'label' => 'Page Section Select']);
+        // Fieldtype::firstOrCreate(['type' => 'radio', 'label' => 'Radio Selection']);
+        // Fieldtype::firstOrCreate(['type' => 'formbuilder', 'label' => 'Form Builder']);
+        // Fieldtype::firstOrCreate(['type' => 'map', 'label' => 'Map']);
+        // Fieldtype::firstOrCreate(['type' => 'loginform', 'label' => 'Login Form']);
 
         $website = WebsiteBuilder::new('Plus 3 Interactive, LLC', 'https://www.plus3interactive.com', function ($websiteBuilder) {
             $websiteBuilder->setHeader('components/Header.vue')
