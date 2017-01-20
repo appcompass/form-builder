@@ -99,8 +99,7 @@ class Page extends Model implements Linkable
         ->orderBy('order', 'asc')
         ->whereHas('component', function ($query) {
             $query->where('type', 'container');
-        })->whereNull('parent_id')
-        ->with('component.form');
+        })->whereNull('parent_id');
     }
     /**
      * get the Page via it's url
