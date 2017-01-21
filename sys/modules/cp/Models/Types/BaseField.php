@@ -29,5 +29,4 @@ abstract class BaseField
         // @TODO template can be inferred from class name
         return file_get_contents(__DIR__ . '/../templates/' . $this->template . '.vue');
     }
-
 }

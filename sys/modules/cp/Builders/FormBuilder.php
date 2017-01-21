@@ -49,13 +49,9 @@ class FormBuilder
     public static function edit($form)
     {
         if ($form instanceof Form) {
-
             $instance = new static($form);
-
         } elseif (is_string($form)) {
-
             $instance = new static(Form::whereName($form)->firstOrFail());
-
         }
 
         return $instance;
@@ -156,9 +152,7 @@ class FormBuilder
         $class_name = '\P3in\Models\Types\\' . $field_name;
 
         if (!class_exists($class_name)) {
-
             die("The FieldType: <$field_name> does not exist. Do Something!");
-
         }
 
         return $this->addField($class_name::make($args[0], $args[1]));
@@ -285,28 +279,19 @@ class FormBuilder
         }
 
         if (count($field) > 1 and is_null($type)) {
-
             throw new Exception("Multiple <{$name}> found, please add type");
-
         } elseif (count($field) > 1 and !is_null($type)) {
-
             $field = $field->where('type', $type);
 
             if (count($field) > 1) {
-
                 throw new Exception("Sorry there doesn't seem to be an enough specific combination to get a single result. Halting.");
-
             } else {
-
                 $field->first()->delete();
 
                 return $this;
-
             }
         } elseif (count($field) === 1) {
-
             $field->first()->delete();
-
         }
     }
 }
