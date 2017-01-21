@@ -4,7 +4,6 @@ namespace P3in\Models\Types;
 
 class MenuElementType extends BaseField
 {
-
     protected $template = 'MenuElement';
 
     public function __construct(array $attributes)
@@ -16,5 +15,4 @@ class MenuElementType extends BaseField
     {
         return $this->addField($label, $name, 'string', $validation);
     }
-
 }

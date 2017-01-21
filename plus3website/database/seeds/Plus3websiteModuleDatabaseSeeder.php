@@ -152,6 +152,26 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
         // field validation should match exactly: https://laravel.com/docs/5.3/validation#available-validation-rules
 
         DB::table('websites')->where('url', 'https://www.plus3interactive.com')->delete();
+        DB::table('forms')->whereIn('name', [
+            'SliderBanner',
+            'SectionHeading',
+            'BoxCallouts',
+            'OurProcess',
+            'MeetOurTeam',
+            'SocialStream',
+            'CustomerTestimonials',
+            'ThickPageBanner',
+            'WhiteBreakCalloutSectionLinks',
+            'ProvidedSolution',
+            'BlueBreakCallout',
+            'BreadCrumbRightSideLink',
+            'ProcessTimeline',
+            'MaintenanceDetails',
+            'ProjectList',
+            'ContactUs',
+            'MapAddress',
+            'CustomerLogin',
+        ])->delete();
 
         $website = WebsiteBuilder::new('Plus 3 Interactive, LLC', 'https://www.plus3interactive.com', function ($websiteBuilder) {
             $websiteBuilder->setHeader('SiteHeader.vue')
@@ -550,9 +570,9 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
         $website_for_renderer = Website::find($website->id);
         $renderer =  new PageRenderer($website_for_renderer);
 
-        $data = $renderer->setPage('/')->render(); // edit() for CP, render() for public.
+        $data = $renderer->setPage('/solutions/our-process')->render(); // edit() for CP, render() for public.
 
-        dd(DB::getQueryLog(), $data->toArray());
+        dd(DB::getQueryLog(), $data);
 
 /*
 
