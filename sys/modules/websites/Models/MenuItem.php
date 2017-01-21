@@ -106,6 +106,11 @@ class MenuItem extends Model
         return $this;
     }
 
+    public function addChild(MenuItem $item)
+    {
+        $this->children()->save($item);
+        return $this;
+    }
     /**
      * Makes a MenuItem unclickable
      *

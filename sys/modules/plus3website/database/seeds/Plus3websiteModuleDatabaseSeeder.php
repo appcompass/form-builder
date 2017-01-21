@@ -200,11 +200,11 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('SliderBanner', function ($formBuilder) {
+            FormBuilder::new('SliderBanner', function (FormBuilder $fb) {
                 // we need to figure out how to handle the 'type' field.
                 // the fields internally are created in the order they appear in the builder.
-                $formBuilder->string('Title', 'title', ['required']);
-                $formBuilder->fieldset('Slides', 'slides', [], function ($slide) {
+                $fb->string('Title', 'title', ['required']);
+                $fb->fieldset('Slides', 'slides', [], function ($slide) {
                     // not field type, sub section builder.
                     $slide->file('Banner Image', 'banner_image', Photo::class, ['required']);
                     $slide->string('Title', 'title', ['required']);
@@ -220,9 +220,9 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('SectionHeading', function ($formBuilder) {
-                $formBuilder->string('Title', 'title', ['required']);
-                $formBuilder->wysiwyg('Description', 'description', ['required']);
+            FormBuilder::new('SectionHeading', function (FormBuilder $fb) {
+                $fb->string('Title', 'title', ['required']);
+                $fb->wysiwyg('Description', 'description', ['required']);
             })->setOwner($section_heading);
 
             $box_callouts = Component::create([
@@ -231,8 +231,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('BoxCallouts', function ($formBuilder) {
-                $formBuilder->fieldset('Boxes', 'boxes', [], function ($box) {
+            FormBuilder::new('BoxCallouts', function (FormBuilder $fb) {
+                $fb->fieldset('Boxes', 'boxes', [], function ($box) {
                     $box->string('Title', 'title', ['required']);
                     $box->string('Points', 'points', [])->repeatable();
                     $box->string('Link Text', 'link_text', ['required']);
@@ -246,9 +246,9 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('OurProcess', function ($formBuilder) {
-                $formBuilder->string('Title', 'title', ['required']);
-                $formBuilder->wysiwyg('Description', 'description', ['required']);
+            FormBuilder::new('OurProcess', function (FormBuilder $fb) {
+                $fb->string('Title', 'title', ['required']);
+                $fb->wysiwyg('Description', 'description', ['required']);
                 // SVG Animation is static, editable in code only.
             })->setOwner($our_proccess);
 
@@ -258,9 +258,9 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('MeetOurTeam', function ($formBuilder) {
-                $formBuilder->string('Title', 'title', ['required']);
-                $formBuilder->wysiwyg('Description', 'description', ['required']);
+            FormBuilder::new('MeetOurTeam', function (FormBuilder $fb) {
+                $fb->string('Title', 'title', ['required']);
+                $fb->wysiwyg('Description', 'description', ['required']);
             })->setOwner($meet_our_team)
             // ->dynamic(Plus3Person::class) // we need to decide if the section is dynamic, or the field (or both can be)
             ;
@@ -271,9 +271,9 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('SocialStream', function ($formBuilder) {
-                $formBuilder->string('Title', 'title', ['required']);
-                $formBuilder->wysiwyg('Description', 'description', ['required']);
+            FormBuilder::new('SocialStream', function (FormBuilder $fb) {
+                $fb->string('Title', 'title', ['required']);
+                $fb->wysiwyg('Description', 'description', ['required']);
                 // Fields
             })->setOwner($social_stream);
 
@@ -283,8 +283,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('CustomerTestimonials', function ($formBuilder) {
-                $formBuilder->fieldset('Testimonials', 'testimonials', [], function ($testimonial) {
+            FormBuilder::new('CustomerTestimonials', function (FormBuilder $fb) {
+                $fb->fieldset('Testimonials', 'testimonials', [], function ($testimonial) {
                     $testimonial->string('Author', 'author', ['required'])->required();
                     $testimonial->wysiwyg('Content', 'content', ['required'])->required();
 
@@ -307,10 +307,10 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('ThickPageBanner', function ($formBuilder) {
-                $formBuilder->file('Background Image', 'background_image', []);
-                $formBuilder->string('Title', 'title', ['required']);
-                $formBuilder->wysiwyg('Description', 'description', ['required']);
+            FormBuilder::new('ThickPageBanner', function (FormBuilder $fb) {
+                $fb->file('Background Image', 'background_image', []);
+                $fb->string('Title', 'title', ['required']);
+                $fb->wysiwyg('Description', 'description', ['required']);
             })->setOwner($thick_page_banner);
 
             $white_break_w_section_links = Component::create([
@@ -319,10 +319,10 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('WhiteBreakCalloutSectionLinks', function ($formBuilder) {
-                $formBuilder->string('Title', 'title', ['required']);
-                $formBuilder->wysiwyg('Description', 'description', ['required']);
-                $formBuilder->fieldset('Page Section Quick Links', 'quick_links', [], function ($quickLinks) {
+            FormBuilder::new('WhiteBreakCalloutSectionLinks', function (FormBuilder $fb) {
+                $fb->string('Title', 'title', ['required']);
+                $fb->wysiwyg('Description', 'description', ['required']);
+                $fb->fieldset('Page Section Quick Links', 'quick_links', [], function ($quickLinks) {
                     $quickLinks->radio('Link Format', 'link_format', [
                         'ol' => 'Ordered List',
                         'ul' => 'Un Ordered List',
@@ -338,8 +338,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('ProvidedSolution', function ($formBuilder) {
-                $formBuilder->fieldset('Solution', 'solution', [], function ($solution) {
+            FormBuilder::new('ProvidedSolution', function (FormBuilder $fb) {
+                $fb->fieldset('Solution', 'solution', [], function ($solution) {
                     $solution->radio('Layout', 'layout', ['left' => 'Left', 'right' => 'Right'])->required();
                     $solution->string('Title', 'title', ['required']);
                     $solution->file('Solution Photo', 'solution_photo', []);
@@ -357,9 +357,9 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('BlueBreakCallout', function ($formBuilder) {
-                $formBuilder->string('Link Title', 'link_title', [])->required();
-                $formBuilder->link('Link Destination', 'link_href', [])->required();
+            FormBuilder::new('BlueBreakCallout', function (FormBuilder $fb) {
+                $fb->string('Link Title', 'link_title', [])->required();
+                $fb->link('Link Destination', 'link_href', [])->required();
             })->setOwner($blue_break_callout);
 
             $breadcrumb_with_right_link = Component::create([
@@ -368,9 +368,9 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('BreadCrumbRightSideLink', function ($formBuilder) {
-                $formBuilder->string('Link Title', 'link_title', [])->required();
-                $formBuilder->link('Link Destination', 'link_href', [])->required();
+            FormBuilder::new('BreadCrumbRightSideLink', function (FormBuilder $fb) {
+                $fb->string('Link Title', 'link_title', [])->required();
+                $fb->link('Link Destination', 'link_href', [])->required();
             })->setOwner($breadcrumb_with_right_link);
 
             $process_timeline = Component::create([
@@ -379,10 +379,10 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('ProcessTimeline', function ($formBuilder) {
-                $formBuilder->string('Title', 'title', ['required']);
-                $formBuilder->wysiwyg('Description', 'description', ['required']);
-                $formBuilder->fieldset('Process Steps', 'process_steps', [], function ($process) {
+            FormBuilder::new('ProcessTimeline', function (FormBuilder $fb) {
+                $fb->string('Title', 'title', ['required']);
+                $fb->wysiwyg('Description', 'description', ['required']);
+                $fb->fieldset('Process Steps', 'process_steps', [], function ($process) {
                     $process->file('Image File', 'image', ['type:svg']);
                     $process->string('Image width', 'image_width', []);
                     $process->string('Image Height', 'image_height', []);
@@ -397,14 +397,14 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('MaintenanceDetails', function ($formBuilder) {
-                $formBuilder->string('Title', 'title', ['required']);
-                $formBuilder->wysiwyg('Description', 'description', ['required']);
-                $formBuilder->file('Image File', 'image', ['type:svg']);
-                $formBuilder->string('Image width', 'image_width', []);
-                $formBuilder->string('Image Height', 'image_height', []);
-                $formBuilder->string('Link Title', 'link_title', [])->required();
-                $formBuilder->link('Link Destination', 'link_href', [])->required();
+            FormBuilder::new('MaintenanceDetails', function (FormBuilder $fb) {
+                $fb->string('Title', 'title', ['required']);
+                $fb->wysiwyg('Description', 'description', ['required']);
+                $fb->file('Image File', 'image', ['type:svg']);
+                $fb->string('Image width', 'image_width', []);
+                $fb->string('Image Height', 'image_height', []);
+                $fb->string('Link Title', 'link_title', [])->required();
+                $fb->link('Link Destination', 'link_href', [])->required();
             })->setOwner($process_maintenance_details);
 
             $project_list = Component::create([
@@ -413,8 +413,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('ProjectList', function ($formBuilder) {
-                $formBuilder->fieldset('Projects', 'projects', [], function ($project) {
+            FormBuilder::new('ProjectList', function (FormBuilder $fb) {
+                $fb->fieldset('Projects', 'projects', [], function ($project) {
                     $project->file('Background Image', 'background_image', ['required']);
                     $project->file('Logo', 'logo', ['required']);
                     $project->string('Name', 'name', ['required']);
@@ -431,8 +431,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('ContactUs', function ($formBuilder) {
-                $formBuilder->formBuilder('Contact Form', 'contact_form', []);
+            FormBuilder::new('ContactUs', function (FormBuilder $fb) {
+                $fb->formBuilder('Contact Form', 'contact_form', []);
             })->setOwner($contact_form);
 
             $map_address = Component::create([
@@ -441,15 +441,15 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('MapAddress', function ($formBuilder) {
-                $formBuilder->string('Title', 'title', []);
-                $formBuilder->string('Phone Number', 'phone', []);
-                $formBuilder->string('Address Line 1', 'address_1', []);
-                $formBuilder->string('Address Line 2', 'address_2', []);
-                $formBuilder->string('City', 'city', []);
-                $formBuilder->string('State', 'state', []);
-                $formBuilder->string('Zip', 'zip', []);
-                $formBuilder->map('Map', 'map', ['address_1', 'address_2', 'city', 'state', 'zip']);
+            FormBuilder::new('MapAddress', function (FormBuilder $fb) {
+                $fb->string('Title', 'title', []);
+                $fb->string('Phone Number', 'phone', []);
+                $fb->string('Address Line 1', 'address_1', []);
+                $fb->string('Address Line 2', 'address_2', []);
+                $fb->string('City', 'city', []);
+                $fb->string('State', 'state', []);
+                $fb->string('Zip', 'zip', []);
+                $fb->map('Map', 'map', ['address_1', 'address_2', 'city', 'state', 'zip']);
             })->setOwner($map_address);
 
             // We might want to consider having this section be dynamic rather than set a field to be the dynamic piece?
@@ -461,8 +461,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('CustomerLogin', function ($formBuilder) {
-                $formBuilder->loginForm('Customer Login', 'customer_login', []);
+            FormBuilder::new('CustomerLogin', function (FormBuilder $fb) {
+                $fb->loginForm('Customer Login', 'customer_login', []);
             })->setOwner($login_form);
 
             // we should always (but only(?)) have one container component.
@@ -477,19 +477,24 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             $homepage = $websiteBuilder
                 ->addPage('Home Page', '');
 
-            $homepage_container = $homepage->addContainer(12, 1)
+            $homepage
+                ->addContainer(12, 1)
                 ->addSection($slider_banner, 12, 1);
 
-            $home_box_callout_container = $homepage->addContainer(12, 2)
+            $home_box_callout_container = $homepage
+                ->addContainer(12, 2)
                 ->addSection($section_heading, 12, 1);
 
-            $home_box_callout_container->addContainer(6, 2)
+            $home_box_callout_container
+                ->addContainer(6, 2)
                 ->addSection($box_callouts, 6, 1);
 
-            $home_box_callout_container->addContainer(6, 3)
+            $home_box_callout_container
+                ->addContainer(6, 3)
                 ->addSection($box_callouts, 6, 1);
 
-            $homepage_container
+            $homepage
+                ->addContainer(12, 3)
                 ->addSection($our_proccess, 12, 4)
                 ->addSection($meet_our_team, 12, 5)
                 ->addSection($social_stream, 12, 6)
@@ -498,7 +503,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             $solutions = $websiteBuilder
                 ->addPage('Solutions', 'solutions');
 
-            $solutions->addContainer(12, 1)
+            $solutions
+                ->addContainer(12, 1)
                 ->addSection($thick_page_banner, 12, 1)
                 ->addSection($white_break_w_section_links, 12, 2)
                 ->addSection($provided_solution, 12, 3)
@@ -507,7 +513,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             $process = $solutions
                 ->addChild('Our Process', 'our-process');
 
-            $process_container = $process->addContainer(12, 1)
+            $process
+                ->addContainer(12, 1)
                 ->addSection($thick_page_banner, 12, 1)
                 ->addSection($breadcrumb_with_right_link, 12, 2)
                 ->addSection($process_timeline, 12, 3)
@@ -516,34 +523,38 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             $projects = $websiteBuilder
                 ->addPage('Projects', 'projects');
 
-            $projects_container = $projects->addContainer(12, 1);
-            $projects_container->addSection($thick_page_banner, 12, 1);
-            $projects_container->addSection($project_list, 12, 2);
-            $projects_container->addSection($blue_break_callout, 12, 3);
-            $projects_container->addSection($white_break_w_section_links, 12, 4);
+            $projects
+                ->addContainer(12, 1)
+                ->addSection($thick_page_banner, 12, 1)
+                ->addSection($project_list, 12, 2)
+                ->addSection($blue_break_callout, 12, 3)
+                ->addSection($white_break_w_section_links, 12, 4);
 
             $company = $websiteBuilder
                 ->addPage('Company', 'company');
 
-            $company_container = $company->addContainer(12, 1);
-            $company_container->addSection($thick_page_banner, 12, 1);
-            $company_container->addSection($meet_our_team, 12, 2);
-            $company_container->addSection($social_stream, 12, 3);
+            $company
+                ->addContainer(12, 1)
+                ->addSection($thick_page_banner, 12, 1)
+                ->addSection($meet_our_team, 12, 2)
+                ->addSection($social_stream, 12, 3);
 
             $contact = $websiteBuilder
                 ->addPage('Contact Us', 'contact');
 
-            $contact_container = $contact->addContainer(12, 1);
-            $contact_container->addSection($thick_page_banner, 12, 1);
-            $contact_container->addSection($contact_form, 12, 2);
-            $contact_container->addSection($map_address, 12, 3);
+            $contact
+                ->addContainer(12, 1)
+                ->addSection($thick_page_banner, 12, 1)
+                ->addSection($contact_form, 12, 2)
+                ->addSection($map_address, 12, 3);
 
             $login = $websiteBuilder
                 ->addPage('Customer Login', 'customer-login');
 
-            $login_container = $login->addContainer(12, 1);
-            $login_container->addSection($thick_page_banner, 12, 1);
-            $login_container->addSection($login_form, 12, 2);
+            $login
+                ->addContainer(12, 1)
+                ->addSection($thick_page_banner, 12, 1)
+                ->addSection($login_form, 12, 2);
 
             // Create the nav menus and add the items.
             $main_header_menu = $websiteBuilder->addMenu('main_header_menu');
