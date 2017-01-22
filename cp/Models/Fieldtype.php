@@ -8,12 +8,12 @@ use League\Flysystem\MountManager;
 use League\Flysystem\Filesystem as Flysystem;
 use League\Flysystem\Adapter\Local as LocalAdapter;
 
-class Component extends Model
+class Fieldtype extends Model
 {
     const PUBLIC_COMPONENTS_FOLDER = /* base_path() */ '/../cp/src/components/FormBuilder';
     const COMPONENTS_LIB_PATH = /* base_path */ '/../cp/src/components';
 
-    public $table = 'fieldtypes';
+    // public $table = 'fieldtypes';
 
     public $fillable = [
         'name',
@@ -33,14 +33,14 @@ class Component extends Model
 
     public static function make(BaseField $field_type)
     {
-        $instance = Component::firstOrCreate([
+        $instance = Fieldtype::firstOrCreate([
             'name' => $field_type->getName(),
             'template' => $field_type->getTemplate()
         ]);
 
         // maintain components library
 
-        Component::renderComponents();
+        Fieldtype::renderComponents();
 
         return $instance->name;
     }
@@ -57,7 +57,7 @@ class Component extends Model
         $exporter_block = [];
 
         // foreach ($manager->listContents('source://', true) as $file) {
-        foreach (Component::all() as $component) {
+        foreach (Fieldtype::all() as $component) {
 
             $importer_block[] = "import {$component->name}Type from './FormBuilder/$component->name'";
             $exporter_block[] = "export var $component->name = {$component->name}Type";

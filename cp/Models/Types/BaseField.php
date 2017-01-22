@@ -3,7 +3,7 @@
 namespace P3in\Models\Types;
 
 use P3in\Models\Field;
-use P3in\Models\Component;
+use P3in\Models\Fieldtype;
 
 abstract class BaseField
 {
@@ -17,8 +17,8 @@ abstract class BaseField
     {
         $instance = new static();
 
-        // types are handled by the Component
-        $type = Component::make($instance);
+        // types are handled by the Fieldtype
+        $type = Fieldtype::make($instance);
 
         // @TODO add setField to close access to property
         $instance->field = Field::firstOrCreate([
@@ -32,7 +32,7 @@ abstract class BaseField
 
     public function getName()
     {
-        return $this->name;
+        return $this->name ?: $this->template;
     }
 
     public function getTemplate()
