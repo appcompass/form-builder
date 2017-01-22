@@ -8,8 +8,10 @@ class CpModule extends BaseModule
 {
     public $module_name = 'cp';
 
+    const PUBLIC_FORM_COMPONENTS_FOLDER = /* base_path() */ "../../cp/src/components/FormBuilder";
+
     protected $publishes = [
-        'js/components/' => 'components/',
+        'Models/templates/' => CpModule::PUBLIC_FORM_COMPONENTS_FOLDER,
     ];
 
     public function __construct()

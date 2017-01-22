@@ -26,9 +26,9 @@ class Field extends Model
         'fields'
     ];
 
-    protected $appends = [
-        'template'
-    ];
+    // protected $appends = [
+    //     'template'
+    // ];
 
     public $timestamps = false; // we don't need ts on fields
 
@@ -63,10 +63,11 @@ class Field extends Model
      *
      * @return     $this  The template attribute.
      */
-    public function getTemplateAttribute()
-    {
-        return (new $this->type())->template();
-    }
+    // @TODO returnin component content as a string makes working on the forntend exhausting and awkward
+    // public function getTemplateAttribute()
+    // {
+    //     return (new $this->type())->template();
+    // }
 
     // kill the repetition!
     private function saveAndReturn()

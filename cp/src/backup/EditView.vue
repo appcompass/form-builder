@@ -48,7 +48,7 @@ div
 </template>
 
 <script>
-import * as Components from './Components'
+import * as Components from './FormBuilder/Components'
 import State from './State'
 
 import swal from 'sweetalert'

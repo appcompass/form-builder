@@ -149,12 +149,19 @@ class FormBuilder
         // we'll try to new ucfirst that class, if that works we got it already
         $field_name = ucfirst($method) . 'Type';
 
+        // full class name
         $class_name = '\P3in\Models\Types\\' . $field_name;
 
         if (!class_exists($class_name)) {
             die("The FieldType: <$field_name> does not exist. Do Something!");
         }
 
+        // @TODO
+        // args[0] label, arg[1] field name
+        // invoke the static ::make method to return an actual Field instance
+        // every specific field extends a BaseField abstract class
+        // BaseField::make generates the field and links the type as being the specific type class
+        // this all feels so convoluted
         return $this->addField($class_name::make($args[0], $args[1]));
     }
 
@@ -162,6 +169,8 @@ class FormBuilder
      * Adds a field.
      *
      */
+    // addField adds the field to the form
+    // baseField instance carries the Field::class information we need to link that to the form
     private function addField(BaseField $field_type)
     {
         $this->form->fields()->attach($field_type->field);
