@@ -20,11 +20,10 @@ Route::group([
 Route::group([
     'prefix' => 'render',
     'namespace' => 'P3in\Controllers',
-    'middleware' => ['web', 'api'],
+    'middleware' => ['web', 'validateWebsite'],
 ], function ($router) {
-
     // $router->post('form-submissions', 'PagesController@submitForm');
     // $router->get('sitemap.{type}', 'PagesController@renderSitemap')->where('type', '(xml|html|txt|ror-rss|ror-rdf)');
     // $router->get('robots.txt', 'PagesController@renderRobotsTxt');
-    // $router->any('{path?}', 'PagesController@renderPage')->where('path', '(.*)');
+    $router->any('{path?}', 'PagesController@renderPage')->where('path', '(.*)');
 });

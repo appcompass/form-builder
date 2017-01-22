@@ -17,7 +17,8 @@ class Website extends Model
 
     protected $fillable = [
         'name',
-        'url'
+        'scheme',
+        'host',
     ];
 
     protected $casts = [

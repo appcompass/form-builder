@@ -16,7 +16,8 @@ class CreateWebsites extends Migration
         Schema::create('websites', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name', 64);
-            $table->string('url', 128)->unique();
+            $table->string('scheme', 64);
+            $table->string('host', 128)->unique();
             $table->json('config')->nullable();
 
             $table->timestamps();

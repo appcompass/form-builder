@@ -35,13 +35,14 @@ class WebsiteBuilder
      *
      * @return     <type>   ( description_of_the_return_value )
      */
-    public static function new($name, $domain, Closure $closure = null)
+    public static function new($name, $scheme, $host, Closure $closure = null)
     {
         $instance = new static();
 
         $instance->website = Website::create([
             'name' => $name,
-            'url' => $domain,
+            'scheme' => $scheme,
+            'host' => $host,
         ]);
 
         if ($closure) {

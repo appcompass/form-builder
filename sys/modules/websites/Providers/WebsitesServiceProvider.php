@@ -7,13 +7,14 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use P3in\Interfaces\MenusRepositoryInterface;
 use P3in\Interfaces\PageContentsRepositoryInterface;
+use P3in\Interfaces\PageSectionsRepositoryInterface;
 use P3in\Interfaces\PagesRepositoryInterface;
 use P3in\Interfaces\WebsiteMenusRepositoryInterface;
 use P3in\Interfaces\WebsitePagesRepositoryInterface;
 use P3in\Interfaces\WebsiteRedirectsRepositoryInterface;
 use P3in\Interfaces\WebsiteSettingsRepositoryInterface;
 use P3in\Interfaces\WebsitesRepositoryInterface;
-use P3in\Interfaces\PageSectionsRepositoryInterface;
+use P3in\Middleware\ValidateWebsite;
 use P3in\Models\Menu;
 use P3in\Models\Page;
 use P3in\Models\PageContent;
@@ -23,11 +24,11 @@ use P3in\Models\Setting;
 use P3in\Models\Website;
 use P3in\Repositories\MenusRepository;
 use P3in\Repositories\PageContentsRepository;
+use P3in\Repositories\PageSectionsRepository;
 use P3in\Repositories\PagesRepository;
 use P3in\Repositories\WebsiteMenusRepository;
 use P3in\Repositories\WebsitePagesRepository;
 use P3in\Repositories\WebsiteRedirectsRepository;
-use P3in\Repositories\PageSectionsRepository;
 use P3in\Repositories\WebsiteSettingsRepository;
 use P3in\Repositories\WebsitesRepository;
 
@@ -39,6 +40,7 @@ class WebsitesServiceProvider extends ServiceProvider
 
     public function register()
     {
+        $this->app['router']->middleware('validateWebsite', ValidateWebsite::class);
         // we shoudl prob make this a method that runs through $this->bindings
         foreach ([
             WebsitesRepositoryInterface::class => WebsitesRepository::class,
