@@ -17,9 +17,9 @@ div
       .section
         form
           .control(v-for="field in edit.fields")
-            label.label {{ field.label }}
+            label.label {{ field.label }} {{ field.name }}
             span(
-              v-bind:is="'Test'",
+              v-bind:is="Components[field.type]",
               v-bind:pointer="field.name"
               v-bind:data="value(field.name)"
               v-bind:value="value(field.name)"
@@ -48,23 +48,17 @@ div
 </template>
 
 <script>
-import Formstring from './FormBuilder/String'
-import Formtext from './FormBuilder/Text'
-import Formsecret from './FormBuilder/Secret'
-import Formboolean from './FormBuilder/Boolean'
-// import Formmenueditor from './FormBuilder/MenuEditor'
+import * as Components from './FormBuilder/Components'
 import State from './State'
-import Vue from 'vue'
 
 import swal from 'sweetalert'
 import _ from 'lodash'
 
 export default {
   name: 'EditView',
-  components: { State, Formstring, Formtext, Formsecret, Formboolean },
-
   data () {
     return {
+      Components,
       resource: undefined,
       edit: {},
       collection: undefined,
@@ -74,17 +68,14 @@ export default {
       navigation: undefined
     }
   },
-
   beforeRouteEnter (to, from, next) {
     // @TODO put breadcrumbs here
     return next()
   },
-
   created () {
     this.model = this.$route.params.model.split('_').join('/') + '/' + this.$route.params.id
     this.refresh()
   },
-
   watch: {
     '$route' (to, from) {
       this.model = this.$route.params.model.split('_').join('/') + '/' + this.$route.params.id
@@ -92,11 +83,9 @@ export default {
     }
 
   },
-
   beforeCreate () {
     // console.log(this.components)
   },
-
   methods: {
     refresh () {
       var api = process.env.API_SERVER
@@ -108,23 +97,12 @@ export default {
           this.edit = response.data.edit
           this.resource = this.$resource(api + this.edit.resource)
 
-          // console.log(this)
-
-          response.data.edit.fields.forEach((item) => {
-            // console.log(item.template)
-            // let component = Vue.compile(item.template)
-            Vue.component('Test', Vue.compile(item.template))
-
-            // console.log(component)
-            // console.log(this.$components)
-            // Vue.component(item.label, Vue.compile(item.template))
-            // console.log(item.label, c)
-            // this.$compile(item.template)
-            // console.log(item.template)
-          })
-
           // we want the last bit of model
           this.route = this.model.split('/')[this.model.split('/').length - 2]
+
+          this.edit.fields.forEach(function (field) {
+            field.type = field.type.split('\\')[field.type.split('\\').length - 1]
+          })
 
           State.get(this.route)
             .then(subnav => {
@@ -140,6 +118,7 @@ export default {
       this.$set(this.collection, data.pointer, data.value)
     },
     value (fieldName) {
+      console.log(fieldName)
       return _.get(this.collection, fieldName)
     },
     update () {
