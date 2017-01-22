@@ -1,3 +1,13 @@
-<div>
-    <input type="text" class="input" @input="$emit('input', {value: $event.target.value, pointer: pointer})" :value="data">
-</div>
+<template lang="jade">
+input.input(
+  type="text",
+  @input="$emit('input', {value: $event.target.value, pointer: pointer})"
+)
+</template>
+
+<script>
+export default {
+  name: 'string',
+  props: ['pointer', 'data']
+}
+</script>

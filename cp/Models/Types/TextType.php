@@ -4,5 +4,7 @@ namespace P3in\Models\Types;
 
 class TextType extends BaseField
 {
-    public $template = 'Text';
+    protected $template = 'Text';
+
+    protected $name = 'Text';
 }

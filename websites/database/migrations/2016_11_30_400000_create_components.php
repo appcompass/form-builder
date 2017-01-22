@@ -13,6 +13,7 @@ class CreateComponents extends Migration
      */
     public function up()
     {
+        // @TODO this will be merged with cp_fieldtypes
         Schema::create('components', function (Blueprint $table) {
             $table->increments('id');
 

@@ -14,11 +14,12 @@ class CreateFormBuilderTables extends Migration
     public function up()
     {
         // This only provides constraints and easy Vue components matching
-        // Schema::create('fieldtypes', function (Blueprint $table) {
-        //     $table->string('type');
-        //     $table->string('label');
-        //     $table->primary('type');
-        // });
+        // @TODO this will be components, merge with existing one
+        Schema::create('fieldtypes', function (Blueprint $table) {
+            $table->string('name');
+            $table->string('template'); // reference component path
+            $table->primary('name');
+        });
 
         Schema::create('fields', function (Blueprint $table) {
             $table->increments('id');
@@ -35,7 +36,6 @@ class CreateFormBuilderTables extends Migration
             $table->string('validation')->nullable();
             $table->string('type');
 
-            // $table->string('type');
             // $table->foreign('type')
             //     ->references('type')
             //     ->on('fieldtypes')
@@ -93,6 +93,6 @@ class CreateFormBuilderTables extends Migration
         Schema::drop('field_form');
         Schema::drop('forms');
         Schema::drop('fields');
-        // Schema::drop('fieldtypes');
+        Schema::drop('fieldtypes');
     }
 }
