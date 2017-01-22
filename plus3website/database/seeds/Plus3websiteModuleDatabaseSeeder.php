@@ -151,7 +151,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
         // field type ->link() allows the admin to select page || select link || create new link.
         // field validation should match exactly: https://laravel.com/docs/5.3/validation#available-validation-rules
 
-        DB::table('websites')->where('url', 'https://www.plus3interactive.com')->delete();
+        DB::table('websites')->where('host', 'www.plus3interactive.com')->delete();
         DB::table('forms')->whereIn('name', [
             'SliderBanner',
             'SectionHeading',
@@ -173,7 +173,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             'CustomerLogin',
         ])->delete();
 
-        $website = WebsiteBuilder::new('Plus 3 Interactive, LLC', 'https://www.plus3interactive.com', function ($websiteBuilder) {
+        $website = WebsiteBuilder::new('Plus 3 Interactive, LLC', 'https', 'www.plus3interactive.com', function ($websiteBuilder) {
             $websiteBuilder->setHeader('SiteHeader.vue')
                 ->setFooter('SiteFooter.vue')
                 ->setMetaData([
@@ -200,7 +200,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('SliderBanner', function (FormBuilder $fb) {
+            FormBuilder::new('SliderBanner', function ($fb) {
                 // we need to figure out how to handle the 'type' field.
                 // the fields internally are created in the order they appear in the builder.
                 $fb->string('Title', 'title', ['required']);
@@ -220,7 +220,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('SectionHeading', function (FormBuilder $fb) {
+            FormBuilder::new('SectionHeading', function ($fb) {
                 $fb->string('Title', 'title', ['required']);
                 $fb->wysiwyg('Description', 'description', ['required']);
             })->setOwner($section_heading);
@@ -231,7 +231,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('BoxCallouts', function (FormBuilder $fb) {
+            FormBuilder::new('BoxCallouts', function ($fb) {
                 $fb->fieldset('Boxes', 'boxes', [], function ($box) {
                     $box->string('Title', 'title', ['required']);
                     $box->string('Points', 'points', [])->repeatable();
@@ -246,7 +246,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('OurProcess', function (FormBuilder $fb) {
+            FormBuilder::new('OurProcess', function ($fb) {
                 $fb->string('Title', 'title', ['required']);
                 $fb->wysiwyg('Description', 'description', ['required']);
                 // SVG Animation is static, editable in code only.
@@ -258,7 +258,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('MeetOurTeam', function (FormBuilder $fb) {
+            FormBuilder::new('MeetOurTeam', function ($fb) {
                 $fb->string('Title', 'title', ['required']);
                 $fb->wysiwyg('Description', 'description', ['required']);
             })->setOwner($meet_our_team)
@@ -271,7 +271,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('SocialStream', function (FormBuilder $fb) {
+            FormBuilder::new('SocialStream', function ($fb) {
                 $fb->string('Title', 'title', ['required']);
                 $fb->wysiwyg('Description', 'description', ['required']);
                 // Fields
@@ -283,7 +283,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('CustomerTestimonials', function (FormBuilder $fb) {
+            FormBuilder::new('CustomerTestimonials', function ($fb) {
                 $fb->fieldset('Testimonials', 'testimonials', [], function ($testimonial) {
                     $testimonial->string('Author', 'author', ['required'])->required();
                     $testimonial->wysiwyg('Content', 'content', ['required'])->required();
@@ -307,7 +307,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('ThickPageBanner', function (FormBuilder $fb) {
+            FormBuilder::new('ThickPageBanner', function ($fb) {
                 $fb->file('Background Image', 'background_image', []);
                 $fb->string('Title', 'title', ['required']);
                 $fb->wysiwyg('Description', 'description', ['required']);
@@ -319,7 +319,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('WhiteBreakCalloutSectionLinks', function (FormBuilder $fb) {
+            FormBuilder::new('WhiteBreakCalloutSectionLinks', function ($fb) {
                 $fb->string('Title', 'title', ['required']);
                 $fb->wysiwyg('Description', 'description', ['required']);
                 $fb->fieldset('Page Section Quick Links', 'quick_links', [], function ($quickLinks) {
@@ -338,7 +338,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('ProvidedSolution', function (FormBuilder $fb) {
+            FormBuilder::new('ProvidedSolution', function ($fb) {
                 $fb->fieldset('Solution', 'solution', [], function ($solution) {
                     $solution->radio('Layout', 'layout', ['left' => 'Left', 'right' => 'Right'])->required();
                     $solution->string('Title', 'title', ['required']);
@@ -357,7 +357,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('BlueBreakCallout', function (FormBuilder $fb) {
+            FormBuilder::new('BlueBreakCallout', function ($fb) {
                 $fb->string('Link Title', 'link_title', [])->required();
                 $fb->link('Link Destination', 'link_href', [])->required();
             })->setOwner($blue_break_callout);
@@ -368,7 +368,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('BreadCrumbRightSideLink', function (FormBuilder $fb) {
+            FormBuilder::new('BreadCrumbRightSideLink', function ($fb) {
                 $fb->string('Link Title', 'link_title', [])->required();
                 $fb->link('Link Destination', 'link_href', [])->required();
             })->setOwner($breadcrumb_with_right_link);
@@ -379,7 +379,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('ProcessTimeline', function (FormBuilder $fb) {
+            FormBuilder::new('ProcessTimeline', function ($fb) {
                 $fb->string('Title', 'title', ['required']);
                 $fb->wysiwyg('Description', 'description', ['required']);
                 $fb->fieldset('Process Steps', 'process_steps', [], function ($process) {
@@ -397,7 +397,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('MaintenanceDetails', function (FormBuilder $fb) {
+            FormBuilder::new('MaintenanceDetails', function ($fb) {
                 $fb->string('Title', 'title', ['required']);
                 $fb->wysiwyg('Description', 'description', ['required']);
                 $fb->file('Image File', 'image', ['type:svg']);
@@ -413,7 +413,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('ProjectList', function (FormBuilder $fb) {
+            FormBuilder::new('ProjectList', function ($fb) {
                 $fb->fieldset('Projects', 'projects', [], function ($project) {
                     $project->file('Background Image', 'background_image', ['required']);
                     $project->file('Logo', 'logo', ['required']);
@@ -431,7 +431,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('ContactUs', function (FormBuilder $fb) {
+            FormBuilder::new('ContactUs', function ($fb) {
                 $fb->formBuilder('Contact Form', 'contact_form', []);
             })->setOwner($contact_form);
 
@@ -441,7 +441,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('MapAddress', function (FormBuilder $fb) {
+            FormBuilder::new('MapAddress', function ($fb) {
                 $fb->string('Title', 'title', []);
                 $fb->string('Phone Number', 'phone', []);
                 $fb->string('Address Line 1', 'address_1', []);
@@ -461,7 +461,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('CustomerLogin', function (FormBuilder $fb) {
+            FormBuilder::new('CustomerLogin', function ($fb) {
                 $fb->loginForm('Customer Login', 'customer_login', []);
             })->setOwner($login_form);
 
@@ -576,14 +576,14 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             $main_footer_menu->addItem($login, 6);
         })->getWebsite();
 
-        // Now lets test the magic!
-        DB::enableQueryLog();
-        $website_for_renderer = Website::find($website->id);
-        $renderer =  new PageRenderer($website_for_renderer);
+        // // Now lets test the magic!
+        // DB::enableQueryLog();
+        // $website_for_renderer = Website::find($website->id);
+        // $renderer =  new PageRenderer($website_for_renderer);
 
-        $data = $renderer->setPage('/solutions/our-process')->render(); // edit() for CP, render() for public.
+        // $data = $renderer->setPage('/solutions/our-process')->render(); // edit() for CP, render() for public.
 
-        dd(DB::getQueryLog(), $data);
+        // dd(DB::getQueryLog(), $data);
 
 /*
 
