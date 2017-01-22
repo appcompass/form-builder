@@ -1,4 +1,3 @@
-{
-  template: "<textarea class=\"textarea\" @input=\"$emit('input', {value: $event.target.value, pointer: pointer})\"></textarea>",
-  props: ['pointer', 'data']
-}
+<div @input="$emit('input', {value: $event.target.value, pointer: pointer})">
+    Text {{ pointer }}
+</div>

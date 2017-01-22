@@ -18,7 +18,7 @@ class WebsiteMenusController extends AbstractChildController
     {
         return [
             'id' => $model->id,
-            'menu-editor' => [
+            'menu' => [
                 'menu' => $model->render(),
                 'repo' => $parent->pages,
                 'deletions' => []
