@@ -174,7 +174,9 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
         ])->delete();
 
         $website = WebsiteBuilder::new('Plus 3 Interactive, LLC', 'https', 'www.plus3interactive.com', function ($websiteBuilder) {
-            $websiteBuilder->setHeader('SiteHeader.vue')
+            $websiteBuilder
+                ->setTemplateBasePath(realpath(__DIR__.'/../../Public/js/components/Site'))
+                ->setHeader('SiteHeader.vue')
                 ->setFooter('SiteFooter.vue')
                 ->setMetaData([
                     'title' => '',
@@ -183,7 +185,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                     'custom_header_html' => '',
                     'custom_before_body_end_html' => '',
                     'custom_footer_html' => '',
-                    'robots_txt' => ''
+                    'robots_txt' => '',
                 ]);
             // Build the components.
 

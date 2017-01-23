@@ -1,1 +1,1 @@
-<template lang="jade"></template>
+<template></template>
