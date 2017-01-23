@@ -23,6 +23,12 @@ class PageRenderer
     public function __construct(Website $website)
     {
         $this->website = $website;
+
+        if (!isset($this->website->config->template_base_path)) {
+            throw new Exception('Must specify a base path for website templates.');
+        }
+
+        $this->template_base_path = $this->website->config->template_base_path;
         $this->pages = $website->pages();
 
         return $this;
@@ -39,7 +45,44 @@ class PageRenderer
         return $this;
     }
 
-    public function render($filtered = true)
+    public function render():string
+    {
+        $pageData = $this->getData();
+
+        $forCompiler = $this->forCompiler($pageData['page']['containers']);
+
+        // this is where we compile the Vue component using an abstracted recursive(?) version of Fieldtype::renderComponents()
+        $compiled = json_encode($forCompiler); // bogus obviously just so we get some return data to view structure.
+
+        return $compiled;
+    }
+
+    private function forCompiler($data)
+    {
+        $rtn = [];
+
+        foreach ($data as $row) {
+            $rtn[] = [
+                'content' => $row['content'],
+                'order' => $row['order'],
+                'columns' => $row['columns'],
+                'name' => $row['component']['name'],
+                'template' => $this->template_base_path.'/'.$row['component']['template'],
+                'type' => $row['component']['type'],
+                'config' => $row['component']['config'],
+                'children' => $this->forCompiler($row['children'])
+            ];
+        }
+
+        return $rtn;
+    }
+
+    public function edit()
+    {
+        return $this->getData(false);
+    }
+
+    public function getData($filtered = true)
     {
         if (!$this->page) {
             throw new Exception('A page must be set.');
@@ -58,11 +101,6 @@ class PageRenderer
 
         // structure the page data to be sent to the front-end to work out.
         return $this->build;
-    }
-
-    public function edit()
-    {
-        return $this->render(false);
     }
 
     private function getPageFromUrl($url)

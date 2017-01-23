@@ -107,6 +107,12 @@ class WebsiteBuilder
         return $this;
     }
 
+    public function setTemplateBasePath($path)
+    {
+        $this->website->update(['config->template_base_path' => $path]);
+        return $this;
+    }
+
     public function setMetaData($data)
     {
         $this->website->update(['config->meta' => $data]);

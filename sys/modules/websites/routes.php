@@ -9,7 +9,7 @@ Route::group([
     $router->resource('websites.menus', WebsiteMenusController::class);
     $router->resource('websites.navigation', WebsiteMenusController::class);
     $router->resource('websites.pages', WebsitePagesController::class);
-    $router->resource('pages', PagesController::class);
+    // $router->resource('pages', PagesController::class); // @TODO this is redundant, see below.  We don't want auth on this one but do want validateWebsite.
     $router->resource('pages.contents', PageContentsController::class); // @TODO: websites.pages.contents
     $router->resource('pages.sections', PageSectionsController::class); // @TODO: websites.pages.sections
     $router->resource('websites.settings', WebsiteSettingsController::class); // @TODO:  Discuss this, not sure it's needed anymore since L5.3 fixed their Json field API.
@@ -21,6 +21,11 @@ Route::group([
     'namespace' => 'P3in\Controllers',
     'middleware' => ['web', 'validateWebsite'],
 ], function ($router) {
+    $router->group([
+        'prefix' => 'content',
+    ], function($router){
+        $router->get('{path?}', 'PagesController@getPageData')->where('path', '(.*)');
+    });
 
     $router->group([
         'prefix' => 'render',

@@ -15,14 +15,23 @@ class PagesController extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function renderPage(Request $request, $uri = '')
+    public function getPageData(Request $request, $uri = '')
     {
-        // \DB::enableQueryLog();
+        \DB::enableQueryLog();
         $renderer =  new PageRenderer($request->website);
 
-        $data = $renderer->setPage('/'.trim($uri, '/'))->render(); // edit() for CP, render() for public.
+        $data = $renderer->setPage('/'.trim($uri, '/'))->getData();
 
-        // $data['debug'] = \DB::getQueryLog();
+        $data['debug'] = \DB::getQueryLog();
+        return $data;
+    }
+
+    public function renderPage(Request $request, $uri = '')
+    {
+        $renderer =  new PageRenderer($request->website);
+
+        $data = $renderer->setPage('/'.trim($uri, '/'))->render();
+
         return $data;
     }
 
