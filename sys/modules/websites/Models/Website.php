@@ -92,6 +92,12 @@ class Website extends Model
         $this->pages()->save($page);
     }
 
+    public function getUrlAttribute()
+    {
+        return $this->attributes['scheme'].'://'.$this->attributes['host'];
+    }
+
+    // @TODO refactor big time all following methods.
     /**
      *
      */

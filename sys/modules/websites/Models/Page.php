@@ -156,6 +156,41 @@ class Page extends Model implements Linkable
         }
     }
 
+    public function getFullUrlAttribute()
+    {
+        return $this->website->url.$this->url;
+    }
+
+    public function getUpdateFrequencyAttribute()
+    {
+        return $this->getMeta('update_frequency');
+    }
+
+    public function getPriorityAttribute()
+    {
+        return $this->getMeta('priority');
+    }
+
+    public function getImagesAttribute() // for sitemap.
+    {
+        $images = [];
+        $page_title = $this->title;
+        // construct an array of images like: $images[] = ['url' => 'http://path.to.image', 'title' => $page_title.' Image Name or Alt text']
+
+        return $images;
+    }
+
+    public function setMeta($key, $val)
+    {
+        $this->update(['meta->'.$key => $val]);
+
+        return $this;
+    }
+
+    public function getMeta($key)
+    {
+        return isset($this->meta->{$key}) ? $this->meta->{$key} : null;
+    }
     /**
      * updateChildrenUrl
      *

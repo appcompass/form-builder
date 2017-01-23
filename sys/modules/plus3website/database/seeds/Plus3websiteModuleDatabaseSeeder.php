@@ -475,7 +475,11 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             // Build Pages
             $homepage = $websiteBuilder
-                ->addPage('Home Page', '');
+                ->addPage('Home Page', '')
+                ->setAuthor('Aisha Saidi')
+                ->setDescription('This is where we would put the Plus 3 Interactive description')
+                ->setPriority('1.0')
+                ->setUpdatedFrequency('always');
 
             $homepage
                 ->addContainer(12, 1)
@@ -501,7 +505,11 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->addSection($customer_testimonials, 12, 7);
 
             $solutions = $websiteBuilder
-                ->addPage('Solutions', 'solutions');
+                ->addPage('Solutions', 'solutions')
+                ->setAuthor('Aisha Saidi')
+                ->setDescription('This is where we would put the Plus 3 Interactive description')
+                ->setPriority('0.9')
+                ->setUpdatedFrequency('yearly');
 
             $solutions
                 ->addContainer(12, 1)
@@ -511,7 +519,11 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->addSection($blue_break_callout, 12, 4);
 
             $process = $solutions
-                ->addChild('Our Process', 'our-process');
+                ->addChild('Our Process', 'our-process')
+                ->setAuthor('Aisha Saidi')
+                ->setDescription('This is where we would put the Plus 3 Interactive description')
+                ->setPriority('0.8')
+                ->setUpdatedFrequency('yearly');
 
             $process
                 ->addContainer(12, 1)
@@ -521,7 +533,11 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->addSection($process_maintenance_details, 12, 4);
 
             $projects = $websiteBuilder
-                ->addPage('Projects', 'projects');
+                ->addPage('Projects', 'projects')
+                ->setAuthor('Aisha Saidi')
+                ->setDescription('This is where we would put the Plus 3 Interactive description')
+                ->setPriority('0.9')
+                ->setUpdatedFrequency('monthly');
 
             $projects
                 ->addContainer(12, 1)
@@ -531,7 +547,11 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->addSection($white_break_w_section_links, 12, 4);
 
             $company = $websiteBuilder
-                ->addPage('Company', 'company');
+                ->addPage('Company', 'company')
+                ->setAuthor('Aisha Saidi')
+                ->setDescription('This is where we would put the Plus 3 Interactive description')
+                ->setPriority('0.8')
+                ->setUpdatedFrequency('monthly');
 
             $company
                 ->addContainer(12, 1)
@@ -540,7 +560,11 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->addSection($social_stream, 12, 3);
 
             $contact = $websiteBuilder
-                ->addPage('Contact Us', 'contact');
+                ->addPage('Contact Us', 'contact')
+                ->setAuthor('Aisha Saidi')
+                ->setDescription('This is where we would put the Plus 3 Interactive description')
+                ->setPriority('0.7')
+                ->setUpdatedFrequency('yearly');
 
             $contact
                 ->addContainer(12, 1)
@@ -549,7 +573,11 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->addSection($map_address, 12, 3);
 
             $login = $websiteBuilder
-                ->addPage('Customer Login', 'customer-login');
+                ->addPage('Customer Login', 'customer-login')
+                ->setAuthor('Aisha Saidi')
+                ->setDescription('This is where we would put the Plus 3 Interactive description')
+                ->setPriority('0.6')
+                ->setUpdatedFrequency('never');
 
             $login
                 ->addContainer(12, 1)

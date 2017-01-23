@@ -40,7 +40,6 @@ class PageBuilder
         $instance->page = $website->pages()->create([
 
             'title' => $title,
-
         ]);
 
         if ($closure) {
@@ -116,4 +115,35 @@ class PageBuilder
     {
         return $this->page;
     }
+
+    public function setAuthor($val = '')
+    {
+        return $this->setMeta('author', $val);
+
+    }
+
+    public function setDescription($val = '')
+    {
+        return $this->setMeta('description', $val);
+
+    }
+
+    public function setPriority($val = '')
+    {
+        return $this->setMeta('priority', $val);
+
+    }
+
+    public function setUpdatedFrequency($val = '')
+    {
+        return $this->setMeta('update_frequency', $val);
+    }
+
+    public function setMeta($key, $val)
+    {
+        $this->page->setMeta($key, $val);
+
+        return $this;
+    }
+
 }
