@@ -17,7 +17,7 @@ div
       .section
         form
           .control(v-for="field in edit.fields")
-            label.label {{ field.label }} {{ field.name }}
+            label.label {{ field.label }}
             span(
               v-bind:is="Components[field.type]",
               v-bind:pointer="field.name"
