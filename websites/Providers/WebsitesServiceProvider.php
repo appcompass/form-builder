@@ -31,6 +31,7 @@ use P3in\Repositories\WebsitePagesRepository;
 use P3in\Repositories\WebsiteRedirectsRepository;
 use P3in\Repositories\WebsiteSettingsRepository;
 use P3in\Repositories\WebsitesRepository;
+use Roumen\Sitemap\SitemapServiceProvider;
 
 class WebsitesServiceProvider extends ServiceProvider
 {
@@ -41,6 +42,9 @@ class WebsitesServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app['router']->middleware('validateWebsite', ValidateWebsite::class);
+
+        $this->app->register(SitemapServiceProvider::class);
+
         // we shoudl prob make this a method that runs through $this->bindings
         foreach ([
             WebsitesRepositoryInterface::class => WebsitesRepository::class,
