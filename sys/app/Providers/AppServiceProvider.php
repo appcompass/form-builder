@@ -19,6 +19,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind('path.public', function () {
             return base_path() . '/../public/src';
         });
+
+        $this->app->bind('path.cp', function () {
+            return base_path() . '/../cp/src/components';
+        });
     }
 
     /**
