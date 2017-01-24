@@ -50,6 +50,7 @@ div
 <script>
 import * as Components from './Components'
 import State from './State'
+import Auth from './Auth'
 
 import swal from 'sweetalert'
 import _ from 'lodash'
@@ -111,6 +112,9 @@ export default {
               swal({title: 'Error', text: 'Can\'t fetch subnav', type: 'error'})
             })
         }, (response) => {
+          if (!Auth.user.authenticated) {
+            return
+          }
           swal({title: 'Error', text: response.data.errors, type: 'error'})
         })
     },

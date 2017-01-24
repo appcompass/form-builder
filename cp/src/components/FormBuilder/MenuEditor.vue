@@ -16,43 +16,12 @@
         a.handle
           &nbsp; {{ item.title }}
 
-  .modal(:class="{'is-active': modal.active}")
-    .modal-background
-    .modal-card
-      header.modal-card-head
-        p.modal-card-title Add Link
-        button.delete(@click.prevent="modal.active = false")
-      section.modal-card-body
-        label.label Title
-        p.control
-          input.input(v-model="link.title")
-        label.label Url
-        p.control
-          input.input(v-model="link.url")
-        label.label Alt Text
-        p.control
-          input.input(v-model="link.alt")
-        label.label Icon Name
-        p.control
-          input.input(v-model="link.icon")
-        p.control
-          label.checkbox
-            input(type="checkbox", v-model="link.new_tab")
-            |  New Tab
-        p.control
-          label.checkbox
-            input(type="checkbox", v-model="link.clickable")
-            |  Clickable
-      footer.modal-card-foot
-        a.button.is-primary(@click="storeLink()") Save
-        a.button(@click.prevent="modal.active = false") Cancel
-
 </template>
 
 <script>
 import Sortable from '../VueSortable'
 import MenuElement from './MenuElement'
-import Vue from '../../main.js'
+import Modal from '../Modal'
 
 export default {
   components: { Sortable, MenuElement },
@@ -60,7 +29,7 @@ export default {
   name: 'menu-editor',
   data () {
     return {
-      modal: {active: false},
+      modal: Modal,
       link: {url: 'https://www.google.com', title: 'Google', icon: 'world', new_tab: true, clickable: true, alt: 'google link'}
     }
   },
@@ -70,7 +39,6 @@ export default {
     }
   },
   created () {
-    console.log(Vue.$refs)
     this.setChildren()
   },
   methods: {
@@ -78,12 +46,12 @@ export default {
       // mark items for deletion
       this.data.deletions.push(item.id)
     },
-    storeLink () {
+    storeLink (payload) {
       // get a MenuItem instance from the backend
-      this.$http.post(process.env.API_SERVER + 'menus/', this.link)
+      this.$http.post(process.env.API_SERVER + 'menus/', payload)
         .then((response) => {
           this.data.repo.push(response.body)
-          this.modal.active = false
+          // this.modal.active = false
         })
     },
     setChildren () {
@@ -96,9 +64,14 @@ export default {
       })
     },
     create (item) {
+      // fetch desired item and pop up a modal
+      // this.modal.active = true
       this.$http.get(process.env.API_SERVER + 'menus/forms/' + item)
-        .then(response => {
-          console.log(response)
+        .then(function (response) {
+          // response.data.collection -> form.fields
+          this.modal.show(response.data.collection, this.link, (result) => {
+            return this.storeLink(result)
+          })
         })
     }
   }

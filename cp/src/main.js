@@ -3,6 +3,8 @@ var Vue = require('vue')
 var VueRouter = require('vue-router')
 var VueResource = require('vue-resource')
 
+import Auth from './components/Auth'
+
 import routes from './routes'
 import App from './App'
 
@@ -18,6 +20,7 @@ Vue.http.interceptors.push((request, next) => {
   next(response => {
     if (response.status === 401) {
       console.log('Not logged in')
+      Auth.logout()
       router.push({name: 'login'})
     }
     return response

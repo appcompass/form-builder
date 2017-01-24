@@ -1,6 +1,7 @@
 <template lang="jade">
 div#app
   div.main
+    ModalComponent
     Top
     App
   Bottom.footer
@@ -10,10 +11,11 @@ div#app
 import Top from './components/Header'
 import App from './components/Main'
 import Bottom from './components/Footer'
+import ModalComponent from './components/ModalComponent'
 
 export default {
   name: 'app',
-  components: { Top, App, Bottom }
+  components: { Top, App, Bottom, ModalComponent }
 }
 </script>
 

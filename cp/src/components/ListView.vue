@@ -47,6 +47,7 @@ import _ from 'lodash'
 import Pagination from './Pagination'
 import TableList from './LayoutTypes/TableList'
 import MultiSelectList from './LayoutTypes/MultiSelectList'
+import Auth from './Auth.js'
 
 export default {
   name: 'ListView',
@@ -76,7 +77,6 @@ export default {
       if (to.path === from.path) {
         return
       }
-
       this.model = to.path
       this.loading = true
 
@@ -91,11 +91,9 @@ export default {
       }
     }
   },
-
   created () {
     this.update()
   },
-
   methods: {
     applyFilter: _.debounce(function () {
       if (this.pagination.current_page > 1) {
@@ -104,7 +102,6 @@ export default {
         this.update()
       }
     }, 500),
-
     update () {
       var api = process.env.API_SERVER
       this.loading = true
@@ -118,28 +115,26 @@ export default {
       })
         .then((response) => {
           this.loading = false
-
           if (!response.data.list) {
             this.list = undefined
             return
           }
-
           this.list = response.data.list
-
           // check if collection sets it's own view layout [Card, Table, MultiSelect]
           if (response.data.collection.view != null) {
             this.list.list_layout = response.data.collection.view
           }
-
           this.pagination = _.omit(response.data.collection.data, ['data'])
           this.collection = response.data.collection
           this.resource = this.$resource(api + this.list.resource)
         }, (response) => {
           this.loading = false
+          if (!Auth.user.authenticated) {
+            return
+          }
           swal('Error!', response.data.errors, 'error')
         })
     },
-
     remove (id) {
       swal({ title: 'Are you sure?', text: 'You will not be able to recover this', type: 'warning', showCancelButton: true, closeOnConfirm: false }, () => {
         this.resource.delete({id: id})
@@ -153,7 +148,6 @@ export default {
           })
       })
     },
-
     toggleEdit (field) {
       if (this.edit.indexOf(field.id) > -1) {
         delete this.search[field.name]
@@ -167,14 +161,11 @@ export default {
         this.edit.push(field.id)
       }
     },
-
     toggleSorter (field) {
       if (!field.sortable) {
         return
       }
-
       let sorter = this.sorters[field.name]
-
       switch (sorter) {
         case 'ASC':
           this.$set(this.sorters, field.name, 'DESC')
@@ -185,7 +176,6 @@ export default {
         default:
           this.$set(this.sorters, field.name, 'ASC')
       }
-
       this.update()
     }
   }
