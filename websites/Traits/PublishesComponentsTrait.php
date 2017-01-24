@@ -10,6 +10,13 @@ use League\Flysystem\MountManager;
 
 trait PublishesComponentsTrait
 {
+    /**
+     * Gets a mount manager instance
+     *
+     * @return     MountManager  The mount manager.
+     *
+     */
+    // @TODO this is way too specific for a Trait
     public function getMountManager()
     {
         // prob should get the plus3website component publish module directory here.

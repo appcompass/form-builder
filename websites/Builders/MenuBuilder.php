@@ -63,6 +63,16 @@ class MenuBuilder
         return $instance;
     }
 
+    /**
+     * Adds an item.
+     *
+     * @param      <type>      $item   The item
+     * @param      integer     $order  The order
+     *
+     * @throws     \Exception  (description)
+     *
+     * @return     <type>      ( description_of_the_return_value )
+     */
     public function addItem($item, $order = 1)
     {
         if (!$this->menu) {
@@ -91,6 +101,13 @@ class MenuBuilder
     }
 
 
+    /**
+     * Sets the icon.
+     *
+     * @param      string  $name   The name
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
     public function setIcon($name = '')
     {
         $this->item->icon($name);
