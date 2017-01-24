@@ -2,19 +2,20 @@
 
 namespace P3in\Builders;
 
-use Closure;
+use P3in\Traits\PublishesComponentsTrait;
 use P3in\Builders\MenuBuilder;
 use P3in\Builders\PageBuilder;
+use P3in\Models\PageContent;
+use P3in\Models\Website;
+use P3in\Models\Section;
 use P3in\Models\Layout;
 use P3in\Models\Page;
-use P3in\Models\PageContent;
-use P3in\Models\Section;
-use P3in\Models\Website;
-use P3in\Traits\PublishesComponentsTrait;
+use Closure;
 
 class WebsiteBuilder
 {
     use PublishesComponentsTrait;
+
     /**
      * Page instance
      */
@@ -36,7 +37,7 @@ class WebsiteBuilder
      *
      * @return     <type>   ( description_of_the_return_value )
      */
-    public static function new($name, $scheme, $host, Closure $closure = null)
+    public static function new($name, $scheme, $host, Closure $closure = null) : WebsiteBuilder
     {
         $instance = new static();
 
@@ -62,7 +63,7 @@ class WebsiteBuilder
      *
      * @return     WebsiteBuilder  WebsiteBuilder instance
      */
-    public static function edit($website)
+    public static function edit($website) : WebsiteBuilder
     {
         if (!$website instanceof Website && !is_int($website)) {
             throw new \Exception('Must pass id or Website instance');
@@ -75,6 +76,14 @@ class WebsiteBuilder
         return new static($website);
     }
 
+    /**
+     * Adds a page.
+     *
+     * @param      <type>       $title  The title
+     * @param      <type>       $slug   The slug
+     *
+     * @return     PageBuilder  ( description_of_the_return_value )
+     */
     public function addPage($title, $slug)
     {
         $page = new Page([
@@ -87,6 +96,13 @@ class WebsiteBuilder
         return new PageBuilder($page);
     }
 
+    /**
+     * Adds a menu.
+     *
+     * @param      <type>       $name   The name
+     *
+     * @return     MenuBuilder  ( description_of_the_return_value )
+     */
     public function addMenu($name)
     {
         $menu = $this->website->menus()->create([
@@ -96,12 +112,26 @@ class WebsiteBuilder
         return new MenuBuilder($menu);
     }
 
+    /**
+     * Sets the header.
+     *
+     * @param      <type>  $template  The template
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
     public function setHeader($template)
     {
         $this->website->setConfig('header', $template);
         return $this;
     }
 
+    /**
+     * Sets the footer.
+     *
+     * @param      <type>  $template  The template
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
     public function setFooter($template)
     {
         $this->website->setConfig('footer', $template);
@@ -120,11 +150,21 @@ class WebsiteBuilder
         return $this;
     }
 
+    /**
+     * Gets the website.
+     *
+     * @return     <type>  The website.
+     */
     public function getWebsite()
     {
         return $this->website;
     }
 
+    /**
+     * Compile Components
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
     public function compileComponents()
     {
         $manager = $this->getMountManager();
@@ -147,6 +187,11 @@ class WebsiteBuilder
         return $this;
     }
 
+    /**
+     * { function_description }
+     *
+     * @param      <type>  $diskInstance  The disk instance
+     */
     public function deploy($diskInstance)
     {
         // Magic Sauce DevOps logic using the set disk instance and run commands needed on server to get everything configured properly.

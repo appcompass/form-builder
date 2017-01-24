@@ -101,6 +101,7 @@ class Page extends Model implements Linkable
     //         $query->where('type', 'container');
     //     })->whereNull('parent_id');
     // }
+
     /**
      * get the Page via it's url
      *
@@ -124,9 +125,11 @@ class Page extends Model implements Linkable
 
     /**
      * Add a Container to the page.
-     * @param int $columns
-     * @param int $order
-     * @return Model PageComponentContent
+     *
+     * @param      int    $columns
+     * @param      int    $order
+     *
+     * @return     Model  PageComponentContent
      */
     public function addContainer($columns, $order)
     {
@@ -137,12 +140,12 @@ class Page extends Model implements Linkable
 
         return $container;
     }
+
     /**
      * Sets the url based on slug
      *
      * @param      <type>  $slug   The slug
      */
-
     public function setSlugAttribute($slug)
     {
         $this->attributes['slug'] = $slug;
@@ -156,27 +159,52 @@ class Page extends Model implements Linkable
         }
     }
 
+    /**
+     * Gets the component name attribute.
+     *
+     * @return     <type>  The component name attribute.
+     */
     public function getComponentNameAttribute()
     {
         $url = $this->url == '/' ? 'Home' : $this->url;
         return studly_case(str_slug(str_replace('/', ' ', $url)));
     }
 
+    /**
+     * Gets the full url attribute.
+     *
+     * @return     <type>  The full url attribute.
+     */
     public function getFullUrlAttribute()
     {
         return $this->website->url.$this->url;
     }
 
+    /**
+     * Gets the update frequency attribute.
+     *
+     * @return     <type>  The update frequency attribute.
+     */
     public function getUpdateFrequencyAttribute()
     {
         return $this->getMeta('update_frequency');
     }
 
+    /**
+     * Gets the priority attribute.
+     *
+     * @return     <type>  The priority attribute.
+     */
     public function getPriorityAttribute()
     {
         return $this->getMeta('priority');
     }
 
+    /**
+     * Gets the images attribute.
+     *
+     * @return     array  The images attribute.
+     */
     public function getImagesAttribute() // for sitemap.
     {
         $images = [];
@@ -186,6 +214,14 @@ class Page extends Model implements Linkable
         return $images;
     }
 
+    /**
+     * Sets the meta.
+     *
+     * @param      <type>  $key    The key
+     * @param      <type>  $val    The value
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
     public function setMeta($key, $val)
     {
         $this->update(['meta->'.$key => $val]);
@@ -193,10 +229,18 @@ class Page extends Model implements Linkable
         return $this;
     }
 
+    /**
+     * Gets the meta.
+     *
+     * @param      <type>  $key    The key
+     *
+     * @return     <type>  The meta.
+     */
     public function getMeta($key)
     {
         return isset($this->meta->{$key}) ? $this->meta->{$key} : null;
     }
+
     /**
      * updateChildrenUrl
      *
@@ -232,6 +276,13 @@ class Page extends Model implements Linkable
         return '/' . implode('/', array_reverse($slugs));
     }
 
+    /**
+     * Creates a child.
+     *
+     * @param      <type>  $data   The data
+     *
+     * @return     static  ( description_of_the_return_value )
+     */
     public function createChild($data)
     {
         $page = new static;
@@ -246,6 +297,7 @@ class Page extends Model implements Linkable
 
         return $page;
     }
+
     /**
      * Makes a menu item.
      *

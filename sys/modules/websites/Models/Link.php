@@ -27,6 +27,13 @@ class Link extends Model implements Linkable
         // 'clickable' => ''
     ];
 
+    /**
+     * Makes a menu item.
+     *
+     * @param      integer   $order  The order
+     *
+     * @return     MenuItem  ( description_of_the_return_value )
+     */
     public function makeMenuItem($order = 0): MenuItem
     {
         $item = new MenuItem([

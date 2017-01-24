@@ -2,12 +2,13 @@
 
 namespace P3in\Builders;
 
-use Closure;
-use Exception;
+use P3in\Traits\PublishesComponentsTrait;
+use P3in\Models\PageComponentContent;
 use P3in\Builders\PageLayoutBuilder;
 use P3in\Models\Component;
 use P3in\Models\Page;
-use P3in\Traits\PublishesComponentsTrait;
+use Exception;
+use Closure;
 
 class PageBuilder
 {
@@ -78,6 +79,14 @@ class PageBuilder
     }
 
 
+    /**
+     * Adds a child.
+     *
+     * @param      <type>  $title  The title
+     * @param      <type>  $slug   The slug
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
     public function addChild($title, $slug)
     {
         $page = $this->page->createChild([
@@ -90,12 +99,12 @@ class PageBuilder
 
     /**
      * Add a Container to a page and return it's PageComponentContent model instance
-     * since we will probably want to add sections to the container.
-     * @param int $columns
-     * @param int $order
-     * @return PageBuilder PageBuilder instance
+     *
+     * @param int $columns Container's column span
+     * @param int $order Display order
+     * @return PageComponentContent
      */
-    public function addContainer($columns = 1, $order = 0)
+    public function addContainer($columns = 1, $order = 0) : PageComponentContent
     {
         return $this->page->addContainer($columns, $order);
     }
@@ -105,7 +114,7 @@ class PageBuilder
      * @param Component $component
      * @param int $columns
      * @param int $order
-     * @return PageBuilder PageBuilder instance
+     * @return PageBuilder
      */
     public function addSection(Component $component, int $columns, int $order)
     {
@@ -117,31 +126,72 @@ class PageBuilder
         }
     }
 
+    /**
+     * Gets the page.
+     *
+     * @return     <type>  The page.
+     */
     public function getPage()
     {
         return $this->page;
     }
 
+    /**
+     * Sets the author.
+     *
+     * @param      string  $val    The value
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
     public function setAuthor($val = '')
     {
         return $this->setMeta('author', $val);
     }
 
+    /**
+     * Sets the description.
+     *
+     * @param      string  $val    The value
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
     public function setDescription($val = '')
     {
         return $this->setMeta('description', $val);
     }
 
+    /**
+     * Sets the priority.
+     *
+     * @param      string  $val    The value
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
     public function setPriority($val = '')
     {
         return $this->setMeta('priority', $val);
     }
 
+    /**
+     * Sets the updated frequency.
+     *
+     * @param      string  $val    The value
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
     public function setUpdatedFrequency($val = '')
     {
         return $this->setMeta('update_frequency', $val);
     }
 
+    /**
+     * Sets the meta.
+     *
+     * @param      <type>  $key    The key
+     * @param      <type>  $val    The value
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
     public function setMeta($key, $val)
     {
         $this->page->setMeta($key, $val);
@@ -150,6 +200,12 @@ class PageBuilder
     }
 
 
+    /**
+     * Builds a page template tree.
+     *
+     * @param      <type>   $parts  The parts
+     * @param      integer  $depth  The depth
+     */
     private function buildPageTemplateTree($parts, $depth = 1)
     {
         $tab = str_pad('', $depth*2);
@@ -173,6 +229,9 @@ class PageBuilder
         }
     }
 
+    /**
+     * Exports Page Template
+     */
     public function compilePageTemplate()
     {
         $page = $this->page;

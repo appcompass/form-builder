@@ -103,14 +103,20 @@ class PageComponentContent extends Model
 
     /**
      * Add a section to a container.
-     * @param Component $component
-     * @param int $columns
-     * @param int $order
-     * @return Model PageComponentContent
+     *
+     * @param      Component  $component
+     * @param      int        $columns
+     * @param      int        $order
+     * @param      boolean    $returnChild  The return child
+     *
+     * @throws     Exception  (description)
+     *
+     * @return     Model      PageComponentContent
      */
     public function addSection(Component $component, int $columns, int $order, $returnChild = false)
     {
         if ($this->isContainer()) {
+
             $child = new static(['columns' => $columns, 'order' => $order]);
 
             $child->component()->associate($component);
@@ -122,11 +128,21 @@ class PageComponentContent extends Model
             }
 
             return $this;
+
         } else {
+
             throw new Exception('a Section can only be added to a Container.');
+
         }
     }
 
+    /**
+     * Saves a content.
+     *
+     * @param      <type>  $content  The content
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
     public function saveContent($content)
     {
         $this->content = $content;
@@ -134,6 +150,11 @@ class PageComponentContent extends Model
         return $this;
     }
 
+    /**
+     * Determines if container.
+     *
+     * @return     boolean  True if container, False otherwise.
+     */
     public function isContainer()
     {
         return $this->component->type === 'container';

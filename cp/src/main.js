@@ -17,7 +17,6 @@ Vue.http.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('id_
 Vue.http.interceptors.push((request, next) => {
   next(response => {
     if (response.status === 401) {
-      console.log('Not logged in')
       router.push({name: 'login'})
     }
     return response
