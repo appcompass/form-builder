@@ -58,7 +58,14 @@ class Form extends Model
      */
     public function setOwner(Model $owner)
     {
-        $this->formable()->associate($owner);
+        if (isset($owner->{$owner->getKeyName()})) {
+
+            $this->formable_id = $owner->{$owner->getKeyName()};
+
+        }
+
+        $this->formable_type = get_class($owner);
+
         $this->save();
 
         return $this;
@@ -69,9 +76,9 @@ class Form extends Model
      * like website.create or page.content
      *
      * @param      \Illuminate\Database\Eloquent\Builder  $query          The query
-     * @param      <type>                                 $resource_name  The resource name
+     * @param      <string>                               $resource_name  The resource name
      *
-     * @return     <type>                                 ( description_of_the_return_value )
+     * @return     \Illuminate\Database\Eloquent\Builder
      */
     public function scopeByResource(Builder $query, $resource_name)
     {
@@ -97,7 +104,7 @@ class Form extends Model
      */
     public function scopeToEdit(Builder $query)
     {
-        // we often wanna call that on an instenaced model
+        // we often wanna call that on an instanced model
         if (isset($this->id)) {
             $query->where('id', $this->id);
         }
@@ -138,30 +145,5 @@ class Form extends Model
                 $query->where($param, $val);
             }
         ]);
-    }
-
-    /**
-     *
-     */
-    public function setAlias($alias)
-    {
-        foreach ((array) $alias as $single) {
-            $form_alias = new FormAlias(['alias' => $single]);
-
-            $form_alias->form()->associate($this)->save();
-        }
-
-        return $this;
-    }
-
-    /**
-     *
-     */
-    public function dropAlias($alias)
-    {
-        return FormAlias::whereAlias($alias)
-            ->where('form_id', $this->id)
-            ->firstOrFail()
-            ->delete();
     }
 }
