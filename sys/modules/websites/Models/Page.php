@@ -156,6 +156,12 @@ class Page extends Model implements Linkable
         }
     }
 
+    public function getComponentNameAttribute()
+    {
+        $url = $this->url == '/' ? 'Home' : $this->url;
+        return studly_case(str_slug(str_replace('/', ' ', $url)));
+    }
+
     public function getFullUrlAttribute()
     {
         return $this->website->url.$this->url;

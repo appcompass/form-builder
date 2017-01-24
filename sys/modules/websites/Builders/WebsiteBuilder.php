@@ -10,10 +10,11 @@ use P3in\Models\Page;
 use P3in\Models\PageContent;
 use P3in\Models\Section;
 use P3in\Models\Website;
+use P3in\Traits\PublishesComponentsTrait;
 
 class WebsiteBuilder
 {
-
+    use PublishesComponentsTrait;
     /**
      * Page instance
      */
@@ -81,7 +82,7 @@ class WebsiteBuilder
             'slug' => $slug,
         ]);
 
-        $page = $this->website->pages()->save($page);
+        $page = $this->website->addPage($page);
 
         return new PageBuilder($page);
     }
@@ -97,31 +98,53 @@ class WebsiteBuilder
 
     public function setHeader($template)
     {
-        $this->website->update(['config->header' => $template]);
+        $this->website->setConfig('header', $template);
         return $this;
     }
 
     public function setFooter($template)
     {
-        $this->website->update(['config->footer' => $template]);
+        $this->website->setConfig('footer', $template);
         return $this;
     }
 
-    public function setTemplateBasePath($path)
-    {
-        $this->website->update(['config->template_base_path' => $path]);
-        return $this;
-    }
+    // public function setTemplateBasePath($path)
+    // {
+    //     $this->website->setConfig('template_base_path', $path]);
+    //     return $this;
+    // }
 
     public function setMetaData($data)
     {
-        $this->website->update(['config->meta' => $data]);
+        $this->website->setConfig('meta', $data);
         return $this;
     }
 
     public function getWebsite()
     {
         return $this->website;
+    }
+
+    public function compileComponents()
+    {
+        $manager = $this->getMountManager();
+
+        $compiledImporter = [];
+        $compiledExporter = [];
+
+        foreach ($this->website->pages as $page) {
+            $name = $page->component_name;
+            $filename = $name.'.vue';
+
+            $compiledImporter[] = "import {$name}Page from './{$name}'";
+            $compiledExporter[] = "export var {$name} = {$name}Page";
+        }
+
+        $content = implode("\n", array_merge($compiledImporter, $compiledExporter));
+
+        $manager->put('dest://' . 'App.js', $content . "\n");
+
+        return $this;
     }
 
     public function deploy($diskInstance)

@@ -40,10 +40,10 @@ class PagesController extends BaseController
         $sitemap = App::make('sitemap');
         $pages = $request->website->pages()->orderBy('meta->priority', 'desc')->get();
 
-         foreach ($pages as $page) {
+        foreach ($pages as $page) {
             if ($page->dynamic_url) {
                 // here's where we fetch all the dynamic entries/pages/posts/etc that are children of this page.
-            }else{
+            } else {
                 $sitemap->add(
                     $page->full_url,
                     $page->updated_at,
@@ -52,7 +52,7 @@ class PagesController extends BaseController
                     $page->images
                 );
             }
-         }
+        }
 
         return $sitemap->render($type);
     }
@@ -68,9 +68,16 @@ class PagesController extends BaseController
     // like registration, etc.
     public function submitForm(Request $request, $uri = '')
     {
+        // $request->webiste;
+
         // look up form for it's rules, which class processes the request, etc.
         // validate the form including recaptcha
-        // process the form as it was intended to be processed.
+
+        // brainstorm: failed
+        // fire event to form submitted event group.
+        // event listener for form handles logic
+        // listen here response from form handler
+        // proceed accordingly.
 
         return $uri;
     }

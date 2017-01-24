@@ -81,6 +81,8 @@ class Website extends Model
     public function addPage(Page $page)
     {
         $this->pages()->save($page);
+
+        return $page;
     }
 
     /**
@@ -95,6 +97,12 @@ class Website extends Model
     public function getUrlAttribute()
     {
         return $this->attributes['scheme'].'://'.$this->attributes['host'];
+    }
+
+    public function setConfig($key, $val)
+    {
+        $this->update(['config->'.$key => $val]);
+        return $this;
     }
 
     // @TODO refactor big time all following methods.

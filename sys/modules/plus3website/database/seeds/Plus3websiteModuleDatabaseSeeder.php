@@ -175,9 +175,9 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
         $website = WebsiteBuilder::new('Plus 3 Interactive, LLC', 'https', 'www.plus3interactive.com', function ($websiteBuilder) {
             $websiteBuilder
-                ->setTemplateBasePath(realpath(__DIR__.'/../../Public/js/components/Site'))
-                ->setHeader('SiteHeader.vue')
-                ->setFooter('SiteFooter.vue')
+                // ->setTemplateBasePath(realpath(__DIR__.'/../../Public/js/components/Site'))
+                ->setHeader('SiteHeader')
+                ->setFooter('SiteFooter')
                 ->setMetaData([
                     'title' => '',
                     'description' => '',
@@ -192,13 +192,13 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             // This one should prob be build with websites module load.
             Component::create([
                 'name' => 'Container',
-                'template' => 'container.vue', //not sure about this, do containers need templates? I feel there are good arguments for both yes and no.
+                'template' => 'container', //not sure about this, do containers need templates? I feel there are good arguments for both yes and no.
                 'type' => 'container',
             ]);
 
             $slider_banner = Component::create([
                 'name' => 'Slider Banner',
-                'template' => 'SliderBanner.vue',
+                'template' => 'SliderBanner',
                 'type' => 'section'
             ]);
 
@@ -218,7 +218,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $section_heading = Component::create([
                 'name' => 'Section Heading',
-                'template' => 'SectionHeading.vue',
+                'template' => 'SectionHeading',
                 'type' => 'section'
             ]);
 
@@ -229,7 +229,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $box_callouts = Component::create([
                 'name' => 'Box Callouts',
-                'template' => 'BoxCallouts.vue',
+                'template' => 'BoxCallouts',
                 'type' => 'section'
             ]);
 
@@ -244,7 +244,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $our_proccess = Component::create([
                 'name' => 'Our Process',
-                'template' => 'OurProcess.vue',
+                'template' => 'OurProcess',
                 'type' => 'section'
             ]);
 
@@ -256,7 +256,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $meet_our_team = Component::create([
                 'name' => 'Meet Our Team',
-                'template' => 'MeetOurTeam.vue',
+                'template' => 'MeetOurTeam',
                 'type' => 'section'
             ]);
 
@@ -269,7 +269,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $social_stream = Component::create([
                 'name' => 'Social Stream',
-                'template' => 'SocialStream.vue',
+                'template' => 'SocialStream',
                 'type' => 'section'
             ]);
 
@@ -281,7 +281,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $customer_testimonials = Component::create([
                 'name' => 'Customer Testimonials',
-                'template' => 'CustomerTestimonials.vue',
+                'template' => 'CustomerTestimonials',
                 'type' => 'section'
             ]);
 
@@ -305,7 +305,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $thick_page_banner = Component::create([
                 'name' => 'Thick Page Banner',
-                'template' => 'ThickPageBanner.vue',
+                'template' => 'ThickPageBanner',
                 'type' => 'section'
             ]);
 
@@ -317,7 +317,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $white_break_w_section_links = Component::create([
                 'name' => 'White Break Callout Section Links',
-                'template' => 'WhiteBreakCalloutSectionLinks.vue',
+                'template' => 'WhiteBreakCalloutSectionLinks',
                 'type' => 'section'
             ]);
 
@@ -336,7 +336,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $provided_solution = Component::create([
                 'name' => 'Provided Solution',
-                'template' => 'ProvidedSolution.vue',
+                'template' => 'ProvidedSolution',
                 'type' => 'section'
             ]);
 
@@ -355,7 +355,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $blue_break_callout = Component::create([
                 'name' => 'Blue Break Callout',
-                'template' => 'BlueBreakCallout.vue',
+                'template' => 'BlueBreakCallout',
                 'type' => 'section'
             ]);
 
@@ -366,7 +366,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $breadcrumb_with_right_link = Component::create([
                 'name' => 'BreadCrumb With Right Side Link',
-                'template' => 'BreadCrumbRightSideLink.vue',
+                'template' => 'BreadCrumbRightSideLink',
                 'type' => 'section'
             ]);
 
@@ -377,7 +377,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $process_timeline = Component::create([
                 'name' => 'Process Timeline',
-                'template' => 'ProcessTimeline.vue',
+                'template' => 'ProcessTimeline',
                 'type' => 'section'
             ]);
 
@@ -395,7 +395,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $process_maintenance_details = Component::create([
                 'name' => 'Maintenance Details',
-                'template' => 'MaintenanceDetails.vue',
+                'template' => 'MaintenanceDetails',
                 'type' => 'section'
             ]);
 
@@ -411,7 +411,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $project_list = Component::create([
                 'name' => 'Project List',
-                'template' => 'ProjectList.vue',
+                'template' => 'ProjectList',
                 'type' => 'section'
             ]);
 
@@ -429,7 +429,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $contact_form = Component::create([
                 'name' => 'Contact Us',
-                'template' => 'ContactUs.vue',
+                'template' => 'ContactUs',
                 'type' => 'section'
             ]);
 
@@ -439,7 +439,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $map_address = Component::create([
                 'name' => 'Map Address',
-                'template' => 'MapAddress.vue',
+                'template' => 'MapAddress',
                 'type' => 'section'
             ]);
 
@@ -459,7 +459,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             // Links: Forgot Password
             $login_form = Component::create([
                 'name' => 'Customer Login',
-                'template' => 'CustomerLogin.vue',
+                'template' => 'CustomerLogin',
                 'type' => 'section'
             ]);
 
@@ -506,6 +506,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->addSection($social_stream, 12, 6)
                 ->addSection($customer_testimonials, 12, 7);
 
+            $homepage->compilePageTemplate();
+
             $solutions = $websiteBuilder
                 ->addPage('Solutions', 'solutions')
                 ->setAuthor('Aisha Saidi')
@@ -519,6 +521,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->addSection($white_break_w_section_links, 12, 2)
                 ->addSection($provided_solution, 12, 3)
                 ->addSection($blue_break_callout, 12, 4);
+
+            $solutions->compilePageTemplate();
 
             $process = $solutions
                 ->addChild('Our Process', 'our-process')
@@ -534,6 +538,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->addSection($process_timeline, 12, 3)
                 ->addSection($process_maintenance_details, 12, 4);
 
+            $process->compilePageTemplate();
+
             $projects = $websiteBuilder
                 ->addPage('Projects', 'projects')
                 ->setAuthor('Aisha Saidi')
@@ -548,6 +554,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->addSection($blue_break_callout, 12, 3)
                 ->addSection($white_break_w_section_links, 12, 4);
 
+            $projects->compilePageTemplate();
+
             $company = $websiteBuilder
                 ->addPage('Company', 'company')
                 ->setAuthor('Aisha Saidi')
@@ -560,6 +568,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->addSection($thick_page_banner, 12, 1)
                 ->addSection($meet_our_team, 12, 2)
                 ->addSection($social_stream, 12, 3);
+
+            $company->compilePageTemplate();
 
             $contact = $websiteBuilder
                 ->addPage('Contact Us', 'contact')
@@ -574,6 +584,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->addSection($contact_form, 12, 2)
                 ->addSection($map_address, 12, 3);
 
+            $contact->compilePageTemplate();
+
             $login = $websiteBuilder
                 ->addPage('Customer Login', 'customer-login')
                 ->setAuthor('Aisha Saidi')
@@ -585,6 +597,9 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->addContainer(12, 1)
                 ->addSection($thick_page_banner, 12, 1)
                 ->addSection($login_form, 12, 2);
+
+            $login->compilePageTemplate();
+            // @TODO: add trigger to compile App.vue file for website under cp/src/components/websites/www.plus3interactive.com.
 
             // Create the nav menus and add the items.
             $main_header_menu = $websiteBuilder->addMenu('main_header_menu');
@@ -604,7 +619,10 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             $main_footer_menu->addItem($company, 4);
             $main_footer_menu->addItem($contact, 5);
             $main_footer_menu->addItem($login, 6);
+
+            $websiteBuilder->compileComponents();
         })->getWebsite();
+
 
         // // Now lets test the magic!
         // DB::enableQueryLog();

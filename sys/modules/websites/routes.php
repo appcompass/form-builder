@@ -9,7 +9,6 @@ Route::group([
     $router->resource('websites.menus', WebsiteMenusController::class);
     $router->resource('websites.navigation', WebsiteMenusController::class);
     $router->resource('websites.pages', WebsitePagesController::class);
-    // $router->resource('pages', PagesController::class); // @TODO this is redundant, see below.  We don't want auth on this one but do want validateWebsite.
     $router->resource('pages.contents', PageContentsController::class); // @TODO: websites.pages.contents
     $router->resource('pages.sections', PageSectionsController::class); // @TODO: websites.pages.sections
     $router->resource('websites.settings', WebsiteSettingsController::class); // @TODO:  Discuss this, not sure it's needed anymore since L5.3 fixed their Json field API.
@@ -23,13 +22,13 @@ Route::group([
 ], function ($router) {
     $router->group([
         'prefix' => 'content',
-    ], function($router){
+    ], function ($router) {
         $router->get('{path?}', 'PagesController@getPageData')->where('path', '(.*)');
     });
 
     $router->group([
         'prefix' => 'render',
-    ], function($router){
+    ], function ($router) {
         $router->get('sitemap.{type}', 'PagesController@renderSitemap')->where('type', '(xml|html|txt|ror-rss|ror-rdf)');
         $router->get('robots.txt', 'PagesController@renderRobotsTxt');
         $router->get('{path?}', 'PagesController@renderPage')->where('path', '(.*)');
@@ -37,11 +36,10 @@ Route::group([
 
     $router->group([
         'prefix' => 'forms',
-    ], function($router){
-        $router->get('token', function(){
+    ], function ($router) {
+        $router->get('token', function () {
             return csrf_token();
         });
         $router->post('{path?}', 'PagesController@submitForm')->where('path', '(.*)');
     });
-
 });
