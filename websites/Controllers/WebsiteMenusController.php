@@ -28,9 +28,9 @@ class WebsiteMenusController extends AbstractChildController
 
     public function update(Request $request, $parent, $menu)
     {
-        $menu_structure = $this->flatten($request->get('menu-editor')['menu']);
+        $menu_structure = $this->flatten($request->get('menu')['menu']);
 
-        $deletions = $request->get('menu-editor')['deletions'];
+        $deletions = $request->get('menu')['deletions'];
 
         foreach ($deletions as $deletee_id) {
 
@@ -39,6 +39,7 @@ class WebsiteMenusController extends AbstractChildController
         }
 
         foreach ($menu_structure as $item) {
+
             if (isset($item['navigatable_id'])) { // this is a MenuItem
 
                 // being this a menuitem, we're sure the id is a menuitem id
@@ -79,18 +80,18 @@ class WebsiteMenusController extends AbstractChildController
         }
     }
 
-    private function flatten(array $menu, $parent_id = null, $sort = null)
+    private function flatten(array $menu, $parent_id = null, $order = null)
     {
         $res = [];
 
-        if (is_null($sort)) {
-            $sort = 0;
+        if (is_null($order)) {
+            $order = 0;
         }
 
         foreach ($menu as $branch) {
             $branch['parent_id'] = $parent_id;
 
-            $branch['sort'] = $sort++;
+            $branch['order'] = $order++;
 
             $children = $branch['children'];
 
@@ -99,7 +100,7 @@ class WebsiteMenusController extends AbstractChildController
             $res[] = $branch;
 
             if (count($children)) {
-                $res = array_merge($res, $this->flatten($children, $branch['id'], $sort));
+                $res = array_merge($res, $this->flatten($children, $branch['id'], $order));
 
                 $branch['children'] = null;
             }

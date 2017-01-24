@@ -45,10 +45,12 @@ class Link extends Model implements Linkable
             'url' => $this->url,
             'clickable' => $this->clickable,
             'icon' => $this->icon,
-            'content' => $this->content
+            'content' => $this->content ?: null
         ]);
 
         $item->navigatable()->associate($this);
+
+        $item->save();
 
         return $item;
     }
