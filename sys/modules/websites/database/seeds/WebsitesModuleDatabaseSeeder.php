@@ -120,5 +120,15 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             $builder->string('Section Name', 'name')->list()->edit(false)->sortable()->searchable();
             $builder->string('Template', 'template')->list()->edit(false)->sortable()->searchable();
         })->linkToResources(['pages.sections.index']);
+
+        DB::statement("DELETE FROM forms WHERE name = 'create-link'");
+
+        FormBuilder::new('create-link', function(FormBuilder $builder) {
+            $builder->string('Label', 'title');
+            $builder->string('Url', 'url');
+            $builder->string('Alt', 'alt');
+            $builder->string('Icon', 'icon');
+            $builder->boolean('New Tab', 'new_tab');
+        })->setOwner((new \P3in\Models\Link()));
     }
 }
