@@ -58,15 +58,12 @@ class Fieldtype extends Model
 
         // foreach ($manager->listContents('source://', true) as $file) {
         foreach (Fieldtype::all() as $component) {
-
             $importer_block[] = "import {$component->name}Type from './FormBuilder/$component->name'";
             $exporter_block[] = "export var $component->name = {$component->name}Type";
-
         }
 
         $content = implode("\n", array_merge($importer_block, $exporter_block)); // . "\n" . implode("\n", $exporter_block) . "\n";
 
         $manager->put('to://' . 'Components.js', $content . "\n");
     }
-
 }
