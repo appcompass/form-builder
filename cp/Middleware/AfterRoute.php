@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use P3in\Models\Form;
 use P3in\Models\FormAlias;
-use P3in\Models\PageContent;
+use P3in\Models\PageComponentContent;
 use Route;
 
 class AfterRoute
@@ -55,10 +55,9 @@ class AfterRoute
         }
 
         if ($response->getStatusCode() === 200 && in_array($request->getMethod(), $methods)) {
+
             $content = [
-
                 'collection' => json_decode($response->getContent()),
-
             ];
 
             $original_content = $response->getOriginalContent();
@@ -78,11 +77,15 @@ class AfterRoute
             // }
 
             if ($original_content instanceof PageContent) {
+
                 $content['edit'] = $original_content->section->form;
+
             } elseif (!is_null($form)) {
+
                 $content['edit'] = $form->toEdit()->first();
 
                 $content['list'] = $form->toList()->first();
+
             }
 
             $response->setContent($content);
