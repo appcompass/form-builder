@@ -9,6 +9,7 @@ import LinkType from './FormBuilder/Link'
 import FormBuilderType from './FormBuilder/FormBuilder'
 import MapType from './FormBuilder/Map'
 import LoginFormType from './FormBuilder/LoginForm'
+import BooleanType from './FormBuilder/Boolean'
 export var String = StringType
 export var Text = TextType
 export var Secret = SecretType
@@ -20,3 +21,4 @@ export var Link = LinkType
 export var FormBuilder = FormBuilderType
 export var Map = MapType
 export var LoginForm = LoginFormType
+export var Boolean = BooleanType

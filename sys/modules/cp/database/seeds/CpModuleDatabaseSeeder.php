@@ -16,7 +16,7 @@ class CpModuleDatabaseSeeder extends Seeder
     {
         $this->call(FieldtypesTableSeeder::class);
 
-        DB::statement("TRUNCATE TABLE fields CASCADE");
-        DB::statement("TRUNCATE TABLE forms CASCADE");
+        // DB::statement("TRUNCATE TABLE fields CASCADE");
+        // DB::statement("TRUNCATE TABLE forms CASCADE");
     }
 }

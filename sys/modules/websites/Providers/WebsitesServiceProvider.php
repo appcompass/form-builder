@@ -17,9 +17,9 @@ use P3in\Interfaces\WebsitesRepositoryInterface;
 use P3in\Middleware\ValidateWebsite;
 use P3in\Models\Menu;
 use P3in\Models\Page;
-use P3in\Models\PageContent;
+use P3in\Models\PageComponentContent;
 use P3in\Models\Redirect;
-use P3in\Models\Section;
+// use P3in\Models\Section;
 use P3in\Models\Setting;
 use P3in\Models\Website;
 use P3in\Repositories\MenusRepository;
@@ -66,8 +66,8 @@ class WebsitesServiceProvider extends ServiceProvider
         Route::model('redirects', Redirect::class);
         Route::model('settings', Setting::class);
         Route::model('pages', Page::class);
-        Route::model('contents', PageContent::class);
-        Route::model('sections', Section::class);
+        Route::model('contents', PageComponentContent::class);
+        // Route::model('sections', Section::class);
         Route::model('menus', Menu::class);
 
         Route::bind('website', function ($value) {
@@ -87,7 +87,7 @@ class WebsitesServiceProvider extends ServiceProvider
         });
 
         Route::bind('content', function ($value) {
-            return PageContent::findOrFail($value);
+            return PageComponentContent::findOrFail($value);
         });
 
         Route::bind('menu', function ($value) {

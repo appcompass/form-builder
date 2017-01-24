@@ -16,7 +16,8 @@ class Link extends Model implements Linkable
         'alt',
         'new_tab',
         'clickable',
-        'icon'
+        'icon',
+        'content'
     ];
 
     private $rules = [
@@ -43,7 +44,8 @@ class Link extends Model implements Linkable
             'new_tab' => $this->new_tab,
             'url' => $this->url,
             'clickable' => $this->clickable,
-            'icon' => $this->icon
+            'icon' => $this->icon,
+            'content' => $this->content
         ]);
 
         $item->navigatable()->associate($this);

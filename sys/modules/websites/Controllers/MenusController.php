@@ -25,4 +25,12 @@ class MenusController extends AbstractController
         // @TODO validate link
         return MenuItem::fromModel(Link::create($request->all()));
     }
+
+    // have a method that returns the instance you wanna create with the form attached
+    // so in this case like afterRoute does
+    // @TODO this might be good use case for website getForms
+    public function getForm(Request $request)
+    {
+        dd($request);
+    }
 }

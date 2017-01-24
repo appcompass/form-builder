@@ -12,6 +12,7 @@
   "dependencies": {
     "bulma": "^0.3.0",
     "express": "^4.14.0",
+    "nuxt": "^0.9.6",
     "pug-loader": "^2.3.0",
     "sortablejs": "^1.5.0-rc1",
     "sweetalert": "^1.1.3",

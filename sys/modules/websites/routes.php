@@ -5,12 +5,13 @@ Route::group([
     'middleware' => ['auth', 'api'],
 ], function ($router) {
     $router->resource('menus', MenusController::class);
+    $router->get('menus/forms/{form}', '\P3in\Controllers\MenusController@getForm');
     $router->resource('websites', WebsitesController::class);
     $router->resource('websites.menus', WebsiteMenusController::class);
     $router->resource('websites.navigation', WebsiteMenusController::class);
     $router->resource('websites.pages', WebsitePagesController::class);
-    $router->resource('pages.contents', PageContentsController::class); // @TODO: websites.pages.contents
-    $router->resource('pages.sections', PageSectionsController::class); // @TODO: websites.pages.sections
+    // $router->resource('pages.contents', PageContentsController::class); // @TODO: websites.pages.contents
+    // $router->resource('pages.sections', PageSectionsController::class); // @TODO: websites.pages.sections
     $router->resource('websites.settings', WebsiteSettingsController::class); // @TODO:  Discuss this, not sure it's needed anymore since L5.3 fixed their Json field API.
     $router->resource('websites.redirects', WebsiteRedirectsController::class);
 });

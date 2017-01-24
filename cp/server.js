@@ -17,8 +17,8 @@ var express = require('express')
 var server = express()
 
 // Serve files from the assets directory
-server.use('/assets', express.static(
-  path.resolve(__dirname, 'assets')
+server.use('/dist', express.static(
+  path.resolve(__dirname, 'dist')
 ))
 
 // Handle all GET requests
@@ -26,7 +26,7 @@ server.get('*', function (request, response) {
   // Render our Vue app to a string
   renderer.renderToString(
     // Create an app instance
-    require('./assets/app')(),
+    require('./src/main.js')(),
     // Handle the rendered result
     function (error, html) {
       // If an error occurred while rendering...

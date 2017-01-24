@@ -4,11 +4,11 @@ namespace P3in\Repositories;
 
 use P3in\Interfaces\PageContentsRepositoryInterface;
 use P3in\Models\Page;
-use P3in\Models\PageContent;
+use P3in\Models\PageComponentContent;
 
 class PageContentsRepository extends AbstractChildRepository implements PageContentsRepositoryInterface
 {
-    public function __construct(PageContent $model, Page $parent)
+    public function __construct(PageComponentContent $model, Page $parent)
     {
         $this->model = $model;
 

@@ -114,12 +114,12 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             $builder->menuEditor('Menu', 'menu')->list(false);
         })->linkToResources(['websites.menus.show']);
 
-        DB::statement("DELETE FROM forms WHERE name = 'page-sections'");
+        // DB::statement("DELETE FROM forms WHERE name = 'page-sections'");
 
-        FormBuilder::new('page-sections', function (FormBuilder $builder) {
-            $builder->string('Section Name', 'name')->list()->edit(false)->sortable()->searchable();
-            $builder->string('Template', 'template')->list()->edit(false)->sortable()->searchable();
-        })->linkToResources(['pages.sections.index']);
+        // FormBuilder::new('page-sections', function (FormBuilder $builder) {
+        //     $builder->string('Section Name', 'name')->list()->edit(false)->sortable()->searchable();
+        //     $builder->string('Template', 'template')->list()->edit(false)->sortable()->searchable();
+        // })->linkToResources(['pages.sections.index']);
 
         DB::statement("DELETE FROM forms WHERE name = 'create-link'");
 

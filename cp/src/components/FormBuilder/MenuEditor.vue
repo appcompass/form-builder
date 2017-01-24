@@ -5,7 +5,7 @@
     Sortable.empty(v-if="!data.menu.length", :list="data.menu",  :options="{handle: '.handle', animation: 150, group: 'items'}") Empty
 
     p.control
-    a.button.is-small(@click="modal.active = true")
+    a.button.is-small(@click="create('create-link')")
       span.icon.is-small
         i.fa.fa-link
       span New Link
@@ -52,6 +52,7 @@
 <script>
 import Sortable from '../VueSortable'
 import MenuElement from './MenuElement'
+import Vue from '../../main.js'
 
 export default {
   components: { Sortable, MenuElement },
@@ -69,13 +70,16 @@ export default {
     }
   },
   created () {
+    console.log(Vue.$refs)
     this.setChildren()
   },
   methods: {
     deleted (item) {
+      // mark items for deletion
       this.data.deletions.push(item.id)
     },
     storeLink () {
+      // get a MenuItem instance from the backend
       this.$http.post(process.env.API_SERVER + 'menus/', this.link)
         .then((response) => {
           this.data.repo.push(response.body)
@@ -83,12 +87,19 @@ export default {
         })
     },
     setChildren () {
+      // make sure every repo item has a children[] element
       let vm = this
       this.data.repo.forEach(function (item, index) {
         if (!item.children) {
           vm.$set(vm.data.repo[index], 'children', [])
         }
       })
+    },
+    create (item) {
+      this.$http.get(process.env.API_SERVER + 'menus/forms/' + item)
+        .then(response => {
+          console.log(response)
+        })
     }
   }
 }
