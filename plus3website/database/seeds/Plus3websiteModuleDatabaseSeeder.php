@@ -168,6 +168,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             'ProcessTimeline',
             'MaintenanceDetails',
             'ProjectList',
+            'MoreClientsList',
             'ContactUs',
             'MapAddress',
             'CustomerLogin',
@@ -423,9 +424,23 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                     $project->string('Business Area', 'business_area', ['required']);
                     $project->wysiwyg('Description', 'description', ['required']);
                     $project->pageSectionSelect('Page Section Quick Links', 'quick_links', [])->repeatable();
-                    $project->boolean('Highlighted', 'highlighted', ['required']);
                 })->repeatable();
             })->setOwner($project_list);
+
+            $more_clients_list = Component::create([
+                'name' => 'More Clients List',
+                'template' => 'MoreClientsList',
+                'type' => 'section'
+            ]);
+
+            FormBuilder::new('MoreClientsList', function ($fb) {
+                $fb->fieldset('Clients', 'clients', [], function ($project) {
+                    $project->file('Logo', 'logo', ['required']);
+                    $project->string('Name', 'name', ['required']);
+                    $project->string('Business Area', 'business_area', ['required']);
+                    $project->wysiwyg('Description', 'description', ['required']);
+                })->repeatable();
+            })->setOwner($more_clients_list);
 
             $contact_form = Component::create([
                 'name' => 'Contact Us',
@@ -522,8 +537,6 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->addSection($social_stream, 3)
                 ->addSection($customer_testimonials, 4);
 
-            $homepage->compilePageTemplate();
-
             $solutions = $websiteBuilder
                 ->addPage('Solutions', 'solutions')
                 ->setAuthor('Aisha Saidi')
@@ -538,8 +551,6 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->addSection($provided_solution, 3)
                 ->addSection($blue_break_callout, 4);
 
-            $solutions->compilePageTemplate();
-
             $process = $solutions
                 ->addChild('Our Process', 'our-process')
                 ->setAuthor('Aisha Saidi')
@@ -547,14 +558,26 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->setPriority('0.8')
                 ->setUpdatedFrequency('yearly');
 
-            $process
-                ->addContainer(1)
-                ->addSection($thick_page_banner, 1)
-                ->addSection($breadcrumb_with_right_link, 2)
-                ->addSection($process_timeline, 3)
-                ->addSection($process_maintenance_details, 4);
+            $process_container = $process
+                ->addContainer(1);
 
-            $process->compilePageTemplate();
+            $process_container
+                ->addSection($thick_page_banner, 1)
+                ->addSection($breadcrumb_with_right_link, 2);
+
+            $process_timeline_section = $process_container
+                ->addContainer(3, [
+                    'class' => 'row',
+                ])
+                ->addContainer(1, [
+                    'class' => 'xsmall-12 columns',
+                ]);
+
+            $process_timeline_section
+                ->addSection($process_timeline, 1);
+
+            $process_container
+                ->addSection($process_maintenance_details, 3);
 
             $projects = $websiteBuilder
                 ->addPage('Projects', 'projects')
@@ -563,14 +586,32 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->setPriority('0.9')
                 ->setUpdatedFrequency('monthly');
 
-            $projects
+            $projects_container = $projects
                 ->addContainer(1)
                 ->addSection($thick_page_banner, 1)
-                ->addSection($project_list, 2)
-                ->addSection($blue_break_callout, 3)
-                ->addSection($white_break_w_section_links, 4);
+                ->addSection($project_list, 2);
 
-            $projects->compilePageTemplate();
+
+            $projects_more_clients_container = $projects_container
+                ->addContainer(3,[
+                    'elm' => 'section',
+                     'class' => 'section-module section-clients',
+                ])
+                ->addSection($section_heading, 1)
+                ->addContainer(2, [
+                     'class' => 'row',
+                ])
+                ->addContainer(1, [
+                     'class' => 'medium-9 medium-centered columns',
+                ])
+                ->addContainer(1, [
+                     'class' => 'row',
+                ])
+                ->addSection($more_clients_list, 1);
+
+            $projects_container
+                ->addSection($white_break_w_section_links, 4)
+                ->addSection($blue_break_callout, 5);
 
             $company = $websiteBuilder
                 ->addPage('Company', 'company')
@@ -585,8 +626,6 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->addSection($meet_our_team, 2)
                 ->addSection($social_stream, 3);
 
-            $company->compilePageTemplate();
-
             $contact = $websiteBuilder
                 ->addPage('Contact Us', 'contact')
                 ->setAuthor('Aisha Saidi')
@@ -600,8 +639,6 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->addSection($contact_form, 2)
                 ->addSection($map_address, 3);
 
-            $contact->compilePageTemplate();
-
             $login = $websiteBuilder
                 ->addPage('Customer Login', 'customer-login')
                 ->setAuthor('Aisha Saidi')
@@ -614,8 +651,16 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->addSection($thick_page_banner, 1)
                 ->addSection($login_form, 2);
 
+            // lets compile all the page templates
+            // Note that we always want to do this last to account for any pages
+            // that have children as they get generated a bit differently than normal pages.
+            $homepage->compilePageTemplate();
+            $solutions->compilePageTemplate();
+            $process->compilePageTemplate();
+            $projects->compilePageTemplate();
+            $company->compilePageTemplate();
+            $contact->compilePageTemplate();
             $login->compilePageTemplate();
-            // @TODO: add trigger to compile App.vue file for website under cp/src/components/websites/www.plus3interactive.com.
 
             // Create the nav menus and add the items.
             $main_header_menu = $websiteBuilder->addMenu('main_header_menu');
