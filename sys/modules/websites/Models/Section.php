@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use P3in\Models\Form;
 use P3in\Models\Page;
 
-class Component extends Model
+class Section extends Model
 {
     protected $fillable = [
         'name',

@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use P3in\Builders\FormBuilder;
 use P3in\Builders\WebsiteBuilder;
-use P3in\Models\Component;
+use P3in\Models\Section;
 // use P3in\Models\Fieldtype;
 use P3in\Models\Plus3Person;
 use P3in\Models\User;
@@ -24,7 +24,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
     {
         DB::statement("TRUNCATE TABLE plus3_people RESTART IDENTITY CASCADE");
         DB::statement("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
-        DB::statement("TRUNCATE TABLE components RESTART IDENTITY CASCADE");
+        DB::statement("TRUNCATE TABLE sections RESTART IDENTITY CASCADE");
 
         // Imene
         $imene = User::create([
@@ -191,13 +191,13 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             // Build the components.
 
             // This one should prob be build with websites module load.
-            Component::create([
+            Section::create([
                 'name' => 'Container',
                 'template' => 'container', //not sure about this, do containers need templates? I feel there are good arguments for both yes and no.
                 'type' => 'container',
             ]);
 
-            $slider_banner = Component::create([
+            $slider_banner = Section::create([
                 'name' => 'Slider Banner',
                 'template' => 'SliderBanner',
                 'type' => 'section'
@@ -217,7 +217,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 })->repeatable();
             })->setOwner($slider_banner);
 
-            $section_heading = Component::create([
+            $section_heading = Section::create([
                 'name' => 'Section Heading',
                 'template' => 'SectionHeading',
                 'type' => 'section'
@@ -228,7 +228,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 $fb->wysiwyg('Description', 'description', ['required']);
             })->setOwner($section_heading);
 
-            $box_callouts = Component::create([
+            $box_callouts = Section::create([
                 'name' => 'Box Callouts',
                 'template' => 'BoxCallouts',
                 'type' => 'section'
@@ -243,7 +243,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 })->repeatable();
             })->setOwner($box_callouts);
 
-            $our_proccess = Component::create([
+            $our_proccess = Section::create([
                 'name' => 'Our Process',
                 'template' => 'OurProcess',
                 'type' => 'section'
@@ -255,7 +255,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 // SVG Animation is static, editable in code only.
             })->setOwner($our_proccess);
 
-            $meet_our_team = Component::create([
+            $meet_our_team = Section::create([
                 'name' => 'Meet Our Team',
                 'template' => 'MeetOurTeam',
                 'type' => 'section'
@@ -268,7 +268,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             // ->dynamic(Plus3Person::class) // we need to decide if the section is dynamic, or the field (or both can be)
             ;
 
-            $social_stream = Component::create([
+            $social_stream = Section::create([
                 'name' => 'Social Stream',
                 'template' => 'SocialStream',
                 'type' => 'section'
@@ -280,7 +280,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 // Fields
             })->setOwner($social_stream);
 
-            $customer_testimonials = Component::create([
+            $customer_testimonials = Section::create([
                 'name' => 'Customer Testimonials',
                 'template' => 'CustomerTestimonials',
                 'type' => 'section'
@@ -304,7 +304,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 })->repeatable();
             })->setOwner($customer_testimonials);
 
-            $thick_page_banner = Component::create([
+            $thick_page_banner = Section::create([
                 'name' => 'Thick Page Banner',
                 'template' => 'ThickPageBanner',
                 'type' => 'section'
@@ -316,7 +316,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 $fb->wysiwyg('Description', 'description', ['required']);
             })->setOwner($thick_page_banner);
 
-            $white_break_w_section_links = Component::create([
+            $white_break_w_section_links = Section::create([
                 'name' => 'White Break Callout Section Links',
                 'template' => 'WhiteBreakCalloutSectionLinks',
                 'type' => 'section'
@@ -335,7 +335,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 });
             })->setOwner($white_break_w_section_links);
 
-            $provided_solution = Component::create([
+            $provided_solution = Section::create([
                 'name' => 'Provided Solution',
                 'template' => 'ProvidedSolution',
                 'type' => 'section'
@@ -354,7 +354,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 })->repeatable();
             })->setOwner($provided_solution);
 
-            $blue_break_callout = Component::create([
+            $blue_break_callout = Section::create([
                 'name' => 'Blue Break Callout',
                 'template' => 'BlueBreakCallout',
                 'type' => 'section'
@@ -365,7 +365,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 $fb->link('Link Destination', 'link_href', [])->required();
             })->setOwner($blue_break_callout);
 
-            $breadcrumb_with_right_link = Component::create([
+            $breadcrumb_with_right_link = Section::create([
                 'name' => 'BreadCrumb With Right Side Link',
                 'template' => 'BreadCrumbRightSideLink',
                 'type' => 'section'
@@ -376,7 +376,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 $fb->link('Link Destination', 'link_href', [])->required();
             })->setOwner($breadcrumb_with_right_link);
 
-            $process_timeline = Component::create([
+            $process_timeline = Section::create([
                 'name' => 'Process Timeline',
                 'template' => 'ProcessTimeline',
                 'type' => 'section'
@@ -394,7 +394,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 })->repeatable();
             })->setOwner($process_timeline);
 
-            $process_maintenance_details = Component::create([
+            $process_maintenance_details = Section::create([
                 'name' => 'Maintenance Details',
                 'template' => 'MaintenanceDetails',
                 'type' => 'section'
@@ -410,7 +410,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 $fb->link('Link Destination', 'link_href', [])->required();
             })->setOwner($process_maintenance_details);
 
-            $project_list = Component::create([
+            $project_list = Section::create([
                 'name' => 'Project List',
                 'template' => 'ProjectList',
                 'type' => 'section'
@@ -427,7 +427,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 })->repeatable();
             })->setOwner($project_list);
 
-            $more_clients_list = Component::create([
+            $more_clients_list = Section::create([
                 'name' => 'More Clients List',
                 'template' => 'MoreClientsList',
                 'type' => 'section'
@@ -442,7 +442,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 })->repeatable();
             })->setOwner($more_clients_list);
 
-            $contact_form = Component::create([
+            $contact_form = Section::create([
                 'name' => 'Contact Us',
                 'template' => 'ContactUs',
                 'type' => 'section'
@@ -452,7 +452,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 $fb->formBuilder('Contact Form', 'contact_form', []);
             })->setOwner($contact_form);
 
-            $map_address = Component::create([
+            $map_address = Section::create([
                 'name' => 'Map Address',
                 'template' => 'MapAddress',
                 'type' => 'section'
@@ -472,7 +472,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             // We might want to consider having this section be dynamic rather than set a field to be the dynamic piece?
             // Fields: Email, Password, Remember Me
             // Links: Forgot Password
-            $login_form = Component::create([
+            $login_form = Section::create([
                 'name' => 'Customer Login',
                 'template' => 'CustomerLogin',
                 'type' => 'section'
@@ -593,19 +593,19 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
 
             $projects_more_clients_container = $projects_container
-                ->addContainer(3,[
+                ->addContainer(3, [
                     'elm' => 'section',
-                     'class' => 'section-module section-clients',
+                    'class' => 'section-module section-clients',
                 ])
                 ->addSection($section_heading, 1)
                 ->addContainer(2, [
-                     'class' => 'row',
+                    'class' => 'row',
                 ])
                 ->addContainer(1, [
-                     'class' => 'medium-9 medium-centered columns',
+                    'class' => 'medium-9 medium-centered columns',
                 ])
                 ->addContainer(1, [
-                     'class' => 'row',
+                    'class' => 'row',
                 ])
                 ->addSection($more_clients_list, 1);
 
@@ -681,7 +681,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             $main_footer_menu->addItem($contact, 5);
             $main_footer_menu->addItem($login, 6);
 
-            $websiteBuilder->compileComponents();
+            $websiteBuilder->compilePageTemplates();
         })->getWebsite();
 
 

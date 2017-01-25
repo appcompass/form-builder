@@ -3,22 +3,33 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    title: 'starter',
-    meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', content: "Nuxt.js project" }
+    titleTemplate: '%s - Plus 3 Interactive',
+    script: [
+      { src: 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: 'favicon.ico' }
+      { rel: 'stylesheet', href: 'https://fast.fonts.net/cssapi/e1ef451d-c61f-4ad3-b4e0-e3d8adb46d89.css' }
+    ],
+    meta: [
+      { charset: 'utf-8' },
+      { 'http-equiv': 'x-ua-compatible', content: 'ie=edge' },
+      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      { hid: 'description', content: "Plus 3 Interactive, LLC" }
+    ],
+    link: [
+      { rel: 'icon', type: 'image/png', href: '/favicon.png' }
     ]
   },
+  // js: ['~assets/css/main.css'],
   /*
   ** Global CSS
   */
-  css: [],
+  css: ['~assets/css/main.css'],
   /*
   ** Customize the progress-bar color
   */
-  loading: { color: '#3B8070' }
+  plugins: [
+    '~plugins/ga.js'
+  ],
+  loading: { color: '#0ab7f9' }
 }

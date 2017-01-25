@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use P3in\Interfaces\Linkable;
 use P3in\Models\Layout;
-use P3in\Models\PageComponentContent;
-use P3in\Models\Component;
+use P3in\Models\PageSectionContent;
+use P3in\Models\Section;
 use P3in\Models\Website;
 
 class Page extends Model implements Linkable
@@ -66,9 +66,9 @@ class Page extends Model implements Linkable
      *
      * @return     BelongsToMany
      */
-    public function components()
+    public function sections()
     {
-        return $this->belongsToMany(Component::class, 'page_component_content');
+        return $this->belongsToMany(Section::class, 'page_section_content');
     }
 
     /**
@@ -78,7 +78,7 @@ class Page extends Model implements Linkable
      */
     public function containers()
     {
-        return $this->hasMany(PageComponentContent::class)->orderBy('order', 'asc');
+        return $this->hasMany(PageSectionContent::class)->orderBy('order', 'asc');
     }
 
 
@@ -87,7 +87,7 @@ class Page extends Model implements Linkable
      * fetch only the top level containers of a page. This is because as of
      * right now, all PageComponentContent instances have a page_id, even if
      * it is a child of another PageComponentContent, so when querying a page,
-     * it's contents, and the associated components, you get a a lot of
+     * it's contents, and the associated sections, you get a a lot of
      * redundant data.  This method lets us recursivly fetch the whole tree
      * without having to build a tree builder, and without removing page_id from
      * the PageComponentContent instances that are sections (children of containers)
@@ -160,14 +160,24 @@ class Page extends Model implements Linkable
     }
 
     /**
-     * Gets the component name attribute.
+     * Gets the template name attribute.
      *
-     * @return     <type>  The component name attribute.
+     * @return     <type>  The template name attribute.
      */
-    public function getComponentNameAttribute()
+    public function getTemplateNameAttribute()
     {
         $url = $this->url == '/' ? 'Home' : $this->url;
         return studly_case(str_slug(str_replace('/', ' ', $url)));
+    }
+
+/**
+     * Menu Handling
+     *
+     * @return     <type>  The type attribute.
+     */
+    public function getTypeAttribute()
+    {
+        return Page::class;
     }
 
     /**

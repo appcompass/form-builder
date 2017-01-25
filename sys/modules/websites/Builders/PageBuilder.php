@@ -3,9 +3,9 @@
 namespace P3in\Builders;
 
 use P3in\Traits\PublishesComponentsTrait;
-use P3in\Models\PageComponentContent;
+use P3in\Models\PageSectionContent;
 use P3in\Builders\PageLayoutBuilder;
-use P3in\Models\Component;
+use P3in\Models\Section;
 use P3in\Models\Page;
 use Exception;
 use Closure;
@@ -99,28 +99,28 @@ class PageBuilder
     }
 
     /**
-     * Add a Container to a page and return it's PageComponentContent model instance
+     * Add a Container to a page and return it's PageSectionContent model instance
      *
      * @param int $order Display order
      * @param array $config Container's attributes
-     * @return PageComponentContent
+     * @return PageSectionContent
      */
-    public function addContainer(int $order = 0, array $config = null) : PageComponentContent
+    public function addContainer(int $order = 0, array $config = null) : PageSectionContent
     {
         return $this->page->addContainer($order, $config);
     }
 
     /**
      * Add a section to a container.
-     * @param Component $component
+     * @param Section $section
      * @param int $columns
      * @param int $order
      * @return PageBuilder
      */
-    public function addSection(Component $component, int $order)
+    public function addSection(Section $section, int $order)
     {
         if ($this->container) {
-            $this->container->addSection($component, $order);
+            $this->container->addSection($section, $order);
             return $this;
         } else {
             throw new Exception('a Container must be set to add Sections.');
@@ -221,7 +221,7 @@ class PageBuilder
         $s = str_pad('', $tabs*2);
 
         foreach ($parts as $part) {
-            $name = $part->component->template;
+            $name = $part->section->template;
 
             if ($part->children->count() > 0) {
                 $elm = $this->compileElement($part->config);
@@ -241,9 +241,9 @@ class PageBuilder
         }
     }
 
-    private function buildVueComponent(array $template, array $imports = null, array $exports = null)
+    private function buildVueSection(array $template, array $imports = null, array $exports = null)
     {
-        $contents = '<template lang="jade">'."\n";
+        $contents = '<template lang="pug">'."\n";
         $contents .= implode("\n", $template)."\n";
         $contents .= '</template>'."\n\n";
         $contents .= '<script>'."\n";
@@ -251,7 +251,6 @@ class PageBuilder
             $contents .= implode("\n", $imports)."\n\n";
         }
         if ($exports) {
-            // {layout:'public',components:[SliderBanner,SectionHeading,BoxCallouts,OurProcess,MeetOurTeam,SocialStream,CustomerTestimonials]}
             $jsonEncodeSucksSometimes = [];
 
             foreach ($exports as $key => $val) {
@@ -289,7 +288,7 @@ class PageBuilder
         $this->exports['layout'] = "'public'";
 
         if ($page->children->count()) {
-            $parent_template = $this->buildVueComponent(['<nuxt-child/>'], null, $this->exports);
+            $parent_template = $this->buildVueSection(['<nuxt-child/>'], null, $this->exports);
             $manager->put('dest://' . $name.'.vue', $parent_template . "\n");
             $name = $name.'/index';
             unset($this->exports['layout']);
@@ -300,7 +299,7 @@ class PageBuilder
         // dd(json_encode($this->exports));
         // handling child page structures.
 
-        $contents = $this->buildVueComponent($this->template, $this->imports, $this->exports);
+        $contents = $this->buildVueSection($this->template, $this->imports, $this->exports);
 
         $manager->put('dest://' . $name.'.vue', $contents . "\n");
     }

@@ -165,7 +165,7 @@ class WebsiteBuilder
      *
      * @return     <type>  ( description_of_the_return_value )
      */
-    public function compileComponents()
+    public function compilePageTemplates()
     {
         $manager = $this->getMountManager();
 
@@ -173,7 +173,7 @@ class WebsiteBuilder
         $compiledExporter = [];
 
         foreach ($this->website->pages as $page) {
-            $name = $page->component_name;
+            $name = $page->template_name;
             $filename = $name.'.vue';
 
             $compiledImporter[] = "import {$name}Page from './{$name}'";

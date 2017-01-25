@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePageComponentContent extends Migration
+class CreatePageSectionContent extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,17 @@ class CreatePageComponentContent extends Migration
      */
     public function up()
     {
-        Schema::create('page_component_content', function (Blueprint $table) {
+        Schema::create('page_section_content', function (Blueprint $table) {
             $table->increments('id');
 
             $table->integer('page_id')->unsigned()->nullable();
             $table->foreign('page_id')->references('id')->on('pages')->onDelete('cascade');
 
             $table->integer('parent_id')->nullable();
-            $table->foreign('parent_id')->references('id')->on('page_component_content')->onDelete('cascade');
+            $table->foreign('parent_id')->references('id')->on('page_section_content')->onDelete('cascade');
 
-            $table->integer('component_id')->unsigned();
-            $table->foreign('component_id')->references('id')->on('components')->onDelete('cascade');
+            $table->integer('section_id')->unsigned();
+            $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
 
             $table->json('config')->nullable();
             $table->integer('order')->unsigned()->nullable();
@@ -41,6 +41,6 @@ class CreatePageComponentContent extends Migration
      */
     public function down()
     {
-        Schema::drop('page_component_content');
+        Schema::drop('page_section_content');
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateComponents extends Migration
+class CreateSections extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class CreateComponents extends Migration
     public function up()
     {
         // @TODO this will be merged with cp_fieldtypes
-        Schema::create('components', function (Blueprint $table) {
+        Schema::create('sections', function (Blueprint $table) {
             $table->increments('id');
 
             $table->string("name");
@@ -32,6 +32,6 @@ class CreateComponents extends Migration
      */
     public function down()
     {
-        Schema::drop('components');
+        Schema::drop('sections');
     }
 }

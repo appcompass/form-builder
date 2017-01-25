@@ -35,6 +35,8 @@ if (process.BROWSER_BUILD) {
 
 // Includes external plugins
 
+require('~plugins/ga.js')
+
 
 // root instance
 // here we inject the router and store to all child components,
