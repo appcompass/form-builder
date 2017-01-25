@@ -22,6 +22,7 @@ class PageBuilder
     private $container;
     private $template = [];
     private $imports = [];
+    private $exports = [];
 
     public function __construct(Page $page = null)
     {
@@ -206,24 +207,25 @@ class PageBuilder
      * @param      <type>   $parts  The parts
      * @param      integer  $depth  The depth
      */
-    private function buildPageTemplateTree($parts, $depth = 1)
+    private function buildPageTemplateTree($parts, int $tabs = 1)
     {
-        $tab = str_pad('', $depth*2);
+        $s = str_pad('', $tabs*2);
 
         foreach ($parts as $part) {
             $name = $part->component->template;
 
             if ($part->children->count() > 0) {
-                $this->template[] = $tab.'div.col-'.$part->columns;
+                $this->template[] = $s.'div.col-'.$part->columns;
 
-                $this->buildPageTemplateTree($part->children, $depth+1);
+                $this->buildPageTemplateTree($part->children, $tabs+1);
             } else {
-                $this->template[] = $tab.$name;
+                $this->template[] = $s.$name;
 
-                $import = "  import {$name} from './{$name}'";
+                $import = "  import {$name} from '~components/{$name}'";
 
                 if (!in_array($import, $this->imports)) {
                     $this->imports[] = $import;
+                    $this->exports[] = $name;
                 }
             }
         }
@@ -235,18 +237,27 @@ class PageBuilder
     public function compilePageTemplate()
     {
         $page = $this->page;
-        $manager = $this->getMountManager();
-        $name = $page->component_name;
-
+        $manager = $this->getMountManager('pages');
+        $name = $page->url == '/' ? '/index' : $page->url;
+        $siteConfig = $this->website->config;
         //@TODO: On delete or parent change of a page (we use the url as the unique name for a page),
-        //we need to delete it's component file as to clean up junk.
+        //we need to delete it's component file as to$siteConfigclean up junk.
+        $header = $siteConfig->header;
+        $footer = $siteConfig->footer;
+
+        // $this->template[] = "  {$header}";
+        // $this->imports[] = "  import {$header} from './{$header}'";
         $this->buildPageTemplateTree($page->containers);
+        // $this->template[] = "  {$footer}";
+        // $this->imports[] = "  import {$footer} from './{$footer}'";
 
         $contents = '<template lang="jade">'."\n";
+        $contents .= 'div'."\n";
         $contents .= implode("\n", $this->template)."\n";
         $contents .= '</template>'."\n\n";
         $contents .= '<script>'."\n";
-        $contents .= implode("\n", $this->imports)."\n";
+        $contents .= implode("\n", $this->imports)."\n\n";
+        $contents .= '  export default { components: { '.implode(', ', $this->exports)." } }\n";
         $contents .= '</script>'."\n";
 
         $manager->put('dest://' . $name.'.vue', $contents . "\n");

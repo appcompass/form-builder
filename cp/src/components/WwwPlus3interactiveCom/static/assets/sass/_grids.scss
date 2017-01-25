@@ -1,0 +1,306 @@
+/* ==========================================================================
+	GRIDS
+=========================================================================== */
+
+
+///------------------------------------------------------------------------
+///		GRID GLOBALS
+///------------------------------------------------------------------------
+.row {
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 0;
+	margin-bottom: 0;
+	max-width: $max-row-width;
+	*zoom: 1;
+}
+.row:before, .row:after {
+	content: " ";
+	display: table;
+}
+.row:after {
+	clear: both;
+}
+.row.collapse .column,
+.row.collapse .columns {
+	position: relative;
+	padding-left: 0;
+	padding-right: 0;
+	float: left;
+}
+.row .row {
+	width: auto;
+	margin-left: -($gutter-xsmall / 2);
+	margin-right: -($gutter-xsmall / 2);
+	margin-top: 0;
+	margin-bottom: 0;
+	max-width: none;
+	*zoom: 1;
+}
+.row .row:before, .row .row:after {
+	content: " ";
+	display: table;
+}
+.row .row:after {
+	clear: both;
+}
+.row .row.collapse {
+	width: auto;
+	margin: 0;
+	max-width: none;
+	*zoom: 1;
+}
+.row .row.collapse:before, .row .row.collapse:after {
+	content: " ";
+	display: table;
+}
+.row .row.collapse:after {
+	clear: both;
+}
+
+.column,
+.columns {
+	position: relative;
+	padding-left: ($gutter-xsmall / 2);
+	padding-right: ($gutter-xsmall / 2);
+	width: 100%;
+	float: left;
+}
+
+.column.xsmall-centered,
+.columns.xsmall-centered {
+	position: relative;
+	margin-left: auto;
+	margin-right: auto;
+	float: none !important;
+}
+
+
+
+///------------------------------------------------------------------------
+///		XSMALL GRID
+///------------------------------------------------------------------------
+
+@media only screen {
+
+	@for $i from 1 to ($columns + 1) {
+		//column classes
+		.xsmall-#{$i} {
+			width: ((100 / $columns) * $i) * 1%;
+		}
+	}
+
+	@for $i from 0 to $columns {
+		//push classes
+		.xsmall-push-#{$i} {
+			left: ((100 / $columns) * $i) * 1%;
+			right: auto;
+		}
+
+		//pull classes
+		.xsmall-pull-#{$i} {
+			right: ((100 / $columns) * $i) * 1%;
+			left: auto;
+		}
+	}
+
+	@for $i from 0 to $columns {
+		// offset classes
+		.xsmall-offset-#{$i} {
+			margin-left: ((100 / $columns) * $i) * 1%;
+		}
+	}
+
+}
+
+///------------------------------------------------------------------------
+///		SMALL GRID
+///------------------------------------------------------------------------
+
+// Styles for screens that are atleast the size of $break-medium;
+@media only screen and (min-width: $break-small) {
+	.row .row {
+		margin-left: -($gutter-small / 2);
+		margin-right: -($gutter-small / 2);
+	}
+
+	.column,
+	.columns {
+		padding-left: ($gutter-small / 2);
+		padding-right: ($gutter-small / 2);
+	}
+
+	.column.small-centered,
+	.columns.small-centered {
+		margin-left: auto;
+		margin-right: auto;
+		float: none !important;
+	}
+
+	.column.small-uncentered,
+	.columns.small-uncentered {
+		margin-left: 0;
+		margin-right: 0;
+		float: left !important;
+	}
+
+	@for $i from 1 to ($columns + 1) {
+		//column classes
+		.small-#{$i} {
+			width: ((100 / $columns) * $i) * 1%;
+		}
+	}
+
+	@for $i from 0 to $columns {
+		//push classes
+		.small-push-#{$i} {
+			left: ((100 / $columns) * $i) * 1%;
+			right: auto;
+		}
+
+		//pull classes
+		.small-pull-#{$i} {
+			right: ((100 / $columns) * $i) * 1%;
+			left: auto;
+		}
+	}
+	
+	@for $i from 0 to $columns {
+		//offset classes
+		.small-offset-#{$i} {
+			margin-left: ((100 / $columns) * $i) * 1%;
+		}
+	}
+
+}
+
+
+///------------------------------------------------------------------------
+///		MEDIUM GRID
+///------------------------------------------------------------------------
+
+// Styles for screens that are atleast the size of $break-medium;
+@media only screen and (min-width: $break-medium) {
+	.row .row {
+		margin-left: -($gutter-medium / 2);
+		margin-right: -($gutter-medium / 2);
+	}
+
+	.column,
+	.columns {
+		padding-left: ($gutter-medium / 2);
+		padding-right: ($gutter-medium / 2);
+	}
+
+	.column.medium-centered,
+	.columns.medium-centered {
+		margin-left: auto;
+		margin-right: auto;
+		float: none !important;
+	}
+
+	.column.medium-uncentered,
+	.columns.medium-uncentered {
+		margin-left: 0;
+		margin-right: 0;
+		float: left !important;
+	}
+
+	@for $i from 1 to ($columns + 1) {
+		//column classes
+		.medium-#{$i} {
+			width: ((100 / $columns) * $i) * 1%;
+		}
+	}
+
+	@for $i from 0 to $columns {
+		//push classes
+		.medium-push-#{$i} {
+			left: ((100 / $columns) * $i) * 1%;
+			right: auto;
+		}
+
+		//pull classes
+		.medium-pull-#{$i} {
+			right: ((100 / $columns) * $i) * 1%;
+			left: auto;
+		}
+	}
+	
+	@for $i from 0 to $columns {
+		//offset classes
+		.medium-offset-#{$i} {
+			margin-left: ((100 / $columns) * $i) * 1%;
+		}
+	}
+
+}
+
+
+
+///------------------------------------------------------------------------
+///		LARGE GRID
+///------------------------------------------------------------------------
+
+// Styles for screens that are atleast the size of $break-large;
+@media only screen and (min-width: $break-large) {
+	.row .row {
+		margin-left: -($gutter-large / 2);
+		margin-right: -($gutter-large / 2);
+	}
+
+	.column,
+	.columns {
+		padding-left: ($gutter-large / 2);
+		padding-right: ($gutter-large / 2);
+	}
+
+	.column.large-centered,
+	.columns.large-centered {
+		position: relative;
+		margin-left: auto;
+		margin-right: auto;
+		float: none !important;
+	}
+
+	.column.large-uncentered,
+	.columns.large-uncentered {
+		margin-left: 0;
+		margin-right: 0;
+		float: left !important;
+	}
+
+	.column.large-uncentered.opposite,
+	.columns.large-uncentered.opposite {
+		float: right !important;
+	}
+
+	@for $i from 1 to ($columns + 1) {
+		//column classes
+		.large-#{$i} {
+			width: ((100 / $columns) * $i) * 1%;
+		}
+	}
+
+	@for $i from 0 to $columns {
+		//push classes
+		.large-push-#{$i} {
+			left: ((100 / $columns) * $i) * 1%;
+			right: auto;
+		}
+
+		//pull classes
+		.large-pull-#{$i} {
+			right: ((100 / $columns) * $i) * 1%;
+			left: auto;
+		}
+	}
+	
+	@for $i from 0 to $columns {
+		//offset classes
+		.large-offset-#{$i} {
+			margin-left: ((100 / $columns) * $i) * 1%;
+		}
+	}
+}
