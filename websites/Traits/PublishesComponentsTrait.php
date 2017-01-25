@@ -17,7 +17,7 @@ trait PublishesComponentsTrait
      *
      */
     // @TODO this is way too specific for a Trait
-    public function getMountManager()
+    public function getMountManager($folder = '')
     {
         // prob should get the plus3website component publish module directory here.
         $dest = App::make('path.components') ? App::make('path.components') : public_path();
@@ -25,7 +25,7 @@ trait PublishesComponentsTrait
         // mostly for formatting.
         $siteDir = studly_case(str_slug(str_replace('.', ' ', $this->website->host)));
 
-        $dest = realpath($dest).'/'.$siteDir;
+        $dest = realpath($dest).'/'.$siteDir.'/'.$folder;
 
         return new MountManager([
             'dest' => new Flysystem(new LocalAdapter($dest)),
