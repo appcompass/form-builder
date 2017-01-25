@@ -3,7 +3,9 @@ div
   div
     ThickPageBanner
     BreadCrumbRightSideLink
-    ProcessTimeline
+    div.row
+      div.xsmall-12.columns
+        ProcessTimeline
     MaintenanceDetails
 </template>
 
@@ -13,6 +15,6 @@ div
   import ProcessTimeline from '~components/ProcessTimeline'
   import MaintenanceDetails from '~components/MaintenanceDetails'
 
-  export default { components: { ThickPageBanner, BreadCrumbRightSideLink, ProcessTimeline, MaintenanceDetails } }
+  export default {layout: 'public',components: {ThickPageBanner, BreadCrumbRightSideLink, ProcessTimeline, MaintenanceDetails}}
 </script>
 

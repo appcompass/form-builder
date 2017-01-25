@@ -11,6 +11,6 @@ div
   import ContactUs from '~components/ContactUs'
   import MapAddress from '~components/MapAddress'
 
-  export default { components: { ThickPageBanner, ContactUs, MapAddress } }
+  export default {layout: 'public',components: {ThickPageBanner, ContactUs, MapAddress}}
 </script>
 

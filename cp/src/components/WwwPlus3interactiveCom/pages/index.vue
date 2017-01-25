@@ -27,6 +27,6 @@ div
   import SocialStream from '~components/SocialStream'
   import CustomerTestimonials from '~components/CustomerTestimonials'
 
-  export default { components: { SliderBanner, SectionHeading, BoxCallouts, OurProcess, MeetOurTeam, SocialStream, CustomerTestimonials } }
+  export default {layout: 'public',components: {SliderBanner, SectionHeading, BoxCallouts, OurProcess, MeetOurTeam, SocialStream, CustomerTestimonials}}
 </script>
 

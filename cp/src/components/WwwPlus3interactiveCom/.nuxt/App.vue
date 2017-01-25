@@ -7,7 +7,9 @@
 <script>
 let layouts = {
 
-  "_default": process.BROWSER_BUILD ? () => System.import('/Volumes/Media/Development/projects/web/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/layouts/default.vue') : require('/Volumes/Media/Development/projects/web/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/layouts/default.vue')
+  "_default": process.BROWSER_BUILD ? () => System.import('/Volumes/Media/Development/projects/web/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/layouts/default.vue') : require('/Volumes/Media/Development/projects/web/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/layouts/default.vue'),
+
+  "_public": process.BROWSER_BUILD ? () => System.import('/Volumes/Media/Development/projects/web/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/layouts/public.vue') : require('/Volumes/Media/Development/projects/web/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/layouts/public.vue')
 
 }
 

@@ -235,10 +235,38 @@ class PageBuilder
 
                 if (!in_array($import, $this->imports)) {
                     $this->imports[] = $import;
-                    $this->exports[] = $name;
+                    $this->exports['components'][] = $name;
                 }
             }
         }
+    }
+
+    private function buildVueComponent(array $template, array $imports = null, array $exports = null)
+    {
+        $contents = '<template lang="jade">'."\n";
+        $contents .= implode("\n", $template)."\n";
+        $contents .= '</template>'."\n\n";
+        $contents .= '<script>'."\n";
+        if ($imports) {
+            $contents .= implode("\n", $imports)."\n\n";
+        }
+        if ($exports) {
+            // {layout:'public',components:[SliderBanner,SectionHeading,BoxCallouts,OurProcess,MeetOurTeam,SocialStream,CustomerTestimonials]}
+            $jsonEncodeSucksSometimes = [];
+
+            foreach ($exports as $key => $val) {
+                if (is_array($val)) {
+                    $val = '{'.implode(', ', $val).'}';
+                }
+                $jsonEncodeSucksSometimes[] = "{$key}: {$val}";
+            }
+
+            $formattedExports = '{'.implode(',',$jsonEncodeSucksSometimes).'}';
+            $contents .= '  export default '.$formattedExports."\n";
+        }
+        $contents .= '</script>'."\n";
+
+        return $contents;
     }
 
     /**
@@ -249,26 +277,30 @@ class PageBuilder
         $page = $this->page;
         $manager = $this->getMountManager('pages');
         $name = $page->url == '/' ? '/index' : $page->url;
-        $siteConfig = $this->website->config;
-        //@TODO: On delete or parent change of a page (we use the url as the unique name for a page),
-        //we need to delete it's component file as to$siteConfigclean up junk.
-        $header = $siteConfig->header;
-        $footer = $siteConfig->footer;
 
-        // $this->template[] = "  {$header}";
-        // $this->imports[] = "  import {$header} from './{$header}'";
+        // //@TODO: On delete or parent change of a page (we use the url as the unique name for a page),
+        // //we need to delete it's component file as to$siteConfigclean up junk.
+
+        // this is prob not needed, right now some sections have two or more
+        // same level sections.  that doesn't jive well with the template structure.
+        // We might want to break the templates up into smaller pieces, but for now
+        // we just have a container div as the parent on all pages.
+        $this->template[] = 'div';
+        $this->exports['layout'] = "'public'";
+
+        if ($page->children->count()) {
+            $parent_template = $this->buildVueComponent(['<nuxt-child/>'], null, $this->exports);
+            $manager->put('dest://' . $name.'.vue', $parent_template . "\n");
+            $name = $name.'/index';
+            unset($this->exports['layout']);
+        }
+
         $this->buildPageTemplateTree($page->containers);
-        // $this->template[] = "  {$footer}";
-        // $this->imports[] = "  import {$footer} from './{$footer}'";
 
-        $contents = '<template lang="jade">'."\n";
-        $contents .= 'div'."\n";
-        $contents .= implode("\n", $this->template)."\n";
-        $contents .= '</template>'."\n\n";
-        $contents .= '<script>'."\n";
-        $contents .= implode("\n", $this->imports)."\n\n";
-        $contents .= '  export default { components: { '.implode(', ', $this->exports)." } }\n";
-        $contents .= '</script>'."\n";
+        // dd(json_encode($this->exports));
+        // handling child page structures.
+
+        $contents = $this->buildVueComponent($this->template, $this->imports, $this->exports);
 
         $manager->put('dest://' . $name.'.vue', $contents . "\n");
     }

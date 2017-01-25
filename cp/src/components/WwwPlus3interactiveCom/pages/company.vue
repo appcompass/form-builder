@@ -11,6 +11,6 @@ div
   import MeetOurTeam from '~components/MeetOurTeam'
   import SocialStream from '~components/SocialStream'
 
-  export default { components: { ThickPageBanner, MeetOurTeam, SocialStream } }
+  export default {layout: 'public',components: {ThickPageBanner, MeetOurTeam, SocialStream}}
 </script>
 

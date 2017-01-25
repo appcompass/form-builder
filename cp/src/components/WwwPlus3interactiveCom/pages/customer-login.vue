@@ -9,6 +9,6 @@ div
   import ThickPageBanner from '~components/ThickPageBanner'
   import CustomerLogin from '~components/CustomerLogin'
 
-  export default { components: { ThickPageBanner, CustomerLogin } }
+  export default {layout: 'public',components: {ThickPageBanner, CustomerLogin}}
 </script>
 
