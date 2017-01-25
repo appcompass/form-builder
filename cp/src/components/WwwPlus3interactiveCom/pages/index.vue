@@ -1,14 +1,17 @@
 <template lang="jade">
 div
-  div.col-12
+  div
     SliderBanner
-  div.col-12
+  section.section-module.section-solutions
     SectionHeading
-    div.col-6
-      BoxCallouts
-    div.col-6
-      BoxCallouts
-  div.col-12
+    div.row
+      div.medium-6.columns
+        div.row
+          BoxCallouts
+      div.medium-6.columns
+        div.row
+          BoxCallouts
+  div
     OurProcess
     MeetOurTeam
     SocialStream

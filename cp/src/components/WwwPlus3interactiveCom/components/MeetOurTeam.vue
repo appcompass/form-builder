@@ -13,28 +13,52 @@
                 </div>
             </div>
             <div class="section-team-members">
-                <a href="#team-imene-popup" class="section-team-member team-popup" style="background-image:url('assets/images/content/team_imene.jpg');">
+                <a href="#team-imene-popup" class="section-team-member team-popup" style="background-image:url('/assets/images/content/team_imene.jpg');">
                     <span class="team-hover">
                         <span class="team-name">Imene Saidi</span>
-                        <span class="team-position">Information Architect</span>
+                        <span class="team-position">Co-Founder &amp; Client Relations</span>
                     </span>
                 </a>
-                <a href="#team-imene-popup" class="section-team-member team-popup" style="background-image:url('assets/images/content/team_jubair.jpg');">
+                <a href="#team-imene-popup" class="section-team-member team-popup" style="background-image:url('/assets/images/content/team_jubair.jpg');">
                     <span class="team-hover">
                         <span class="team-name">Jubair Saidi</span>
-                        <span class="team-position">Information Architect</span>
+                        <span class="team-position">Co-Founder &amp; Lead Developer</span>
                     </span>
                 </a>
-                <a href="#team-imene-popup" class="section-team-member team-popup" style="background-image:url('assets/images/content/team_aisha.jpg');">
+                <a href="#team-imene-popup" class="section-team-member team-popup" style="background-image:url('/assets/images/content/team_aisha.jpg');">
                     <span class="team-hover">
                         <span class="team-name">Aisha Saidi</span>
                         <span class="team-position">Information Architect</span>
                     </span>
                 </a>
-                <a href="#team-imene-popup" class="section-team-member team-popup" style="background-image:url('assets/images/content/team_lazarus.jpg');">
+                <a href="#team-imene-popup" class="section-team-member team-popup" style="background-image:url('/assets/images/content/team_federico.jpg');">
+                    <span class="team-hover">
+                        <span class="team-name">Federico Francescato</span>
+                        <span class="team-position">Application Developer</span>
+                    </span>
+                </a>
+                <a href="#team-imene-popup" class="section-team-member team-popup" style="background-image:url('/assets/images/content/team_michael.jpg');">
+                    <span class="team-hover">
+                        <span class="team-name">Michael Farrell</span>
+                        <span class="team-position">Web Designer &amp; Front-End Developer</span>
+                    </span>
+                </a>
+                <a href="#team-imene-popup" class="section-team-member team-popup" style="background-image:url('/assets/images/content/team_lazarus.jpg');">
                     <span class="team-hover">
                         <span class="team-name">Lazarus Morrison</span>
-                        <span class="team-position">Information Architect</span>
+                        <span class="team-position">Web Developer</span>
+                    </span>
+                </a>
+                <a href="#team-imene-popup" class="section-team-member team-popup" style="background-image:url('/assets/images/content/team_justin.jpg');">
+                    <span class="team-hover">
+                        <span class="team-name">Justin Varberakis</span>
+                        <span class="team-position">Web &amp; Graphic Designer</span>
+                    </span>
+                </a>
+                <a href="#team-imene-popup" class="section-team-member team-popup" style="background-image:url('/assets/images/content/team_duffy.jpg');">
+                    <span class="team-hover">
+                        <span class="team-name">Michael Duffy</span>
+                        <span class="team-position">Web Developer</span>
                     </span>
                 </a>
             </div>

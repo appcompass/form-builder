@@ -484,27 +484,43 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->setUpdatedFrequency('always');
 
             $homepage
-                ->addContainer(12, 1)
-                ->addSection($slider_banner, 12, 1);
+                ->addContainer(1)
+                ->addSection($slider_banner, 1);
 
             $home_box_callout_container = $homepage
-                ->addContainer(12, 2)
-                ->addSection($section_heading, 12, 1);
+                ->addContainer(2,[
+                    'elm' => 'section',
+                     'class' => 'section-module section-solutions',
+                ])
+                ->addSection($section_heading, 1)
+                ->addContainer(2, [
+                     'class' => 'row',
+                ]);
 
             $home_box_callout_container
-                ->addContainer(6, 2)
-                ->addSection($box_callouts, 6, 1);
+                ->addContainer(1, [
+                     'class' => 'medium-6 columns',
+                ])
+                ->addContainer(1, [
+                     'class' => 'row',
+                ])
+                ->addSection($box_callouts, 1);
 
             $home_box_callout_container
-                ->addContainer(6, 3)
-                ->addSection($box_callouts, 6, 1);
+                ->addContainer(2, [
+                     'class' => 'medium-6 columns',
+                ])
+                ->addContainer(1, [
+                     'class' => 'row',
+                ])
+                ->addSection($box_callouts, 1);
 
             $homepage
-                ->addContainer(12, 3)
-                ->addSection($our_proccess, 12, 4)
-                ->addSection($meet_our_team, 12, 5)
-                ->addSection($social_stream, 12, 6)
-                ->addSection($customer_testimonials, 12, 7);
+                ->addContainer(3)
+                ->addSection($our_proccess, 1)
+                ->addSection($meet_our_team, 2)
+                ->addSection($social_stream, 3)
+                ->addSection($customer_testimonials, 4);
 
             $homepage->compilePageTemplate();
 
@@ -516,11 +532,11 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->setUpdatedFrequency('yearly');
 
             $solutions
-                ->addContainer(12, 1)
-                ->addSection($thick_page_banner, 12, 1)
-                ->addSection($white_break_w_section_links, 12, 2)
-                ->addSection($provided_solution, 12, 3)
-                ->addSection($blue_break_callout, 12, 4);
+                ->addContainer(1)
+                ->addSection($thick_page_banner, 1)
+                ->addSection($white_break_w_section_links, 2)
+                ->addSection($provided_solution, 3)
+                ->addSection($blue_break_callout, 4);
 
             $solutions->compilePageTemplate();
 
@@ -532,11 +548,11 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->setUpdatedFrequency('yearly');
 
             $process
-                ->addContainer(12, 1)
-                ->addSection($thick_page_banner, 12, 1)
-                ->addSection($breadcrumb_with_right_link, 12, 2)
-                ->addSection($process_timeline, 12, 3)
-                ->addSection($process_maintenance_details, 12, 4);
+                ->addContainer(1)
+                ->addSection($thick_page_banner, 1)
+                ->addSection($breadcrumb_with_right_link, 2)
+                ->addSection($process_timeline, 3)
+                ->addSection($process_maintenance_details, 4);
 
             $process->compilePageTemplate();
 
@@ -548,11 +564,11 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->setUpdatedFrequency('monthly');
 
             $projects
-                ->addContainer(12, 1)
-                ->addSection($thick_page_banner, 12, 1)
-                ->addSection($project_list, 12, 2)
-                ->addSection($blue_break_callout, 12, 3)
-                ->addSection($white_break_w_section_links, 12, 4);
+                ->addContainer(1)
+                ->addSection($thick_page_banner, 1)
+                ->addSection($project_list, 2)
+                ->addSection($blue_break_callout, 3)
+                ->addSection($white_break_w_section_links, 4);
 
             $projects->compilePageTemplate();
 
@@ -564,10 +580,10 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->setUpdatedFrequency('monthly');
 
             $company
-                ->addContainer(12, 1)
-                ->addSection($thick_page_banner, 12, 1)
-                ->addSection($meet_our_team, 12, 2)
-                ->addSection($social_stream, 12, 3);
+                ->addContainer(1)
+                ->addSection($thick_page_banner, 1)
+                ->addSection($meet_our_team, 2)
+                ->addSection($social_stream, 3);
 
             $company->compilePageTemplate();
 
@@ -579,10 +595,10 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->setUpdatedFrequency('yearly');
 
             $contact
-                ->addContainer(12, 1)
-                ->addSection($thick_page_banner, 12, 1)
-                ->addSection($contact_form, 12, 2)
-                ->addSection($map_address, 12, 3);
+                ->addContainer(1)
+                ->addSection($thick_page_banner, 1)
+                ->addSection($contact_form, 2)
+                ->addSection($map_address, 3);
 
             $contact->compilePageTemplate();
 
@@ -594,9 +610,9 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->setUpdatedFrequency('never');
 
             $login
-                ->addContainer(12, 1)
-                ->addSection($thick_page_banner, 12, 1)
-                ->addSection($login_form, 12, 2);
+                ->addContainer(1)
+                ->addSection($thick_page_banner, 1)
+                ->addSection($login_form, 2);
 
             $login->compilePageTemplate();
             // @TODO: add trigger to compile App.vue file for website under cp/src/components/websites/www.plus3interactive.com.

@@ -25,9 +25,10 @@ class CreatePageComponentContent extends Migration
             $table->integer('component_id')->unsigned();
             $table->foreign('component_id')->references('id')->on('components')->onDelete('cascade');
 
-            $table->json('content')->nullable();
-            $table->integer('columns')->unsigned();
+            $table->json('config')->nullable();
             $table->integer('order')->unsigned()->nullable();
+
+            $table->json('content')->nullable();
 
             $table->timestamps();
         });

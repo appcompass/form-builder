@@ -1,6 +1,6 @@
 <template lang="jade">
 div
-  div.col-12
+  div
     ThickPageBanner
     BreadCrumbRightSideLink
     ProcessTimeline
