@@ -68,6 +68,12 @@ class MenuItem extends Model
      */
     public function getUrlAttribute()
     {
+        if (is_null($this->navigatable)) {
+
+            return null;
+
+        }
+
         return $this->navigatable->url;
         // return isset($this->navigatable_id) ? $this->navigatable->url : $this->attributes['url'];
     }

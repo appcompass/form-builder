@@ -21,6 +21,7 @@ export default {
   done () {
     if (this.cb) {
       this.cb(this.dataObject)
+      this.disable()
     }
   },
   set (data) {

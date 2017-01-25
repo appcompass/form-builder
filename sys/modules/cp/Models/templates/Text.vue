@@ -5,7 +5,7 @@ div
 
 <script>
 export default {
-  name: 'Formtext',
+  name: 'Text',
   props: ['pointer', 'data']
 }
 </script>

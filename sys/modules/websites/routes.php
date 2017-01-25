@@ -4,6 +4,7 @@ Route::group([
     'namespace' => 'P3in\Controllers',
     'middleware' => ['auth', 'api', 'validateWebsite'],
 ], function ($router) {
+    $router->delete('menus/{link_id}', '\P3in\Controllers\MenusController@deleteLink');
     $router->resource('menus', MenusController::class);
     // @TODO use generic forms getter once that's done (maybe)
     $router->get('menus/forms/{form}', '\P3in\Controllers\MenusController@getForm');

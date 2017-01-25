@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use P3in\Interfaces\WebsiteMenusRepositoryInterface;
 use P3in\Models\MenuItem;
 use P3in\Models\Page;
+use P3in\Models\Link;
 
 class WebsiteMenusController extends AbstractChildController
 {
@@ -20,7 +21,10 @@ class WebsiteMenusController extends AbstractChildController
             'id' => $model->id,
             'menu' => [
                 'menu' => $model->render(),
-                'repo' => $parent->pages,
+                'repo' => [
+                    'pages' => $parent->pages,
+                    'links' => Link::all()
+                ],
                 'deletions' => []
             ]
         ];
@@ -51,11 +55,7 @@ class WebsiteMenusController extends AbstractChildController
                 $menuitem->fill($item)->save();
 
                 // then set parent if applicable, or null it to be sure (setParent takes care of saving as well)
-                if (!is_null($item['parent_id'])) {
-                    $parent_item = $menuitem->setParent(MenuItem::findOrFail($item['parent_id']));
-                } else {
-                    $menuitem->setParent(null);
-                }
+                $parent_item = $menuitem->setParent(MenuItem::find($item['parent_id']));
 
                 // finally, make sure the item belongs to the correct menu (current one obv)
                 if (is_null($menuitem->menu_id)) {
@@ -63,17 +63,11 @@ class WebsiteMenusController extends AbstractChildController
                 }
             } else {
 
-                // this must be a Page instance (because otherwise logic is flawed)
+                // $menuitem = MenuItem::fromModel(Page::findOrFail($item['id']), $item);
+                // generate a MenuItem instance from model being added
+                $menuitem = MenuItem::fromModel($item['type']::findOrFail($item['id']), $item);
 
-                // in order for this to work we must pass an array of overrides to the MenuItem::fromModel (label changes, overrides in general)
-
-                $menuitem = MenuItem::fromModel(Page::findOrFail($item['id']), $item);
-
-                // set menuitem parent
-
-                $menuitem->setParent(MenuItem::findOrFail($item['parent_id']));
-
-                // add menuitem to current menu
+                $menuitem->setParent(MenuItem::find($item['parent_id']));
 
                 $menu->add($menuitem);
             }

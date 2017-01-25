@@ -28,7 +28,6 @@ class CreateMenuItems extends Migration
             $table->boolean('clickable')->default(true); // sometimes we just want separators
             $table->string('icon')->nullable();
             $table->integer('sort')->nullable();
-            $table->text('content')->nullable();
             // $table->foreign('req_perms')->references('id')->on('permissions');
 
             $table->integer('navigatable_id')->nullable();

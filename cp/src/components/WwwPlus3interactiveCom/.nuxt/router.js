@@ -6,21 +6,21 @@ import Router from 'vue-router'
 Vue.use(Router)
 
 
-const _aeff8f4a = process.BROWSER_BUILD ? () => System.import('/Volumes/Media/Development/projects/web/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/index.vue') : require('/Volumes/Media/Development/projects/web/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/index.vue')
+const _73ff7a04 = process.BROWSER_BUILD ? () => System.import('/var/www/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/index.vue') : require('/var/www/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/index.vue')
 
-const _59e6c646 = process.BROWSER_BUILD ? () => System.import('/Volumes/Media/Development/projects/web/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/company.vue') : require('/Volumes/Media/Development/projects/web/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/company.vue')
+const _429c41af = process.BROWSER_BUILD ? () => System.import('/var/www/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/company.vue') : require('/var/www/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/company.vue')
 
-const _7aa42469 = process.BROWSER_BUILD ? () => System.import('/Volumes/Media/Development/projects/web/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/contact.vue') : require('/Volumes/Media/Development/projects/web/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/contact.vue')
+const _63599fd2 = process.BROWSER_BUILD ? () => System.import('/var/www/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/contact.vue') : require('/var/www/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/contact.vue')
 
-const _6d3d52fe = process.BROWSER_BUILD ? () => System.import('/Volumes/Media/Development/projects/web/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/projects.vue') : require('/Volumes/Media/Development/projects/web/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/projects.vue')
+const _11496f90 = process.BROWSER_BUILD ? () => System.import('/var/www/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/projects.vue') : require('/var/www/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/projects.vue')
 
-const _2cb5a5ba = process.BROWSER_BUILD ? () => System.import('/Volumes/Media/Development/projects/web/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/solutions.vue') : require('/Volumes/Media/Development/projects/web/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/solutions.vue')
+const _7ae9724c = process.BROWSER_BUILD ? () => System.import('/var/www/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/solutions.vue') : require('/var/www/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/solutions.vue')
 
-const _21960d66 = process.BROWSER_BUILD ? () => System.import('/Volumes/Media/Development/projects/web/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/solutions/index.vue') : require('/Volumes/Media/Development/projects/web/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/solutions/index.vue')
+const _36b20fcf = process.BROWSER_BUILD ? () => System.import('/var/www/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/solutions/index.vue') : require('/var/www/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/solutions/index.vue')
 
-const _2da7ee82 = process.BROWSER_BUILD ? () => System.import('/Volumes/Media/Development/projects/web/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/solutions/our-process.vue') : require('/Volumes/Media/Development/projects/web/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/solutions/our-process.vue')
+const _7ca8be2b = process.BROWSER_BUILD ? () => System.import('/var/www/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/solutions/our-process.vue') : require('/var/www/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/solutions/our-process.vue')
 
-const _e75118fe = process.BROWSER_BUILD ? () => System.import('/Volumes/Media/Development/projects/web/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/customer-login.vue') : require('/Volumes/Media/Development/projects/web/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/customer-login.vue')
+const _29ecfff8 = process.BROWSER_BUILD ? () => System.import('/var/www/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/customer-login.vue') : require('/var/www/api.p3in.com/cp/src/components/WwwPlus3interactiveCom/pages/customer-login.vue')
 
 
 const scrollBehavior = (to, from, savedPosition) => {
@@ -52,43 +52,43 @@ export default new Router({
   routes: [
 		{
 			path: "/",
-			component: _aeff8f4a,
+			component: _73ff7a04,
 			name: "index"
 		},
 		{
 			path: "/company",
-			component: _59e6c646,
+			component: _429c41af,
 			name: "company"
 		},
 		{
 			path: "/contact",
-			component: _7aa42469,
+			component: _63599fd2,
 			name: "contact"
 		},
 		{
 			path: "/projects",
-			component: _6d3d52fe,
+			component: _11496f90,
 			name: "projects"
 		},
 		{
 			path: "/solutions",
-			component: _2cb5a5ba,
+			component: _7ae9724c,
 			children: [
 				{
 					path: "",
-					component: _21960d66,
+					component: _36b20fcf,
 					name: "solutions"
 				},
 				{
 					path: "our-process",
-					component: _2da7ee82,
+					component: _7ca8be2b,
 					name: "solutions-our-process"
 				}
 			]
 		},
 		{
 			path: "/customer-login",
-			component: _e75118fe,
+			component: _29ecfff8,
 			name: "customer-login"
 		}
   ]

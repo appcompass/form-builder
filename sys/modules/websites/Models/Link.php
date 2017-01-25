@@ -28,6 +28,8 @@ class Link extends Model implements Linkable
         // 'clickable' => ''
     ];
 
+    public $appends = ['type'];
+
     /**
      * Makes a menu item.
      *
@@ -44,14 +46,16 @@ class Link extends Model implements Linkable
             'new_tab' => $this->new_tab,
             'url' => $this->url,
             'clickable' => $this->clickable,
-            'icon' => $this->icon,
-            'content' => $this->content ?: null
+            'icon' => $this->icon
         ]);
 
         $item->navigatable()->associate($this);
 
-        $item->save();
-
         return $item;
+    }
+
+    public function getTypeAttribute()
+    {
+        return '\P3in\Models\Link';
     }
 }
