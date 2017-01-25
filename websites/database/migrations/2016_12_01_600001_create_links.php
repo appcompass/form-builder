@@ -18,9 +18,10 @@ class CreateLinks extends Migration
             $table->string('title');
             $table->text('alt');
             $table->boolean('new_tab');
-            $table->string('url', 2083);
+            $table->string('url', 2083)->nullable(); // null for separators
             $table->boolean('clickable')->default(true); // sometimes we just want separators
             $table->string('icon')->nullable();
+            $table->text('content')->nullable();
             $table->timestamps();
         });
     }

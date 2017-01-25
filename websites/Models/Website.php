@@ -31,6 +31,11 @@ class Website extends Model
     public static $current = null;
 
     /**
+     *
+     */
+    public $appends = ['url'];
+
+    /**
      * Pages
      *
      * @return     hasMany

@@ -129,6 +129,8 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             $builder->string('Alt', 'alt');
             $builder->string('Icon', 'icon');
             $builder->boolean('New Tab', 'new_tab');
+            $builder->boolean('Clickable', 'clickable');
+            $builder->wysiwyg('Content', 'content');
         })->setOwner((new \P3in\Models\Link()));
     }
 }

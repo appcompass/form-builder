@@ -5,53 +5,38 @@
     Sortable.empty(v-if="!data.menu.length", :list="data.menu",  :options="{handle: '.handle', animation: 150, group: 'items'}") Empty
 
     p.control
-    a.button.is-small(@click="modal.active = true")
+    a.button.is-small(@click="create('create-link')")
       span.icon.is-small
         i.fa.fa-link
       span New Link
 
   .column.is-4
-    Sortable.menu-list(:list="data.repo", :element="'ul'", :options="{handle: '.handle', animation: 150, group: 'items', clone: true}")
-      li(v-for="(item, index) in data.repo")
-        a.handle
-          &nbsp; {{ item.title }}
+    .section
+      h1.title Pages
+      Sortable.menu-list(:list="data.repo.pages", :element="'ul'", :options="{handle: '.handle', animation: 150, group: 'items', clone: true}")
+        li(v-for="(item, index) in data.repo.pages")
+          a
+            small.icon.is-small.handle
+              i.fa.fa-arrows
+            &nbsp; {{ item.title }}
+    .section
+      h1.title Links
+      Sortable.menu-list(:list="data.repo.links", :element="'ul'", :options="{handle: '.handle', animation: 150, group: 'items', clone: true}")
+        li(v-for="(item, index) in data.repo.links")
+          a
+            small.icon.is-small.handle
+              i.fa.fa-arrows
+            &nbsp; {{ item.title }}
+            small.icon.is-small.pull-right
+              i.fa.fa-trash(@click="deleteLink(item)")
 
-  .modal(:class="{'is-active': modal.active}")
-    .modal-background
-    .modal-card
-      header.modal-card-head
-        p.modal-card-title Add Link
-        button.delete(@click.prevent="modal.active = false")
-      section.modal-card-body
-        label.label Title
-        p.control
-          input.input(v-model="link.title")
-        label.label Url
-        p.control
-          input.input(v-model="link.url")
-        label.label Alt Text
-        p.control
-          input.input(v-model="link.alt")
-        label.label Icon Name
-        p.control
-          input.input(v-model="link.icon")
-        p.control
-          label.checkbox
-            input(type="checkbox", v-model="link.new_tab")
-            |  New Tab
-        p.control
-          label.checkbox
-            input(type="checkbox", v-model="link.clickable")
-            |  Clickable
-      footer.modal-card-foot
-        a.button.is-primary(@click="storeLink()") Save
-        a.button(@click.prevent="modal.active = false") Cancel
 
 </template>
 
 <script>
 import Sortable from '../VueSortable'
 import MenuElement from './MenuElement'
+import Modal from '../Modal'
 
 export default {
   components: { Sortable, MenuElement },
@@ -59,12 +44,12 @@ export default {
   name: 'menu-editor',
   data () {
     return {
-      modal: {active: false},
-      link: {url: 'https://www.google.com', title: 'Google', icon: 'world', new_tab: true, clickable: true, alt: 'google link'}
+      modal: Modal,
+      link: {url: null, title: null, icon: null, new_tab: false, clickable: true, alt: null, content: null}
     }
   },
   watch: {
-    'data.repo': function (nv, ov) {
+    'data.repo.links': function (nv, ov) {
       this.setChildren()
     }
   },
@@ -73,22 +58,50 @@ export default {
   },
   methods: {
     deleted (item) {
+      // mark items for deletion
       this.data.deletions.push(item.id)
     },
-    storeLink () {
-      this.$http.post(process.env.API_SERVER + 'menus/', this.link)
+    storeLink (payload) {
+      // get a MenuItem instance from the backend
+      this.$http.post(process.env.API_SERVER + 'menus/', payload)
         .then((response) => {
-          this.data.repo.push(response.body)
-          this.modal.active = false
+          this.data.repo.links.push(response.body)
+          this.data.menu.push(response.body)
         })
     },
     setChildren () {
-      let vm = this
-      this.data.repo.forEach(function (item, index) {
+      // make sure every repo item has a children[] element
+      this.data.repo.pages.forEach((item, index) => {
         if (!item.children) {
-          vm.$set(vm.data.repo[index], 'children', [])
+          this.$set(this.data.repo.pages[index], 'children', [])
         }
       })
+      // @TODO ugggh
+      this.data.repo.links.forEach((item, index) => {
+        if (!item.children) {
+          this.$set(this.data.repo.links[index], 'children', [])
+        }
+      })
+    },
+    create (item) {
+      // fetch desired item and pop up a modal
+      // this.modal.active = true
+      this.$http.get(process.env.API_SERVER + 'menus/forms/' + item)
+        .then(function (response) {
+          // response.data.collection -> form.fields
+          this.modal.show(response.data.collection, this.link, (result) => {
+            return this.storeLink(result)
+          })
+        })
+    },
+    deleteLink (link) {
+      // deletes a Link
+      this.$http.delete(process.env.API_SERVER + 'menus/' + link.id)
+        .then(response => {
+          this.data.repo.links.splice(this.data.repo.links.indexOf(link), 1)
+        }, response => {
+          console.log(response)
+        })
     }
   }
 }
@@ -102,3 +115,4 @@ export default {
   height: 2rem
   margin: 1rem
 </style>
+

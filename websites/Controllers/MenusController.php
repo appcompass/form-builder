@@ -24,7 +24,11 @@ class MenusController extends AbstractController
     public function store(Request $request)
     {
         // @TODO validate link
-        return MenuItem::fromModel(Link::create($request->all()));
+        $menuitem = MenuItem::fromModel(Link::create($request->all()));
+
+        $menuitem->save();
+
+        return $menuitem;
     }
 
     // have a method that returns the instance you wanna create with the form attached
@@ -36,5 +40,31 @@ class MenusController extends AbstractController
         // @TODO link menus to website via pivot?
         $ret = Form::whereName($request->form)->firstOrFail();
         return $ret->fields;
+    }
+
+    /**
+     * @TODO Deletes a Link, not a menu! (those are deleted via websiteMenusController)
+     * prob having a MenuLinks Controller would be more appropriate
+     */
+    public function deleteLink(Request $request, $id)
+    {
+        $link = Link::findOrFail($id);
+
+        $menu_items = MenuItem::whereNavigatableId($link->id)->whereNavigatableType(get_class($link))->get()->pluck('id');
+
+        $link->delete();
+
+        MenuItem::whereIn('id', $menu_items)->delete();
+
+        // if ($link->delete() && ) {
+
+        return response()->json(['message' => 'Model deleted.']);
+
+        // } else {
+
+            // throw new \Exception('Cannot delete Link.');
+
+        // }
+
     }
 }
