@@ -3,13 +3,13 @@
 namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use P3in\Models\Component;
+use P3in\Models\Section;
 use P3in\Models\Page;
 use Exception;
 
-class PageComponentContent extends Model
+class PageSectionContent extends Model
 {
-    protected $table = 'page_component_content';
+    protected $table = 'page_section_content';
 
     protected $fillable = [
         'config',
@@ -24,7 +24,7 @@ class PageComponentContent extends Model
 
     protected $with = [
         'children',
-        'component',
+        'section',
     ];
     /**
      *
@@ -37,9 +37,9 @@ class PageComponentContent extends Model
     /**
      *
      */
-    public function component()
+    public function section()
     {
-        return $this->belongsTo(Component::class);
+        return $this->belongsTo(Section::class);
     }
 
     /**
@@ -74,15 +74,15 @@ class PageComponentContent extends Model
      * Set the current section to a container type.
      * @param int $order
      * @param array $config
-     * @return Model PageComponentContent
+     * @return Model PageSectionContent
      */
     public function saveAsContainer(int $order, array $config = null)
     {
-        $container = Component::getContainer();
+        $container = Section::getContainer();
 
         $this->fill(['order' => $order, 'config' => $config]);
 
-        $this->component()->associate($container);
+        $this->section()->associate($container);
 
         $this->save();
 
@@ -93,11 +93,11 @@ class PageComponentContent extends Model
      * Add a child container to a parent.
      * @param int $order
      * @param array $config
-     * @return Model PageComponentContent
+     * @return Model PageSectionContent
      */
     public function addContainer(int $order, array $config = null)
     {
-        $container = Component::getContainer();
+        $container = Section::getContainer();
 
         return $this->addSection($container, $order, $config, true);
     }
@@ -105,22 +105,22 @@ class PageComponentContent extends Model
     /**
      * Add a section to a container.
      *
-     * @param      Component  $component
+     * @param      Section  $section
      * @param      int        $columns
      * @param      int        $order
      * @param      boolean    $returnChild  The return child
      *
      * @throws     Exception  (description)
      *
-     * @return     Model      PageComponentContent
+     * @return     Model      PageSectionContent
      */
-    public function addSection(Component $component, int $order, array $config = null, $returnChild = false)
+    public function addSection(Section $section, int $order, array $config = null, $returnChild = false)
     {
         if ($this->isContainer()) {
 
             $child = new static(['order' => $order, 'config' => $config]);
 
-            $child->component()->associate($component);
+            $child->section()->associate($section);
 
             $this->children()->save($child);
 
@@ -158,6 +158,6 @@ class PageComponentContent extends Model
      */
     public function isContainer()
     {
-        return $this->component->type === 'container';
+        return $this->section->type === 'container';
     }
 }
