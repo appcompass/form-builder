@@ -12,18 +12,19 @@ class PageComponentContent extends Model
     protected $table = 'page_component_content';
 
     protected $fillable = [
+        'config',
+        'order',
         'content',
-        'columns',
-        'order'
     ];
 
     protected $casts = [
-        'content' => 'object'
+        'config' => 'object',
+        'content' => 'object',
     ];
 
     protected $with = [
         'children',
-        'component'
+        'component',
     ];
     /**
      *
@@ -71,15 +72,15 @@ class PageComponentContent extends Model
 
     /**
      * Set the current section to a container type.
-     * @param int $columns
      * @param int $order
+     * @param array $config
      * @return Model PageComponentContent
      */
-    public function saveAsContainer(int $columns, int $order)
+    public function saveAsContainer(int $order, array $config = null)
     {
         $container = Component::getContainer();
 
-        $this->fill(['columns' => $columns, 'order' => $order]);
+        $this->fill(['order' => $order, 'config' => $config]);
 
         $this->component()->associate($container);
 
@@ -90,15 +91,15 @@ class PageComponentContent extends Model
 
     /**
      * Add a child container to a parent.
-     * @param int $columns
      * @param int $order
+     * @param array $config
      * @return Model PageComponentContent
      */
-    public function addContainer(int $columns, int $order)
+    public function addContainer(int $order, array $config = null)
     {
         $container = Component::getContainer();
 
-        return $this->addSection($container, $columns, $order, true);
+        return $this->addSection($container, $order, $config, true);
     }
 
     /**
@@ -113,11 +114,11 @@ class PageComponentContent extends Model
      *
      * @return     Model      PageComponentContent
      */
-    public function addSection(Component $component, int $columns, int $order, $returnChild = false)
+    public function addSection(Component $component, int $order, array $config = null, $returnChild = false)
     {
         if ($this->isContainer()) {
 
-            $child = new static(['columns' => $columns, 'order' => $order]);
+            $child = new static(['order' => $order, 'config' => $config]);
 
             $child->component()->associate($component);
 

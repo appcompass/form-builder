@@ -101,13 +101,13 @@ class PageBuilder
     /**
      * Add a Container to a page and return it's PageComponentContent model instance
      *
-     * @param int $columns Container's column span
      * @param int $order Display order
+     * @param array $config Container's attributes
      * @return PageComponentContent
      */
-    public function addContainer($columns = 1, $order = 0) : PageComponentContent
+    public function addContainer(int $order = 0, array $config = null) : PageComponentContent
     {
-        return $this->page->addContainer($columns, $order);
+        return $this->page->addContainer($order, $config);
     }
 
     /**
@@ -117,10 +117,10 @@ class PageBuilder
      * @param int $order
      * @return PageBuilder
      */
-    public function addSection(Component $component, int $columns, int $order)
+    public function addSection(Component $component, int $order)
     {
         if ($this->container) {
-            $this->container->addSection($component, $columns, $order);
+            $this->container->addSection($component, $order);
             return $this;
         } else {
             throw new Exception('a Container must be set to add Sections.');
@@ -200,6 +200,15 @@ class PageBuilder
         return $this;
     }
 
+    private function compileElement($conf)
+    {
+        $elm = !empty($conf->elm) ? $conf->elm : 'div';
+
+        if (!empty($conf->class)) {
+            $elm .= '.'.str_replace(' ', '.', $conf->class);
+        }
+        return $elm;
+    }
 
     /**
      * Builds a page template tree.
@@ -215,7 +224,8 @@ class PageBuilder
             $name = $part->component->template;
 
             if ($part->children->count() > 0) {
-                $this->template[] = $s.'div.col-'.$part->columns;
+                $elm = $this->compileElement($part->config);
+                $this->template[] = $s.$elm;
 
                 $this->buildPageTemplateTree($part->children, $tabs+1);
             } else {

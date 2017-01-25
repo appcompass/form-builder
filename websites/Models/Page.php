@@ -126,17 +126,17 @@ class Page extends Model implements Linkable
     /**
      * Add a Container to the page.
      *
-     * @param      int    $columns
      * @param      int    $order
+     * @param      array    $config
      *
      * @return     Model  PageComponentContent
      */
-    public function addContainer($columns, $order)
+    public function addContainer(int $order, array $config = null)
     {
         //I have no idea why they don't have a ->new() method...
         $container = $this->containers()->findOrNew(null);
 
-        $container->saveAsContainer($columns, $order);
+        $container->saveAsContainer($order, $config);
 
         return $container;
     }
