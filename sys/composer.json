@@ -64,8 +64,7 @@
             "php artisan vendor:publish",
             "php artisan optimize",
             "php artisan cache:clear",
-            "cd ../cp && npm run build",
-            "cd ../website && npm run build"
+            "cd ../cp && npm run build"
         ]
     },
     "config": {
