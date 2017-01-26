@@ -1,6 +1,5 @@
 import StringType from './FormBuilder/String'
 import TextType from './FormBuilder/Text'
-import SecretType from './FormBuilder/Secret'
 import MenuEditorType from './FormBuilder/MenuEditor'
 import BooleanType from './FormBuilder/Boolean'
 import WysiwygType from './FormBuilder/Wysiwyg'
@@ -12,7 +11,6 @@ import MapType from './FormBuilder/Map'
 import LoginFormType from './FormBuilder/LoginForm'
 export var String = StringType
 export var Text = TextType
-export var Secret = SecretType
 export var MenuEditor = MenuEditorType
 export var Boolean = BooleanType
 export var Wysiwyg = WysiwygType
