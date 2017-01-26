@@ -7,7 +7,11 @@ div.menu
           i.fa.fa-arrows
 
         span.pull-right
-          span(@click="edit(item)")
+          span.icon.is-small(@click="collapse(item, true)", v-if="item.children.length && !item.isCollapsed", style="margin-right: 5px")
+            i.fa.fa-minus-square-o
+          span.icon.is-small(@click="collapse(item, false)", v-if="item.isCollapsed", style="margin-right: 5px")
+            i.fa.fa-plus-square
+          span(@click="edit(item)", style="margin-right: 5px")
             small.icon.is-small
               i.fa.fa-edit
           small.icon.is-small
@@ -15,7 +19,7 @@ div.menu
 
         span  {{ item.title }}
 
-      MenuElement(v-if="item.children.length", :menu="item.children", @deleted="deleted")
+      MenuElement(v-if="item.children.length && !item.isCollapsed", :menu="item.children", @deleted="deleted")
       Sortable.empty(v-if="!item.children.length", :list="item.children",  :options="options") Empty
 </template>
 
@@ -49,6 +53,9 @@ export default {
     unlink (item) {
       this.menu.splice(this.menu.indexOf(item), 1)
       this.$emit('deleted', item)
+    },
+    collapse (item, collapsed) {
+      this.$set(item, 'isCollapsed', collapsed)
     },
     edit (item) {
       if (item.type !== null) {
@@ -95,4 +102,9 @@ export default {
   border: 1px dashed rgba(128, 128, 128, 0.2)
   display: inline-block
   background: rgba(200, 200, 200, 0.2)
+.icon:hover
+  color: red
+li a:hover
+  background: white
+  color: #333
 </style>
