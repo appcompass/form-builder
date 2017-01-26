@@ -60,7 +60,8 @@ class MenusController extends AbstractController
 
         switch ($content['type']) {
             case 'Link':
-                MenuItem::findOrFail($content['id'])->navigatable()->update($content);
+                // dd(MenuItem::findOrFail($content['id'])->navigatable);
+                MenuItem::findOrFail($content['id'])->navigatable->update($content);
                 break;
             case 'Page':
                 MenuItem::findOrFail($content['id'])->update($content);

@@ -22,6 +22,7 @@ div.menu
 <script>
 import Sortable from '../VueSortable'
 import Modal from '../Modal'
+import swal from 'sweetalert'
 
 export default {
   name: 'MenuElement',
@@ -65,7 +66,7 @@ export default {
           this.modal.show(response.data.collection, item, (result) => {
             this.$http.post(process.env.API_SERVER + 'menus/forms/' + this.endpoint, result)
               .then((response) => {
-                console.log(response)
+                swal({title: 'Updated', type: 'success'})
               })
           })
         })
