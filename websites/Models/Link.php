@@ -56,6 +56,6 @@ class Link extends Model implements Linkable
 
     public function getTypeAttribute()
     {
-        return '\P3in\Models\Link';
+        return 'Link';
     }
 }

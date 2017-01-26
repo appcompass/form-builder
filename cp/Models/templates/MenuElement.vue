@@ -7,19 +7,13 @@ div.menu
           i.fa.fa-arrows
 
         span.pull-right
-          span(v-if="!item.editing", @click="edit(item)")
+          span(@click="edit(item)")
             small.icon.is-small
               i.fa.fa-edit
-          small.icon.is-small.handle(v-if="item.editing", @click="item.editing = false")
-            i.fa.fa-save
           small.icon.is-small
             i.fa.fa-trash(@click="unlink(item)")
 
-        span(v-if="!item.editing") &nbsp;
-          {{ item.title }}
-
-        span(v-if="item.editing")
-          input.control(v-model="item.title")
+        span  {{ item.title }}
 
       MenuElement(v-if="item.children.length", :menu="item.children", @deleted="deleted")
       Sortable.empty(v-if="!item.children.length", :list="item.children",  :options="options") Empty
@@ -27,6 +21,7 @@ div.menu
 
 <script>
 import Sortable from '../VueSortable'
+import Modal from '../Modal'
 
 export default {
   name: 'MenuElement',
@@ -34,6 +29,8 @@ export default {
   props: ['menu'],
   data () {
     return {
+      endpoint: null,
+      modal: Modal,
       options: {
         handle: '.handle',
         animation: 150,
@@ -53,7 +50,25 @@ export default {
       this.$emit('deleted', item)
     },
     edit (item) {
-      this.$set(item, 'editing', true)
+      if (item.type !== null) {
+        switch (item.type) {
+          case 'Link':
+            this.endpoint = 'edit-link'
+            break
+          case 'Page':
+            this.endpoint = 'edit-menu-item'
+            break
+        }
+      }
+      this.$http.get(process.env.API_SERVER + 'menus/forms/' + this.endpoint)
+        .then((response) => {
+          this.modal.show(response.data.collection, item, (result) => {
+            this.$http.post(process.env.API_SERVER + 'menus/forms/' + this.endpoint, result)
+              .then((response) => {
+                console.log(response)
+              })
+          })
+        })
     },
     deleted (item) {
       this.$emit('deleted', item)

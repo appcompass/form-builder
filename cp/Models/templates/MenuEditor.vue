@@ -5,7 +5,7 @@
     Sortable.empty(v-if="!data.menu.length", :list="data.menu",  :options="{handle: '.handle', animation: 150, group: 'items'}") Empty
 
     p.control
-    a.button.is-small(@click="create('create-link')")
+    a.button.is-small(@click="createLink('create-link')")
       span.icon.is-small
         i.fa.fa-link
       span New Link
@@ -48,14 +48,7 @@ export default {
       link: {url: null, title: null, icon: null, new_tab: false, clickable: true, alt: null, content: null}
     }
   },
-  watch: {
-    'data.repo.links': function (nv, ov) {
-      this.setChildren()
-    }
-  },
-  created () {
-    this.setChildren()
-  },
+  created () {},
   methods: {
     deleted (item) {
       // mark items for deletion
@@ -65,25 +58,11 @@ export default {
       // get a MenuItem instance from the backend
       this.$http.post(process.env.API_SERVER + 'menus/', payload)
         .then((response) => {
-          this.data.repo.links.push(response.body)
-          this.data.menu.push(response.body)
+          this.data.repo.links.push(response.body.link)
+          this.data.menu.push(response.body.menuitem)
         })
     },
-    setChildren () {
-      // make sure every repo item has a children[] element
-      this.data.repo.pages.forEach((item, index) => {
-        if (!item.children) {
-          this.$set(this.data.repo.pages[index], 'children', [])
-        }
-      })
-      // @TODO ugggh
-      this.data.repo.links.forEach((item, index) => {
-        if (!item.children) {
-          this.$set(this.data.repo.links[index], 'children', [])
-        }
-      })
-    },
-    create (item) {
+    createLink (item) {
       // fetch desired item and pop up a modal
       // this.modal.active = true
       this.$http.get(process.env.API_SERVER + 'menus/forms/' + item)
