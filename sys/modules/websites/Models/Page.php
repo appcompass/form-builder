@@ -179,7 +179,7 @@ class Page extends Model implements Linkable
      */
     public function getTypeAttribute()
     {
-        return Page::class;
+        return 'Page';
     }
 
     /**

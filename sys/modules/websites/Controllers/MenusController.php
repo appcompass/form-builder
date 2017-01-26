@@ -24,11 +24,17 @@ class MenusController extends AbstractController
     public function store(Request $request)
     {
         // @TODO validate link
-        $menuitem = MenuItem::fromModel(Link::create($request->all()));
+        $link = Link::create($request->except(['children']));
+
+        $menuitem = MenuItem::fromModel($link);
 
         $menuitem->save();
 
-        return $menuitem;
+        $link->children = [];
+
+        $menuitem->children = [];
+
+        return ['link' => $link, 'menuitem' => $menuitem];
     }
 
     // have a method that returns the instance you wanna create with the form attached
@@ -39,7 +45,28 @@ class MenusController extends AbstractController
         // @TODO validate menu request $request->website
         // @TODO link menus to website via pivot?
         $ret = Form::whereName($request->form)->firstOrFail();
+
         return $ret->fields;
+    }
+
+    /**
+     * storeForm
+     *
+     * @param      \Illuminate\Http\Request  $request  The request
+     */
+    public function storeForm(Request $request, $form_name)
+    {
+        $content = $request->all();
+
+        switch ($content['type']) {
+            case 'Link':
+                MenuItem::findOrFail($content['id'])->navigatable()->update($content);
+                break;
+            case 'Page':
+                MenuItem::findOrFail($content['id'])->update($content);
+                break;
+        }
+
     }
 
     /**
@@ -56,15 +83,6 @@ class MenusController extends AbstractController
 
         MenuItem::whereIn('id', $menu_items)->delete();
 
-        // if ($link->delete() && ) {
-
         return response()->json(['message' => 'Model deleted.']);
-
-        // } else {
-
-            // throw new \Exception('Cannot delete Link.');
-
-        // }
-
     }
 }

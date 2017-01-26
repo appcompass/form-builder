@@ -131,6 +131,28 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             $builder->boolean('New Tab', 'new_tab');
             $builder->boolean('Clickable', 'clickable');
             $builder->wysiwyg('Content', 'content');
-        })->setOwner((new \P3in\Models\Link()));
+        });
+
+        DB::statement("DELETE FROM forms WHERE name = 'edit-menu-item'");
+
+        FormBuilder::new('edit-menu-item', function(FormBuilder $builder) {
+            $builder->string('Label', 'title');
+            $builder->string('Alt', 'alt');
+            $builder->string('Icon', 'icon');
+            $builder->boolean('New Tab', 'new_tab');
+            $builder->boolean('Clickable', 'clickable');
+        });
+
+        DB::statement("DELETE FROM forms WHERE name = 'edit-link'");
+
+        FormBuilder::new('edit-link', function(FormBuilder $builder) {
+            $builder->string('Label', 'title');
+            $builder->string('Url', 'url');
+            $builder->string('Alt', 'alt');
+            $builder->string('Icon', 'icon');
+            $builder->boolean('New Tab', 'new_tab');
+            $builder->boolean('Clickable', 'clickable');
+            $builder->wysiwyg('Content', 'content');
+        });
     }
 }

@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Model;
 use P3in\Models\Menu;
 use P3in\Models\Page;
+use P3in\Models\Link;
 
 class MenuItem extends Model
 {
@@ -18,6 +19,12 @@ class MenuItem extends Model
 
     protected $hidden = [
         'navigatable'
+    ];
+
+    public $appends = [
+        'content', // get content through the Link if available
+        'url',  // make sure we fetch the url from the linked element
+        'type' // [Page|Link] for now, but the type in general
     ];
 
     /**
@@ -75,7 +82,37 @@ class MenuItem extends Model
         }
 
         return $this->navigatable->url;
-        // return isset($this->navigatable_id) ? $this->navigatable->url : $this->attributes['url'];
+    }
+
+    /**
+     * Gets the content attribute.
+     *
+     * @return     <type>  The content attribute.
+     */
+    public function getContentAttribute()
+    {
+        if (get_class($this->navigatable) === Link::class) {
+
+            return $this->navigatable->content;
+
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets the type attribute.
+     */
+    public function getTypeAttribute()
+    {
+        switch ($this->navigatable_type) {
+            case 'P3in\Models\Link':
+                return 'Link';
+                break;
+            case 'P3in\Models\Page':
+                return 'Page';
+                break;
+        }
     }
 
     /**
