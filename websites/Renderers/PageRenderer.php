@@ -24,11 +24,11 @@ class PageRenderer
     {
         $this->website = $website;
 
-        if (!isset($this->website->config->template_base_path)) {
-            throw new Exception('Must specify a base path for website templates.');
-        }
+        // if (!isset($this->website->config->template_base_path)) {
+        //     throw new Exception('Must specify a base path for website templates.');
+        // }
 
-        $this->template_base_path = $this->website->config->template_base_path;
+        // $this->template_base_path = $this->website->config->template_base_path;
         $this->pages = $website->pages();
 
         return $this;
@@ -51,7 +51,7 @@ class PageRenderer
 
         $forCompiler = $this->forCompiler($pageData['page']['containers']);
 
-        // this is where we compile the Vue component using an abstracted recursive(?) version of Fieldtype::renderComponents()
+        // this is where we compile the Vue section using an abstracted recursive(?) version of Fieldtype::renderComponents()
         $compiled = json_encode($forCompiler); // bogus obviously just so we get some return data to view structure.
 
         return $compiled;
@@ -65,11 +65,10 @@ class PageRenderer
             $rtn[] = [
                 'content' => $row['content'],
                 'order' => $row['order'],
-                'columns' => $row['columns'],
-                'name' => $row['component']['name'],
-                'template' => $this->template_base_path.'/'.$row['component']['template'],
-                'type' => $row['component']['type'],
-                'config' => $row['component']['config'],
+                'name' => $row['section']['name'],
+                'template' => $row['section']['template'],
+                'type' => $row['section']['type'],
+                'config' => $row['section']['config'],
                 'children' => $this->forCompiler($row['children'])
             ];
         }
@@ -126,24 +125,24 @@ class PageRenderer
         $this->cleanPageComponents($this->page->containers);
     }
 
-    private function cleanPageComponents(&$components)
+    private function cleanPageComponents(&$sections)
     {
-        $components->each(function ($component) {
-            $component
+        $sections->each(function ($section) {
+            $section
                 ->makeHidden('id')
                 ->makeHidden('page_id')
                 ->makeHidden('parent_id')
-                ->makeHidden('component_id')
+                ->makeHidden('section_id')
                 ->makeHidden('created_at')
             ;
 
             // how much do we need and how much can we hide from front-end requests?
-            $component->component
+            $section->section
                 ->makeHidden('id')
                 ->makeHidden('created_at')
             ;
 
-            $this->cleanPageComponents($component->children);
+            $this->cleanPageComponents($section->children);
         });
     }
 }
