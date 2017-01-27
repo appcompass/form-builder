@@ -5,7 +5,7 @@
     Sortable.empty(v-if="!data.menu.length", :list="data.menu",  :options="{handle: '.handle', animation: 150, group: 'items'}") Empty
 
     p.control
-    a.button.is-small(@click="createLink('create-link')")
+    a.button.is-small.is-success(@click="createLink('create-link')")
       span.icon.is-small
         i.fa.fa-link
       span New Link
@@ -37,6 +37,7 @@
 import Sortable from '../VueSortable'
 import MenuElement from './MenuElement'
 import Modal from '../Modal'
+import swal from 'sweetalert'
 
 export default {
   components: { Sortable, MenuElement },
@@ -45,7 +46,7 @@ export default {
   data () {
     return {
       modal: Modal,
-      link: {url: null, title: null, icon: null, new_tab: false, clickable: true, alt: null, content: null}
+      link: {new_tab: false, clickable: false}
     }
   },
   created () {},
@@ -75,12 +76,20 @@ export default {
     },
     deleteLink (link) {
       // deletes a Link
-      this.$http.delete(process.env.API_SERVER + 'menus/' + link.id)
-        .then(response => {
-          this.data.repo.links.splice(this.data.repo.links.indexOf(link), 1)
-        }, response => {
-          console.log(response)
-        })
+      swal({
+        title: 'Are you sure?',
+        text: 'This will eliminate every instance of this link from the website',
+        type: 'warning',
+        showCancelButton: true,
+        closeOnConfirm: false
+      }, () => {
+        this.$http.delete(process.env.API_SERVER + 'menus/' + link.id)
+          .then(response => {
+            this.data.repo.links.splice(this.data.repo.links.indexOf(link), 1)
+          }, response => {
+            console.log(response)
+          })
+      })
     }
   }
 }
