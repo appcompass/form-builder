@@ -255,7 +255,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                         'pug' => '^2.0.0-beta9',
                         'sass-loader' => '^4.1.1',
                         'slick-carousel' => '^1.6.0',
-                        'webpack' => '^1.14.0'
+                        'webpack' => '^2.2.0'
                     ],
                     'scripts' => [
                         'dev' => 'nuxt',

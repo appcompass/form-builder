@@ -93,4 +93,11 @@ class PublishFiles
 
         }
     }
+
+    public function getPath($mount)
+    {
+        $this->verifyMount($mount);
+
+        return $this->mounts[$mount]->getAdapter()->getPathPrefix();
+    }
 }
