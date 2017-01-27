@@ -21,6 +21,20 @@ class ValidateWebsite
     public function handle(Request $request, Closure $next)
     {
         $host = $request->header('host');
+
+        $origin = $request->header('origin');
+
+        list($scheme, $host) = explode('://', $origin);
+
+        $website = Website::where('host', $host)->first();
+
+        if ($website) {
+
+            $request->website = $website;
+
+            return $next($request);
+
+        }
         // temporary ofcourse so we can work locally with properly seeded data.
         $host = 'www.plus3interactive.com';
         try {

@@ -37,16 +37,17 @@ class MenusController extends AbstractController
         return ['link' => $link, 'menuitem' => $menuitem];
     }
 
-    // have a method that returns the instance you wanna create with the form attached
-    // so in this case like afterRoute does
-    // @TODO this might be good use case for website getForms
-    public function getForm(Request $request)
+    /**
+     * Fetch the requested form
+     *
+     * @param      \Illuminate\Http\Request  $request  The request
+     * @param      <type>                    $form     The form
+     *
+     * @return     <type>                    The form.
+     */
+    public function getForm(Request $request, $form)
     {
-        // @TODO validate menu request $request->website
-        // @TODO link menus to website via pivot?
-        $ret = Form::whereName($request->form)->firstOrFail();
-
-        return $ret->fields;
+        return \P3in\Models\FormButler::get($request, $form);
     }
 
     /**
@@ -56,17 +57,8 @@ class MenusController extends AbstractController
      */
     public function storeForm(Request $request, $form_name)
     {
-        $content = $request->all();
 
-        switch ($content['type']) {
-            case 'Link':
-                // dd(MenuItem::findOrFail($content['id'])->navigatable);
-                MenuItem::findOrFail($content['id'])->navigatable->update($content);
-                break;
-            case 'Page':
-                MenuItem::findOrFail($content['id'])->update($content);
-                break;
-        }
+        return \P3in\Models\FormButler::get($form_name, $request->all());
 
     }
 
@@ -78,8 +70,10 @@ class MenusController extends AbstractController
     {
         $link = Link::findOrFail($id);
 
+        // @TODO move this in Link? who does housekeeping
         $menu_items = MenuItem::whereNavigatableId($link->id)->whereNavigatableType(get_class($link))->get()->pluck('id');
 
+        // @TODO extend this method (meh) or add a 'deleting' listener (yay)
         $link->delete();
 
         MenuItem::whereIn('id', $menu_items)->delete();

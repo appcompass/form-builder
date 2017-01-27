@@ -65,6 +65,16 @@ class Website extends Model
         return $this->hasMany(Redirect::class);
     }
 
+    /**
+     * { function_description }
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
+    public function forms()
+    {
+        return $this->belongsToMany(Form::class);
+    }
+
     public function logo()
     {
         return $this->morphOne(Photo::class, 'photoable');

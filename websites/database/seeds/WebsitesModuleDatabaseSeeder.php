@@ -86,21 +86,27 @@ class WebsitesModuleDatabaseSeeder extends Seeder
 
         DB::statement("DELETE FROM forms WHERE name = 'websites'");
 
-        FormBuilder::new('websites', function (FormBuilder $builder) {
+        $websites_form = FormBuilder::new('websites', function (FormBuilder $builder) {
             $builder->string('Website Name', 'name')->list()->required()->sortable()->searchable();
             $builder->string('Url', 'url')->list()->required()->sortable()->searchable();
             // $builder->json('Auth Key', 'config.key')->list()->required()->sortable()->searchable();
-        })->linkToResources(['websites.index', 'websites.show', 'websites.create']);
+        })->linkToResources(['websites.index', 'websites.show', 'websites.create'])
+        ->getForm();
+
+        WebsiteBuilder::edit(1)->linkForm($websites_form);
 
         DB::statement("DELETE FROM forms WHERE name = 'pages'");
 
-        FormBuilder::new('pages', function (FormBuilder $builder) {
+        $pages_form = FormBuilder::new('pages', function (FormBuilder $builder) {
             $builder->string('Page Title', 'title')->list()->required()->sortable()->searchable();
             // $builder->string('Page Title', 'title')->list(false)->required()->sortable()->searchable();
             $builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();
             $builder->string('Slug', 'slug')->list(false)->required()->sortable()->searchable();
             // $builder->string('Layout', 'layout')->list(false)->required()->sortable()->searchable(); // page contains a list of stacked layouts (ordered)
-        })->linkToResources(['pages.show', 'websites.pages.index', 'websites.pages.create', 'websites.pages.show']);
+        })->linkToResources(['pages.show', 'websites.pages.index', 'websites.pages.create', 'websites.pages.show'])
+        ->getForm();
+
+        WebsiteBuilder::edit(1)->linkForm($pages_form);
 
         DB::statement("DELETE FROM forms WHERE name = 'menus'");
 
