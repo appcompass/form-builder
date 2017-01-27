@@ -3,28 +3,26 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    titleTemplate: '%s - Plus 3 Interactive',
+    titleTemplate: '%s - Site Name',
     script: [
       // { src: 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js' }
     ],
     link: [
-      { rel: 'stylesheet', href: 'https://fast.fonts.net/cssapi/e1ef451d-c61f-4ad3-b4e0-e3d8adb46d89.css' }
+      // { rel: 'stylesheet', href: 'https://external.font.css' }
+      // { rel: 'icon', type: 'image/png', href: '/favicon.png' }
     ],
     meta: [
       { charset: 'utf-8' },
       { 'http-equiv': 'x-ua-compatible', content: 'ie=edge' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', content: "Plus 3 Interactive, LLC" }
-    ],
-    link: [
-      { rel: 'icon', type: 'image/png', href: '/favicon.png' }
     ]
   },
   /*
   ** Global CSS
   */
   css: [
-    { src: '~assets/sass/main.scss', lang: 'sass' }
+    // { src: '~assets/sass/main.scss', lang: 'sass' }
     // '~assets/css/main.css'
   ],
   build: {
@@ -34,16 +32,11 @@ module.exports = {
       app: 'app.js'
     },
     vendor: [
-      'jquery',
-      'jquery-match-height',
-      'magnific-popup',
-      'slick-carousel',
-      'imports-loader'
+      // 'jquery'
     ]
   },
   plugins: [
-    '~plugins/ga.js',
-    '~plugins/main.js'
+    '~plugins/ga.js'
   ],
   /*
   ** Customize the progress-bar color
