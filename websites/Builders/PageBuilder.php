@@ -2,18 +2,17 @@
 
 namespace P3in\Builders;
 
-use P3in\Traits\PublishesComponentsTrait;
-use P3in\Models\PageSectionContent;
-use P3in\Builders\PageLayoutBuilder;
-use P3in\Models\Section;
-use P3in\Models\Page;
-use Exception;
 use Closure;
+use Exception;
+use Illuminate\Support\Facades\App;
+use P3in\Builders\PageLayoutBuilder;
+use P3in\Models\Page;
+use P3in\Models\PageSectionContent;
+use P3in\Models\Section;
+use P3in\PublishFiles;
 
 class PageBuilder
 {
-    use PublishesComponentsTrait;
-
     /**
      * Page instance
      */
@@ -23,16 +22,20 @@ class PageBuilder
     private $template = [];
     private $imports = [];
     private $exports = [];
+    private $manager;
 
     public function __construct(Page $page = null)
     {
         if (!is_null($page)) {
             $this->page = $page;
-            $this->website = $page->website;
-        }
+            // set the destination path for all website pages.
+            $siteDir = strtolower(str_slug($page->website->host));
+            $fullPath = realpath(App::make('path.websites')).'/'.$siteDir.'/pages';
 
-        return $this;
+            $this->manager = new PublishFiles('dest', $fullPath);
+        }
     }
+
 
     /**
      * new
@@ -209,89 +212,82 @@ class PageBuilder
         }
         return $elm;
     }
-
+    private function getElementData($depth, $name)
+    {
+        return [
+            'depth' => $depth,
+            'value' => $name,
+        ];
+    }
     /**
      * Builds a page template tree.
      *
      * @param      <type>   $parts  The parts
      * @param      integer  $depth  The depth
      */
-    private function buildPageTemplateTree($parts, int $tabs = 1)
+    private function buildPageTemplateTree($parts, int $pos = 1)
     {
-        $s = str_pad('', $tabs*2);
+        $depth = $pos*2;
 
         foreach ($parts as $part) {
-            $name = $part->section->template;
-
             if ($part->children->count() > 0) {
-                $elm = $this->compileElement($part->config);
-                $this->template[] = $s.$elm;
+                // build the element name for this container.
+                $name = $this->compileElement($part->config);
 
-                $this->buildPageTemplateTree($part->children, $tabs+1);
+                $this->template[] = $this->getElementData($depth, $name);
+                // add the container's children.
+                $this->buildPageTemplateTree($part->children, $pos+1);
             } else {
-                $this->template[] = $s.$name;
+                $name = $part->section->template;
 
-                $import = "  import {$name} from '~components/{$name}'";
+                $this->template[] = $this->getElementData($depth, $name);
 
-                if (!in_array($import, $this->imports)) {
-                    $this->imports[] = $import;
-                    $this->exports['components'][] = $name;
+                if (!in_array($name, $this->imports)) {
+                    $this->imports[] = $name;
                 }
             }
         }
     }
-
-    private function buildVueSection(array $template, array $imports = null, array $exports = null)
+    /**
+     * Render website page template.
+     * @param string $layout
+     * @param array $sections
+     * @param array|array $imports
+     * @return string
+     */
+    public static function buildTemplate(string $layout, array $sections, array $imports = [])
     {
-        $contents = '<template lang="pug">'."\n";
-        $contents .= implode("\n", $template)."\n";
-        $contents .= '</template>'."\n\n";
-        $contents .= '<script>'."\n";
-        if ($imports) {
-            $contents .= implode("\n", $imports)."\n\n";
-        }
-        if ($exports) {
-            $jsonEncodeSucksSometimes = [];
-
-            foreach ($exports as $key => $val) {
-                if (is_array($val)) {
-                    $val = '{'.implode(', ', $val).'}';
-                }
-                $jsonEncodeSucksSometimes[] = "{$key}: {$val}";
-            }
-
-            $formattedExports = '{'.implode(',',$jsonEncodeSucksSometimes).'}';
-            $contents .= '  export default '.$formattedExports."\n";
-        }
-        $contents .= '</script>'."\n";
-
-        return $contents;
+        return view('websites::page', [
+            'layout' => $layout,
+            'sections' => $sections,
+            'imports' => $imports,
+        ])->render();
     }
 
     /**
      * Exports Page Template
      */
-    public function compilePageTemplate()
+    public function compilePageTemplate($layout)
     {
         $page = $this->page;
-        $manager = $this->getMountManager('pages');
         $name = $page->url == '/' ? '/index' : $page->url;
 
         // //@TODO: On delete or parent change of a page (we use the url as the unique name for a page),
-        // //we need to delete it's component file as to$siteConfigclean up junk.
+        // //we need to delete it's template file as to clean up junk.
 
         // this is prob not needed, right now some sections have two or more
         // same level sections.  that doesn't jive well with the template structure.
         // We might want to break the templates up into smaller pieces, but for now
         // we just have a container div as the parent on all pages.
-        $this->template[] = 'div';
-        $this->exports['layout'] = "'public'";
+        $this->template[] = $this->getElementData(0, 'div');
 
         if ($page->children->count()) {
-            $parent_template = $this->buildVueSection(['<nuxt-child/>'], null, $this->exports);
-            $manager->put('dest://' . $name.'.vue', $parent_template . "\n");
+            $sections = [$this->getElementData(2, '<nuxt-child/>')];
+
+            $parent_template = static::buildTemplate($layout, $sections);
+
+            $this->manager->publishFile('dest', $name.'.vue', $parent_template, true);
             $name = $name.'/index';
-            unset($this->exports['layout']);
         }
 
         $this->buildPageTemplateTree($page->containers);
@@ -299,8 +295,8 @@ class PageBuilder
         // dd(json_encode($this->exports));
         // handling child page structures.
 
-        $contents = $this->buildVueSection($this->template, $this->imports, $this->exports);
+        $contents = static::buildTemplate($layout, $this->template, $this->imports);
 
-        $manager->put('dest://' . $name.'.vue', $contents . "\n");
+        $this->manager->publishFile('dest', $name.'.vue', $contents, true);
     }
 }

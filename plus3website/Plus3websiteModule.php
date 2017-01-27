@@ -8,9 +8,9 @@ class Plus3websiteModule extends BaseModule
 {
     public $module_name = 'plus3website';
 
-    protected $publishesComponents = [
-        'Public/js/components/Site/' => 'WwwPlus3interactiveCom/components',
-    ];
+    // protected $publishesComponents = [
+    //     'Public/js/components/Site/' => 'WwwPlus3interactiveCom/components',
+    // ];
 
     public function __construct()
     {

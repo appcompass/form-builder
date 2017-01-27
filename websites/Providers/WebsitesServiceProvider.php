@@ -32,6 +32,7 @@ use P3in\Repositories\WebsiteRedirectsRepository;
 use P3in\Repositories\WebsiteSettingsRepository;
 use P3in\Repositories\WebsitesRepository;
 use Roumen\Sitemap\SitemapServiceProvider;
+use Roumen\Feed\FeedServiceProvider;
 
 class WebsitesServiceProvider extends ServiceProvider
 {
@@ -43,7 +44,10 @@ class WebsitesServiceProvider extends ServiceProvider
     {
         $this->app['router']->middleware('validateWebsite', ValidateWebsite::class);
 
+        $this->app['view']->addNamespace('websites', realpath(__DIR__.'/../Templates'));
+
         $this->app->register(SitemapServiceProvider::class);
+        $this->app->register(FeedServiceProvider::class);
 
         // we shoudl prob make this a method that runs through $this->bindings
         foreach ([
