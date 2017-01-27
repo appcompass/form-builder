@@ -25,7 +25,7 @@ class Kernel extends HttpKernel
     protected $middlewareGroups = [
         'auth' => [
             \Illuminate\Auth\Middleware\Authenticate::class,
-            // 'jwt.refresh',
+            'jwt.refresh',
         ],
         'web' => [
             \App\Http\Middleware\EncryptCookies::class,
