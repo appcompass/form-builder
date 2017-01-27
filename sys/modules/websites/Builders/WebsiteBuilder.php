@@ -3,6 +3,7 @@
 namespace P3in\Builders;
 
 use Closure;
+use Exception;
 use Illuminate\Support\Facades\App;
 use P3in\Builders\MenuBuilder;
 use P3in\Builders\PageBuilder;
@@ -12,7 +13,7 @@ use P3in\Models\PageContent;
 use P3in\Models\Section;
 use P3in\Models\Website;
 use P3in\PublishFiles;
-use Exception;
+use Symfony\Component\Process\Process;
 
 class WebsiteBuilder
 {
@@ -253,6 +254,22 @@ class WebsiteBuilder
                 $manager->publishFile('dest', '/layouts/'.$layout.'.vue', $content, true);
             }
         }
+
+        $destPath = $manager->getPath('dest');
+        //sucks!... this is basically only working with local storage.
+        //this needs to be abstracted so that we can account for remote disk
+        //instances, AWS, or what ever other cloud instances that can be used
+        //(lots of them out there)
+        $process = new Process('npm install && npm run build', $destPath, null, null, null); //that last null param disables timeout.
+        $process->run(function ($type, $buffer) {
+            echo $buffer;
+            // if (Process::ERR === $type) {
+            //     echo $buffer;
+            // } else {
+            //     echo $buffer;
+            // }
+        });
+
         // Page builder has something we need.
         // PageBuilder::buildTemplate($layout, $sections, $imports);
 
