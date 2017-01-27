@@ -118,6 +118,16 @@ class WebsiteBuilder
     }
 
     /**
+     * Links a form.
+     *
+     * @param      Form  $form   The form
+     */
+    public function linkForm(\P3in\Models\Form $form)
+    {
+        $this->website->forms()->attach($form);
+    }
+
+    /**
      * Sets the header.
      *
      * @param      <type>  $template  The template

@@ -94,6 +94,8 @@ class FormBuilder
                 'form_id' => $this->form->id
             ]);
         }
+
+        return $this;
     }
 
     /**

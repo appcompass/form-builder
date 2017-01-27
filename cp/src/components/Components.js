@@ -3,8 +3,8 @@ import TextType from './FormBuilder/Text'
 import SecretType from './FormBuilder/Secret'
 import MenuEditorType from './FormBuilder/MenuEditor'
 import BooleanType from './FormBuilder/Boolean'
-import FieldsetType from './FormBuilder/Fieldset'
 import WysiwygType from './FormBuilder/Wysiwyg'
+import FieldsetType from './FormBuilder/Fieldset'
 import FileType from './FormBuilder/File'
 import LinkType from './FormBuilder/Link'
 import FormBuilderType from './FormBuilder/FormBuilder'
@@ -15,8 +15,8 @@ export var Text = TextType
 export var Secret = SecretType
 export var MenuEditor = MenuEditorType
 export var Boolean = BooleanType
-export var Fieldset = FieldsetType
 export var Wysiwyg = WysiwygType
+export var Fieldset = FieldsetType
 export var File = FileType
 export var Link = LinkType
 export var FormBuilder = FormBuilderType
