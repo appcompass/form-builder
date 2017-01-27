@@ -1,11 +1,11 @@
 @import 'settings';
 @import 'mixins';
-@import 'vendor/normalize';
+@import 'packages/normalize';
 @import 'global';
 @import 'helpers';
 @import 'icons';
-@import 'vendor/slick/main';
-@import 'vendor/magnific/custom';
+@import 'packages/slick/main';
+@import 'packages/magnific/custom';
 @import 'grids';
 @import 'forms';
 @import 'hamburger';

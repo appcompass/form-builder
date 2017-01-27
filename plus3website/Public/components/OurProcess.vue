@@ -228,71 +228,71 @@
 
           // viewWatcher();
 
-          // // Arrow handling.
-          // var arrows = home_process.select('#arrows');
-          // var arrows_bbox = arrows.getBBox();
+          // Arrow handling.
+          var arrows = home_process.select('#arrows');
+          var arrows_bbox = arrows.getBBox();
 
-          // function moveTo(i){
-          //     stopLoops();
+          function moveTo(i){
+              stopLoops();
 
-          //     if (i >= svg_config.length) {
-          //         pos = 0;
-          //     }else if(i < 0) {
-          //         pos = svg_config.length-1;
-          //     }else{
-          //         pos = i;
-          //     }
+              if (i >= svg_config.length) {
+                  pos = 0;
+              }else if(i < 0) {
+                  pos = svg_config.length-1;
+              }else{
+                  pos = i;
+              }
 
-          //     var row = svg_config[pos];
-          //     var old_row = svg_config[old_pos];
+              var row = svg_config[pos];
+              var old_row = svg_config[old_pos];
 
-          //     console.log(old_row, row);
-          //     rings.stop();
-          //     home_process.select(old_row.step_id)
-          //     .stop()
+              console.log(old_row, row);
+              rings.stop();
+              home_process.select(old_row.step_id)
+              .stop()
 
-          //     .transform('t'+[0, 0])
-          //     .animate({
-          //         opacity: 0,
-          //         transform: 't'+[0, 400]
-          //     }, 500, anim_step);
+              .transform('t'+[0, 0])
+              .animate({
+                  opacity: 0,
+                  transform: 't'+[0, 400]
+              }, 500, anim_step);
 
-          //     rotateRings(row.end, 500);
-          //     // step(old_row.step_id, 0, 0, 400, 500, anim_step);
-          //     step(row.step_id, -400, 1, 0, 500, anim_step);
-          //     animate();
-          // }
-          // // Arrows
-          // var up_arrow_group = home_process.select('#up_arrow_group');
-          // var up_arrow_container = home_process.select('#up_arrow_container');
-          // var up_arrow = home_process.select('#up_arrow');
-          // var down_arrow_group = home_process.select('#down_arrow_group');
-          // var down_arrow_container = home_process.select('#down_arrow_container');
-          // var down_arrow = home_process.select('#down_arrow');
+              rotateRings(row.end, 500);
+              // step(old_row.step_id, 0, 0, 400, 500, anim_step);
+              step(row.step_id, -400, 1, 0, 500, anim_step);
+              animate();
+          }
+          // Arrows
+          var up_arrow_group = home_process.select('#up_arrow_group');
+          var up_arrow_container = home_process.select('#up_arrow_container');
+          var up_arrow = home_process.select('#up_arrow');
+          var down_arrow_group = home_process.select('#down_arrow_group');
+          var down_arrow_container = home_process.select('#down_arrow_container');
+          var down_arrow = home_process.select('#down_arrow');
 
-          // up_arrow_group.mouseover(function(e){
-          //     up_arrow_container.addClass('active-arrow-container').removeClass('inactive-arrow-container');
-          //     up_arrow.addClass('active-arrow').removeClass('inactive-arrow');
-          // }).mouseout(function(e){
-          //     up_arrow_container.addClass('inactive-arrow-container').removeClass('active-arrow-container');
-          //     up_arrow.addClass('inactive-arrow').removeClass('active-arrow');
-          // });
+          up_arrow_group.mouseover(function(e){
+              up_arrow_container.addClass('active-arrow-container').removeClass('inactive-arrow-container');
+              up_arrow.addClass('active-arrow').removeClass('inactive-arrow');
+          }).mouseout(function(e){
+              up_arrow_container.addClass('inactive-arrow-container').removeClass('active-arrow-container');
+              up_arrow.addClass('inactive-arrow').removeClass('active-arrow');
+          });
 
-          // down_arrow_group.mouseover(function(e){
-          //     down_arrow_container.addClass('active-arrow-container').removeClass('inactive-arrow-container');
-          //     down_arrow.addClass('active-arrow').removeClass('inactive-arrow');
-          // }).mouseout(function(e){
-          //     down_arrow_container.addClass('inactive-arrow-container').removeClass('active-arrow-container');
-          //     down_arrow.addClass('inactive-arrow').removeClass('active-arrow');
-          // });
+          down_arrow_group.mouseover(function(e){
+              down_arrow_container.addClass('active-arrow-container').removeClass('inactive-arrow-container');
+              down_arrow.addClass('active-arrow').removeClass('inactive-arrow');
+          }).mouseout(function(e){
+              down_arrow_container.addClass('inactive-arrow-container').removeClass('active-arrow-container');
+              down_arrow.addClass('inactive-arrow').removeClass('active-arrow');
+          });
 
-          // up_arrow_group.click(function(e){
-          //     moveTo(pos+1);
-          // });
+          up_arrow_group.click(function(e){
+              moveTo(pos+1);
+          });
 
-          // down_arrow_group.click(function(e){
-          //     moveTo(pos-1);
-          // });
+          down_arrow_group.click(function(e){
+              moveTo(pos-1);
+          });
         }
       });
     }

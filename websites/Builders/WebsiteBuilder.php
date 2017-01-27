@@ -224,7 +224,7 @@ class WebsiteBuilder
         if (!empty($depConfig->publish_from)) {
             $manager
                 ->setMount('static', $depConfig->publish_from)
-                ->publishFolder('static', 'dest');
+                ->publishFolder('static', 'dest', true);
         }
 
         // lets publish the structure in case it doesn't exist.  Never overwrite!
