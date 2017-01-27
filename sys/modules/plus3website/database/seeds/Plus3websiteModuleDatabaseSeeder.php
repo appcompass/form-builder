@@ -3,12 +3,12 @@
 namespace P3in\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use P3in\Builders\FormBuilder;
 use P3in\Builders\WebsiteBuilder;
-use P3in\Models\Section;
-// use P3in\Models\Fieldtype;
 use P3in\Models\Plus3Person;
+use P3in\Models\Section;
 use P3in\Models\User;
 use P3in\Models\Website;
 use P3in\Renderers\PageRenderer;
@@ -153,6 +153,9 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
         DB::table('websites')->where('host', 'www.plus3interactive.com')->delete();
         DB::table('forms')->whereIn('name', [
+            'SiteHeader',
+            'SiteFooter',
+            'ProposalModal',
             'SliderBanner',
             'SectionHeading',
             'BoxCallouts',
@@ -174,9 +177,12 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             'CustomerLogin',
         ])->delete();
 
-        $website = WebsiteBuilder::new('Plus 3 Interactive, LLC', 'https', 'www.plus3interactive.com', function ($websiteBuilder) {
-            $websiteBuilder
-                // ->setTemplateBasePath(realpath(__DIR__.'/../../Public/js/components/Site'))
+        $website = WebsiteBuilder::new('Plus 3 Interactive, LLC', 'https', 'www.plus3interactive.com', function ($wsb) {
+            $site = $wsb->getWebsite();
+            $deployTo = realpath(App::make('path.websites')).'/'.strtolower(str_slug($site->host));
+            $publishFrom = realpath(__DIR__.'/../../Public');
+
+            $wsb
                 ->setHeader('SiteHeader')
                 ->setFooter('SiteFooter')
                 ->setMetaData([
@@ -187,8 +193,145 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                     'custom_before_body_end_html' => '',
                     'custom_footer_html' => '',
                     'robots_txt' => '',
+                ])
+                ->setDeploymentDisk('local')
+                ->setDeploymentPath($deployTo)
+                ->SetPublishFrom($publishFrom)
+                // we need to build a Website Layout builder to replace this junk...
+                // as in, this is the exact structure the web page outputs to the
+                // view to build the template it sooo yea...
+                ->setLayout('public', [
+                    [
+                        'depth' => 0,
+                        'value' => '<!--[if lt IE 8]>',
+                    ],[
+                        'depth' => 2,
+                        'value' => 'p.browserupgrade You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.',
+                    ],[
+                        'depth' => 0,
+                        'value' => '<![endif]-->',
+                    ],[
+                        'depth' => 0,
+                        'value' => 'div',
+                    ],[
+                        'depth' => 2,
+                        'value' => 'div.wrapper',
+                    ],[
+                        'depth' => 4,
+                        'value' => 'SiteHeader',
+                    ],[
+                        'depth' => 4,
+                        'value' => 'main.main',
+                    ],[
+                        'depth' => 6,
+                        'value' => '<nuxt/>',
+                    ],[
+                        'depth' => 4,
+                        'value' => 'SiteFooter',
+                    ],[
+                        'depth' => 2,
+                        'value' => 'ProposalModal',
+                    ]
+                ],[
+                    'SiteHeader',
+                    'SiteFooter',
+                    'ProposalModal'
+                ])
+                ->setDeploymentNpmPackages([
+                    'name' => 'Plus3Website',
+                    'version' => '3.0.0',
+                    'description' => 'P3CMS',
+                    'author' => 'Jubair Saidi <jubair.saidi@p3in.com>',
+                    'private' => true,
+                    'dependencies' => [
+                        'imports-loader' => '^0.7.0',
+                        'jquery' => '^3.1.1',
+                        'jquery-match-height' => '^0.7.0',
+                        'jsdom' => '^9.9.1',
+                        'magnific-popup' => '^1.1.0',
+                        'modernizr' => '^3.3.1',
+                        'node-sass' => '^4.3.0',
+                        'nuxt' => 'latest',
+                        'pug' => '^2.0.0-beta9',
+                        'sass-loader' => '^4.1.1',
+                        'slick-carousel' => '^1.6.0',
+                        'webpack' => '^1.14.0'
+                    ],
+                    'scripts' => [
+                        'dev' => 'nuxt',
+                        'build' => 'nuxt build',
+                        'start' => 'nuxt start',
+                        'generate' => 'nuxt generate'
+                    ]
+                ])
+                // we should prob break this down into pieces.
+                ->setDeploymentNuxtConfig([
+                    "head" => [
+                        "titleTemplate" => '%s - Plus 3 Interactive',
+                        "script" => [],
+                        "link" => [
+                            [
+                                "rel" => 'stylesheet',
+                                "href" => 'https://fast.fonts.net/cssapi/e1ef451d-c61f-4ad3-b4e0-e3d8adb46d89.css'
+                            ]
+                        ],
+                        "meta" => [
+                            ["charset" => 'utf-8'],
+                            ["http-equiv" => 'x-ua-compatible', "content" => 'ie=edge'],
+                            ["name" => 'viewport', "content" => 'width=device-width, initial-scale=1'],
+                            ["hid" => 'description', "content" => 'Plus 3 Interactive, LLC']
+                        ],
+                        "link" => [
+                            ["rel" => 'icon', "type" => 'image/png', "href" => '/favicon.png']
+                        ]
+                    ],
+                    "css" => [
+                        ["src" => '~assets/sass/main.scss', "lang" => 'sass']
+                    ],
+                    "build" => [
+                        "filenames" => [
+                            "css" => 'app.css',
+                            "vendor" => 'vendor.js',
+                            "app" => 'app.js'
+                        ],
+                        "vendor" => [
+                            'jquery',
+                            'jquery-match-height',
+                            'magnific-popup',
+                            'slick-carousel',
+                            'imports-loader'
+                        ]
+                    ],
+                    "plugins" => [
+                        '~plugins/ga.js',
+                        '~plugins/main.js'
+                    ],
+                    "loading" => [
+                        "height" => '3px',
+                        "color" => '#0ab7f9'
+                    ]
                 ]);
             // Build the components.
+
+            // @TODO: the header and footer are components not sections, but am putting this here
+            // for now as I'm playing with the idea of the website building a layout
+            // similar to how a page builds one.  Nuxt supports this workflow so why not
+            // explore it and see if it makes sense for us, so this is a reminder.
+            Section::create([
+                'name' => 'Site Header',
+                'template' => 'SiteHeader',
+                'type' => 'header'
+            ]);
+            Section::create([
+                'name' => 'Site Footer',
+                'template' => 'SiteFooter',
+                'type' => 'footer'
+            ]);
+            Section::create([
+                'name' => 'Proposal Modal',
+                'template' => 'ProposalModal',
+                'type' => 'section'
+            ]);
 
             // This one should prob be build with websites module load.
             Section::create([
@@ -491,7 +634,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             // section->addContent
 
             // Build Pages
-            $homepage = $websiteBuilder
+            $homepage = $wsb
                 ->addPage('Home Page', '')
                 ->setAuthor('Aisha Saidi')
                 ->setDescription('This is where we would put the Plus 3 Interactive description')
@@ -537,7 +680,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->addSection($social_stream, 3)
                 ->addSection($customer_testimonials, 4);
 
-            $solutions = $websiteBuilder
+            $solutions = $wsb
                 ->addPage('Solutions', 'solutions')
                 ->setAuthor('Aisha Saidi')
                 ->setDescription('This is where we would put the Plus 3 Interactive description')
@@ -579,7 +722,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             $process_container
                 ->addSection($process_maintenance_details, 3);
 
-            $projects = $websiteBuilder
+            $projects = $wsb
                 ->addPage('Projects', 'projects')
                 ->setAuthor('Aisha Saidi')
                 ->setDescription('This is where we would put the Plus 3 Interactive description')
@@ -613,7 +756,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->addSection($white_break_w_section_links, 4)
                 ->addSection($blue_break_callout, 5);
 
-            $company = $websiteBuilder
+            $company = $wsb
                 ->addPage('Company', 'company')
                 ->setAuthor('Aisha Saidi')
                 ->setDescription('This is where we would put the Plus 3 Interactive description')
@@ -626,7 +769,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->addSection($meet_our_team, 2)
                 ->addSection($social_stream, 3);
 
-            $contact = $websiteBuilder
+            $contact = $wsb
                 ->addPage('Contact Us', 'contact')
                 ->setAuthor('Aisha Saidi')
                 ->setDescription('This is where we would put the Plus 3 Interactive description')
@@ -639,7 +782,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->addSection($contact_form, 2)
                 ->addSection($map_address, 3);
 
-            $login = $websiteBuilder
+            $login = $wsb
                 ->addPage('Customer Login', 'customer-login')
                 ->setAuthor('Aisha Saidi')
                 ->setDescription('This is where we would put the Plus 3 Interactive description')
@@ -654,16 +797,16 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             // lets compile all the page templates
             // Note that we always want to do this last to account for any pages
             // that have children as they get generated a bit differently than normal pages.
-            $homepage->compilePageTemplate();
-            $solutions->compilePageTemplate();
-            $process->compilePageTemplate();
-            $projects->compilePageTemplate();
-            $company->compilePageTemplate();
-            $contact->compilePageTemplate();
-            $login->compilePageTemplate();
+            $homepage->compilePageTemplate('public');
+            $solutions->compilePageTemplate('public');
+            $process->compilePageTemplate('public');
+            $projects->compilePageTemplate('public');
+            $company->compilePageTemplate('public');
+            $contact->compilePageTemplate('public');
+            $login->compilePageTemplate('public');
 
             // Create the nav menus and add the items.
-            $main_header_menu = $websiteBuilder->addMenu('main_header_menu');
+            $main_header_menu = $wsb->addMenu('main_header_menu');
 
             $solutions_item = $main_header_menu->addItem($solutions, 1);
             $solutions_item->addItem($process, 1);
@@ -673,7 +816,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             $main_header_menu->addItem($contact, 4);
             $main_header_menu->addItem($login, 5);
 
-            $main_footer_menu = $websiteBuilder->addMenu('main_footer_menu');
+            $main_footer_menu = $wsb->addMenu('main_footer_menu');
             $main_footer_menu->addItem($solutions, 1);
             $main_footer_menu->addItem($process, 2);
             $main_footer_menu->addItem($projects, 3);
@@ -681,7 +824,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             $main_footer_menu->addItem($contact, 5);
             $main_footer_menu->addItem($login, 6);
 
-            $websiteBuilder->compilePageTemplates();
+            $wsb->deploy();
+
         })->getWebsite();
 
 

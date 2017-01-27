@@ -2,32 +2,32 @@
 
 namespace P3in\Builders;
 
-use P3in\Traits\PublishesComponentsTrait;
+use Closure;
+use Illuminate\Support\Facades\App;
 use P3in\Builders\MenuBuilder;
 use P3in\Builders\PageBuilder;
-use P3in\Models\PageContent;
-use P3in\Models\Website;
-use P3in\Models\Section;
 use P3in\Models\Layout;
 use P3in\Models\Page;
-use Closure;
+use P3in\Models\PageContent;
+use P3in\Models\Section;
+use P3in\Models\Website;
+use P3in\PublishFiles;
+use Exception;
 
 class WebsiteBuilder
 {
-    use PublishesComponentsTrait;
 
     /**
      * Page instance
      */
     private $website;
+    private $manager;
 
     public function __construct(Website $website = null)
     {
         if (!is_null($website)) {
             $this->website = $website;
         }
-
-        return $this;
     }
 
     /**
@@ -39,13 +39,17 @@ class WebsiteBuilder
      */
     public static function new($name, $scheme, $host, Closure $closure = null) : WebsiteBuilder
     {
-        $instance = new static();
-
-        $instance->website = Website::create([
+        $instance = new static(Website::create([
             'name' => $name,
             'scheme' => $scheme,
             'host' => $host,
-        ]);
+        ]));
+
+        // $instance->website = Website::create([
+        //     'name' => $name,
+        //     'scheme' => $scheme,
+        //     'host' => $host,
+        // ]);
 
         if ($closure) {
             $closure($instance);
@@ -66,7 +70,7 @@ class WebsiteBuilder
     public static function edit($website) : WebsiteBuilder
     {
         if (!$website instanceof Website && !is_int($website)) {
-            throw new \Exception('Must pass id or Website instance');
+            throw new Exception('Must pass id or Website instance');
         }
 
         if (is_int($website)) {
@@ -138,11 +142,35 @@ class WebsiteBuilder
         return $this;
     }
 
-    // public function setTemplateBasePath($path)
-    // {
-    //     $this->website->setConfig('template_base_path', $path]);
-    //     return $this;
-    // }
+    public function setDeploymentDisk($disk)
+    {
+        $this->website->setConfig('deployment->disk', $disk);
+        return $this;
+    }
+
+    public function setDeploymentPath($path)
+    {
+        $this->website->setConfig('deployment->path', $path);
+        return $this;
+    }
+
+    public function SetPublishFrom($path)
+    {
+        $this->website->setConfig('deployment->publish_from', $path);
+        return $this;
+    }
+
+    public function setDeploymentNpmPackages($data)
+    {
+        $this->website->setConfig('deployment->package_json', $data);
+        return $this;
+    }
+
+    public function setDeploymentNuxtConfig($data)
+    {
+        $this->website->setConfig('deployment->nuxt_config', $data);
+        return $this;
+    }
 
     public function setMetaData($data)
     {
@@ -150,6 +178,15 @@ class WebsiteBuilder
         return $this;
     }
 
+    public function setLayout($layout, $sections, $imports)
+    {
+        $this->website->setConfig('layouts->'.$layout, [
+            'sections' => $sections,
+            'imports' => $imports
+        ]);
+
+        return $this;
+    }
     /**
      * Gets the website.
      *
@@ -161,39 +198,69 @@ class WebsiteBuilder
     }
 
     /**
-     * Compile Components
-     *
-     * @return     <type>  ( description_of_the_return_value )
-     */
-    public function compilePageTemplates()
-    {
-        $manager = $this->getMountManager();
-
-        $compiledImporter = [];
-        $compiledExporter = [];
-
-        foreach ($this->website->pages as $page) {
-            $name = $page->template_name;
-            $filename = $name.'.vue';
-
-            $compiledImporter[] = "import {$name}Page from './{$name}'";
-            $compiledExporter[] = "export var {$name} = {$name}Page";
-        }
-
-        $content = implode("\n", array_merge($compiledImporter, $compiledExporter));
-
-        $manager->put('dest://' . 'App.js', $content . "\n");
-
-        return $this;
-    }
-
-    /**
      * { function_description }
      *
      * @param      <type>  $diskInstance  The disk instance
      */
-    public function deploy($diskInstance)
+    // breaking this up a bit would prob be a good idea.
+    public function deploy()
     {
-        // Magic Sauce DevOps logic using the set disk instance and run commands needed on server to get everything configured properly.
+        if (empty($this->website->config->deployment)) {
+            throw new Exception('The website does not have deployment settings configured');
+        }
+
+        $conf = $this->website->config;
+        $depConfig = $conf->deployment;
+        $manager = new PublishFiles('stubs', realpath(__DIR__.'/../Templates/stubs'));
+
+        // set destination path
+        if (!empty($depConfig->path)) {
+            $manager->setMount('dest', $depConfig->path);
+        }else{
+            throw new Exception('Website does not have the deployment path set');
+        }
+
+        if (!empty($depConfig->publish_from)) {
+            $manager
+                ->setMount('static', $depConfig->publish_from)
+                ->publishFolder('static', 'dest');
+        }
+
+        // lets publish the structure in case it doesn't exist.  Never overwrite!
+        // hell this one is not really necisary for us since we have a plus3website
+        // module that has the structure stored already, but that isn't a requirement
+        // and not an assumption we can make.
+        $manager->publishFolder('stubs', 'dest');
+
+        if (!empty($depConfig->package_json)) {
+            $package_json = json_encode($depConfig->package_json);
+
+            $manager->publishFile('dest', 'package.json', $package_json, true);
+        }
+
+        if (!empty($depConfig->nuxt_config)) {
+            // this method of creating the javascript file is meh imo.  No luck finding a better way yet.
+            $nuxt_conf = 'module.exports = '.preg_replace('/"([a-zA-Z_]+[a-zA-Z0-9_]*)":/','$1:', json_encode($depConfig->nuxt_config));
+
+            $manager->publishFile('dest', 'nuxt.config.js', $nuxt_conf, true);
+        }
+
+        // now lets get the website layout(s)
+        if (!empty($conf->layouts)) {
+            foreach ($conf->layouts as $layout => $data) {
+                $sections = json_decode(json_encode($data->sections), true); //not even going to talk about this one...
+                $content = PageBuilder::buildTemplate('', $sections, $data->imports);
+                $manager->publishFile('dest', '/layouts/'.$layout.'.vue', $content, true);
+            }
+        }
+        // Page builder has something we need.
+        // PageBuilder::buildTemplate($layout, $sections, $imports);
+
+        // say we need to do something else after deployment with the local/remote file systems.
+        // Yes this mean we should prob move the instantiation of the manager out of this
+        // method, but hey, I'm just getting this working for now!
+        $this->manager = $manager;
+
+        return $this;
     }
 }
