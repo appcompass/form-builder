@@ -23,7 +23,6 @@
         "chumper/zipper": "0.6.x",
         "google/recaptcha": "~1.1",
         "roumen/sitemap": "2.6.*",
-        "roumen/feed": "~2.10",
         "tymon/jwt-auth": "dev-develop",
         "laravel/passport": "^1.0"
 

@@ -734,7 +734,7 @@
             <circle class="quality_assurance_line_close" cx="68.7" cy="758.8" r="6.9"/>
         </g>
     </g>
-<!--     <g id="arrows">
+    <g id="arrows">
         <g id="up_arrow_group" class="arrow_group">
             <circle id="up_arrow_container" class="inactive-arrow-container" cx="1152.5" cy="436.5" r="41.5"/>
             <path id="up_arrow" class="inactive-arrow" d="M1165,430.9l-1.5,1.5L1153,422l-10.5,10.4l-1.5-1.5l12-11.9L1165,430.9z M1154.1,421.3V454
@@ -746,4 +746,4 @@
                 v32.7H1151.9z"/>
         </g>
     </g>
- --></svg>
+</svg>
