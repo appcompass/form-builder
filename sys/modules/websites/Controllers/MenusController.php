@@ -47,7 +47,7 @@ class MenusController extends AbstractController
      */
     public function getForm(Request $request, $form)
     {
-        return \P3in\Models\FormButler::get($request, $form);
+        return \P3in\Models\FormButler::get($form);
     }
 
     /**

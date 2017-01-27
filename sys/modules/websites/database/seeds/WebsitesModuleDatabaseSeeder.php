@@ -141,17 +141,19 @@ class WebsitesModuleDatabaseSeeder extends Seeder
 
         DB::statement("DELETE FROM forms WHERE name = 'edit-menu-item'");
 
-        FormBuilder::new('edit-menu-item', function(FormBuilder $builder) {
+        $form = FormBuilder::new('edit-menu-item', function(FormBuilder $builder) {
             $builder->string('Label', 'title');
             $builder->string('Alt', 'alt');
             $builder->string('Icon', 'icon');
             $builder->boolean('New Tab', 'new_tab');
             $builder->boolean('Clickable', 'clickable');
-        });
+        })->getForm();
+
+        WebsiteBuilder::edit(1)->linkForm($form);
 
         DB::statement("DELETE FROM forms WHERE name = 'edit-link'");
 
-        FormBuilder::new('edit-link', function(FormBuilder $builder) {
+        $form = FormBuilder::new('edit-link', function(FormBuilder $builder) {
             $builder->string('Label', 'title');
             $builder->string('Url', 'url');
             $builder->string('Alt', 'alt');
@@ -159,6 +161,8 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             $builder->boolean('New Tab', 'new_tab');
             $builder->boolean('Clickable', 'clickable');
             $builder->wysiwyg('Content', 'content');
-        });
+        })->getForm();
+
+        WebsiteBuilder::edit(1)->linkForm($form);
     }
 }
