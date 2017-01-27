@@ -27,7 +27,7 @@ div
             )
         footer
           p.control
-            .pull-right
+            .pull-left
               a.button.is-primary(
                 v-bind:class="{'is-loading': loading}",
                 v-bind:disable="loading",

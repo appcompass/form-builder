@@ -70,6 +70,7 @@ export default {
       }
       this.$http.get(process.env.API_SERVER + 'menus/forms/' + this.endpoint)
         .then((response) => {
+          // @TODO this implies we only can render forms inside modals
           this.modal.show(response.data.collection, item, (result) => {
             this.$http.post(process.env.API_SERVER + 'menus/forms/' + this.endpoint, result)
               .then((response) => {
