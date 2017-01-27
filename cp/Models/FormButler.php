@@ -8,7 +8,7 @@ use P3in\Models\Form; // in case we move this
 class FormButler
 {
 
-    public static function get(Request $request, $form_name)
+    public static function get($form_name)
     {
         return (new static)->resolveFormFromString($form_name);
     }

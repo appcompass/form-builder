@@ -5,13 +5,6 @@ namespace P3in\Providers;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use P3in\Interfaces\MenusRepositoryInterface;
-use P3in\Interfaces\PageContentsRepositoryInterface;
-use P3in\Interfaces\PageSectionsRepositoryInterface;
-use P3in\Interfaces\PagesRepositoryInterface;
-use P3in\Interfaces\WebsiteMenusRepositoryInterface;
-use P3in\Interfaces\WebsitePagesRepositoryInterface;
-use P3in\Interfaces\WebsiteRedirectsRepositoryInterface;
 use P3in\Interfaces\WebsiteSettingsRepositoryInterface;
 use P3in\Interfaces\WebsitesRepositoryInterface;
 use P3in\Middleware\ValidateWebsite;
@@ -19,18 +12,8 @@ use P3in\Models\Menu;
 use P3in\Models\Page;
 use P3in\Models\PageComponentContent;
 use P3in\Models\Redirect;
-// use P3in\Models\Section;
 use P3in\Models\Setting;
 use P3in\Models\Website;
-use P3in\Repositories\MenusRepository;
-use P3in\Repositories\PageContentsRepository;
-use P3in\Repositories\PageSectionsRepository;
-use P3in\Repositories\PagesRepository;
-use P3in\Repositories\WebsiteMenusRepository;
-use P3in\Repositories\WebsitePagesRepository;
-use P3in\Repositories\WebsiteRedirectsRepository;
-use P3in\Repositories\WebsiteSettingsRepository;
-use P3in\Repositories\WebsitesRepository;
 use Roumen\Sitemap\SitemapServiceProvider;
 use Roumen\Feed\FeedServiceProvider;
 
@@ -49,17 +32,16 @@ class WebsitesServiceProvider extends ServiceProvider
         $this->app->register(SitemapServiceProvider::class);
         $this->app->register(FeedServiceProvider::class);
 
-        // we shoudl prob make this a method that runs through $this->bindings
         foreach ([
-            WebsitesRepositoryInterface::class => WebsitesRepository::class,
-            WebsitePagesRepositoryInterface::class => WebsitePagesRepository::class,
-            WebsiteRedirectsRepositoryInterface::class => WebsiteRedirectsRepository::class,
-            WebsiteSettingsRepositoryInterface::class => WebsiteSettingsRepository::class,
-            PageContentsRepositoryInterface::class => PageContentsRepository::class,
-            PageSectionsRepositoryInterface::class => PageSectionsRepository::class,
-            PagesRepositoryInterface::class => PagesRepository::class,
-            MenusRepositoryInterface::class => MenusRepository::class,
-            WebsiteMenusRepositoryInterface::class => WebsiteMenusRepository::class,
+            'P3in\Interfaces\WebsitesRepositoryInterface' => 'P3in\Repositories\WebsitesRepository',
+            'P3in\Interfaces\WebsitePagesRepositoryInterface' => 'P3in\Repositories\WebsitePagesRepository',
+            'P3in\Interfaces\WebsiteRedirectsRepositoryInterface' => 'P3in\Repositories\WebsiteRedirectsRepository',
+            'P3in\Interfaces\WebsiteSettingsRepositoryInterface' => 'P3in\Repositories\WebsiteSettingsRepository',
+            'P3in\Interfaces\PageContentsRepositoryInterface' => 'P3in\Repositories\PageContentsRepository',
+            'P3in\Interfaces\PageSectionsRepositoryInterface' => 'P3in\Repositories\PageSectionsRepository',
+            'P3in\Interfaces\PagesRepositoryInterface' => 'P3in\Repositories\PagesRepository',
+            'P3in\Interfaces\MenusRepositoryInterface' => 'P3in\Repositories\MenusRepository',
+            'P3in\Interfaces\WebsiteMenusRepositoryInterface' => 'P3in\Repositories\WebsiteMenusRepository',
         ] as $interface => $repo) {
             $this->app->bind(
                 $interface, $repo

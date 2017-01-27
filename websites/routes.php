@@ -6,6 +6,7 @@ Route::group([
 ], function ($router) {
     $router->delete('menus/{link_id}', '\P3in\Controllers\MenusController@deleteLink');
     $router->resource('menus', MenusController::class);
+    $router->resource('pages', PagesController::class);
     // @TODO use generic forms getter once that's done (maybe)
     $router->get('menus/forms/{form}', '\P3in\Controllers\MenusController@getForm');
     $router->post('menus/forms/{form}', '\P3in\Controllers\MenusController@storeForm');
@@ -27,15 +28,15 @@ Route::group([
     $router->group([
         'prefix' => 'content',
     ], function ($router) {
-        $router->get('{path?}', 'PagesController@getPageData')->where('path', '(.*)');
+        $router->get('{path?}', 'RenderController@getPageData')->where('path', '(.*)');
     });
 
     $router->group([
         'prefix' => 'render',
     ], function ($router) {
-        $router->get('sitemap.{type}', 'PagesController@renderSitemap')->where('type', '(xml|html|txt|ror-rss|ror-rdf)');
-        $router->get('robots.txt', 'PagesController@renderRobotsTxt');
-        $router->get('{path?}', 'PagesController@renderPage')->where('path', '(.*)');
+        $router->get('sitemap.{type}', 'RenderController@renderSitemap')->where('type', '(xml|html|txt|ror-rss|ror-rdf)');
+        $router->get('robots.txt', 'RenderController@renderRobotsTxt');
+        $router->get('{path?}', 'RenderController@renderPage')->where('path', '(.*)');
     });
 
     $router->group([
@@ -44,6 +45,6 @@ Route::group([
         $router->get('token', function () {
             return csrf_token();
         });
-        $router->post('{path?}', 'PagesController@submitForm')->where('path', '(.*)');
+        $router->post('{path?}', 'RenderController@submitForm')->where('path', '(.*)');
     });
 });
