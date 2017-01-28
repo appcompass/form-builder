@@ -30,7 +30,7 @@ class WebsitesServiceProvider extends ServiceProvider
         $this->app['view']->addNamespace('websites', realpath(__DIR__.'/../Templates'));
 
         $this->app->register(SitemapServiceProvider::class);
-        $this->app->register(FeedServiceProvider::class);
+        // $this->app->register(FeedServiceProvider::class);
 
         foreach ([
             'P3in\Interfaces\WebsitesRepositoryInterface' => 'P3in\Repositories\WebsitesRepository',
