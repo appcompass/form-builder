@@ -22,9 +22,9 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
      */
     public function run()
     {
-        DB::statement("TRUNCATE TABLE plus3_people RESTART IDENTITY CASCADE");
-        DB::statement("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
-        DB::statement("TRUNCATE TABLE sections RESTART IDENTITY CASCADE");
+        DB::statement('TRUNCATE TABLE plus3_people RESTART IDENTITY CASCADE');
+        DB::statement('TRUNCATE TABLE users RESTART IDENTITY CASCADE');
+        DB::statement('TRUNCATE TABLE sections RESTART IDENTITY CASCADE');
 
         // Imene
         $imene = User::create([
@@ -244,17 +244,14 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                     'author' => 'Jubair Saidi <jubair.saidi@p3in.com>',
                     'private' => true,
                     'dependencies' => [
-                        'imports-loader' => '^0.7.0',
-                        'jquery' => '^3.1.1',
-                        'jquery-match-height' => '^0.7.0',
-                        'jsdom' => '^9.9.1',
-                        'magnific-popup' => '^1.1.0',
-                        'modernizr' => '^3.3.1',
-                        'node-sass' => '^4.3.0',
                         'nuxt' => 'latest',
+                    ],
+                    'devDependencies' => [
                         'pug' => '^2.0.0-beta9',
+                        'imports-loader' => '^0.7.0',
+                        'jsdom' => '^9.9.1',
+                        'node-sass' => '^4.3.0',
                         'sass-loader' => '^4.1.1',
-                        'slick-carousel' => '^1.6.0',
                         'webpack' => '^2.2.0'
                     ],
                     'scripts' => [
@@ -266,49 +263,53 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ])
                 // we should prob break this down into pieces.
                 ->setDeploymentNuxtConfig([
-                    "head" => [
-                        "titleTemplate" => '%s - Plus 3 Interactive',
-                        "script" => [],
-                        "link" => [
-                            [
-                                "rel" => 'stylesheet',
-                                "href" => 'https://fast.fonts.net/cssapi/e1ef451d-c61f-4ad3-b4e0-e3d8adb46d89.css'
-                            ]
+                    'head' => [
+                        'titleTemplate' => '%s - Plus 3 Interactive',
+                        'script' => [
+                            ['src' => 'https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js'],
+                            ['src' => 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'],
+                            ['src' => 'https://cdnjs.cloudflare.com/ajax/libs/jquery.matchHeight/0.7.0/jquery.matchHeight-min.js'],
+                            ['src' => 'https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js'],
+                            ['src' => 'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js'],
+                            ['src' => 'https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.4.1/snap.svg-min.js'],
                         ],
-                        "meta" => [
-                            ["charset" => 'utf-8'],
-                            ["http-equiv" => 'x-ua-compatible', "content" => 'ie=edge'],
-                            ["name" => 'viewport', "content" => 'width=device-width, initial-scale=1'],
-                            ["hid" => 'description', "content" => 'Plus 3 Interactive, LLC']
+                        'link' => [
+                            ['rel' => 'stylesheet', 'href' => 'https://fast.fonts.net/cssapi/e1ef451d-c61f-4ad3-b4e0-e3d8adb46d89.css']
                         ],
-                        "link" => [
-                            ["rel" => 'icon', "type" => 'image/png', "href" => '/favicon.png']
+                        'meta' => [
+                            ['charset' => 'utf-8'],
+                            ['http-equiv' => 'x-ua-compatible', 'content' => 'ie=edge'],
+                            ['name' => 'viewport', 'content' => 'width=device-width, initial-scale=1'],
+                            ['hid' => 'description', 'content' => 'Plus 3 Interactive, LLC']
+                        ],
+                        'link' => [
+                            ['rel' => 'icon', 'type' => 'image/png', 'href' => '/favicon.png']
                         ]
                     ],
-                    "css" => [
-                        ["src" => '~assets/sass/main.scss', "lang" => 'sass']
+                    'css' => [
+                        ['src' => '~assets/sass/main.scss', 'lang' => 'sass']
                     ],
-                    "build" => [
-                        "filenames" => [
-                            "css" => 'app.css',
-                            "vendor" => 'vendor.js',
-                            "app" => 'app.js'
+                    'build' => [
+                        'analyze' => [
+                          'analyzerMode' => 'static',
+                          'reportFilename' => 'report.html',
+                          'generateStatsFile' => true
                         ],
-                        "vendor" => [
-                            'jquery',
-                            'jquery-match-height',
-                            'magnific-popup',
-                            'slick-carousel',
-                            'imports-loader'
+                        'filenames' => [
+                            'css' => 'app.css',
+                            'vendor' => 'vendor.js',
+                            'app' => 'app.js'
+                        ],
+                        'vendor' => [
                         ]
                     ],
-                    "plugins" => [
+                    'plugins' => [
                         '~plugins/ga.js',
                         '~plugins/main.js'
                     ],
-                    "loading" => [
-                        "height" => '3px',
-                        "color" => '#0ab7f9'
+                    'loading' => [
+                        'height' => '3px',
+                        'color' => '#0ab7f9'
                     ]
                 ]);
             // Build the components.
