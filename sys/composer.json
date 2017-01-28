@@ -62,8 +62,7 @@
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
             "php artisan vendor:publish",
             "php artisan optimize",
-            "php artisan cache:clear",
-            "cd ../cp && npm run build"
+            "php artisan cache:clear"
         ]
     },
     "config": {
