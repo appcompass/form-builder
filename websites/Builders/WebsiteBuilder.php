@@ -189,12 +189,9 @@ class WebsiteBuilder
         return $this;
     }
 
-    public function setLayout($layout, $sections, $imports)
+    public function setLayout($layout, $layoutTemplate)
     {
-        $this->website->setConfig('layouts->'.$layout, [
-            'sections' => $sections,
-            'imports' => $imports
-        ]);
+        $this->website->setConfig('layouts->'.$layout, $layoutTemplate);
 
         return $this;
     }
@@ -244,14 +241,14 @@ class WebsiteBuilder
         $manager->publishFolder('stubs', 'dest');
 
         if (!empty($depConfig->package_json)) {
-            $package_json = json_encode($depConfig->package_json);
+            $package_json = json_encode($depConfig->package_json, JSON_UNESCAPED_SLASHES);
 
             $manager->publishFile('dest', 'package.json', $package_json, true);
         }
 
         if (!empty($depConfig->nuxt_config)) {
             // this method of creating the javascript file is meh imo.  No luck finding a better way yet.
-            $nuxt_conf = 'module.exports = '.preg_replace('/"([a-zA-Z_]+[a-zA-Z0-9_]*)":/','$1:', json_encode($depConfig->nuxt_config));
+            $nuxt_conf = 'module.exports = '.preg_replace('/"([a-zA-Z_]+[a-zA-Z0-9_]*)":/','$1:', json_encode($depConfig->nuxt_config, JSON_UNESCAPED_SLASHES));
 
             $manager->publishFile('dest', 'nuxt.config.js', $nuxt_conf, true);
         }
@@ -259,8 +256,7 @@ class WebsiteBuilder
         // now lets get the website layout(s)
         if (!empty($conf->layouts)) {
             foreach ($conf->layouts as $layout => $data) {
-                $sections = json_decode(json_encode($data->sections), true); //not even going to talk about this one...
-                $content = PageBuilder::buildTemplate('', $sections, $data->imports);
+                $content = $data;
                 $manager->publishFile('dest', '/layouts/'.$layout.'.vue', $content, true);
             }
         }

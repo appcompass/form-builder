@@ -200,43 +200,35 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 // we need to build a Website Layout builder to replace this junk...
                 // as in, this is the exact structure the web page outputs to the
                 // view to build the template it sooo yea...
-                ->setLayout('public', [
-                    [
-                        'depth' => 0,
-                        'value' => '<!--[if lt IE 8]>',
-                    ],[
-                        'depth' => 2,
-                        'value' => 'p.browserupgrade You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.',
-                    ],[
-                        'depth' => 0,
-                        'value' => '<![endif]-->',
-                    ],[
-                        'depth' => 0,
-                        'value' => 'div',
-                    ],[
-                        'depth' => 2,
-                        'value' => 'div.wrapper',
-                    ],[
-                        'depth' => 4,
-                        'value' => 'SiteHeader',
-                    ],[
-                        'depth' => 4,
-                        'value' => 'main.main',
-                    ],[
-                        'depth' => 6,
-                        'value' => '<nuxt/>',
-                    ],[
-                        'depth' => 4,
-                        'value' => 'SiteFooter',
-                    ],[
-                        'depth' => 2,
-                        'value' => 'ProposalModal',
-                    ]
-                ],[
-                    'SiteHeader',
-                    'SiteFooter',
-                    'ProposalModal'
-                ])
+                ->setLayout('public', '
+<template lang="pug">
+  <!--[if lt IE 8]>
+    p.browserupgrade You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.
+  <![endif]-->
+  div
+    div.wrapper
+      SiteHeader
+      main.main
+        <nuxt/>
+      SiteFooter
+    ProposalModal
+</template>
+
+<script>
+  import SiteHeader from \'~components/SiteHeader\'
+  import SiteFooter from \'~components/SiteFooter\'
+  import ProposalModal from \'~components/ProposalModal\'
+
+  export default {
+    components: {
+      SiteHeader,
+      SiteFooter,
+      ProposalModal
+    }
+
+  }
+</script>
+')
                 ->setDeploymentNpmPackages([
                     'name' => 'Plus3Website',
                     'version' => '3.0.0',
@@ -245,6 +237,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                     'private' => true,
                     'dependencies' => [
                         'nuxt' => 'latest',
+                        'axios' => '^0.15.3'
                     ],
                     'devDependencies' => [
                         'pug' => '^2.0.0-beta9',
@@ -301,6 +294,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                             'app' => 'app.js'
                         ],
                         'vendor' => [
+                            'axios'
                         ]
                     ],
                     'plugins' => [
