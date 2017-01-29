@@ -2,9 +2,10 @@
 
 namespace P3in\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use P3in\Models\Website;
 use P3in\Models\MenuItem;
+use P3in\Models\Website;
 
 class Menu extends Model
 {
@@ -67,12 +68,28 @@ class Menu extends Model
     /**
      * render
      */
-    public function render()
+    public function render($clean = false)
     {
-        $items = $this->items->toArray();
+        if ($clean) {
+            $this
+                ->makeHidden('id')
+                ->makeHidden('website_id')
+                ->makeHidden('created_at');
 
+            $this->items->each(function($item){
+                $item
+                    ->makeHidden('id')
+                    ->makeHidden('menu_id')
+                    ->makeHidden('parent_id')
+                    ->makeHidden('req_perm')
+                    ->makeHidden('navigatable_id')
+                    ->makeHidden('navigatable_type')
+                    ->makeHidden('created_at')
+                    ;
+            });
+        }
         // return $this->mapTree($items);
-        return $this->buildTree($items);
+        return $this->buildTree($this->items);
     }
 
     /**
@@ -82,34 +99,35 @@ class Menu extends Model
      *
      * @return     array  Nested Tree structure
      */
-    public function mapTree(array $dataset)
-    {
-        $map = [];
-        $tree = [];
+    // @TODO: Delete this, other method works just fine :)
+    // public function mapTree(array $dataset)
+    // {
+    //     $map = [];
+    //     $tree = [];
 
-        foreach ($dataset as $id => &$node) {
-            $current =& $map[$node['id']];
+    //     foreach ($dataset as $id => &$node) {
+    //         $current =& $map[$node['id']];
 
-            // @TODO better way to assign this? intersect_keys(array_flip) didn't work as expected
-            $current['id'] = $node['id'];
-            $current['parent_id'] = $node['parent_id'];
-            $current['title'] = $node['title'];
-            $current['url'] = $node['url'];
-            $current['new_tab'] = $node['new_tab'];
-            $current['clickable'] = $node['clickable'];
-            $current['icon'] = $node['icon'];
+    //         // @TODO better way to assign this? intersect_keys(array_flip) didn't work as expected
+    //         $current['id'] = $node['id'];
+    //         $current['parent_id'] = $node['parent_id'];
+    //         $current['title'] = $node['title'];
+    //         $current['url'] = $node['url'];
+    //         $current['new_tab'] = $node['new_tab'];
+    //         $current['clickable'] = $node['clickable'];
+    //         $current['icon'] = $node['icon'];
 
-            if ($node['parent_id'] == null) {
-                $tree[$node['id']] =& $current;
-            } else {
-                $map[$node['parent_id']]['children'][$node['id']] =& $current;
-            }
-        }
+    //         if ($node['parent_id'] == null) {
+    //             $tree[$node['id']] =& $current;
+    //         } else {
+    //             $map[$node['parent_id']]['children'][$node['id']] =& $current;
+    //         }
+    //     }
 
-        // dd(array_values_recursive($tree));
+    //     // dd(array_values_recursive($tree));
 
-        return $tree;
-    }
+    //     return $tree;
+    // }
 
     /**
      * Builds a menu tree recursively.
@@ -119,18 +137,18 @@ class Menu extends Model
      *
      * @return     array   The tree.
      */
-    private function buildTree(array &$items, $parent_id = null)
+    private function buildTree(Collection &$items, $parent_id = null)
     {
         $tree = [];
 
         foreach ($items as &$node) {
-            if ($node['parent_id'] === $parent_id) {
-                $children = $this->buildTree($items, $node['id']);
+            if ($node->parent_id === $parent_id) {
+                $children = $this->buildTree($items, $node->id);
 
                 if ($children) {
-                    $node['children'] = $children;
+                    $node->children = $children;
                 } else {
-                    $node['children'] = [];
+                    $node->children = [];
                 }
 
                 $tree[] = $node;

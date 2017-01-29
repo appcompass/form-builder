@@ -99,7 +99,9 @@ class PageSectionContent extends Model
     {
         $container = Section::getContainer();
 
-        return $this->addSection($container, $order, $config, true);
+        return $this->addSection($container, $order, [
+            'config' => $config
+        ], true);
     }
 
     /**
@@ -114,11 +116,18 @@ class PageSectionContent extends Model
      *
      * @return     Model      PageSectionContent
      */
-    public function addSection(Section $section, int $order, array $config = null, $returnChild = false)
+    public function addSection(Section $section, int $order, array $data = [], $returnChild = false)
     {
         if ($this->isContainer()) {
-
-            $child = new static(['order' => $order, 'config' => $config]);
+            $data = array_merge(['order' => $order], $data);
+            if (isset($data['content'])) {
+                // validate the structure.  Throw error if doesn't match the section form structure and rules.
+            }else{
+                // if no content is passed, we still need to init the structure
+                // otherwise front-end might throw errors about "Cannot read properlty of null"
+                $data['content'] = $section->getFormStructure();
+            }
+            $child = new static($data);
 
             $child->section()->associate($section);
 
@@ -151,6 +160,22 @@ class PageSectionContent extends Model
         return $this;
     }
 
+    /**
+     * Builds the props for an element
+     * @return array of strings
+     */
+    public function buildProps()
+    {
+        $props = [];
+        $conf = $this->config;
+        if (!empty($conf->props) && is_object($conf->props)) {
+            foreach ($conf->props as $key => $val) {
+                // creates this: :to="from"
+                $props[] = ':'.$key.'="'.$val.'"';
+            }
+        }
+        return $props;
+    }
     /**
      * Determines if container.
      *
