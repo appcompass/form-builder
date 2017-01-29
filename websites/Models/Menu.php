@@ -76,7 +76,7 @@ class Menu extends Model
                 ->makeHidden('website_id')
                 ->makeHidden('created_at');
 
-            $this->items->each(function($item){
+            $this->items->each(function ($item) {
                 $item
                     ->makeHidden('id')
                     ->makeHidden('menu_id')

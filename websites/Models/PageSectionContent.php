@@ -122,7 +122,7 @@ class PageSectionContent extends Model
             $data = array_merge(['order' => $order], $data);
             if (isset($data['content'])) {
                 // validate the structure.  Throw error if doesn't match the section form structure and rules.
-            }else{
+            } else {
                 // if no content is passed, we still need to init the structure
                 // otherwise front-end might throw errors about "Cannot read properlty of null"
                 $data['content'] = $section->getFormStructure();
@@ -138,11 +138,8 @@ class PageSectionContent extends Model
             }
 
             return $this;
-
         } else {
-
             throw new Exception('a Section can only be added to a Container.');
-
         }
     }
 

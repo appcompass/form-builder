@@ -224,7 +224,7 @@ class WebsiteBuilder
         // set destination path
         if (!empty($depConfig->path)) {
             $manager->setMount('dest', $depConfig->path);
-        }else{
+        } else {
             throw new Exception('Website does not have the deployment path set');
         }
 
@@ -248,7 +248,7 @@ class WebsiteBuilder
 
         if (!empty($depConfig->nuxt_config)) {
             // this method of creating the javascript file is meh imo.  No luck finding a better way yet.
-            $nuxt_conf = 'module.exports = '.preg_replace('/"([a-zA-Z_]+[a-zA-Z0-9_]*)":/','$1:', json_encode($depConfig->nuxt_config, JSON_UNESCAPED_SLASHES));
+            $nuxt_conf = 'module.exports = '.preg_replace('/"([a-zA-Z_]+[a-zA-Z0-9_]*)":/', '$1:', json_encode($depConfig->nuxt_config, JSON_UNESCAPED_SLASHES));
 
             $manager->publishFile('dest', 'nuxt.config.js', $nuxt_conf, true);
         }

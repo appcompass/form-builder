@@ -615,15 +615,14 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
 
             // header and footer are same on every page site wide.
-            $createHeaderFooterStructure = function($page) use ($site_header, $site_footer, $site_proposal_modal) {
-
+            $createHeaderFooterStructure = function ($page) use ($site_header, $site_footer, $site_proposal_modal) {
                 $page_container = $page
                     ->addContainer(1);
 
-                    $wrapper_container = $page_container->addContainer(1, [
+                $wrapper_container = $page_container->addContainer(1, [
                         'class' => 'wrapper',
                     ]);
-                    $wrapper_container->addSection($site_header, 1, [
+                $wrapper_container->addSection($site_header, 1, [
                         // @TODO: meh...
                         'config' => [
                             'props' => [
@@ -634,12 +633,12 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                         ]
                     ]);
 
-                    $main_container = $wrapper_container->addContainer(2, [
+                $main_container = $wrapper_container->addContainer(2, [
                         'elm' => 'main',
                         'class' => 'main',
                     ]);
 
-                    $wrapper_container->addSection($site_footer, 3, [
+                $wrapper_container->addSection($site_footer, 3, [
                         // @TODO: meh...
                         'config' => [
                             'props' => [
@@ -649,7 +648,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                             ]
                         ]
                     ]);
-                    $page_container->addSection($site_proposal_modal, 2);
+                $page_container->addSection($site_proposal_modal, 2);
 
                 return $main_container;
             };
@@ -662,7 +661,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                     ->setPriority('1.0')
                     ->setUpdatedFrequency('always');
 
-                $home_container = $createHeaderFooterStructure($homepage)
+            $home_container = $createHeaderFooterStructure($homepage)
                     ->addSection($slider_banner, 1, [
                         'content' => [
                             'title' => 'Our Work',
@@ -691,7 +690,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                     ]);
 
             $home_box_callout_container = $home_container
-                ->addContainer(2,[
+                ->addContainer(2, [
                     'elm' => 'section',
                     'class' => 'section-module section-solutions',
                 ])
@@ -961,7 +960,6 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             $main_footer_menu->addItem($login, 6);
 
             $wsb->deploy();
-
         })->getWebsite();
 
 
