@@ -109,7 +109,7 @@ class PageRenderer
         foreach ($sections as $row) {
             if ($row->children->count()) {
                 $this->getContent($row->children);
-            }else{
+            } else {
                 $this->build['content'][$row->id] = $row->content;
             }
         }

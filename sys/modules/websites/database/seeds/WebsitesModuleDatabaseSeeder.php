@@ -129,7 +129,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
 
         DB::statement("DELETE FROM forms WHERE name = 'create-link'");
 
-        FormBuilder::new('create-link', function(FormBuilder $builder) {
+        FormBuilder::new('create-link', function (FormBuilder $builder) {
             $builder->string('Label', 'title');
             $builder->string('Url', 'url');
             $builder->string('Alt', 'alt');
@@ -141,7 +141,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
 
         DB::statement("DELETE FROM forms WHERE name = 'edit-menu-item'");
 
-        $form = FormBuilder::new('edit-menu-item', function(FormBuilder $builder) {
+        $form = FormBuilder::new('edit-menu-item', function (FormBuilder $builder) {
             $builder->string('Label', 'title');
             $builder->string('Alt', 'alt');
             $builder->string('Icon', 'icon');
@@ -153,7 +153,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
 
         DB::statement("DELETE FROM forms WHERE name = 'edit-link'");
 
-        $form = FormBuilder::new('edit-link', function(FormBuilder $builder) {
+        $form = FormBuilder::new('edit-link', function (FormBuilder $builder) {
             $builder->string('Label', 'title');
             $builder->string('Url', 'url');
             $builder->string('Alt', 'alt');
