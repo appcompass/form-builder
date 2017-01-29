@@ -23,22 +23,15 @@ class ValidateWebsite
         $host = $request->header('host');
 
         $origin = $request->header('origin'); // what is this?
-        if ($origin) {
-            list($scheme, $host) = explode('://', $origin);
-        }
+        $parts = explode('://', $origin);
 
-        $website = Website::where('host', $host)->first();
-
-        if ($website) {
-
-            $request->website = $website;
-
-            return $next($request);
-
+        if (count($parts) == 2) {
+            list($scheme, $host) = $parts;
         }
 
         // temporary ofcourse so we can work locally with properly seeded data.
         $host = 'www.plus3interactive.com';
+
         try {
             $website = Website::where('host', $host)->firstOrFail();
 

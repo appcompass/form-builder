@@ -28,15 +28,16 @@ Route::group([
     $router->group([
         'prefix' => 'content',
     ], function ($router) {
-        $router->get('{path?}', 'RenderController@getPageData')->where('path', '(.*)');
+        $router->get('menus', 'PublicWebsiteController@getSiteMenus');
+        $router->get('site-meta', 'PublicWebsiteController@getSiteMeta');
+        $router->get('{path?}', 'PublicWebsiteController@getPageData')->where('path', '(.*)');
     });
 
     $router->group([
         'prefix' => 'render',
     ], function ($router) {
-        $router->get('sitemap.{type}', 'RenderController@renderSitemap')->where('type', '(xml|html|txt|ror-rss|ror-rdf)');
-        $router->get('robots.txt', 'RenderController@renderRobotsTxt');
-        $router->get('{path?}', 'RenderController@renderPage')->where('path', '(.*)');
+        $router->get('sitemap.{type}', 'PublicWebsiteController@renderSitemap')->where('type', '(xml|html|txt|ror-rss|ror-rdf)');
+        $router->get('robots.txt', 'PublicWebsiteController@renderRobotsTxt');
     });
 
     $router->group([
@@ -45,6 +46,6 @@ Route::group([
         $router->get('token', function () {
             return csrf_token();
         });
-        $router->post('{path?}', 'RenderController@submitForm')->where('path', '(.*)');
+        $router->post('{path?}', 'PublicWebsiteController@submitForm')->where('path', '(.*)');
     });
 });
