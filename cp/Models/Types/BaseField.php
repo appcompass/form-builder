@@ -3,6 +3,7 @@
 namespace P3in\Models\Types;
 
 use P3in\Models\Field;
+use P3in\Models\Form;
 use P3in\Models\Fieldtype;
 
 abstract class BaseField
@@ -13,17 +14,18 @@ abstract class BaseField
 
     public $field;
 
-    public static function make($label, $name)
+    public static function make($label, $name, Form $form)
     {
         $instance = new static();
 
         // types are handled by the Fieldtype
         $type = Fieldtype::make($instance);
 
-        $field = Field::firstOrCreate([
+        $field = Field::create([
             'label' => $label,
             'name' => $name,
-            'type' => $type
+            'type' => $type,
+            'form_id' => $form->id
         ]);
 
         $instance->field = $field;

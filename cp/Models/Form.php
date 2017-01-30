@@ -4,6 +4,7 @@ namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 class Form extends Model
 {
@@ -17,7 +18,7 @@ class Form extends Model
         'updated_at'
     ];
 
-    protected $with = ['fields'];
+    // protected $with = ['fields'];
 
     /**
      * Links to models
@@ -36,7 +37,8 @@ class Form extends Model
      */
     public function fields()
     {
-        return $this->belongsToMany(Field::class);
+        // return $this->belongsToMany(Field::class);
+        return $this->hasMany(Field::class);
     }
 
     /**
@@ -47,6 +49,11 @@ class Form extends Model
     public function resources()
     {
         return $this->hasMany(Resource::class);
+    }
+
+    public function render()
+    {
+        return $this->buildTree($this->fields);
     }
 
     /**
@@ -125,11 +132,11 @@ class Form extends Model
     }
 
     /**
-     *
+     *  Stores current Form as Field owner
      */
     public function addField(Field $field)
     {
-        return $this->fields()->attach($field);
+        return $field->form()->save($this);
     }
 
     /**
@@ -143,5 +150,45 @@ class Form extends Model
                 $query->where($param, $val);
             }
         ]);
+    }
+
+    /**
+     * Builds a menu tree recursively.
+     *
+     * @param      array   $items     The items
+     * @param      <type>  $parent_id  The parent identifier
+     *
+     * @return     array   The tree.
+     */
+    private function buildTree(Collection &$items, $parent_id = null, $tree = null)
+    {
+
+        if (is_null($tree)) {
+
+            $tree = [];
+
+        }
+
+        foreach ($items as &$node) {
+
+            if ($node->parent_id === $parent_id) {
+
+                $fields = $this->buildTree($items, $node->id);
+
+                if (count($fields)) {
+
+                    $node->fields = $fields;
+
+                } else {
+
+                    $node->fields = [];
+
+                }
+
+                $tree[] = $node;
+            }
+        }
+
+        return $tree;
     }
 }
