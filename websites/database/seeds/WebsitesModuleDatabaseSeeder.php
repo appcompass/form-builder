@@ -54,8 +54,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             $websites = $websiteBuilder->addPage('Websites', 'websites');
             $navigation = $websites->addChild('Navigation', 'menus');
             $pages = $websites->addChild('Pages', 'pages');
-            $components = $pages->addChild('Components', 'components');
-            $contents = $pages->addChild('Contents', 'contents');
+            $contents = $pages->addChild('Contents', 'content');
             $blogEntries = $websites->addChild('Entries', 'blog-entries');
             $blogCategories = $websites->addChild('Categories', 'blog-categories');
             $blogTags = $websites->addChild('Tags', 'blog-tags');
@@ -73,7 +72,6 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             $websites_item = $web_properties_item->addItem($websites, 1);
             $websites_item->addItem($navigation, 1)->setIcon('bars');
             $pages_menuitem = $websites_item->addItem($pages, 2)->setIcon('page');
-            $pages_menuitem->addItem($components, 1)->setIcon('bars');
             $pages_menuitem->addItem($contents, 2)->setIcon('bars');
             $blog_menuitem = $websites_item->addItem($blog, 3)->setIcon('page');
             $blog_menuitem->addItem($blogEntries, 1)->setIcon('page');
@@ -86,27 +84,32 @@ class WebsitesModuleDatabaseSeeder extends Seeder
 
         DB::statement("DELETE FROM forms WHERE name = 'websites'");
 
-        $websites_form = FormBuilder::new('websites', function (FormBuilder $builder) {
+        $form = FormBuilder::new('websites', function (FormBuilder $builder) {
             $builder->string('Website Name', 'name')->list()->required()->sortable()->searchable();
             $builder->string('Url', 'url')->list()->required()->sortable()->searchable();
-            // $builder->json('Auth Key', 'config.key')->list()->required()->sortable()->searchable();
         })->linkToResources(['websites.index', 'websites.show', 'websites.create'])
         ->getForm();
 
-        WebsiteBuilder::edit(1)->linkForm($websites_form);
+        WebsiteBuilder::edit(1)->linkForm($form);
 
         DB::statement("DELETE FROM forms WHERE name = 'pages'");
 
-        $pages_form = FormBuilder::new('pages', function (FormBuilder $builder) {
+        $form = FormBuilder::new('pages', function (FormBuilder $builder) {
             $builder->string('Page Title', 'title')->list()->required()->sortable()->searchable();
-            // $builder->string('Page Title', 'title')->list(false)->required()->sortable()->searchable();
-            $builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();
             $builder->string('Slug', 'slug')->list(false)->required()->sortable()->searchable();
-            // $builder->string('Layout', 'layout')->list(false)->required()->sortable()->searchable(); // page contains a list of stacked layouts (ordered)
         })->linkToResources(['pages.show', 'websites.pages.index', 'websites.pages.create', 'websites.pages.show'])
         ->getForm();
 
-        WebsiteBuilder::edit(1)->linkForm($pages_form);
+        WebsiteBuilder::edit(1)->linkForm($form);
+
+        DB::statement("DELETE FROM forms WHERE name = 'page-content-editor'");
+
+        $form = FormBuilder::new('page-content-editor', function (FormBuilder $builder) {
+            $builder->pageEditor('Page Editor', 'page-editor')->list(false);
+        })->linkToResources(['pages.content.index'])
+        ->getForm();
+
+        WebsiteBuilder::edit(1)->linkForm($form);
 
         DB::statement("DELETE FROM forms WHERE name = 'menus'");
 
@@ -119,13 +122,6 @@ class WebsitesModuleDatabaseSeeder extends Seeder
         FormBuilder::new('menus-editor', function (FormBuilder $builder) {
             $builder->menuEditor('Menu', 'menu')->list(false);
         })->linkToResources(['websites.menus.show']);
-
-        // DB::statement("DELETE FROM forms WHERE name = 'page-sections'");
-
-        // FormBuilder::new('page-sections', function (FormBuilder $builder) {
-        //     $builder->string('Section Name', 'name')->list()->edit(false)->sortable()->searchable();
-        //     $builder->string('Template', 'template')->list()->edit(false)->sortable()->searchable();
-        // })->linkToResources(['pages.sections.index']);
 
         DB::statement("DELETE FROM forms WHERE name = 'create-link'");
 

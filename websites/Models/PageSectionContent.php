@@ -26,6 +26,7 @@ class PageSectionContent extends Model
         'children',
         'section',
     ];
+
     /**
      *
      */

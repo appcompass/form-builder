@@ -137,39 +137,10 @@ class FormBuilder
     }
 
     /**
-     * Sets the list layout.
-     *
-     * @param      <type>  $list_layout  The list layout
-     *
-     * @return     FormBuilder instance
-     */
-    public function setListLayout($list_layout)
-    {
-        $this->form->setListLayout($list_layout);
-
-        return $this;
-    }
-
-    public function __call($method, array $args)
-    {
-        // we'll try to new ucfirst that class, if that works we got it already
-        $field_name = ucfirst($method) . 'Type';
-
-        // full class name
-        $class_name = '\P3in\Models\Types\\' . $field_name;
-
-        if (!class_exists($class_name)) {
-            die("The FieldType: <$field_name> does not exist. Do Something!");
-        }
-
-        return $this->addField($class_name::make($args[0], $args[1]));
-    }
-
-    /**
-     * Adds a field.
+     * Adds a field from a BaseField.
      *
      */
-    private function addField(BaseField $field_type)
+    private function addField(BaseField $field_type): Field
     {
         $this->form->fields()->attach($field_type->field);
 
@@ -205,19 +176,52 @@ class FormBuilder
         }
 
         if (count($field) > 1 and is_null($type)) {
+
             throw new Exception("Multiple <{$name}> found, please add type");
+
         } elseif (count($field) > 1 and !is_null($type)) {
+
             $field = $field->where('type', $type);
 
             if (count($field) > 1) {
+
                 throw new Exception("Sorry there doesn't seem to be an enough specific combination to get a single result. Halting.");
+
             } else {
+
                 $field->first()->delete();
 
                 return $this;
+
             }
+
         } elseif (count($field) === 1) {
+
             $field->first()->delete();
+
         }
+    }
+
+    /**
+     * Try to match FieldTypes
+     *
+     * @param      <type>  $field_type  The field_type we are trying to add
+     * @param      array   $args    [0] => Field Name [1] => Field Maps To
+     *
+     * @return     $this->addField
+     */
+    public function __call($field_type, array $args)
+    {
+        // we'll try to new ucfirst that class, if that works we got it already
+        $field_name = ucfirst($field_type) . 'Type';
+
+        // full class name
+        $class_name = '\P3in\Models\Types\\' . $field_name;
+
+        if (!class_exists($class_name)) {
+            die("The FieldType: <$field_name> does not exist. Do Something!");
+        }
+
+        return $this->addField($class_name::make($args[0], $args[1]));
     }
 }

@@ -2,6 +2,4 @@
 
 namespace P3in\Interfaces;
 
-interface MenusRepositoryInterface extends AbstractRepositoryInterface
-{
-}
+interface MenusRepositoryInterface extends AbstractRepositoryInterface {}

@@ -33,8 +33,6 @@ class PermissionsSeeder extends Seeder
         DB::statement("DELETE FROM forms WHERE name = 'user-permissions'");
 
         FormBuilder::new('user-permissions', function (FormBuilder $builder) {
-            // @TODO list layout depends on the relation
-            $builder->setListLayout('MultiSelect');
             $builder->string('Name', 'label')->list()->required()->sortable()->searchable();
         })->linkToResources(['users.permissions.index']);
 

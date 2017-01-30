@@ -10,31 +10,22 @@ class Field extends Model
         'name',
         'label',
         'type',
-        // 'to_list',
-        // 'to_edit',
-        // 'validation',
-        // 'required',
-        // 'repeatable'
+        'to_list',
+        'to_edit'
     ];
 
-    protected $hidden = [
-        // 'created_at',
-        // 'updated_at'
-    ];
+    protected $hidden = [];
 
     protected $with = [
         'fields'
     ];
-
-    // protected $appends = [
-    //     'template'
-    // ];
 
     public $timestamps = false; // we don't need ts on fields
 
     /**
      * override boot method
      * @NOTE remember Field::withoutGlobalScope(OrderScope::class)->get();
+     * @TODO we can probably get rid of this i added the scope for the sake of it -f
      */
     protected static function boot()
     {
@@ -43,99 +34,104 @@ class Field extends Model
         static::addGlobalScope(new OrderScope('id', 'asc'));
     }
 
+    /**
+     * The Form
+     *
+     * @return     belongsToMany
+     */
     public function form()
     {
         return $this->belongsToMany(Form::class);
     }
 
+    /**
+     * The Parent
+     *
+     * @return     belongsTo
+     */
     public function parent()
     {
         return $this->belongsTo(Field::class, 'parent_id');
     }
 
+    /**
+     * The Fields
+     *
+     * @return     hasMany
+     */
     public function fields()
     {
         return $this->hasMany(Field::class, 'parent_id');
     }
 
-    /**
-     * Gets the template from the corresponding field.
-     *
-     * @return     $this  The template attribute.
+    /*
+     * is the field gonna be visible on edit mode?
      */
-    // @TODO returnin component content as a string makes working on the forntend exhausting and awkward
-    // public function getTemplateAttribute()
-    // {
-    //     return (new $this->type())->template();
-    // }
-
-    // kill the repetition!
-    private function saveAndReturn()
+    public function edit($show = true)
     {
-        $this->save();
+        $this->update(['to_edit' => $show]);
 
         return $this;
     }
 
-    // is the field gonna be visible on edit mode?
-    public function edit($show = true)
-    {
-        $this->to_edit = $show;
-
-        return $this->saveAndReturn();
-    }
-
-    // the field visible on list mode?
+    /*
+     * is the field gonna be visible on list mode?
+     */
     public function list($show = true)
     {
-        $this->to_list = $show;
+        $this->update(['to_list' => $show]);
 
-        return $this->saveAndReturn();
+        return $this;
     }
 
     /**
-     *
+     *  Validation
      */
     public function validation($validation)
     {
-        $this->validation = $validation;
+        $this->update(['validation' => $validation]);
 
-        return $this->saveAndReturn();
+        return $this;
     }
 
     /**
-     *
+     *  Required
      */
     public function required($required = true)
     {
-        $this->required = true;
+        $this->update(['required' => $required]);
 
-        return $this->saveAndReturn();
+        return $this;
     }
 
+    /**
+     * Repeatable
+     */
     public function repeatable($repeatable = true)
     {
-        $this->repeatable = true;
+        $this->update(['required' => $repeatable]);
 
-        return $this->saveAndReturn();
+        return $this;
     }
+
     /**
-     *
+     *  Sortable
      */
     public function sortable($sortable = true)
     {
-        $this->sortable = $sortable;
+        $this->update(['sortable' => $sortable]);
 
-        return $this->saveAndReturn();
+        return $this;
     }
 
     /**
-     *
+     *  Searchable
      */
     public function searchable($searchable = true)
     {
-        $this->searchable = $searchable;
+        $this->update(['searchable' => $searchable]);
 
-        return $this->saveAndReturn();
+        return $this;
     }
+
 }
