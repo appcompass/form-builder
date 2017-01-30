@@ -8,6 +8,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\URL;
 use P3in\Renderers\PageRenderer;
 
@@ -18,6 +19,8 @@ class PublicWebsiteController extends BaseController
     public function getPageData(Request $request, $uri = '')
     {
         \DB::enableQueryLog();
+        // // cache for 14 days?
+        // $data = Cache::remember('public-page-'.$uri, 20160, function () use ($request, $uri) {
         $renderer =  new PageRenderer($request->website);
 
         $data = $renderer->setPage('/'.trim($uri, '/'))->getData();
@@ -27,19 +30,30 @@ class PublicWebsiteController extends BaseController
         $data['menus'] = $this->getSiteMenus($request);
         $data['site_meta'] = $this->getSiteMeta($request);
 
+        //     return $data;
+        // });
+
         // @TODO: better abstract this so we can push stuff into the debug
         // object rather than just log queries. Middlware maybe?
         $data['debug'] = \DB::getQueryLog();
+
         return $data;
     }
 
     public function getSiteMenus(Request $request)
     {
-        $menus = [];
-        foreach ($request->website->menus as $menu) {
-            $menus[$menu->name] = $menu->render(true);
+        $rtn = [];
+
+        $menus = $request
+            ->website
+            ->menus
+            ->load('items');
+
+        foreach ($menus as $menu) {
+            $rtn[$menu->name] = $menu->render(true);
         }
-        return $menus;
+
+        return $rtn;
     }
 
     public function getSiteMeta(Request $request)

@@ -7,7 +7,6 @@ use P3in\Interfaces\PageContentRepositoryInterface;
 
 class PageContentController extends AbstractChildController
 {
-
     public function __construct(PageContentRepositoryInterface $repo)
     {
         $this->repo = $repo;
@@ -19,5 +18,4 @@ class PageContentController extends AbstractChildController
 
         return $model->section->form->render();
     }
-
 }

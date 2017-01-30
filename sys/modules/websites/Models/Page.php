@@ -78,7 +78,7 @@ class Page extends Model implements Linkable
      *
      * @return     HasMany
      */
-    public function containers()
+    public function contents()
     {
         return $this->hasMany(PageSectionContent::class)->orderBy('order', 'asc');
     }
@@ -86,16 +86,16 @@ class Page extends Model implements Linkable
 
     /**
      * So this is here temporarily (unless we end up liking it) to allow us to
-     * fetch only the top level containers of a page. This is because as of
+     * fetch only the top level contents of a page. This is because as of
      * right now, all PageComponentContent instances have a page_id, even if
      * it is a child of another PageComponentContent, so when querying a page,
      * it's contents, and the associated sections, you get a a lot of
      * redundant data.  This method lets us recursivly fetch the whole tree
      * without having to build a tree builder, and without removing page_id from
-     * the PageComponentContent instances that are sections (children of containers)
+     * the PageComponentContent instances that are sections (children of contents)
      * @return hasMany
      */
-    // public function containers()
+    // public function contents()
     // {
     //     return $this->hasMany(PageComponentContent::class)
     //     ->orderBy('order', 'asc')
@@ -136,7 +136,7 @@ class Page extends Model implements Linkable
     public function addContainer(int $order, array $config = null)
     {
         //I have no idea why they don't have a ->new() method...
-        $container = $this->containers()->findOrNew(null);
+        $container = $this->contents()->findOrNew(null);
 
         $container->saveAsContainer($order, $config);
 
@@ -353,5 +353,29 @@ class Page extends Model implements Linkable
         $item->navigatable()->associate($this);
 
         return $item;
+    }
+
+    private function buildContentBranches($parent_id)
+    {
+        $branches = [];
+        foreach ($this->contents as $row) {
+            if ($row->parent_id == $parent_id) {
+                $row->children = $this->buildContentBranches($row->id);
+                $branches[] = $row;
+            }
+        }
+        return collect($branches);
+    }
+
+    public function buildContentTree()
+    {
+        $tree = [];
+        foreach ($this->contents as $row) {
+            if (is_null($row->parent_id)) {
+                $row->children = $this->buildContentBranches($row->id);
+                $tree[] = $row;
+            }
+        }
+        return $tree;
     }
 }

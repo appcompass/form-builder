@@ -278,12 +278,6 @@ class PageBuilder
         // //@TODO: On delete or parent change of a page (we use the url as the unique name for a page),
         // //we need to delete it's template file as to clean up junk.
 
-        // // this is prob not needed, right now some sections have two or more
-        // // same level sections.  that doesn't jive well with the template structure.
-        // // We might want to break the templates up into smaller pieces, but for now
-        // // we just have a container div as the parent on all pages.
-        // $this->template[] = $this->getElementData(0, 'div');
-
         if ($page->children->count()) {
             $sections = [$this->getElementData(0, '<nuxt-child/>')];
 
@@ -292,12 +286,11 @@ class PageBuilder
             $this->manager->publishFile('dest', $name.'.vue', $parent_template, true);
             $name = $name.'/index';
         }
+        $pageStructure = $page->buildContentTree();
 
-        $this->buildPageTemplateTree($page->containers);
+        $this->buildPageTemplateTree($pageStructure);
 
-        // dd(json_encode($this->exports));
         // handling child page structures.
-
         $contents = static::buildTemplate($layout, $this->template, $this->imports);
 
         $this->manager->publishFile('dest', $name.'.vue', $contents, true);

@@ -105,11 +105,8 @@ class Field extends Model
      */
     public function validation($validation)
     {
-
         if (is_array($validation)) {
-
             $validation = implode('|', $validation);
-
         }
 
         $this->update(['validation' => $validation]);
@@ -156,5 +153,4 @@ class Field extends Model
 
         return $this;
     }
-
 }
