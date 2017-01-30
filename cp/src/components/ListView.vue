@@ -47,12 +47,13 @@ import _ from 'lodash'
 import Pagination from './Pagination'
 import TableList from './LayoutTypes/TableList'
 import MultiSelectList from './LayoutTypes/MultiSelectList'
+import PageEditorList from './LayoutTypes/PageEditorList'
 import Auth from './Auth.js'
 
 export default {
   name: 'ListView',
 
-  components: { Pagination, TableList, MultiSelectList },
+  components: { Pagination, TableList, MultiSelectList, PageEditorList },
 
   data () {
     return {

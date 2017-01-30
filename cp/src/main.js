@@ -18,12 +18,11 @@ Vue.http.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('id_
 
 Vue.http.interceptors.push((request, next) => {
   next(response => {
-    // if (response.headers.has('authorization')) {
-    //   let token = response.headers.get('authorization').slice(8)
-    //   console.log(token)
-    //   localStorage.setItem('id_token', token)
-    //   Vue.http.headers.common['Authorization'] = response.headers.get('authorization')
-    // }
+    if (response.headers.has('authorization')) {
+      let token = response.headers.get('authorization').slice(8)
+      localStorage.setItem('id_token', token)
+      Vue.http.headers.common['Authorization'] = response.headers.get('authorization')
+    }
 
     if (response.status === 401) {
       return Auth.logout()

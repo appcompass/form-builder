@@ -12,7 +12,6 @@ export default {
     this.cb = cb
     this.dataObject = dataObject
     this.form = data
-    return this
   },
   disable () {
     this.active = false

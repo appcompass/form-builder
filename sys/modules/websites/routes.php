@@ -7,6 +7,7 @@ Route::group([
     $router->delete('menus/{link_id}', '\P3in\Controllers\MenusController@deleteLink');
     $router->resource('menus', MenusController::class);
     $router->resource('pages', PagesController::class);
+    $router->resource('pages.content', PageContentController::class);
     // @TODO use generic forms getter once that's done (maybe)
     $router->get('menus/forms/{form}', '\P3in\Controllers\MenusController@getForm');
     $router->post('menus/forms/{form}', '\P3in\Controllers\MenusController@storeForm');

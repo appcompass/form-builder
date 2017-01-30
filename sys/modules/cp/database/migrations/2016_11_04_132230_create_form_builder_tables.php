@@ -36,12 +36,6 @@ class CreateFormBuilderTables extends Migration
             $table->string('validation')->nullable();
             $table->string('type');
 
-            // $table->foreign('type')
-            //     ->references('type')
-            //     ->on('fieldtypes')
-            //     ->onCascade('delete');
-
-            // $table->timestamps();
             $table->index('name');
         });
 

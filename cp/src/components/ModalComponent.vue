@@ -4,10 +4,10 @@
     .modal-content
       .modal-card
         header.modal-card-head
-          p.modal-card-title Add Link
+          p.modal-card-title Title Here
           button.delete(@click.prevent="modal.disable()")
         section.modal-card-body
-          span(v-for="field in modal.form")
+          span(v-if="modal.form", v-for="field in modal.form")
             label.label {{ field.label }}
             span(
               v-bind:is="Components[field.type]",
