@@ -13,4 +13,11 @@ class PageContentController extends AbstractChildController
         $this->repo = $repo;
     }
 
+    public function show($parent, $model)
+    {
+        $model->load('section.form');
+
+        return $model->section->form->render();
+    }
+
 }

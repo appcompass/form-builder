@@ -17,7 +17,7 @@ class Field extends Model
     protected $hidden = [];
 
     protected $with = [
-        'children'
+        // 'children'
     ];
 
     public $timestamps = false; // we don't need ts on fields
@@ -132,7 +132,7 @@ class Field extends Model
      */
     public function repeatable($repeatable = true)
     {
-        $this->update(['required' => $repeatable]);
+        $this->update(['repeatable' => $repeatable]);
 
         return $this;
     }

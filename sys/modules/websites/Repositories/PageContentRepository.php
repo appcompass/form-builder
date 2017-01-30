@@ -11,8 +11,6 @@ class PageContentRepository extends AbstractChildRepository implements PageConte
 
     protected $view = 'PageEditor';
 
-    protected $with = ['section.form'];
-
     public function __construct(PageSectionContent $model, Page $parent)
     {
         $this->model = $model;
