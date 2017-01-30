@@ -1,35 +1,39 @@
 <template>
-    <footer class="footer">
-        <div class="footer-buttons">
-            <a href="" class="btn-footer"><span class="icon icon-contact"></span> Contact Us</a>
-            <a href="#proposal-popup" class="btn-footer btn-proposal"><span class="icon icon-document"></span> Request a Proposal</a>
-        </div>
-        <div class="footer-bottom">
-            <a href="" class="footer-logo"><span class="visually-hidden">Plus 3 Interactive</a>
-            <nav class="footer-nav">
-                <ul>
-                    <li><a href="/solutions">Solutions</a></li>
-                    <li><a href="/projects">Projects</a></li>
-                    <li><a href="/company">Company</a></li>
-                    <li><a href="/contact">Contact Us</a></li>
-                    <li><a href="/customer-login">Customer Login</a></li>
-                </ul>
-            </nav>
-            <div class="footer-social">
-                <a href=""><span class="icon icon-instagram"></span></a>
-                <a href=""><span class="icon icon-twitter"></span></a>
-                <a href=""><span class="icon icon-facebook"></span></a>
-            </div>
-        </div>
-        <div class="footer-copyright">
-            <p>&copy;2010-{{ new Date().getFullYear() }} Plus 3 Interactive LLC All Rights Reserved</p>
-        </div>
-    </footer><!-- footer -->
+  <footer class="footer">
+    <div class="footer-buttons">
+      <nuxt-link to="/contact" class="btn-footer"><span class="icon icon-contact"></span> Contact Us</nuxt-link>
+      <a href="#proposal-popup" class="btn-footer btn-proposal"><span class="icon icon-document"></span> Request a Proposal</a>
+    </div>
+    <div class="footer-bottom">
+      <nuxt-link to="/" class="footer-logo"><span class="visually-hidden">{{meta.name}}</span></nuxt-link>
+      <nav class="footer-nav">
+        <ul>
+          <li v-for="item in menus.main_footer_menu">
+            <nuxt-link :to="item.url">{{item.title}}</nuxt-link>
+          </li>
+        </ul>
+      </nav>
+      <div class="footer-social">
+        <a v-if="meta.instagram_url" :href="meta.instagram_url"><span class="icon icon-instagram"></span></a>
+        <a v-if="meta.twitter_url" :href="meta.twitter_url"><span class="icon icon-twitter"></span></a>
+        <a v-if="meta.facebook_url" :href="meta.facebook_url"><span class="icon icon-facebook"></span></a>
+        <a v-if="meta.linkedin_url" :href="meta.linkedin_url"><span class="icon icon-linkedin"></span></a>
+      </div>
+    </div>
+    <div class="footer-copyright">
+      <p>&copy;2010-{{ new Date().getFullYear() }} {{meta.name}} All Rights Reserved</p>
+    </div>
+  </footer><!-- footer -->
 
 </template>
 
 <script>
   export default {
+    props: [
+      'menus',
+      'meta',
+      // 'current_url'
+    ],
     mounted () {
       $('.btn-proposal').magnificPopup({
         type:'inline',

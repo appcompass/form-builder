@@ -1,11 +1,10 @@
 <template>
-  <section class="section-module section-process">
+  <section v-if="data" class="section-module section-process">
     <div class="row">
       <div class="medium-8 medium-centered columns">
         <div class="section-header">
-          <h2 class="section-heading">Our Process</h2>
-          <div class="section-desc">
-            <p>Explore our development process …</p>
+          <h2 class="section-heading">{{data.title}}</h2>
+          <div class="section-desc" v-html="data.description">
           </div>
         </div>
       </div>
@@ -17,7 +16,10 @@
 </template>
 
 <script>
+  // @TODO: refactor this so that it's cleaner, interactive, and not buggy,
+  // and set speed, animation, and other config settings via the CMS UI for this section.
   export default {
+    props: ['data'],
     mounted () {
       var home_process = new Snap("#home-process-svg");
       Snap.load('/assets/images/content/home_process.svg', function(svg){

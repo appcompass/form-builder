@@ -120,10 +120,10 @@ class PageBuilder
      * @param int $order
      * @return PageBuilder
      */
-    public function addSection(Section $section, int $order)
+    public function addSection(Section $section, int $order, array $data = [])
     {
         if ($this->container) {
-            $this->container->addSection($section, $order);
+            $this->container->addSection($section, $order, $data);
             return $this;
         } else {
             throw new Exception('a Container must be set to add Sections.');
@@ -149,7 +149,7 @@ class PageBuilder
      */
     public function setAuthor($val = '')
     {
-        return $this->setMeta('author', $val);
+        return $this->setMeta('head->author', $val);
     }
 
     /**
@@ -161,7 +161,7 @@ class PageBuilder
      */
     public function setDescription($val = '')
     {
-        return $this->setMeta('description', $val);
+        return $this->setMeta('head->description', $val);
     }
 
     /**
@@ -225,7 +225,7 @@ class PageBuilder
      * @param      <type>   $parts  The parts
      * @param      integer  $depth  The depth
      */
-    private function buildPageTemplateTree($parts, int $pos = 1)
+    private function buildPageTemplateTree($parts, int $pos = 0)
     {
         $depth = $pos*2;
 
@@ -239,8 +239,10 @@ class PageBuilder
                 $this->buildPageTemplateTree($part->children, $pos+1);
             } else {
                 $name = $part->section->template;
-
-                $this->template[] = $this->getElementData($depth, $name);
+                $props = $part->buildProps();
+                $props[] = ':data="content['.$part->id.']"';
+                $dataAppend = '('.implode(', ', $props).')';
+                $this->template[] = $this->getElementData($depth, $name.$dataAppend);
 
                 if (!in_array($name, $this->imports)) {
                     $this->imports[] = $name;
@@ -267,6 +269,7 @@ class PageBuilder
     /**
      * Exports Page Template
      */
+    // @TODO: the use of $this->manager has been abstracted to the PublishFiles class, which will eventually become part of the Deploy family.
     public function compilePageTemplate($layout)
     {
         $page = $this->page;
@@ -275,14 +278,14 @@ class PageBuilder
         // //@TODO: On delete or parent change of a page (we use the url as the unique name for a page),
         // //we need to delete it's template file as to clean up junk.
 
-        // this is prob not needed, right now some sections have two or more
-        // same level sections.  that doesn't jive well with the template structure.
-        // We might want to break the templates up into smaller pieces, but for now
-        // we just have a container div as the parent on all pages.
-        $this->template[] = $this->getElementData(0, 'div');
+        // // this is prob not needed, right now some sections have two or more
+        // // same level sections.  that doesn't jive well with the template structure.
+        // // We might want to break the templates up into smaller pieces, but for now
+        // // we just have a container div as the parent on all pages.
+        // $this->template[] = $this->getElementData(0, 'div');
 
         if ($page->children->count()) {
-            $sections = [$this->getElementData(2, '<nuxt-child/>')];
+            $sections = [$this->getElementData(0, '<nuxt-child/>')];
 
             $parent_template = static::buildTemplate($layout, $sections);
 

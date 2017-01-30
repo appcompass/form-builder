@@ -76,9 +76,7 @@ class MenuItem extends Model
     public function getUrlAttribute()
     {
         if (is_null($this->navigatable)) {
-
             return null;
-
         }
 
         return $this->navigatable->url;
@@ -92,9 +90,7 @@ class MenuItem extends Model
     public function getContentAttribute()
     {
         if (get_class($this->navigatable) === Link::class) {
-
             return $this->navigatable->content;
-
         }
 
         return null;

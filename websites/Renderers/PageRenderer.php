@@ -18,7 +18,7 @@ class PageRenderer
     private $website;
     private $pages;
     private $page;
-    private $build;
+    private $build = [];
 
     public function __construct(Website $website)
     {
@@ -93,13 +93,26 @@ class PageRenderer
             $this->filterData();
         }
 
-        $this->build['page'] = $this->page->toArray();
+        $this->getContent($this->page->containers);
+
+        $this->build['page'] = $this->page;
 
         // $this->getSettings();
         // $this->getContent($filtered);
 
         // structure the page data to be sent to the front-end to work out.
         return $this->build;
+    }
+
+    private function getContent($sections)
+    {
+        foreach ($sections as $row) {
+            if ($row->children->count()) {
+                $this->getContent($row->children);
+            } else {
+                $this->build['content'][$row->id] = $row->content;
+            }
+        }
     }
 
     private function getPageFromUrl($url)

@@ -22,8 +22,14 @@ class WebsiteMenusController extends AbstractChildController
             'menu' => [
                 'menu' => $model->render(),
                 'repo' => [
-                    'pages' => $parent->pages->each(function($item) { $item->children = []; $item->type = 'Page'; }),
-                    'links' => Link::all()->each(function($item) { $item->children = []; $item->type = 'Link'; })
+                    'pages' => $parent->pages->each(function ($item) {
+                        $item->children = [];
+                        $item->type = 'Page';
+                    }),
+                    'links' => Link::all()->each(function ($item) {
+                        $item->children = [];
+                        $item->type = 'Link';
+                    })
                 ],
                 'deletions' => []
             ]
@@ -39,15 +45,11 @@ class WebsiteMenusController extends AbstractChildController
 
             // deletions are always MenuItems we make sure we clean whole branches
             $this->clean(MenuItem::findOrFail($deletee_id));
-
         }
 
         foreach ($menu_structure as $menuitem) {
-
             if (is_null($menuitem->menu_id)) {
-
                 $menu->add($menuitem);
-
             }
         }
     }
@@ -63,13 +65,9 @@ class WebsiteMenusController extends AbstractChildController
         $children = MenuItem::where('parent_id', $menuitem->id)->get();
 
         if ($children) {
-
             foreach ($children as $child) {
-
                 $this->clean($child);
-
             }
-
         }
 
         $menuitem->delete();
@@ -89,14 +87,11 @@ class WebsiteMenusController extends AbstractChildController
     {
         // item is a MenuItem (has the polymorphic ref)
         if (isset($item['navigatable_id'])) {
-
             $menuitem = MenuItem::findOrFail($item['id']);
-
-
         } else {
 
             // doing the extra mile here to greatly simplify the frontend stuff
-            switch($item['type']) {
+            switch ($item['type']) {
                 case 'Link':
                     $class_name = Link::class;
                     break;
@@ -107,7 +102,6 @@ class WebsiteMenusController extends AbstractChildController
 
             // otherwise generate a MenuItem instance from model being added
             $menuitem = MenuItem::fromModel($class_name::findOrFail($item['id']), $item['order']);
-
         }
 
         $menuitem->fill($item)->save();
@@ -129,13 +123,10 @@ class WebsiteMenusController extends AbstractChildController
         $res = [];
 
         if (is_null($order)) {
-
             $order = 0;
-
         }
 
         foreach ($menu as $branch) {
-
             $branch['order'] = $order++;
 
             $menuitem = $this->getMenuItem($branch);
@@ -149,9 +140,7 @@ class WebsiteMenusController extends AbstractChildController
             $res[] = $menuitem;
 
             if (count($children)) {
-
                 $res = array_merge($res, $this->flatten($children, $menuitem->id, $order));
-
             }
         }
 
