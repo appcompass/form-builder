@@ -24,7 +24,7 @@ class PageSectionContent extends Model
 
     protected $with = [
         'children',
-        'section',
+        'section.form',
     ];
 
     /**

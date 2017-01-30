@@ -38,6 +38,7 @@ export default {
 
 <style lang="styl">
 @import "~quill/assets/snow"
-.editor
+.ql-container
+  height: initial
   min-height: 10rem
 </style>

@@ -18,7 +18,7 @@ class Form extends Model
         'updated_at'
     ];
 
-    // protected $with = ['fields'];
+    protected $with = ['fields'];
 
     /**
      * Links to models
