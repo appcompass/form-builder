@@ -59,9 +59,14 @@ class CreateFormBuilderTables extends Migration
             $table->foreign('field_id')->references('id')->on('fields')->onDelete('cascade');
             $table->timestamps();
 
-            $table->unique(['form_id', 'field_id']);
             $table->index('form_id');
             $table->index('field_id');
+
+            // @NOTE About unique
+            // we are using a sort of pseudo-sub-forms, allowing for parent/children relations inside form fields, this allows us to group them inside fieldsets
+            // this way a dependent form does not need to be created, we just pass a parent and link all the subsequent fields to it.
+            //
+            // $table->unique(['form_id', 'field_id']);
         });
 
         Schema::create('resources', function (Blueprint $table) {

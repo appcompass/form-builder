@@ -16,8 +16,10 @@ class Field extends Model
 
     protected $hidden = [];
 
+    // @WARNING @TODO @NOTE
+    // including fields makes things shitty
     protected $with = [
-        'fields'
+        // 'fields'
     ];
 
     public $timestamps = false; // we don't need ts on fields
@@ -64,6 +66,16 @@ class Field extends Model
         return $this->hasMany(Field::class, 'parent_id');
     }
 
+    /**
+     * Sets the parent.
+     *
+     * @param      Field  $field  The field
+     */
+    public function setParent(Field $field)
+    {
+        $this->parent()->associate($field)->save();
+    }
+
     /*
      * is the field gonna be visible on edit mode?
      */
@@ -89,6 +101,13 @@ class Field extends Model
      */
     public function validation($validation)
     {
+
+        if (is_array($validation)) {
+
+            $validation = implode('|', $validation);
+
+        }
+
         $this->update(['validation' => $validation]);
 
         return $this;

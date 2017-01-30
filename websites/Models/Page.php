@@ -31,7 +31,7 @@ class Page extends Model implements Linkable
         'meta' => 'object',
     ];
 
-    public $appends = ['type', 'head_meta'];
+    // public $appends = ['type', 'head_meta'];
 
     /**
      * website

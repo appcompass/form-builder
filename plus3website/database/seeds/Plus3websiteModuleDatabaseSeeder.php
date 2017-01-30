@@ -327,17 +327,19 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('SliderBanner', function ($fb) {
-                // we need to figure out how to handle the 'type' field.
+            FormBuilder::new('SliderBanner', function (FormBuilder $fb) {
                 // the fields internally are created in the order they appear in the builder.
-                $fb->string('Title', 'title', ['required']);
-                $fb->fieldset('Slides', 'slides', [], function ($slide) {
+                $fb->string('Title', 'title')->validation(['required']);
+
+                // fieldset will return a FormBuilder instance with Parent set to current field
+                $fb->fieldset('Slides', 'slides', function (FormBuilder $slide) {
                     // not field type, sub section builder.
-                    $slide->file('Banner Image', 'banner_image', Photo::class, ['required']);
-                    $slide->string('Title', 'title', ['required']);
-                    $slide->wysiwyg('Description', 'description', ['required']);
-                    $slide->string('Link Text', 'link_text', ['required']);
-                    $slide->link('Link Destination', 'link_href', ['required']);
+                    // $slide->file('Banner Image', 'banner_image', Photo::class, ['required']);
+                    $slide->file('Banner Image', 'banner_image')->validation(['required']);
+                    $slide->string('Title', 'title')->validation(['required']);
+                    $slide->wysiwyg('Description', 'description')->validation(['required']);
+                    $slide->string('Link Text', 'link_text')->validation(['required']);
+                    $slide->link('Link Destination', 'link_href')->validation(['required']);
                 })->repeatable();
             })->setOwner($slider_banner);
 
@@ -347,9 +349,9 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('SectionHeading', function ($fb) {
-                $fb->string('Title', 'title', ['required']);
-                $fb->wysiwyg('Description', 'description', ['required']);
+            FormBuilder::new('SectionHeading', function (FormBuilder $fb) {
+                $fb->string('Title', 'title')->validation(['required']);
+                $fb->wysiwyg('Description', 'description')->validation(['required']);
             })->setOwner($section_heading);
 
             $box_callouts = Section::create([
@@ -358,13 +360,13 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('BoxCallouts', function ($fb) {
-                $fb->fieldset('Boxes', 'boxes', [], function ($box) {
-                    $box->string('Title', 'title', ['required']);
-                    $box->file('Image', 'image', Photo::class, ['required']);
-                    $box->string('Points', 'points', [])->repeatable();
-                    $box->string('Link Text', 'link_text', ['required']);
-                    $box->link('Link Destination', 'link_href', ['required']);
+            FormBuilder::new('BoxCallouts', function (FormBuilder $fb) {
+                $fb->fieldset('Boxes', 'boxes', function (FormBuilder $box) {
+                    $box->string('Title', 'title')->validation(['required']);
+                    $box->file('Image', 'image')->validation(['required']);
+                    $box->string('Points', 'points')->repeatable();
+                    $box->string('Link Text', 'link_text')->validation(['required']);
+                    $box->link('Link Destination', 'link_href')->validation(['required']);
                 })->repeatable();
             })->setOwner($box_callouts);
 
@@ -374,11 +376,11 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('OurProcess', function ($fb) {
-                $fb->string('Title', 'title', ['required']);
-                $fb->wysiwyg('Description', 'description', ['required']);
-                $fb->string('Link Text', 'link_text', ['required']);
-                $fb->link('Link Destination', 'link_href', ['required']);
+            FormBuilder::new('OurProcess', function (FormBuilder $fb) {
+                $fb->string('Title', 'title')->validation(['required']);
+                $fb->wysiwyg('Description', 'description')->validation(['required']);
+                $fb->string('Link Text', 'link_text')->validation(['required']);
+                $fb->link('Link Destination', 'link_href')->validation(['required']);
                 // SVG Animation is static, editable in code only.
             })->setOwner($our_proccess);
 
@@ -388,11 +390,11 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('MeetOurTeam', function ($fb) {
-                $fb->string('Title', 'title', ['required']);
-                $fb->wysiwyg('Description', 'description', ['required']);
-                $fb->string('Link Text', 'link_text', ['required']);
-                $fb->link('Link Destination', 'link_href', ['required']);
+            FormBuilder::new('MeetOurTeam', function (FormBuilder $fb) {
+                $fb->string('Title', 'title')->validation(['required']);
+                $fb->wysiwyg('Description', 'description')->validation(['required']);
+                $fb->string('Link Text', 'link_text')->validation(['required']);
+                $fb->link('Link Destination', 'link_href')->validation(['required']);
             })->setOwner($meet_our_team)
             // ->dynamic(Plus3Person::class) // we need to decide if the section is dynamic, or the field (or both can be)
             ;
@@ -404,7 +406,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             ]);
 
             FormBuilder::new('SocialStream', function ($fb) {
-                $fb->string('Title', 'title', ['required']);
+                $fb->string('Title', 'title')->validation(['required']);
                 // Fields
             })->setOwner($social_stream);
 
@@ -414,21 +416,18 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('CustomerTestimonials', function ($fb) {
-                $fb->fieldset('Testimonials', 'testimonials', [], function ($testimonial) {
-                    $testimonial->string('Author', 'author', ['required'])->required();
-                    $testimonial->wysiwyg('Content', 'content', ['required'])->required();
-
-                    //BEGIN DUMMY: these below are a dummy set to test nesting fieldsets.
-                    $testimonial->fieldset('Testimonials', 'testimonials', [], function ($lvl3) {
-                        $lvl3->string('Author', 'author', ['required']);
-                        $lvl3->wysiwyg('Content', 'content', ['required']);
-                        $lvl3->fieldset('Testimonials', 'testimonials', [], function ($lvl4) {
-                            $lvl4->string('Author', 'author', ['required']);
-                            $lvl4->wysiwyg('Content', 'content', ['required']);
+            FormBuilder::new('CustomerTestimonials', function (FormBuilder $fb) {
+                $fb->fieldset('Testimonials', 'testimonials', function (FormBuilder $testimonial) {
+                    $testimonial->string('Author', 'author')->validation(['required'])->required();
+                    $testimonial->wysiwyg('Content', 'content')->validation(['required'])->required();
+                    $testimonial->fieldset('Testimonials', 'testimonials', function (FormBuilder $lvl3) {
+                        $lvl3->string('Author', 'author')->validation(['required']);
+                        $lvl3->wysiwyg('Content', 'content')->validation(['required']);
+                        $lvl3->fieldset('Testimonials', 'testimonials', function (FormBuilder $lvl4) {
+                            $lvl4->string('Author', 'author')->validation(['required']);
+                            $lvl4->wysiwyg('Content', 'content')->validation(['required']);
                         })->repeatable();
                     })->repeatable();
-                    // END DUMMY:
                 })->repeatable();
             })->setOwner($customer_testimonials);
 
@@ -438,10 +437,10 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('ThickPageBanner', function ($fb) {
-                $fb->file('Background Image', 'background_image', []);
-                $fb->string('Title', 'title', ['required']);
-                $fb->wysiwyg('Description', 'description', ['required']);
+            FormBuilder::new('ThickPageBanner', function (FormBuilder $fb) {
+                $fb->file('Background Image', 'background_image');
+                $fb->string('Title', 'title')->validation(['required']);
+                $fb->wysiwyg('Description', 'description')->validation(['required']);
             })->setOwner($thick_page_banner);
 
             $white_break_w_section_links = Section::create([
@@ -450,16 +449,13 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('WhiteBreakCalloutSectionLinks', function ($fb) {
-                $fb->string('Title', 'title', ['required']);
-                $fb->wysiwyg('Description', 'description', ['required']);
-                $fb->fieldset('Page Section Quick Links', 'quick_links', [], function ($quickLinks) {
-                    $quickLinks->radio('Link Format', 'link_format', [
-                        'ol' => 'Ordered List',
-                        'ul' => 'Un Ordered List',
-                        'arrow' => 'Link with Arrow',
-                    ])->required();
-                    $quickLinks->pageSectionSelect('Page Section Quick Links', 'quick_links', [])->repeatable();
+            FormBuilder::new('WhiteBreakCalloutSectionLinks', function (FormBuilder $fb) {
+                $fb->string('Title', 'title')->validation(['required']);
+                $fb->wysiwyg('Description', 'description')->validation(['required']);
+                $fb->fieldset('Page Section Quick Links', 'quick_links', function (FormBuilder $quickLinks) {
+                    // @TODO dataSource ['ol' => 'Ordered List', 'ul' => 'Un Ordered List', 'arrow' => 'Link with Arrow', ]
+                    $quickLinks->radio('Link Format', 'link_format')->required();
+                    $quickLinks->pageSectionSelect('Page Section Quick Links', 'quick_links')->repeatable();
                 });
             })->setOwner($white_break_w_section_links);
 
@@ -469,16 +465,16 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('ProvidedSolution', function ($fb) {
-                $fb->fieldset('Solution', 'solution', [], function ($solution) {
-                    $solution->radio('Layout', 'layout', ['left' => 'Left', 'right' => 'Right'])->required();
-                    $solution->string('Title', 'title', ['required']);
-                    $solution->file('Solution Photo', 'solution_photo', []);
-                    $solution->wysiwyg('Description', 'description', ['required'])->required();
-                    $solution->pageSectionSelect('Projects Using Solution', 'projects_using_solution', [])->repeatable();
-                    $solution->text('Link Description', 'link_description', [])->required();
-                    $solution->string('Link Title', 'link_title', [])->required();
-                    $solution->link('Link Destination', 'link_href', [])->required();
+            FormBuilder::new('ProvidedSolution', function (FormBuilder $fb) {
+                $fb->fieldset('Solution', 'solution', function (FormBuilder $solution) {
+                    $solution->radio('Layout', 'layout')->required(); // @TODO DataSource , ['left' => 'Left', 'right' => 'Right']
+                    $solution->string('Title', 'title')->validation(['required']);
+                    $solution->file('Solution Photo', 'solution_photo');
+                    $solution->wysiwyg('Description', 'description')->validation(['required'])->required();
+                    $solution->pageSectionSelect('Projects Using Solution', 'projects_using_solution')->repeatable();
+                    $solution->text('Link Description', 'link_description')->required();
+                    $solution->string('Link Title', 'link_title')->required();
+                    $solution->link('Link Destination', 'link_href')->required();
                 })->repeatable();
             })->setOwner($provided_solution);
 
@@ -488,9 +484,9 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('BlueBreakCallout', function ($fb) {
-                $fb->string('Link Title', 'link_title', [])->required();
-                $fb->link('Link Destination', 'link_href', [])->required();
+            FormBuilder::new('BlueBreakCallout', function (FormBuilder $fb) {
+                $fb->string('Link Title', 'link_title')->required();
+                $fb->link('Link Destination', 'link_href')->required();
             })->setOwner($blue_break_callout);
 
             $breadcrumb_with_right_link = Section::create([
@@ -499,9 +495,9 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('BreadCrumbRightSideLink', function ($fb) {
-                $fb->string('Link Title', 'link_title', [])->required();
-                $fb->link('Link Destination', 'link_href', [])->required();
+            FormBuilder::new('BreadCrumbRightSideLink', function (FormBuilder $fb) {
+                $fb->string('Link Title', 'link_title')->required();
+                $fb->link('Link Destination', 'link_href')->required();
             })->setOwner($breadcrumb_with_right_link);
 
             $process_timeline = Section::create([
@@ -510,15 +506,15 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('ProcessTimeline', function ($fb) {
-                $fb->string('Title', 'title', ['required']);
-                $fb->wysiwyg('Description', 'description', ['required']);
-                $fb->fieldset('Process Steps', 'process_steps', [], function ($process) {
+            FormBuilder::new('ProcessTimeline', function (FormBuilder $fb) {
+                $fb->string('Title', 'title')->validation(['required']);
+                $fb->wysiwyg('Description', 'description')->validation(['required']);
+                $fb->fieldset('Process Steps', 'process_steps', function (FormBuilder $process) {
                     $process->file('Image File', 'image', ['type:svg']);
-                    $process->string('Image width', 'image_width', []);
-                    $process->string('Image Height', 'image_height', []);
-                    $process->string('Title', 'title', ['required']);
-                    $process->wysiwyg('Description', 'description', ['required']);
+                    $process->string('Image width', 'image_width');
+                    $process->string('Image Height', 'image_height');
+                    $process->string('Title', 'title')->validation(['required']);
+                    $process->wysiwyg('Description', 'description')->validation(['required']);
                 })->repeatable();
             })->setOwner($process_timeline);
 
@@ -528,14 +524,14 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('MaintenanceDetails', function ($fb) {
-                $fb->string('Title', 'title', ['required']);
-                $fb->wysiwyg('Description', 'description', ['required']);
+            FormBuilder::new('MaintenanceDetails', function (FormBuilder $fb) {
+                $fb->string('Title', 'title')->validation(['required']);
+                $fb->wysiwyg('Description', 'description')->validation(['required']);
                 $fb->file('Image File', 'image', ['type:svg']);
-                $fb->string('Image width', 'image_width', []);
-                $fb->string('Image Height', 'image_height', []);
-                $fb->string('Link Title', 'link_title', [])->required();
-                $fb->link('Link Destination', 'link_href', [])->required();
+                $fb->string('Image width', 'image_width');
+                $fb->string('Image Height', 'image_height');
+                $fb->string('Link Title', 'link_title')->required();
+                $fb->link('Link Destination', 'link_href')->required();
             })->setOwner($process_maintenance_details);
 
             $project_list = Section::create([
@@ -544,14 +540,14 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('ProjectList', function ($fb) {
-                $fb->fieldset('Projects', 'projects', [], function ($project) {
-                    $project->file('Background Image', 'background_image', ['required']);
-                    $project->file('Logo', 'logo', ['required']);
-                    $project->string('Name', 'name', ['required']);
-                    $project->string('Business Area', 'business_area', ['required']);
-                    $project->wysiwyg('Description', 'description', ['required']);
-                    $project->pageSectionSelect('Page Section Quick Links', 'quick_links', [])->repeatable();
+            FormBuilder::new('ProjectList', function (FormBuilder $fb) {
+                $fb->fieldset('Projects', 'projects', function (FormBuilder $project) {
+                    $project->file('Background Image', 'background_image')->validation(['required']);
+                    $project->file('Logo', 'logo')->validation(['required']);
+                    $project->string('Name', 'name')->validation(['required']);
+                    $project->string('Business Area', 'business_area')->validation(['required']);
+                    $project->wysiwyg('Description', 'description')->validation(['required']);
+                    $project->pageSectionSelect('Page Section Quick Links', 'quick_links')->repeatable();
                 })->repeatable();
             })->setOwner($project_list);
 
@@ -561,12 +557,12 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('MoreClientsList', function ($fb) {
-                $fb->fieldset('Clients', 'clients', [], function ($project) {
-                    $project->file('Logo', 'logo', ['required']);
-                    $project->string('Name', 'name', ['required']);
-                    $project->string('Business Area', 'business_area', ['required']);
-                    $project->wysiwyg('Description', 'description', ['required']);
+            FormBuilder::new('MoreClientsList', function (FormBuilder $fb) {
+                $fb->fieldset('Clients', 'clients', function (FormBuilder $project) {
+                    $project->file('Logo', 'logo')->validation(['required']);
+                    $project->string('Name', 'name')->validation(['required']);
+                    $project->string('Business Area', 'business_area')->validation(['required']);
+                    $project->wysiwyg('Description', 'description')->validation(['required']);
                 })->repeatable();
             })->setOwner($more_clients_list);
 
@@ -576,8 +572,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('ContactUs', function ($fb) {
-                $fb->formBuilder('Contact Form', 'contact_form', []);
+            FormBuilder::new('ContactUs', function (FormBuilder $fb) {
+                $fb->formBuilder('Contact Form', 'contact_form');
             })->setOwner($contact_form);
 
             $map_address = Section::create([
@@ -586,15 +582,15 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('MapAddress', function ($fb) {
-                $fb->string('Title', 'title', []);
-                $fb->string('Phone Number', 'phone', []);
-                $fb->string('Address Line 1', 'address_1', []);
-                $fb->string('Address Line 2', 'address_2', []);
-                $fb->string('City', 'city', []);
-                $fb->string('State', 'state', []);
-                $fb->string('Zip', 'zip', []);
-                $fb->map('Map', 'map', ['address_1', 'address_2', 'city', 'state', 'zip']);
+            FormBuilder::new('MapAddress', function (FormBuilder $fb) {
+                $fb->string('Title', 'title');
+                $fb->string('Phone Number', 'phone');
+                $fb->string('Address Line 1', 'address_1');
+                $fb->string('Address Line 2', 'address_2');
+                $fb->string('City', 'city');
+                $fb->string('State', 'state');
+                $fb->string('Zip', 'zip');
+                $fb->map('Map', 'map'); // @TODO What is this ['address_1', 'address_2', 'city', 'state', 'zip']);
             })->setOwner($map_address);
 
             // We might want to consider having this section be dynamic rather than set a field to be the dynamic piece?
@@ -606,8 +602,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('CustomerLogin', function ($fb) {
-                $fb->loginForm('Customer Login', 'customer_login', []);
+            FormBuilder::new('CustomerLogin', function (FormBuilder $fb) {
+                $fb->loginForm('Customer Login', 'customer_login');
             })->setOwner($login_form);
 
             // we should always (but only(?)) have one container component.
