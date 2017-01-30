@@ -1,7 +1,7 @@
 <template lang="jade">
 div.page-container(v-if="container.section.type === 'container'")
-  Container(v-if="container.children", v-for="sub in container.children", :container="sub", :level="level + 1")
-div.element(v-else, @click="editSection(container.id)")
+  Container(v-if="container.children", v-for="sub in container.children", :container="sub", :level="level + 1", @edit="edit")
+div.element(v-else, @click="$emit('edit', container.id)")
   a {{ container.section.name }}
 </template>
 
@@ -17,17 +17,8 @@ export default {
     }
   },
   methods: {
-    editSection (id) {
-      this.$http.get(process.env.API_SERVER + 'pages/' + this.$route.params.id + '/content/' + id)
-        .then(response => {
-          console.log(response.data.collection.section.form.fields)
-          // @TODO building data object is gonna be interesting
-          this.modal.show(response.data.collection.section.form.fields, this.link, (result) => {
-            console.log(result)
-          })
-
-          console.log(response)
-        })
+    edit (id) {
+      this.$emit('edit', id)
     }
   }
 }

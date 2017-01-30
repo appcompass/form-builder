@@ -327,7 +327,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            FormBuilder::new('SliderBanner', function (FormBuilder $fb) {
+            $form = FormBuilder::new('SliderBanner', function (FormBuilder $fb) {
                 // the fields internally are created in the order they appear in the builder.
                 $fb->string('Title', 'title')->validation(['required']);
 
@@ -341,7 +341,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                     $slide->string('Link Text', 'link_text')->validation(['required']);
                     $slide->link('Link Destination', 'link_href')->validation(['required']);
                 })->repeatable();
-            })->setOwner($slider_banner);
+            })->setOwner($slider_banner)
+            ->getForm();
 
             $section_heading = Section::create([
                 'name' => 'Section Heading',

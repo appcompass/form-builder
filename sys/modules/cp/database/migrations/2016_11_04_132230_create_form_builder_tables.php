@@ -21,6 +21,18 @@ class CreateFormBuilderTables extends Migration
             $table->primary('name');
         });
 
+        Schema::create('forms', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name')->unique();
+            $table->nullableMorphs('formable');
+            $table->string('list_layout')->default('Table'); // the list view layout [Cards, Table, MultiSelect]
+            $table->string('resource')->nullable(); // point to base resource url
+            // $table->string('resource')->nullable()->unique(); // point to base resource url
+            $table->timestamps();
+
+            $table->index('name');
+        });
+
         Schema::create('fields', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
@@ -35,39 +47,28 @@ class CreateFormBuilderTables extends Migration
             $table->boolean('repeatable')->default(false);
             $table->string('validation')->nullable();
             $table->string('type');
+            $table->integer('form_id')->references('id')->on('forms')->onDelete('cascade');
 
             $table->index('name');
         });
 
-        Schema::create('forms', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name')->unique();
-            $table->nullableMorphs('formable');
-            $table->string('list_layout')->default('Table'); // the list view layout [Cards, Table, MultiSelect]
-            $table->string('resource')->nullable(); // point to base resource url
-            // $table->string('resource')->nullable()->unique(); // point to base resource url
-            $table->timestamps();
+        // Schema::create('field_form', function (Blueprint $table) {
+        //     $table->increments('id');
+        //     $table->integer('form_id')->unsigned();
+        //     $table->foreign('form_id')->references('id')->on('forms')->onDelete('cascade');
+        //     $table->integer('field_id')->unsigned();
+        //     $table->foreign('field_id')->references('id')->on('fields')->onDelete('cascade');
+        //     $table->timestamps();
 
-            $table->index('name');
-        });
-
-        Schema::create('field_form', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('form_id')->unsigned();
-            $table->foreign('form_id')->references('id')->on('forms')->onDelete('cascade');
-            $table->integer('field_id')->unsigned();
-            $table->foreign('field_id')->references('id')->on('fields')->onDelete('cascade');
-            $table->timestamps();
-
-            $table->index('form_id');
-            $table->index('field_id');
+        //     $table->index('form_id');
+        //     $table->index('field_id');
 
             // @NOTE About unique
             // we are using a sort of pseudo-sub-forms, allowing for parent/children relations inside form fields, this allows us to group them inside fieldsets
             // this way a dependent form does not need to be created, we just pass a parent and link all the subsequent fields to it.
             //
             // $table->unique(['form_id', 'field_id']);
-        });
+        // });
 
         Schema::create('resources', function (Blueprint $table) {
             $table->increments('id');
@@ -89,7 +90,7 @@ class CreateFormBuilderTables extends Migration
     public function down()
     {
         Schema::drop('resources');
-        Schema::drop('field_form');
+        // Schema::drop('field_form');
         Schema::drop('forms');
         Schema::drop('fields');
         Schema::drop('fieldtypes');

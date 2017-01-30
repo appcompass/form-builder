@@ -16,10 +16,8 @@ class Field extends Model
 
     protected $hidden = [];
 
-    // @WARNING @TODO @NOTE
-    // including fields makes things shitty
     protected $with = [
-        // 'fields'
+        'children'
     ];
 
     public $timestamps = false; // we don't need ts on fields
@@ -43,7 +41,8 @@ class Field extends Model
      */
     public function form()
     {
-        return $this->belongsToMany(Form::class);
+        // return $this->belongsToMany(Form::class);
+        return $this->belongsTo(Form::class);
     }
 
     /**
@@ -64,6 +63,11 @@ class Field extends Model
     public function fields()
     {
         return $this->hasMany(Field::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Field::class, 'parent_id')->whereNull('parent_id');
     }
 
     /**

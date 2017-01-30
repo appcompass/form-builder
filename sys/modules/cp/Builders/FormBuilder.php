@@ -149,20 +149,10 @@ class FormBuilder
      */
     public function setParent($parent)
     {
+
         $this->parent = $parent;
 
         return $this;
-    }
-
-    /**
-     * Adds a field from a BaseField.
-     *
-     */
-    private function addField(BaseField $field_type): Field
-    {
-        $this->form->fields()->attach($field_type->field);
-
-        return $field_type->field;
     }
 
     /**
@@ -243,13 +233,11 @@ class FormBuilder
         }
 
         // Field instance
-        $field_type = $class_name::make($args[0], $args[1]);
-
-        $field = $this->addField($class_name::make($args[0], $args[1]));
+        $field_type = $class_name::make($args[0], $args[1], $this->form);
 
         if (!is_null($this->parent)) {
 
-            $field->setParent($this->parent);
+            $field_type->field->setParent($this->parent);
 
         }
 
@@ -259,16 +247,20 @@ class FormBuilder
             if (is_object($args[2]) && get_class($args[2]) === 'Closure') {
 
 
-                $fb = FormBuilder::edit($this->form->id)->setParent($field);
+                $fb = FormBuilder::edit($this->form->id)->setParent($field_type->field);
 
 
                 $args[2]($fb);
+
+            } else {
+
+                $this->parent = null;
 
             }
 
         }
 
-        return $field;
+        return $field_type->field;
 
     }
 }
