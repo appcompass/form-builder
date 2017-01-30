@@ -11,7 +11,6 @@ use Exception;
 
 class PublishFiles
 {
-
     protected $mounts = [];
     protected $manager;
 
@@ -64,33 +63,23 @@ class PublishFiles
         $this->verifyMount($to);
 
         if ($overwrite) {
-
             $this->manager->put($to.'://' . $fileName, $data);
-
         } else {
-
             if (!$this->manager->has($to.'://' . $fileName)) {
-
                 $this->manager->put($to.'://' . $fileName, $data);
-
             }
-
         }
-
     }
 
     public function publishFolder($from, $to, $overwrite = false)
     {
         foreach ($this->manager->listContents($from.'://', true) as $file) {
-
             if ($file['type'] === 'file') {
                 $path = $file['path'];
                 $data = $this->getFile($from, $path);
 
                 $this->publishFile($to, $path, $data, $overwrite);
-
             }
-
         }
     }
 

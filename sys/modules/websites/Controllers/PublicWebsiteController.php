@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\URL;
 use P3in\Renderers\PageRenderer;
 
-class RenderController extends BaseController
+class PublicWebsiteController extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
@@ -22,17 +22,34 @@ class RenderController extends BaseController
 
         $data = $renderer->setPage('/'.trim($uri, '/'))->getData();
 
+        // Can't get Multiple Promises to work on the front-end as to do 3
+        // calls at once so we're populating it here for now.
+        $data['menus'] = $this->getSiteMenus($request);
+        $data['site_meta'] = $this->getSiteMeta($request);
+
+        // @TODO: better abstract this so we can push stuff into the debug
+        // object rather than just log queries. Middlware maybe?
         $data['debug'] = \DB::getQueryLog();
         return $data;
     }
 
-    public function renderPage(Request $request, $uri = '')
+    public function getSiteMenus(Request $request)
     {
-        $renderer =  new PageRenderer($request->website);
+        $menus = [];
+        foreach ($request->website->menus as $menu) {
+            $menus[$menu->name] = $menu->render(true);
+        }
+        return $menus;
+    }
 
-        $data = $renderer->setPage('/'.trim($uri, '/'))->render();
-
-        return $data;
+    public function getSiteMeta(Request $request)
+    {
+        $site = $request->website;
+        // return response()->json(
+        return array_merge([
+            'name' => $site->name,
+            'url' => $site->url,
+        ], (array) $site->config->meta);
     }
 
     public function renderSitemap(Request $request, $type = 'xml')

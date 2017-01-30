@@ -59,9 +59,7 @@ class Form extends Model
     public function setOwner(Model $owner)
     {
         if (isset($owner->{$owner->getKeyName()})) {
-
             $this->formable_id = $owner->{$owner->getKeyName()};
-
         }
 
         $this->formable_type = get_class($owner);

@@ -7,7 +7,6 @@ use P3in\Models\Form; // in case we move this
 
 class FormButler
 {
-
     public static function get($form_name)
     {
         return (new static)->resolveFormFromString($form_name);
@@ -16,9 +15,7 @@ class FormButler
     private function parseRequest(Request $request)
     {
         if ($request->has('form')) {
-
             return $this->resolveFormFromString($request->form);
-
         }
 
         return;
@@ -44,6 +41,5 @@ class FormButler
                 MenuItem::findOrFail($content['id'])->update($content);
                 break;
         }
-
     }
 }

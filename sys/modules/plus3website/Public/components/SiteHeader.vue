@@ -1,33 +1,33 @@
 <template>
-    <header class="header">
-        <div class="logo-wrap">
-            <nuxt-link to="/" class="logo"><span class="visually-hidden">Plus 3 Interactive</span></nuxt-link>
-            <a class="main-nav-trigger"><span></span></a>
-        </div>
-        <nav class="main-nav">
-            <ul>
-                <li class="current-menu-item"><nuxt-link to="/solutions"><span class="icon icon-solutions"></span> Solutions <span class="nav-dropdown-arrow"></span></nuxt-link>
-                    <ul>
-                        <li><nuxt-link to="/solutions/our-process"><span class="icon icon-solutions"></span> Our Process</nuxt-link></li>
-                    </ul>
-                </li>
-                <li><nuxt-link to="/projects"><span class="icon icon-projects"></span> Projects</nuxt-link></li>
-                <li><nuxt-link to="/company"><span class="icon icon-company"></span> Company</nuxt-link></li>
-                <li><nuxt-link to="/contact"><span class="icon icon-contact"></span> Contact Us</nuxt-link></li>
-                <li><nuxt-link to="/customer-login"><span class="icon icon-login"></span> Customer Login</nuxt-link></li>
-            </ul>
-            <div class="main-nav-social">
-                Follow Us
-                <nuxt-link to="/"><span class="icon icon-instagram"></span></nuxt-link>
-                <nuxt-link to="/"><span class="icon icon-twitter"></span></nuxt-link>
-                <nuxt-link to="/"><span class="icon icon-facebook"></span></nuxt-link>
-            </div>
-        </nav>
-    </header><!-- header -->
+  <header class="header">
+    <div class="logo-wrap">
+      <nuxt-link to="/" class="logo"><span class="visually-hidden">{{meta.name}}</span></nuxt-link>
+      <a class="main-nav-trigger"><span></span></a>
+    </div>
+    <nav class="main-nav">
+      <ul>
+        <li :class="{ 'current-menu-item': is_in_current(item)}" v-for="item in menus.main_header_menu">
+          <nuxt-link :to="item.url"><span class="icon" :class="item.icon"></span> {{item.title}} <span class="nav-dropdown-arrow" v-if="item.children.length"></span></nuxt-link>
+          <ul v-if="item.children.length">
+            <li v-for="sub in item.children"><nuxt-link :to="sub.url"><span class="icon" :class="item.icon"></span> {{sub.title}}</nuxt-link></li>
+          </ul>
+        </li>
+      </ul>
+      <div class="main-nav-social">
+        Follow Us
+        <a v-if="meta.instagram_url" :href="meta.instagram_url"><span class="icon icon-instagram"></span></a>
+        <a v-if="meta.twitter_url" :href="meta.twitter_url"><span class="icon icon-twitter"></span></a>
+        <a v-if="meta.facebook_url" :href="meta.facebook_url"><span class="icon icon-facebook"></span></a>
+        <a v-if="meta.linkedin_url" :href="meta.linkedin_url"><span class="icon icon-linkedin"></span></a>
+      </div>
+    </nav>
+  </header><!-- header -->
 
 </template>
+
 <script>
   export default {
+    props: ['menus', 'meta', 'current_url'],
     mounted () {
       $('.main-nav-trigger').on('click', function() {
         $(this).toggleClass('is-open');
@@ -38,6 +38,11 @@
         e.preventDefault();
         $(this).parent().parent().toggleClass('is-open');
       });
+    },
+    methods: {
+      is_in_current (item) {
+        return this.current_url.indexOf(item.url) >= 0
+      }
     }
   }
 </script>

@@ -6,7 +6,6 @@ use Illuminate\Support\ServiceProvider;
 
 class CpServiceProvider extends ServiceProvider
 {
-
     public function boot()
     {
     }
@@ -14,5 +13,4 @@ class CpServiceProvider extends ServiceProvider
     public function register()
     {
     }
-
 }

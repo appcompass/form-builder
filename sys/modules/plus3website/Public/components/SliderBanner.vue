@@ -1,41 +1,27 @@
-<template id="SliderBanner">
-    <section class="home-banner">
-        <div class="home-banner-header">
-            <div class="home-banner-header-container">
-                <h1 class="home-banner-heading">Our Work</h1>
-            </div>
+<template>
+  <section v-if="data" class="home-banner">
+    <div class="home-banner-header">
+      <div class="home-banner-header-container">
+        <h1 class="home-banner-heading">{{ data.title }}</h1>
+      </div>
+    </div>
+    <div class="work-slideshow">
+      <article class="work-slide" v-for="slide in data.slides" :style="{backgroundImage: 'url(' + slide.banner_image + ')' }">
+        <div class="work-slide-container">
+          <div class="work-slide-content">
+            <h2 class="work-slide-title">{{slide.title}}</h2>
+            <div class="work-slide-desc" v-html="slide.description"></div>
+            <nuxt-link :to="slide.link_href" class="work-slide-btn"><span class="icon-plus"></span> {{slide.link_text}}</nuxt-link>
+          </div>
         </div>
-        <div class="work-slideshow">
-            <article class="work-slide">
-                <div class="work-slide-container">
-                    <div class="work-slide-image"><img src="assets/images/content/slide_atmgurus.png"></div>
-                    <div class="work-slide-content">
-                        <h2 class="work-slide-title">ATM Gurus</h2>
-                        <div class="work-slide-desc">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse quis tortor lobortis, ultrices risus ac.</p>
-                        </div>
-                        <a href="" class="work-slide-btn"><span class="icon-plus"></span> See More</a>
-                    </div>
-                </div>
-            </article>
-            <article class="work-slide">
-                <div class="work-slide-container">
-                    <div class="work-slide-image"><img src="assets/images/content/slide_atmgurus.png"></div>
-                    <div class="work-slide-content">
-                        <h2 class="work-slide-title">ATM Gurus</h2>
-                        <div class="work-slide-desc">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse quis tortor lobortis, ultrices risus ac.</p>
-                        </div>
-                        <a href="" class="work-slide-btn"><span class="icon-plus"></span> See More</a>
-                    </div>
-                </div>
-            </article>
-        </div>
-    </section><!-- home-banner -->
+      </article>
+    </div>
+  </section><!-- home-banner -->
 </template>
 
 <script>
   export default {
+    props: ['data'],
     mounted () {
       $('.work-slideshow').slick({
         dots: true,
@@ -52,3 +38,14 @@
     }
   }
 </script>
+
+<style>
+  h1.home-banner-heading {
+    z-index: 1;
+  }
+  article.work-slide {
+    background-repeat: no-repeat;
+    background-position: center right;
+    background-size: cover;
+  }
+</style>

@@ -31,7 +31,7 @@ class Page extends Model implements Linkable
         'meta' => 'object',
     ];
 
-    public $appends = ['type'];
+    public $appends = ['type', 'head_meta'];
 
     /**
      * website
@@ -172,7 +172,27 @@ class Page extends Model implements Linkable
         return studly_case(str_slug(str_replace('/', ' ', $url)));
     }
 
-/**
+    public function getHeadMetaAttribute()
+    {
+        // }, {
+        //   "http-equiv": "x-ua-compatible", content: "ie=edge"
+        // }, {
+        //   name: "viewport", content: "width=device-width, initial-scale=1"
+        // }, {
+        //   hid: "description", content: "Plus 3 Interactive, LLC"
+        //   { hid: 'description', name: 'description', content: 'Home page description' }
+        // { hid: 'description', name: 'description', content: 'Home page description' }
+        $rtn = [];
+        foreach ($this->meta->head as $name => $head) {
+            $rtn[] = [
+                'hid' => $name,
+                'name' => $name,
+                'content' => $head
+            ];
+        }
+        return $rtn;
+    }
+    /**
      * Menu Handling
      *
      * @return     <type>  The type attribute.

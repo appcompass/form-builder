@@ -183,8 +183,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             $publishFrom = realpath(__DIR__.'/../../Public');
 
             $wsb
-                ->setHeader('SiteHeader')
-                ->setFooter('SiteFooter')
+                ->setHeader('SiteHeader') //@TODO: may not be needed here anymore
+                ->setFooter('SiteFooter') //@TODO: may not be needed here anymore
                 ->setMetaData([
                     'title' => '',
                     'description' => '',
@@ -193,40 +193,26 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                     'custom_before_body_end_html' => '',
                     'custom_footer_html' => '',
                     'robots_txt' => '',
+                    'facebook_url' => 'https://www.facebook.com/Plus3Interactive/',
+                    'instagram_url' => 'https://www.instagram.com/plus3interactive',
+                    'twitter_url' => 'https://twitter.com/plus3in',
+                    'google_plus_url' => 'https://plus.google.com/+Plus3InteractiveLLCCambridge',
+                    'linkedin_url' => 'https://www.linkedin.com/company/1038875',
                 ])
                 ->setDeploymentDisk('local')
                 ->setDeploymentPath($deployTo)
                 ->SetPublishFrom($publishFrom)
-                // we need to build a Website Layout builder to replace this junk...
-                // as in, this is the exact structure the web page outputs to the
-                // view to build the template it sooo yea...
+                //@TODO: this can prob just be a stub now.
                 ->setLayout('public', '
 <template lang="pug">
   <!--[if lt IE 8]>
     p.browserupgrade You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.
   <![endif]-->
-  div
-    div.wrapper
-      SiteHeader
-      main.main
-        <nuxt/>
-      SiteFooter
-    ProposalModal
+  <nuxt/>
 </template>
 
 <script>
-  import SiteHeader from \'~components/SiteHeader\'
-  import SiteFooter from \'~components/SiteFooter\'
-  import ProposalModal from \'~components/ProposalModal\'
-
-  export default {
-    components: {
-      SiteHeader,
-      SiteFooter,
-      ProposalModal
-    }
-
-  }
+  export default {}
 </script>
 ')
                 ->setDeploymentNpmPackages([
@@ -308,21 +294,21 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ]);
             // Build the components.
 
-            // @TODO: the header and footer are components not sections, but am putting this here
-            // for now as I'm playing with the idea of the website building a layout
-            // similar to how a page builds one.  Nuxt supports this workflow so why not
-            // explore it and see if it makes sense for us, so this is a reminder.
-            Section::create([
+            // @TODO: Unless I am missing something, we now have to set the
+            // global elements on the pages them selves because of the way the route
+            // doesn't hit the layout file (hell not much hits that thing it seems!)
+            // so doing logic there is tough (like fetching and injecting menus)
+            $site_header = Section::create([
                 'name' => 'Site Header',
                 'template' => 'SiteHeader',
                 'type' => 'header'
             ]);
-            Section::create([
+            $site_footer = Section::create([
                 'name' => 'Site Footer',
                 'template' => 'SiteFooter',
                 'type' => 'footer'
             ]);
-            Section::create([
+            $site_proposal_modal = Section::create([
                 'name' => 'Proposal Modal',
                 'template' => 'ProposalModal',
                 'type' => 'section'
@@ -331,7 +317,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             // This one should prob be build with websites module load.
             Section::create([
                 'name' => 'Container',
-                'template' => 'container', //not sure about this, do containers need templates? I feel there are good arguments for both yes and no.
+                'template' => 'container', //@TODO: not sure about this, do containers need templates? I feel there are good arguments for both yes and no.
                 'type' => 'container',
             ]);
 
@@ -375,6 +361,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             FormBuilder::new('BoxCallouts', function ($fb) {
                 $fb->fieldset('Boxes', 'boxes', [], function ($box) {
                     $box->string('Title', 'title', ['required']);
+                    $box->file('Image', 'image', Photo::class, ['required']);
                     $box->string('Points', 'points', [])->repeatable();
                     $box->string('Link Text', 'link_text', ['required']);
                     $box->link('Link Destination', 'link_href', ['required']);
@@ -390,6 +377,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             FormBuilder::new('OurProcess', function ($fb) {
                 $fb->string('Title', 'title', ['required']);
                 $fb->wysiwyg('Description', 'description', ['required']);
+                $fb->string('Link Text', 'link_text', ['required']);
+                $fb->link('Link Destination', 'link_href', ['required']);
                 // SVG Animation is static, editable in code only.
             })->setOwner($our_proccess);
 
@@ -402,6 +391,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             FormBuilder::new('MeetOurTeam', function ($fb) {
                 $fb->string('Title', 'title', ['required']);
                 $fb->wysiwyg('Description', 'description', ['required']);
+                $fb->string('Link Text', 'link_text', ['required']);
+                $fb->link('Link Destination', 'link_href', ['required']);
             })->setOwner($meet_our_team)
             // ->dynamic(Plus3Person::class) // we need to decide if the section is dynamic, or the field (or both can be)
             ;
@@ -414,7 +405,6 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             FormBuilder::new('SocialStream', function ($fb) {
                 $fb->string('Title', 'title', ['required']);
-                $fb->wysiwyg('Description', 'description', ['required']);
                 // Fields
             })->setOwner($social_stream);
 
@@ -624,28 +614,92 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             // prob something we seed when loading websites module.
 
 
+            // header and footer are same on every page site wide.
+            $createHeaderFooterStructure = function ($page) use ($site_header, $site_footer, $site_proposal_modal) {
+                $page_container = $page
+                    ->addContainer(1);
 
-            // container->addSection
-            // section->addContent
+                $wrapper_container = $page_container->addContainer(1, [
+                        'class' => 'wrapper',
+                    ]);
+                $wrapper_container->addSection($site_header, 1, [
+                        // @TODO: meh...
+                        'config' => [
+                            'props' => [
+                                'menus' => 'menus',
+                                'meta' => 'site_meta',
+                                'current_url' => 'current_url',
+                            ]
+                        ]
+                    ]);
+
+                $main_container = $wrapper_container->addContainer(2, [
+                        'elm' => 'main',
+                        'class' => 'main',
+                    ]);
+
+                $wrapper_container->addSection($site_footer, 3, [
+                        // @TODO: meh...
+                        'config' => [
+                            'props' => [
+                                'menus' => 'menus',
+                                'meta' => 'site_meta',
+                                'current_url' => 'current_url',
+                            ]
+                        ]
+                    ]);
+                $page_container->addSection($site_proposal_modal, 2);
+
+                return $main_container;
+            };
 
             // Build Pages
-            $homepage = $wsb
-                ->addPage('Home Page', '')
-                ->setAuthor('Aisha Saidi')
-                ->setDescription('This is where we would put the Plus 3 Interactive description')
-                ->setPriority('1.0')
-                ->setUpdatedFrequency('always');
+                $homepage = $wsb
+                    ->addPage('Home Page', '')
+                    ->setAuthor('Aisha Saidi')
+                    ->setDescription('This is where we would put the Plus 3 Interactive description')
+                    ->setPriority('1.0')
+                    ->setUpdatedFrequency('always');
 
-            $homepage
-                ->addContainer(1)
-                ->addSection($slider_banner, 1);
+            $home_container = $createHeaderFooterStructure($homepage)
+                    ->addSection($slider_banner, 1, [
+                        'content' => [
+                            'title' => 'Our Work',
+                            'slides' => [
+                                [
+                                    'banner_image' => '/assets/images/content/bg_project_atmgurus.jpg',
+                                    'title' => 'ATM Gurus',
+                                    'description' => '<p>We developed a flexible, modern eCommerce platform for ATM Gurus and integrated it with the client’s Oracle based ERP and CRM.</p>',
+                                    'link_text' => 'See More',
+                                    'link_href' => '/projects#atm-gurus', //@TODO: this is a string right now but we need to make this a dynamic object.
+                                ],[
+                                    'banner_image' => '/assets/images/content/bg_project_bostonpads.jpg',
+                                    'title' => 'Boston Pads',
+                                    'description' => '<p>For Boston Pads we implemented our content management system for creation and management of multiple real estate Web sites.</p>',
+                                    'link_text' => 'See More',
+                                    'link_href' => '/projects#boston-pads',
+                                ],[
+                                    'banner_image' => '/assets/images/content/bg_project_pronto.jpg',
+                                    'title' => 'Pronto',
+                                    'description' => '<p>We built an expandable prototype for Equinox02 to manage all medical device inventory and delivery services via computer or smart phone.</p>',
+                                    'link_text' => 'See More',
+                                    'link_href' => '/projects#pronto',
+                                ]
+                            ]
+                        ]
+                    ]);
 
-            $home_box_callout_container = $homepage
-                ->addContainer(2,[
+            $home_box_callout_container = $home_container
+                ->addContainer(2, [
                     'elm' => 'section',
-                     'class' => 'section-module section-solutions',
+                    'class' => 'section-module section-solutions',
                 ])
-                ->addSection($section_heading, 1)
+                ->addSection($section_heading, 1, [
+                    'content' => [
+                        'title' => 'Targeted Web Solutions',
+                        'description' => '<p>Plus 3 Interactive develops custom web applications that meet the unique needs of your business. We can help your company meet its strategic goals:</p>',
+                    ]
+                ])
                 ->addContainer(2, [
                      'class' => 'row',
                 ]);
@@ -657,7 +711,37 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->addContainer(1, [
                      'class' => 'row',
                 ])
-                ->addSection($box_callouts, 1);
+                ->addSection($box_callouts, 1, [
+                    'content' => [
+                        'boxes' => [
+                            [
+                                'title' => 'Custom Web Applications',
+                                'image' => '/assets/images/content/solution_web_apps.svg',
+                                'image_width' => 164,
+                                'image_height' => 130,
+                                'points' => [
+                                    'Web development tailored to your business',
+                                    'Web apps for your operations or customers',
+                                    'Onshore Web developers you can talk to',
+                                ],
+                                'link_text' => 'See More',
+                                'link_href' => '/solutions#custom-web-applications',
+                            ],[
+                                'title' => 'Middleware Development',
+                                'image' => '/assets/images/content/solution_middleware.svg',
+                                'image_width' => 146,
+                                'image_height' => 130,
+                                'points' => [
+                                    'Middleware designed for your requirements',
+                                    'Integrated with legacy & proprietary systems',
+                                    'Web 2.0 standards',
+                                ],
+                                'link_text' => 'See More',
+                                'link_href' => '/solutions#middleware-development',
+                            ]
+                        ]
+                    ]
+                ]);
 
             $home_box_callout_container
                 ->addContainer(2, [
@@ -666,14 +750,76 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->addContainer(1, [
                      'class' => 'row',
                 ])
-                ->addSection($box_callouts, 1);
+                ->addSection($box_callouts, 1, [
+                    'content' => [
+                        'boxes' => [
+                            [
+                                'title' => 'Device Communications',
+                                'image' => '/assets/images/content/solution_device_comm.svg',
+                                'image_width' => 132,
+                                'image_height' => 130,
+                                'points' => [
+                                    'Internet of Things for your proprietary devices',
+                                    'Monitor and manage devices',
+                                    'Banking, medical, vending devices',
+                                ],
+                                'link_text' => 'See More',
+                                'link_href' => '/solutions#device-communications',
+                            ],[
+                                'title' => 'Web Application Management Systems',
+                                'image' => '/assets/images/content/solution_app_management.svg',
+                                'image_width' => 170,
+                                'image_height' => 130,
+                                'points' => [
+                                    'Manage multiple web apps & sites',
+                                    'Easily modify web page design',
+                                    'Customized, modular system',
+                                ],
+                                'link_text' => 'See More',
+                                'link_href' => '/solutions#web-application-management-systems',
+                            ]
+                        ]
+                    ]
+                ]);
 
-            $homepage
-                ->addContainer(3)
-                ->addSection($our_proccess, 1)
-                ->addSection($meet_our_team, 2)
-                ->addSection($social_stream, 3)
-                ->addSection($customer_testimonials, 4);
+            $home_container
+                ->addSection($our_proccess, 3, [
+                    'content' => [
+                        'title' => 'Our Process',
+                        'description' => '<p>Check the SVG animation! cool isn\'t it?</p>',
+                        'link_text' => 'Check out the people who make our company work',
+                        'link_href' => '/solutions/our-process',
+                    ]
+                ])
+                ->addSection($meet_our_team, 4, [
+                    'content' => [
+                        'title' => 'The Team',
+                        'description' => '<p>Plus 3 Interactive is a customer-focused business.  Our team finds  the right solutions to our customers’ unique challenges. Check out the people who make our company work.</p>',
+                        'link_text' => 'Check out the people who make our company work',
+                        'link_href' => '/company#meet-our-team',
+                    ]
+                ])
+                ->addSection($social_stream, 5, [
+                    'content' => [
+                        'title' => 'Plus 3 Interactive <span class="color-blue">-</span> Active!',
+                    ]
+                ])
+                ->addSection($customer_testimonials, 6, [
+                    'content' => [
+                        'testimonials' => [
+                            [
+                                'author' => 'Chris Vallely, Christian Brands',
+                                'content' => '<p>After 10 years of selling on the same e-commerce platform, we were in dire need of a new system that would allow us to move our e-commerce business forward. The team at Plus 3 Interactive helped us build out 2 new sites for our most popular brands on ExpressionEngine, integrated our site into our existing ERP, and seamlessly migrated over 45,000 products over to the new sites. The look and feel of the new sites give the customer a much more enjoyable shopping experience. With their help, we are continuing to drive more pageviews with a larger percentage of new customers per month, and overall our customers are spending a longer amount of time per visit.</p><p>Plus 3 Interactive helped us reduce the amount of clicks to each product and streamlined our checkout process from 4-5 pages to a single checkout page, resulting in fewer bounces. We continue to work closely to add new features to our site including custom modules built by the Plus 3 team to meet our specific business goals.</p><p>If there is ever an issue with our sites, the Plus 3 Interactive team will drop everything and get the issue resolved. For example: One afternoon we had an employee performing some maintenance in one of our product categories that accidently deleted the entire product selection off the site. I called over to alert them of the news and within 5 minutes Jubair has a representative at our hosting company restoring a backup from the night before. The site was back up in a matter of minutes. At Christian Brands, we’ve worked with a number of developers and none of them offer that type of service. I’d highly recommend Plus 3 Interactive for any web solution, big or small.</p>',
+                            ], [
+                                'author' => 'Renato Matos, Partner, Capell Barnett Matalon & Schoenfeld LLP',
+                                'content' => '<p>It was a pleasure working with Plus 3 Interactive on redesigning our firm’s website. The developers diligently and successfully implemented our goals in a professional and timely manner. Moreover, Plus 3 continues to seamlessly assist us with continued updates and modifications. We highly recommend Plus 3 and their great staff.</p>',
+                            ], [
+                                'author' => 'Calvin P. Goetz, Managing Partner, Strategy Financial Group',
+                                'content' => '<p>If you are considering a new website project, look no further than Plus 3 Interactive. Their knowledgeable and competent staff helped my company build a fantastic new site with lots of features in a very short period of time. I couldn’t be happier with their work and ongoing support.</p>',
+                            ]
+                        ]
+                    ]
+                ]);
 
             $solutions = $wsb
                 ->addPage('Solutions', 'solutions')
@@ -682,8 +828,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->setPriority('0.9')
                 ->setUpdatedFrequency('yearly');
 
-            $solutions
-                ->addContainer(1)
+            $solutions_container = $createHeaderFooterStructure($solutions)
                 ->addSection($thick_page_banner, 1)
                 ->addSection($white_break_w_section_links, 2)
                 ->addSection($provided_solution, 3)
@@ -696,10 +841,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->setPriority('0.8')
                 ->setUpdatedFrequency('yearly');
 
-            $process_container = $process
-                ->addContainer(1);
-
-            $process_container
+            $process_container = $createHeaderFooterStructure($process)
                 ->addSection($thick_page_banner, 1)
                 ->addSection($breadcrumb_with_right_link, 2);
 
@@ -724,8 +866,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->setPriority('0.9')
                 ->setUpdatedFrequency('monthly');
 
-            $projects_container = $projects
-                ->addContainer(1)
+            $projects_container = $createHeaderFooterStructure($projects)
                 ->addSection($thick_page_banner, 1)
                 ->addSection($project_list, 2);
 
@@ -758,8 +899,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->setPriority('0.8')
                 ->setUpdatedFrequency('monthly');
 
-            $company
-                ->addContainer(1)
+            $company_container = $createHeaderFooterStructure($company)
                 ->addSection($thick_page_banner, 1)
                 ->addSection($meet_our_team, 2)
                 ->addSection($social_stream, 3);
@@ -771,8 +911,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->setPriority('0.7')
                 ->setUpdatedFrequency('yearly');
 
-            $contact
-                ->addContainer(1)
+            $contact_container = $createHeaderFooterStructure($contact)
                 ->addSection($thick_page_banner, 1)
                 ->addSection($contact_form, 2)
                 ->addSection($map_address, 3);
@@ -784,8 +923,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->setPriority('0.6')
                 ->setUpdatedFrequency('never');
 
-            $login
-                ->addContainer(1)
+            $login_container = $createHeaderFooterStructure($login)
                 ->addSection($thick_page_banner, 1)
                 ->addSection($login_form, 2);
 
@@ -803,13 +941,15 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             // Create the nav menus and add the items.
             $main_header_menu = $wsb->addMenu('main_header_menu');
 
-            $solutions_item = $main_header_menu->addItem($solutions, 1);
-            $solutions_item->addItem($process, 1);
+            // $main_header_menu->addItem($homepage, 1)->setIcon('icon-home');
 
-            $main_header_menu->addItem($projects, 2);
-            $main_header_menu->addItem($company, 3);
-            $main_header_menu->addItem($contact, 4);
-            $main_header_menu->addItem($login, 5);
+            $solutions_item = $main_header_menu->addItem($solutions, 1)->setIcon('icon-solutions');
+            $solutions_item->addItem($process, 1)->setIcon('icon-solutions');
+
+            $main_header_menu->addItem($projects, 2)->setIcon('icon-projects');
+            $main_header_menu->addItem($company, 3)->setIcon('icon-company');
+            $main_header_menu->addItem($contact, 4)->setIcon('icon-contact');
+            $main_header_menu->addItem($login, 5)->setIcon('icon-login');
 
             $main_footer_menu = $wsb->addMenu('main_footer_menu');
             $main_footer_menu->addItem($solutions, 1);
@@ -820,7 +960,6 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             $main_footer_menu->addItem($login, 6);
 
             $wsb->deploy();
-
         })->getWebsite();
 
 
