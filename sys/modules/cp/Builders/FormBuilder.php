@@ -17,6 +17,11 @@ class FormBuilder
      */
     public $form;
 
+    /**
+     * This field will be the parent of every field added
+     */
+    protected $parent = null;
+
     private function __construct(Form $form)
     {
         $this->form = $form;
@@ -24,7 +29,14 @@ class FormBuilder
         return $this;
     }
 
-    public static function new($name, Closure $closure = null)
+    /**
+     * New up a FormBuilder
+     *
+     * @param      string  $form   The form's name
+     *
+     * @return     FormBuilder
+     */
+    public static function new($name, Closure $closure = null): FormBuilder
     {
         $form = Form::firstOrCreate([
             'name' => $name,
@@ -49,9 +61,17 @@ class FormBuilder
     public static function edit($form): FormBuilder
     {
         if ($form instanceof Form) {
+
             $instance = new static($form);
+
         } elseif (is_string($form)) {
+
             $instance = new static(Form::whereName($form)->firstOrFail());
+
+        } else if (is_integer($form)) {
+
+            $instance = new static(Form::findOrFail($form));
+
         }
 
         return $instance;
@@ -62,7 +82,7 @@ class FormBuilder
      *
      * @return     <type>  The form.
      */
-    public function getForm()
+    public function getForm(): Form
     {
         return $this->form;
     }
@@ -75,6 +95,8 @@ class FormBuilder
     public function setOwner(Model $owner)
     {
         $this->form->setOwner($owner);
+
+        return $this;
     }
 
     /**
@@ -115,21 +137,21 @@ class FormBuilder
      */
     public function setName($name)
     {
-        $this->form->name = $name;
-
-        $this->form->save();
+        $this->form->update(['name' => $name]);
 
         return $this;
     }
 
     /**
-     * Sets the field parent.
+     * Set a Parent Field for subsequent fields
      *
      * @param      <type>  $parent  The parent
      */
-    public function setFieldParent($parent)
+    public function setParent($parent)
     {
-        $this->fields_parent = $parent;
+        $this->parent = $parent;
+
+        return $this;
     }
 
     /**
@@ -150,7 +172,7 @@ class FormBuilder
      */
     public function getFields()
     {
-        return $this->fields_parent->fields;
+        return $this->form->fields;
     }
 
     /**
@@ -165,7 +187,7 @@ class FormBuilder
      */
     public function drop($name, $type = null)
     {
-        $field = $this->fields_parent->fields->where('name', $name);
+        $field = $this->form->fields->where('name', $name);
 
         if (!count($field)) {
             return $this;
@@ -215,9 +237,38 @@ class FormBuilder
         $class_name = '\P3in\Models\Types\\' . $field_name;
 
         if (!class_exists($class_name)) {
-            die("The FieldType: <$field_name> does not exist. Do Something!");
+
+            die("The FieldType: <$field_name> does not exist. Do Something!\n");
+
         }
 
-        return $this->addField($class_name::make($args[0], $args[1]));
+        // Field instance
+        $field_type = $class_name::make($args[0], $args[1]);
+
+        $field = $this->addField($class_name::make($args[0], $args[1]));
+
+        if (!is_null($this->parent)) {
+
+            $field->setParent($this->parent);
+
+        }
+
+        if (isset($args[2])) {
+
+
+            if (is_object($args[2]) && get_class($args[2]) === 'Closure') {
+
+
+                $fb = FormBuilder::edit($this->form->id)->setParent($field);
+
+
+                $args[2]($fb);
+
+            }
+
+        }
+
+        return $field;
+
     }
 }

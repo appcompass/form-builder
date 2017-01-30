@@ -20,12 +20,13 @@ abstract class BaseField
         // types are handled by the Fieldtype
         $type = Fieldtype::make($instance);
 
-        // @TODO add setField to close access to property
-        $instance->field = Field::firstOrCreate([
+        $field = Field::firstOrCreate([
             'label' => $label,
             'name' => $name,
             'type' => $type
         ]);
+
+        $instance->field = $field;
 
         return $instance;
     }
@@ -38,7 +39,5 @@ abstract class BaseField
     public function getTemplate()
     {
         return $this->template . '.vue';
-        // @TODO template can be inferred from class name
-        // return file_get_contents(__DIR__ . '/../templates/' . $this->template . '.vue');
     }
 }

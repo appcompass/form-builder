@@ -10,7 +10,6 @@ use League\Flysystem\Adapter\Local as LocalAdapter;
 
 class Fieldtype extends Model
 {
-    const PUBLIC_COMPONENTS_FOLDER = /* base_path() */ '/../cp/src/components/FormBuilder';
     const COMPONENTS_LIB_PATH = /* base_path */ '/../cp/src/components';
 
     // public $table = 'fieldtypes';
