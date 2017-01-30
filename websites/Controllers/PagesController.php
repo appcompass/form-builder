@@ -10,5 +10,4 @@ class PagesController extends AbstractController
     {
         $this->repo = $repo;
     }
-
 }

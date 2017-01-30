@@ -8,7 +8,6 @@ use P3in\Interfaces\UserPermissionsRepositoryInterface;
 
 class UserPermissionsRepository extends AbstractChildRepository implements UserPermissionsRepositoryInterface
 {
-
     protected $view = 'MultiSelect';
 
     public function __construct(Permission $model, User $parent)

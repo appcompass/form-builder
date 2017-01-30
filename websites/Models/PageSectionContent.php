@@ -22,10 +22,7 @@ class PageSectionContent extends Model
         'content' => 'object',
     ];
 
-    protected $with = [
-        'children',
-        'section.form',
-    ];
+    protected $with = [];
 
     /**
      *
@@ -131,6 +128,8 @@ class PageSectionContent extends Model
             $child = new static($data);
 
             $child->section()->associate($section);
+
+            $child->page()->associate($this->page);
 
             $this->children()->save($child);
 

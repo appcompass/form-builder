@@ -8,7 +8,6 @@ use P3in\Interfaces\PageContentRepositoryInterface;
 
 class PageContentRepository extends AbstractChildRepository implements PageContentRepositoryInterface
 {
-
     protected $view = 'PageEditor';
 
     public function __construct(PageSectionContent $model, Page $parent)

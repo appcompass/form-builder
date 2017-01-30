@@ -162,27 +162,18 @@ class Form extends Model
      */
     private function buildTree(Collection &$items, $parent_id = null, $tree = null)
     {
-
         if (is_null($tree)) {
-
             $tree = [];
-
         }
 
         foreach ($items as &$node) {
-
             if ($node->parent_id === $parent_id) {
-
                 $fields = $this->buildTree($items, $node->id);
 
                 if (count($fields)) {
-
                     $node->fields = $fields;
-
                 } else {
-
                     $node->fields = [];
-
                 }
 
                 $tree[] = $node;

@@ -285,6 +285,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                     ],
                     'plugins' => [
                         '~plugins/ga.js',
+                        '~plugins/fb.js',
                         '~plugins/main.js'
                     ],
                     'loading' => [
@@ -396,8 +397,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 $fb->wysiwyg('Description', 'description')->validation(['required']);
                 $fb->string('Link Text', 'link_text')->validation(['required']);
                 $fb->link('Link Destination', 'link_href')->validation(['required']);
+                // $fb->somefield('The Team', 'team')->dynamic(Plus3Person::class); // @TODO: yes? no?
             })->setOwner($meet_our_team)
-            // ->dynamic(Plus3Person::class) // we need to decide if the section is dynamic, or the field (or both can be)
             ;
 
             $social_stream = Section::create([

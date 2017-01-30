@@ -45,37 +45,6 @@ class PageRenderer
         return $this;
     }
 
-    public function render():string
-    {
-        $pageData = $this->getData();
-
-        $forCompiler = $this->forCompiler($pageData['page']['containers']);
-
-        // this is where we compile the Vue section using an abstracted recursive(?) version of Fieldtype::renderComponents()
-        $compiled = json_encode($forCompiler); // bogus obviously just so we get some return data to view structure.
-
-        return $compiled;
-    }
-
-    private function forCompiler($data)
-    {
-        $rtn = [];
-
-        foreach ($data as $row) {
-            $rtn[] = [
-                'content' => $row['content'],
-                'order' => $row['order'],
-                'name' => $row['section']['name'],
-                'template' => $row['section']['template'],
-                'type' => $row['section']['type'],
-                'config' => $row['section']['config'],
-                'children' => $this->forCompiler($row['children'])
-            ];
-        }
-
-        return $rtn;
-    }
-
     public function edit()
     {
         return $this->getData(false);
@@ -87,13 +56,13 @@ class PageRenderer
             throw new Exception('A page must be set.');
         }
 
-        $this->page->load('containers');
+        // $this->page->load('contents');
 
         if ($filtered) {
             $this->filterData();
         }
 
-        $this->getContent($this->page->containers);
+        $this->getContent($this->page->buildContentTree());
 
         $this->build['page'] = $this->page;
 
@@ -133,29 +102,7 @@ class PageRenderer
             ->makeHidden('created_at')
             ->makeHidden('deleted_at')
             ->makeHidden('dynamic_segment')
+            ->makeHidden('contents')
         ;
-
-        $this->cleanPageComponents($this->page->containers);
-    }
-
-    private function cleanPageComponents(&$sections)
-    {
-        $sections->each(function ($section) {
-            $section
-                ->makeHidden('id')
-                ->makeHidden('page_id')
-                ->makeHidden('parent_id')
-                ->makeHidden('section_id')
-                ->makeHidden('created_at')
-            ;
-
-            // how much do we need and how much can we hide from front-end requests?
-            $section->section
-                ->makeHidden('id')
-                ->makeHidden('created_at')
-            ;
-
-            $this->cleanPageComponents($section->children);
-        });
     }
 }

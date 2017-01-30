@@ -9,7 +9,7 @@ if (process.BROWSER_BUILD && process.env.NODE_ENV === 'production') {
   /*
   ** Set the current page
   */
-  ga('create', 'UA-XXXXXXXX-X', 'auto')
+  ga('create', 'UA-9423822-8', 'auto')
   ga('send', 'pageview')
   /*
   ** When the app is mounted
