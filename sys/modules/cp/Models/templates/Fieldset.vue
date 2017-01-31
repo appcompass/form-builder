@@ -4,6 +4,6 @@ h1 Fieldset
 
 <script>
 export default {
-    name: 'Fieldset'
+  name: 'Fieldset'
 }
 </script>

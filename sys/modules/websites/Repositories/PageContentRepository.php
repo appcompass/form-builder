@@ -8,7 +8,7 @@ use P3in\Interfaces\PageContentRepositoryInterface;
 
 class PageContentRepository extends AbstractChildRepository implements PageContentRepositoryInterface
 {
-    protected $view = 'PageEditor';
+    public $view = 'PageEditor';
 
     public function __construct(PageSectionContent $model, Page $parent)
     {
@@ -18,6 +18,6 @@ class PageContentRepository extends AbstractChildRepository implements PageConte
 
         $this->relationName = 'page';
 
-        $this->parentToChild = 'containers';
+        $this->parentToChild = 'contents';
     }
 }

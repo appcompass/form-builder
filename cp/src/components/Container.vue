@@ -1,6 +1,6 @@
 <template lang="jade">
 div.page-container(v-if="container.section.type === 'container'")
-  Container(v-if="container.children", v-for="sub in container.children", :container="sub", :level="level + 1", @edit="edit")
+  Container(v-if="container.children", v-for="sub in container.children", :container="sub", @edit="edit")
 div.element(v-else, @click="$emit('edit', container.id)")
   a {{ container.section.name }}
 </template>

@@ -1,9 +1,9 @@
 <template lang="jade">
 .columns
   .page.column.is-6
-    Container(v-for="container in collection.data.data", :container="container", :level="level", @edit="edit")
+    Container(v-for="container in collection.data", :container="container", @edit="edit")
   .column.is-6
-    FormBuilder(:form="form", @add="add")
+    FormBuilder(:form="form", :content="content", @add="add")
 </template>
 
 <script>
@@ -18,11 +18,12 @@ export default {
   data () {
     return {
       form: null,
-      level: 0
+      content: null
     }
   },
   methods: {
     add (field) {
+      console.log(field)
       this.form.push(field)
     },
     set (data) {
@@ -34,7 +35,8 @@ export default {
     edit (id) {
       this.$http.get(process.env.API_SERVER + 'pages/' + this.$route.params.id + '/content/' + id)
         .then(response => {
-          this.form = response.data.collection
+          this.form = response.data.collection.form
+          this.content = response.data.collection.content
         })
     }
   }

@@ -75,13 +75,13 @@ class AfterRoute
 
             // }
 
-            if ($original_content instanceof PageContent) {
-                $content['edit'] = $original_content->section->form;
-            } elseif (!is_null($form)) {
-                $content['edit'] = $form->toEdit()->first();
+            // if ($original_content instanceof PageContent) {
+                // $content['edit'] = $original_content->section->form;
+            // } elseif (!is_null($form)) {
+            $content['edit'] = $form->toEdit()->first();
 
-                $content['list'] = $form->toList()->first();
-            }
+            $content['list'] = $form->toList()->first();
+            // }
 
             $response->setContent($content);
         }

@@ -22,7 +22,7 @@ class PageSectionContent extends Model
         'content' => 'object',
     ];
 
-    protected $with = [];
+    // protected $with = ['section'];
 
     /**
      *
