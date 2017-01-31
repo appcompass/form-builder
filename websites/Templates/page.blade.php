@@ -5,26 +5,16 @@
 </template>
 
 <script>
-  import axios from 'axios'
-@foreach($imports as $import)
-  import {!! $import !!} from '~components/{!! $import !!}'
-@endforeach
+  import * as Components from '~components'
+  import common from '~/common'
 
   export default {
 @if(!empty($layout))
     layout: '{!! $layout !!}',
 @endif
-    components: {
-      {!! implode(",\n      ", $imports) !!}
-    },
-    data ({route, error}) {
-      return axios.get(`http://api.p3in.com.dev/content${route.path}`)
-      .then((res) => {
-        res.data.current_url = route.path
-        return res.data
-      }).catch((e) => {
-        return error({ statusCode: 404, message: e.message })
-      })
+    components: Components,
+    data (context) {
+      return common.getPageData(context)
     },
     head() {
       return {

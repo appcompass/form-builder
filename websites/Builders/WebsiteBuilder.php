@@ -232,6 +232,18 @@ class WebsiteBuilder
             $manager
                 ->setMount('static', $depConfig->publish_from)
                 ->publishFolder('static', 'dest', true);
+
+            // @TODO: do we read the dest or src folder?
+            foreach ($manager->listContents('dest','components') as $component) {
+                if ($component['type'] == 'file' && $component['extension'] == 'vue') {
+                    $components[] = $component['filename'];
+                }
+            }
+            $components_import_file = view('websites::components', [
+                'components' => $components,
+            ])->render();
+
+            $manager->publishFile('dest', 'components/index.js', $components_import_file, true);
         }
 
         // lets publish the structure in case it doesn't exist.  Never overwrite!

@@ -175,6 +175,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             'ContactUs',
             'MapAddress',
             'CustomerLogin',
+            'BlockText',
         ])->delete();
 
         $website = WebsiteBuilder::new('Plus 3 Interactive, LLC', 'https', 'www.plus3interactive.com', function ($wsb) {
@@ -608,6 +609,17 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 $fb->loginForm('Customer Login', 'customer_login');
             })->setOwner($login_form);
 
+
+            $block_text = Section::create([
+                'name' => 'Block Text',
+                'template' => 'BlockText',
+                'type' => 'section'
+            ]);
+
+            FormBuilder::new('BlockText', function (FormBuilder $fb) {
+                $fb->wysiwyg('Content', 'content')->validation(['required']);
+            })->setOwner($block_text);
+
             // we should always (but only(?)) have one container component.
             // prob something we seed when loading websites module.
 
@@ -807,7 +819,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                         'testimonials' => [
                             [
                                 'author' => 'Chris Vallely, Christian Brands',
-                                'content' => '<p>After 10 years of selling on the same e-commerce platform, we were in dire need of a new system that would allow us to move our e-commerce business forward. The team at Plus 3 Interactive helped us build out 2 new sites for our most popular brands on ExpressionEngine, integrated our site into our existing ERP, and seamlessly migrated over 45,000 products over to the new sites. The look and feel of the new sites give the customer a much more enjoyable shopping experience. With their help, we are continuing to drive more pageviews with a larger percentage of new customers per month, and overall our customers are spending a longer amount of time per visit.</p><p>Plus 3 Interactive helped us reduce the amount of clicks to each product and streamlined our checkout process from 4-5 pages to a single checkout page, resulting in fewer bounces. We continue to work closely to add new features to our site including custom modules built by the Plus 3 team to meet our specific business goals.</p><p>If there is ever an issue with our sites, the Plus 3 Interactive team will drop everything and get the issue resolved. For example: One afternoon we had an employee performing some maintenance in one of our product categories that accidently deleted the entire product selection off the site. I called over to alert them of the news and within 5 minutes Jubair has a representative at our hosting company restoring a backup from the night before. The site was back up in a matter of minutes. At Christian Brands, we’ve worked with a number of developers and none of them offer that type of service. I’d highly recommend Plus 3 Interactive for any web solution, big or small.</p>',
+                                'content' => '<p>Plus 3 Interactive helped us build out 2 new sites for our most popular brands, integrated our existing ERP, and seamlessly migrated over 45,000 products to the new sites.</p>',
                             ], [
                                 'author' => 'Renato Matos, Partner, Capell Barnett Matalon & Schoenfeld LLP',
                                 'content' => '<p>It was a pleasure working with Plus 3 Interactive on redesigning our firm’s website. The developers diligently and successfully implemented our goals in a professional and timely manner. Moreover, Plus 3 continues to seamlessly assist us with continued updates and modifications. We highly recommend Plus 3 and their great staff.</p>',
@@ -925,6 +937,115 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->addSection($thick_page_banner, 1)
                 ->addSection($login_form, 2);
 
+
+            $terms_of_service = $wsb
+                ->addPage('Terms of Service', 'terms-of-service')
+                ->setAuthor('Jubair Saidi')
+                ->setDescription('Plus 3 Interactive\'s Terms of Service')
+                ->setPriority('0.5')
+                ->setUpdatedFrequency('yearly');
+
+            $terms_of_service_container = $createHeaderFooterStructure($terms_of_service)
+                ->addSection($block_text, 1, [
+                    'content' => [
+                        'content' => '<h1>Terms of Service</h1>
+<p>Last updated: January 31, 2017</p>
+<p>Please read these Terms of Service ("Terms", "Terms of Service") carefully before using the https://www.plus3interactive.com website (the "Service") operated by Plus 3 Interactive, LLC ("us", "we", or "our").</p>
+<p>Your access to and use of the Service is conditioned upon your acceptance of and compliance with these Terms. These Terms apply to all visitors, users and others who wish to access or use the Service.</p>
+<p>By accessing or using the Service you agree to be bound by these Terms. If you disagree with any part of the terms then you do not have permission to access the Service.</p>
+<p><h2>Accounts</h2></p>
+<p>When you create an account with us, you guarantee that you are above the age of 18, and that the information you provide us is accurate, complete, and current at all times. Inaccurate, incomplete, or obsolete information may result in the immediate termination of your account on the Service.</p>
+<p>You are responsible for maintaining the confidentiality of your account and password, including but not limited to the restriction of access to your computer and/or account. You agree to accept responsibility for any and all activities or actions that occur under your account and/or password, whether your password is with our Service or a third-party service. You must notify us immediately upon becoming aware of any breach of security or unauthorized use of your account.</p>
+<p>You may not use as a username the name of another person or entity or that is not lawfully available for use, a name or trademark that is subject to any rights of another person or entity other than you, without appropriate authorization. You may not use as a username any name that is offensive, vulgar or obscene.</p>
+<p><h2>Intellectual Property</h2>
+The Service and its original content, features and functionality are and will remain the exclusive property of Plus 3 Interactive, LLC and its licensors. The Service is protected by copyright, trademark, and other laws of both the United States and foreign countries. Our trademarks and trade dress may not be used in connection with any product or service without the prior written consent of Plus 3 Interactive, LLC.</p>
+<p><h2>Links To Other Web Sites</h2></p>
+<p>Our Service may contain links to third party web sites or services that are not owned or controlled by Plus 3 Interactive, LLC.</p>
+<p>Plus 3 Interactive, LLC has no control over, and assumes no responsibility for the content, privacy policies, or practices of any third party web sites or services. We do not warrant the offerings of any of these entities/individuals or their websites.</p>
+<p>You acknowledge and agree that Plus 3 Interactive, LLC shall not be responsible or liable, directly or indirectly, for any damage or loss caused or alleged to be caused by or in connection with use of or reliance on any such content, goods or services available on or through any such third party web sites or services.</p>
+<p>We h2ly advise you to read the terms and conditions and privacy policies of any third party web sites or services that you visit.</p>
+<p><h2>Termination</h2></p>
+<p>We may terminate or suspend your account and bar access to the Service immediately, without prior notice or liability, under our sole discretion, for any reason whatsoever and without limitation, including but not limited to a breach of the Terms.</p>
+<p>If you wish to terminate your account, you may simply discontinue using the Service.</p>
+<p>All provisions of the Terms which by their nature should survive termination shall survive termination, including, without limitation, ownership provisions, warranty disclaimers, indemnity and limitations of liability.</p>
+<p><h2>Indemnification</h2></p>
+<p>You agree to defend, indemnify and hold harmless Plus 3 Interactive, LLC and its licensee and licensors, and their employees, contractors, agents, officers and directors, from and against any and all claims, damages, obligations, losses, liabilities, costs or debt, and expenses (including but not limited to attorney\'s fees), resulting from or arising out of a) your use and access of the Service, by you or any person using your account and password, or b) a breach of these Terms.</p>
+<p><h2>Limitation Of Liability</h2></p>
+<p>In no event shall Plus 3 Interactive, LLC, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from (i) your access to or use of or inability to access or use the Service; (ii) any conduct or content of any third party on the Service; (iii) any content obtained from the Service; and (iv) unauthorized access, use or alteration of your transmissions or content, whether based on warranty, contract, tort (including negligence) or any other legal theory, whether or not we have been informed of the possibility of such damage, and even if a remedy set forth herein is found to have failed of its essential purpose.</p>
+<p><h2>Disclaimer</h2></p>
+<p>Your use of the Service is at your sole risk. The Service is provided on an "AS IS" and "AS AVAILABLE" basis. The Service is provided without warranties of any kind, whether express or implied, including, but not limited to, implied warranties of merchantability, fitness for a particular purpose, non-infringement or course of performance.</p>
+<p>Plus 3 Interactive, LLC its subsidiaries, affiliates, and its licensors do not warrant that a) the Service will function uninterrupted, secure or available at any particular time or location; b) any errors or defects will be corrected; c) the Service is free of viruses or other harmful components; or d) the results of using the Service will meet your requirements.</p>
+<p><h2>Exclusions</h2></p>
+<p>Some jurisdictions do not allow the exclusion of certain warranties or the exclusion or limitation of liability for consequential or incidental damages, so the limitations above may not apply to you.</p>
+<p><h2>Governing Law</h2></p>
+<p>These Terms shall be governed and construed in accordance with the laws of Massachusetts, United States, without regard to its conflict of law provisions.</p>
+<p>Our failure to enforce any right or provision of these Terms will not be considered a waiver of those rights. If any provision of these Terms is held to be invalid or unenforceable by a court, the remaining provisions of these Terms will remain in effect. These Terms constitute the entire agreement between us regarding our Service, and supersede and replace any prior agreements we might have had between us regarding the Service.</p>
+<p><h2>Changes</h2></p>
+<p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material we will provide at least 30 days notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion.</p>
+<p>By continuing to access or use our Service after any revisions become effective, you agree to be bound by the revised terms. If you do not agree to the new terms, you are no longer authorized to use the Service.</p>
+<p><h2>Contact Us</h2></p>
+<p>If you have any questions about these Terms, please contact us.</p>'
+                    ]
+                ]);
+
+            $privacy_policy = $wsb
+                ->addPage('Privacy Policy', 'privacy-policy')
+                ->setAuthor('Jubair Saidi')
+                ->setDescription('Plus 3 Interactive\'s Privacy Policy')
+                ->setPriority('0.5')
+                ->setUpdatedFrequency('yearly');
+
+            $privacy_policy_container = $createHeaderFooterStructure($privacy_policy)
+                ->addSection($block_text, 1, [
+                    'content' => [
+                        'content' => '<h1>Privacy Policy</h1>
+<p>Last updated: January 31, 2017</p>
+<p>Plus 3 Interactive, LLC (&quot;us&quot;, &quot;we&quot;, or &quot;our&quot;) operates the https://www.plus3interactive.com website (the &quot;Service&quot;).</p>
+<p>This page informs you of our policies regarding the collection, use and disclosure of Personal Information when you use our Service.</p>
+<p>We will not use or share your information with anyone except as described in this Privacy Policy.</p>
+<p>We use your Personal Information for providing and improving the Service. By using the Service, you agree to the collection and use of information in accordance with this policy. Unless otherwise defined in this Privacy Policy, terms used in this Privacy Policy have the same meanings as in our Terms and Conditions, accessible at https://www.plus3interactive.com</p>
+<p><h2>Information Collection And Use</h2></p>
+<p>While using our Service, we may ask you to provide us with certain personally identifiable information that can be used to contact or identify you. Personally identifiable information may include, but is not limited to, your email address, name, phone number, postal address, other information (&quot;Personal Information&quot;).
+We collect this information for the purpose of providing the Service, identifying and communicating with you, responding to your requests/inquiries, servicing your purchase orders, and improving our services.</p>
+<p><h2>Log Data</h2></p>
+<p>We may also collect information that your browser sends whenever you visit our Service (&quot;Log Data&quot;). This Log Data may include information such as your computer\'s Internet Protocol (&quot;IP&quot;) address, browser type, browser version, the pages of our Service that you visit, the time and date of your visit, the time spent on those pages and other statistics.</p>
+<p>In addition, we may use third party services such as Google Analytics that collect, monitor and analyze this type of information in order to increase our Service\'s functionality. These third party service providers have their own privacy policies addressing how they use such information.</p>
+<p><h2>Cookies</h2></p>
+<p>Cookies are files with a small amount of data, which may include an anonymous unique identifier. Cookies are sent to your browser from a web site and transferred to your device. We use cookies to collect information in order to improve our services for you.</p>
+<p>You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent. The Help feature on most browsers provide information on how to accept cookies, disable cookies or to notify you when receiving a new cookie.</p>
+<p>If you do not accept cookies, you may not be able to use some features of our Service and we recommend that you leave them turned on.</p>
+<p><h2>Do Not Track Disclosure</h2></p>
+<p>We do not support Do Not Track (&quot;DNT&quot;). Do Not Track is a preference you can set in your web browser to inform websites that you do not want to be tracked.</p>
+<p>You can enable or disable Do Not Track by visiting the Preferences or Settings page of your web browser.</p>
+<p><h2>Service Providers</h2></p>
+<p>We may employ third party companies and individuals to facilitate our Service, to provide the Service on our behalf, to perform Service-related services and/or to assist us in analyzing how our Service is used.</p>
+<p>These third parties have access to your Personal Information only to perform specific tasks on our behalf and are obligated not to disclose or use your information for any other purpose.</p>
+<p><h2>Communications</h2></p>
+<p>We may use your Personal Information to contact you with newsletters, marketing or promotional materials and other information that may be of interest to you. You may opt out of receiving any, or all, of these communications from us by following the unsubscribe link or instructions provided in any email we send.</p>
+<p><h2>Compliance With Laws</h2></p>
+<p>We will disclose your Personal Information where required to do so by law or subpoena or if we believe that such action is necessary to comply with the law and the reasonable requests of law enforcement or to protect the security or integrity of our Service.</p>
+<p><h2>Security</h2></p>
+<p>The security of your Personal Information is important to us, and we strive to implement and maintain reasonable, commercially acceptable security procedures and practices appropriate to the nature of the information we store, in order to protect it from unauthorized access, destruction, use, modification, or disclosure.</p>
+<p>However, please be aware that no method of transmission over the internet, or method of electronic storage is 100% secure and we are unable to guarantee the absolute security of the Personal Information we have collected from you.</p>
+<p><h2>International Transfer</h2></p>
+<p>Your information, including Personal Information, may be transferred to — and maintained on — computers located outside of your state, province, country or other governmental jurisdiction where the data protection laws may differ than those from your jurisdiction.</p>
+<p>If you are located outside United States and choose to provide information to us, please note that we transfer the information, including Personal Information, to United States and process it there.</p>
+<p>Your consent to this Privacy Policy followed by your submission of such information represents your agreement to that transfer.</p>
+<p><h2>Links To Other Sites</h2></p>
+<p>Our Service may contain links to other sites that are not operated by us. If you click on a third party link, you will be directed to that third party\'s site. We h2ly advise you to review the Privacy Policy of every site you visit.</p>
+<p>We have no control over, and assume no responsibility for the content, privacy policies or practices of any third party sites or services.</p>
+<p><h2>Children\'s Privacy</h2></p>
+<p>Only persons age 18 or older have permission to access our Service. Our Service does not address anyone under the age of 13 (&quot;Children&quot;).</p>
+<p>We do not knowingly collect personally identifiable information from children under 13. If you are a parent or guardian and you learn that your Children have provided us with Personal Information, please contact us. If we become aware that we have collected Personal Information from a children under age 13 without verification of parental consent, we take steps to remove that information from our servers.</p>
+<p><h2>Changes To This Privacy Policy</h2></p>
+<p>This Privacy Policy is effective as of January 31, 2017 and will remain in effect except with respect to any changes in its provisions in the future, which will be in effect immediately after being posted on this page.</p>
+<p>We reserve the right to update or change our Privacy Policy at any time and you should check this Privacy Policy periodically. Your continued use of the Service after we post any modifications to the Privacy Policy on this page will constitute your acknowledgment of the modifications and your consent to abide and be bound by the modified Privacy Policy.</p>
+<p>If we make any material changes to this Privacy Policy, we will notify you either through the email address you have provided us, or by placing a prominent notice on our website.</p>
+<p><h2>Contact Us</h2></p>
+<p>If you have any questions about this Privacy Policy, please contact us.</p>'
+                    ]
+                ]);
+
             // lets compile all the page templates
             // Note that we always want to do this last to account for any pages
             // that have children as they get generated a bit differently than normal pages.
@@ -935,6 +1056,9 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             $company->compilePageTemplate('public');
             $contact->compilePageTemplate('public');
             $login->compilePageTemplate('public');
+            $terms_of_service->compilePageTemplate('public');
+            $privacy_policy->compilePageTemplate('public');
+
 
             // Create the nav menus and add the items.
             $main_header_menu = $wsb->addMenu('main_header_menu');
@@ -956,6 +1080,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             $main_footer_menu->addItem($company, 4);
             $main_footer_menu->addItem($contact, 5);
             $main_footer_menu->addItem($login, 6);
+            $main_footer_menu->addItem($terms_of_service, 7);
+            $main_footer_menu->addItem($privacy_policy, 8);
 
             $wsb->deploy();
         })->getWebsite();

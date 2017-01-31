@@ -43,6 +43,16 @@ class FacebookController extends BaseController
         return response()->json($rtn);
     }
 
+    public function getOauthRedirect(Request $request)
+    {
+        //@TODO: add endpoint so we can re-auth a token for the app.
+    }
+
+    public function getDeauthCallback(Request $request)
+    {
+        //@TODO: add endpoint so we can re-auth a token for the app.
+    }
+
     private function init()
     {
         $this->fb = new Facebook([

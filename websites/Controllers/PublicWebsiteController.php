@@ -25,11 +25,6 @@ class PublicWebsiteController extends BaseController
 
         $data = $renderer->setPage('/'.trim($uri, '/'))->getData();
 
-        // Can't get Multiple Promises to work on the front-end as to do 3
-        // calls at once so we're populating it here for now.
-        $data['menus'] = $this->getSiteMenus($request);
-        $data['site_meta'] = $this->getSiteMeta($request);
-
         //     return $data;
         // });
 
