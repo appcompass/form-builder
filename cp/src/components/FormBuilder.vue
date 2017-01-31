@@ -5,6 +5,17 @@ div
     a.icon.is-small(v-if="field.repeatable", @click="clone(field.name, fieldIndex)")
       i.fa.fa-clone
 
+    //- SINGLE VALUE
+    span(
+        v-if="!Array.isArray(value(field.name))",
+        :is="Components[field.type]",
+        :pointer="field.name",
+        :data="value(field.name)",
+        :value="value(field.name)",
+        @input="set"
+      )
+
+    //- SINGLE FIELD REPEATABLE
     div(v-if="Array.isArray(value(field.name)) && !field.fields.length", v-for="(single, subFieldIndex) in value(field.name)")
       span.pull-right.icon.is-small(@click="unlink(field.name, subFieldIndex)")
         i.fa.fa-trash-o
@@ -16,15 +27,7 @@ div
           @input="set(single, subFieldIndex)"
         )
 
-    span(
-        v-if="!Array.isArray(value(field.name))",
-        :is="Components[field.type]",
-        :pointer="field.name",
-        :data="value(field.name)",
-        :value="value(field.name)",
-        @input="set"
-      )
-
+    //- MULTI FIELD REPEATABLE SORTABLE
     Sortable(v-if="field.repeatable && field.fields.length", :list="value(field.name)", :options="{handle: '.handle', animation: 150, group: 'items'}")
       div(v-for="(val, index) in value(field.name)")
 
@@ -33,7 +36,7 @@ div
 
         span.icon.is-small(@click="collapse(value(field.name, index), false)", v-if="value(field.name, index).isCollapsed")
           i.fa.fa-plus-square
-        span  {{ value(field.name, index).title }}
+        span  {{ value(field.name, index).title || '' }}
 
         a.icon.is-small.pull-right(@click="unlink(field.name, index)")
           i.fa.fa-trash-o
@@ -65,24 +68,37 @@ export default {
   methods: {
     clone (fieldName, fieldIndex) {
       // when cloning check if we're cloning a fieldset or a single repeatable (with multiple values)
+
+      // Fieldset (we have a fields subset)- get the fields
       if (this.form[fieldIndex].fields.length) {
         let dataObject = Object.create({})
         this.form[fieldIndex].fields.forEach((item) => {
           dataObject[item.name] = null
         })
+        // make sure the content field is able to receive data
+        if (!this.content[fieldName]) {
+          this.$set(this.content, fieldName, [])
+        }
         this.content[fieldName].push(dataObject)
+
+      // Single Field - keep old data and make it an array
+      // @TODO, what if backend expects an array -> cast to make sure
       } else {
         if (!Array.isArray(this.content[fieldName])) {
-          this.$set(this.content, fieldName, [])
+          this.$set(this.content, fieldName, [this.content[fieldName]])
         }
         this.content[fieldName].push('')
       }
     },
     set (data, index) {
+      // set a value
+
+      // based on index
       if (Array.isArray(this.content[data.pointer])) {
         if (index) {
           this.content[data.pointer][index] = data.value
         }
+      // or on an object
       } else {
         _.set(this.content, data.pointer, data.value)
       }
@@ -106,6 +122,9 @@ export default {
     unlink (fieldName, $index) {
       this.content[fieldName].splice($index, 1)
     }
+  },
+  mounted () {
+    // this.
   }
 }
 </script>

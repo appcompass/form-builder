@@ -26,7 +26,7 @@ class PageContentController extends AbstractChildController
 
         return [
             'form' => $model->section->form ? $model->section->form->render() : null,
-            'content' => $model->content
+            'content' => count($model->content) ? $model->content : ['' => ''] // @TODO needed to provide a workable object to the frontend, not gud
         ];
 
         return $model->section->form->render();

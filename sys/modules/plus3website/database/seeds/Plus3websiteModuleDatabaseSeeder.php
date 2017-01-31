@@ -422,14 +422,14 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 $fb->fieldset('Testimonials', 'testimonials', function (FormBuilder $testimonial) {
                     $testimonial->string('Author', 'author')->validation(['required'])->required();
                     $testimonial->wysiwyg('Content', 'content')->validation(['required'])->required();
-                    $testimonial->fieldset('Testimonials', 'testimonials', function (FormBuilder $lvl3) {
-                        $lvl3->string('Author', 'author')->validation(['required']);
-                        $lvl3->wysiwyg('Content', 'content')->validation(['required']);
-                        $lvl3->fieldset('Testimonials', 'testimonials', function (FormBuilder $lvl4) {
-                            $lvl4->string('Author', 'author')->validation(['required']);
-                            $lvl4->wysiwyg('Content', 'content')->validation(['required']);
-                        })->repeatable();
-                    })->repeatable();
+                    // $testimonial->fieldset('TestimonialsSub', 'testimonials', function (FormBuilder $lvl3) {
+                    //     $lvl3->string('Author', 'author')->validation(['required']);
+                    //     $lvl3->wysiwyg('Content', 'content')->validation(['required']);
+                    //     $lvl3->fieldset('TestimonialsSubSub', 'testimonials', function (FormBuilder $lvl4) {
+                    //         $lvl4->string('Author', 'author')->validation(['required']);
+                    //         $lvl4->wysiwyg('Content', 'content')->validation(['required']);
+                    //     })->repeatable();
+                    // })->repeatable();
                 })->repeatable();
             })->setOwner($customer_testimonials);
 
@@ -549,7 +549,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                     $project->string('Name', 'name')->validation(['required']);
                     $project->string('Business Area', 'business_area')->validation(['required']);
                     $project->wysiwyg('Description', 'description')->validation(['required']);
-                    $project->pageSectionSelect('Page Section Quick Links', 'quick_links')->repeatable();
+                    $project->pageSectionSelect('Page Section Quick Links', 'quick_links');
                 })->repeatable();
             })->setOwner($project_list);
 
