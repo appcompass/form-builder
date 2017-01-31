@@ -24,8 +24,12 @@
         "google/recaptcha": "~1.1",
         "roumen/sitemap": "2.6.*",
         "tymon/jwt-auth": "dev-develop",
-        "laravel/passport": "^1.0"
+        "laravel/passport": "^1.0",
 
+        "facebook/graph-sdk": "^5.4",
+
+        "deployer/deployer": "^4.1",
+        "herzult/php-ssh": "^1.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
