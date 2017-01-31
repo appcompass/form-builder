@@ -1,7 +1,10 @@
 import axios from 'axios'
 // each of these calls can prob be abstracted a bit too.
 let makeCall = (context, url, cb) => {
-  return axios.get(url)
+  return axios.create({
+    // we need a more portable way of doing this...
+    baseURL: process.env.BASE_URL || '/api'
+  }).get(url)
   .then((res) => {
     if (cb) {
       cb(res)
@@ -15,9 +18,9 @@ let makeCall = (context, url, cb) => {
 export default {
   getPageData (context) {
     let promises = [
-      makeCall (context, `${process.env.BASE_URL}/content/site-meta`),
-      makeCall (context, `${process.env.BASE_URL}/content/menus`),
-      makeCall (context, `${process.env.BASE_URL}/content${context.route.path}`, (res) => {
+      makeCall (context, `/content/site-meta`),
+      makeCall (context, `/content/menus`),
+      makeCall (context, `/content${context.route.path}`, (res) => {
         res.data.current_url = context.route.path
       })
     ]

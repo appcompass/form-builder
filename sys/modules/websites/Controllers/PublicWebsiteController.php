@@ -10,7 +10,6 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\URL;
-use P3in\Renderers\PageRenderer;
 
 class PublicWebsiteController extends BaseController
 {
@@ -21,9 +20,11 @@ class PublicWebsiteController extends BaseController
         \DB::enableQueryLog();
         // // cache for 14 days?
         // $data = Cache::remember('public-page-'.$uri, 20160, function () use ($request, $uri) {
-        $renderer =  new PageRenderer($request->website);
 
-        $data = $renderer->setPage('/'.trim($uri, '/'))->getData();
+        $data = $request
+            ->website
+            ->getPageFromUrl('/'.trim($uri, '/'))
+            ->getData();
 
         //     return $data;
         // });

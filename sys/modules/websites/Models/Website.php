@@ -10,6 +10,7 @@ use P3in\Models\Redirect;
 use P3in\Traits\HasGallery;
 use P3in\Traits\HasPermissions;
 use P3in\Traits\SettingsTrait;
+use Exception;
 
 class Website extends Model
 {
@@ -203,6 +204,15 @@ class Website extends Model
     public function getMachineName()
     {
         return strtolower(str_replace(' ', '_', $this->site_name));
+    }
+
+    public function getPageFromUrl($url)
+    {
+        try {
+            return $this->pages()->byUrl($url)->firstorFail();
+        } catch (Exception $e) {
+            throw new Exception('There is no page by that URL.');
+        }
     }
     // public function populateField($field_name)
     // {
