@@ -2,6 +2,7 @@ if (process.BROWSER_BUILD) {
   window.fbAsyncInit = function() {
     FB.init({
       appId      : '1248399805255101',
+      cookie     : true,
       xfbml      : true,
       version    : 'v2.8'
     });

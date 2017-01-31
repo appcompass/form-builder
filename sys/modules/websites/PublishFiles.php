@@ -71,9 +71,14 @@ class PublishFiles
         }
     }
 
+    public function listContents($from, $path = '')
+    {
+        return $this->manager->listContents($from.'://'.$path, true);
+    }
+
     public function publishFolder($from, $to, $overwrite = false)
     {
-        foreach ($this->manager->listContents($from.'://', true) as $file) {
+        foreach ($this->listContents($from) as $file) {
             if ($file['type'] === 'file') {
                 $path = $file['path'];
                 $data = $this->getFile($from, $path);

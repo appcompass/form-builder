@@ -25,8 +25,10 @@
     mounted () {
       $('.work-slideshow').slick({
         dots: true,
+        autoplay:true,
+        autoplaySpeed: 5000,
         infinite: true,
-        speed: 300,
+        speed: 1000,
         slidesToShow: 1,
         arrows: false,
         mobileFirst: true,

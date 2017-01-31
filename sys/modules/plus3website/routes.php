@@ -14,5 +14,7 @@ Route::group([
         'prefix' => 'facebook',
     ], function ($router) {
         $router->get('feed', 'FacebookController@getFeed');
+        $router->get('oauth-redirect', 'FacebookController@getOauthRedirect');
+        $router->get('deauth-callback', 'FacebookController@getDeauthCallback');
     });
 });
