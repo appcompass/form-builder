@@ -13,6 +13,7 @@ export default {
     return {
       options: {
         theme: 'snow',
+        editor: null,
         modules: {
           toolbar: [
             [{ header: [1, 2, false] }],
@@ -20,9 +21,12 @@ export default {
             ['image', 'code-block']
           ]
         }
-      },
-      editor: null
+      }
     }
+  },
+  beforeDestroy () {
+    // console.log(this.editor.destroy())
+    this.editor = null
   },
   mounted () {
     this.editor = new Quill(this.$el, this.options)
