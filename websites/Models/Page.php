@@ -10,12 +10,16 @@ use P3in\Models\Layout;
 use P3in\Models\PageSectionContent;
 use P3in\Models\Section;
 use P3in\Models\Website;
+use Exception;
 
 class Page extends Model implements Linkable
 {
     use SoftDeletes
     // , HasPermissions
     ;
+
+    // used for page output structuring.
+    private $build = [];
 
     protected $fillable = [
         'slug',
@@ -355,6 +359,7 @@ class Page extends Model implements Linkable
         return $item;
     }
 
+    // page contents and sections rendering methods
     private function buildContentBranches($parent_id)
     {
         $branches = [];
@@ -367,8 +372,11 @@ class Page extends Model implements Linkable
         return collect($branches);
     }
 
-    public function buildContentTree()
+    public function buildContentTree($with_sections = false)
     {
+        if ($with_sections) {
+            $this->contents->load('sections');
+        }
         $tree = [];
         foreach ($this->contents as $row) {
             if (is_null($row->parent_id)) {
@@ -377,5 +385,46 @@ class Page extends Model implements Linkable
             }
         }
         return $tree;
+    }
+
+    public function getData($filtered = true)
+    {
+        if ($filtered) {
+            $this->filterData();
+        }
+
+        $this->getContent($this->buildContentTree());
+
+        $this->build['page'] = $this;
+
+        // $this->getSettings();
+        // $this->getContent($filtered);
+
+        // structure the page data to be sent to the front-end to work out.
+        return $this->build;
+    }
+
+    private function getContent($sections)
+    {
+        foreach ($sections as $row) {
+            if ($row->children->count()) {
+                $this->getContent($row->children);
+            } else {
+                $this->build['content'][$row->id] = $row->content;
+            }
+        }
+    }
+
+    private function filterData()
+    {
+        $this
+            ->makeHidden('id')
+            ->makeHidden('website_id')
+            ->makeHidden('dynamic_url')
+            ->makeHidden('created_at')
+            ->makeHidden('deleted_at')
+            ->makeHidden('dynamic_segment')
+            ->makeHidden('contents')
+        ;
     }
 }

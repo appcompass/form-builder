@@ -49,7 +49,7 @@
     methods: {
     },
     created () {
-      axios.get(`/api/facebook/feed`)
+      axios.get(`https://www.plus3interactive.com/api/facebook/feed`)
       .then((res) => {
         this.fb = res.data
       }).catch((e) => {

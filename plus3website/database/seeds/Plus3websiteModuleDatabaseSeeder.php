@@ -11,7 +11,6 @@ use P3in\Models\Plus3Person;
 use P3in\Models\Section;
 use P3in\Models\User;
 use P3in\Models\Website;
-use P3in\Renderers\PageRenderer;
 
 class Plus3websiteModuleDatabaseSeeder extends Seeder
 {
@@ -1086,18 +1085,5 @@ We collect this information for the purpose of providing the Service, identifyin
             $wsb->deploy();
         })->getWebsite();
 
-
-        // // Now lets test the magic!
-        // DB::enableQueryLog();
-        // $website_for_renderer = Website::find($website->id);
-        // $renderer =  new PageRenderer($website_for_renderer);
-
-        // $data = $renderer->setPage('/solutions/our-process')->render(); // edit() for CP, render() for public.
-
-        // dd(DB::getQueryLog(), $data);
-
-/*
-
- */
     }
 }
