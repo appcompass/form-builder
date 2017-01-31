@@ -49,7 +49,7 @@
     methods: {
     },
     created () {
-      axios.get(`http://api.p3in.com.dev/facebook/feed`)
+      axios.get(`/api/facebook/feed`)
       .then((res) => {
         this.fb = res.data
       }).catch((e) => {

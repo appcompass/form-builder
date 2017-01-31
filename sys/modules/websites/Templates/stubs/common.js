@@ -15,9 +15,9 @@ let makeCall = (context, url, cb) => {
 export default {
   getPageData (context) {
     let promises = [
-      makeCall (context, `http://api.p3in.com.dev/content/site-meta`),
-      makeCall (context, `http://api.p3in.com.dev/content/menus`),
-      makeCall (context, `http://api.p3in.com.dev/content${context.route.path}`, (res) => {
+      makeCall (context, `${process.env.BASE_URL}/content/site-meta`),
+      makeCall (context, `${process.env.BASE_URL}/content/menus`),
+      makeCall (context, `${process.env.BASE_URL}/content${context.route.path}`, (res) => {
         res.data.current_url = context.route.path
       })
     ]
