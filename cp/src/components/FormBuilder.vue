@@ -3,7 +3,7 @@ div
   span(v-if="form", v-for="(field, fieldIndex) in form")
     label.label(v-if="!field.repeatable") {{ field.label }}
     a.icon.is-small(v-if="field.repeatable", @click="clone(field.name, fieldIndex)")
-      i.fa.fa-clone
+      i.fa.fa-plus
 
     //- SINGLE VALUE
     span(
@@ -15,7 +15,7 @@ div
         @input="set"
       )
 
-    //- SINGLE FIELD REPEATABLE
+    //- SINGLE FIELD REPEATABLE -- value(field.name) returns an array
     div(v-if="Array.isArray(value(field.name)) && !field.fields.length", v-for="(single, subFieldIndex) in value(field.name)")
       span.pull-right.icon.is-small(@click="unlink(field.name, subFieldIndex)")
         i.fa.fa-trash-o
@@ -24,7 +24,7 @@ div
           :pointer="field.name",
           :data="single",
           :value="single",
-          @input="set(single, subFieldIndex)"
+          @input="function(e) { return set(e, subFieldIndex); }"
         )
 
     //- MULTI FIELD REPEATABLE SORTABLE
@@ -62,7 +62,8 @@ export default {
   components: { Sortable },
   data () {
     return {
-      Components
+      Components,
+      subFieldIndex: null
     }
   },
   methods: {
@@ -75,7 +76,7 @@ export default {
         this.form[fieldIndex].fields.forEach((item) => {
           dataObject[item.name] = null
         })
-        // make sure the content field is able to receive data
+        // make sure the content field is able to receive dataplus
         if (!this.content[fieldName]) {
           this.$set(this.content, fieldName, [])
         }
@@ -96,7 +97,8 @@ export default {
       // based on index
       if (Array.isArray(this.content[data.pointer])) {
         if (index) {
-          this.content[data.pointer][index] = data.value
+          this.$set(this.content[data.pointer], index, data.value)
+          // this.content[data.pointer][index] = data.value
         }
       // or on an object
       } else {

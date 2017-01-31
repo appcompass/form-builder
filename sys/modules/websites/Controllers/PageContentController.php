@@ -20,6 +20,14 @@ class PageContentController extends AbstractChildController
         ];
     }
 
+    public function update(Request $request, $parent, $model)
+    {
+        if ($model->update(['content' => $request->all()])) {
+            return ['success' => true];
+        }
+
+    }
+
     public function show($parent, $model)
     {
         $model->load('section.form');

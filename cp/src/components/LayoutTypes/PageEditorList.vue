@@ -1,9 +1,11 @@
 <template lang="jade">
-.columns
-  .page.column.is-6
-    Container(v-for="container in collection.data", :container="container", @edit="edit")
-  .column.is-6
-    FormBuilder(:form="form", :content="content", @add="add")
+div
+  .columns
+    .page.column.is-6
+      Container(v-for="container in collection.data", :container="container", @edit="edit")
+    .column.is-6
+      FormBuilder(:form="form", :content="content", @add="add")
+      a.button.is-primary(@click="store") Save
 </template>
 
 <script>
@@ -18,7 +20,8 @@ export default {
   data () {
     return {
       form: null,
-      content: null
+      content: null,
+      id: null // id being edited
     }
   },
   methods: {
@@ -29,10 +32,17 @@ export default {
       return _.get(this.dataObject, fieldName)
     },
     edit (id) {
+      this.id = id
       this.$http.get(process.env.API_SERVER + 'pages/' + this.$route.params.id + '/content/' + id)
         .then(response => {
           this.form = response.data.collection.form
           this.content = response.data.collection.content
+        })
+    },
+    store () {
+      this.$http.put(process.env.API_SERVER + 'pages/' + this.$route.params.id + '/content/' + this.id, this.content)
+        .then(response => {
+          console.log(response)
         })
     }
   }
