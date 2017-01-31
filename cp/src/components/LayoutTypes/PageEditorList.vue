@@ -23,11 +23,7 @@ export default {
   },
   methods: {
     add (field) {
-      console.log(field)
       this.form.push(field)
-    },
-    set (data) {
-      _.set(this.dataObject, data.pointer, data.value)
     },
     value (fieldName) {
       return _.get(this.dataObject, fieldName)
