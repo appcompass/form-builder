@@ -375,7 +375,7 @@ class Page extends Model implements Linkable
     public function buildContentTree($with_sections = false)
     {
         if ($with_sections) {
-            $this->contents->load('sections');
+            $this->contents->load('section');
         }
         $tree = [];
         foreach ($this->contents as $row) {
