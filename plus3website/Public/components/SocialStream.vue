@@ -60,10 +60,10 @@
     mounted () {
     },
     updated () {
-        $('.facebook-slide').matchHeight();
+        $('.facebook-slide').matchHeight({byRow:false});
 
         if ($(window).width() < breakpoints.small) {
-          $('.facebook-slide').matchHeight({ remove: true });
+          $('.facebook-slide').matchHeight({remove: true});
         }
 
         $('.facebook-slideshow').slick({
