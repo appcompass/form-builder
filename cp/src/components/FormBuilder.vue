@@ -4,15 +4,28 @@ div
     label.label(v-if="!field.repeatable") {{ field.label }}
     a.icon.is-small(v-if="field.repeatable", @click="clone(field.name, fieldIndex)")
       i.fa.fa-clone
+
+    div(v-if="Array.isArray(value(field.name)) && !field.fields.length", v-for="(single, subFieldIndex) in value(field.name)")
+      span.pull-right.icon.is-small(@click="unlink(field.name, subFieldIndex)")
+        i.fa.fa-trash-o
+      span(
+          :is="Components[field.type]",
+          :pointer="field.name",
+          :data="single",
+          :value="single",
+          @input="set(single, subFieldIndex)"
+        )
+
     span(
+        v-if="!Array.isArray(value(field.name))",
         :is="Components[field.type]",
         :pointer="field.name",
         :data="value(field.name)",
-        :value="value(field.name)"
+        :value="value(field.name)",
         @input="set"
       )
 
-    Sortable(v-if="field.repeatable", :list="value(field.name)", :options="{handle: '.handle', animation: 150, group: 'items'}")
+    Sortable(v-if="field.repeatable && field.fields.length", :list="value(field.name)", :options="{handle: '.handle', animation: 150, group: 'items'}")
       div(v-for="(val, index) in value(field.name)")
 
         span.icon.is-small(@click="collapse(value(field.name, index), true)", v-if="!value(field.name, index).isCollapsed")
@@ -51,21 +64,35 @@ export default {
   },
   methods: {
     clone (fieldName, fieldIndex) {
-      let dataObject = Object.create({})
-      this.form[fieldIndex].fields.forEach((item) => {
-        dataObject[item.name] = null
-      })
-      console.log(dataObject)
-      this.content[fieldName].push(dataObject)
+      // when cloning check if we're cloning a fieldset or a single repeatable (with multiple values)
+      if (this.form[fieldIndex].fields.length) {
+        let dataObject = Object.create({})
+        this.form[fieldIndex].fields.forEach((item) => {
+          dataObject[item.name] = null
+        })
+        this.content[fieldName].push(dataObject)
+      } else {
+        if (!Array.isArray(this.content[fieldName])) {
+          this.$set(this.content, fieldName, [])
+        }
+        this.content[fieldName].push('')
+      }
     },
-    set (data) {
-      _.set(this.content, data.pointer, data.value)
+    set (data, index) {
+      if (Array.isArray(this.content[data.pointer])) {
+        if (index) {
+          this.content[data.pointer][index] = data.value
+        }
+      } else {
+        _.set(this.content, data.pointer, data.value)
+      }
     },
     value (fieldName, $index) {
       // _.get the element in content object
       let c = _.get(this.content, fieldName)
+
       // if it returns an array we look at $index, if preset
-      if ($index >= 0) {
+      if ($index >= 0 && Array.isArray(c)) {
         // return that specific value
         return c[$index]
       } else {
