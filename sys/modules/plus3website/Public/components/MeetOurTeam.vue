@@ -1,51 +1,48 @@
-<template>
-  <div v-if="data">
-    <section class="section-module section-team">
-      <div class="row">
-        <div class="medium-8 medium-centered columns">
-          <div class="section-header">
-            <h2 class="section-heading">{{data.title}}</h2>
-            <div class="section-desc">
-              <div v-html="data.description"></div>
-              <p><nuxt-link :to="data.link_href">{{data.link_text}} <span class="icon-arrow"></span></nuxt-link></p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- @TODO: create a component for Plus3Person Model that this data is provided from -->
-      <div class="section-team-members">
-        <!-- this needs to update the url to /company#imene-saidi but shoudln't change urls,
-        on hard refresh it would take the user to that page.  This is basically a
-        modal that has the link of the other page, so this is obviously different
-        from other situations, but there are a few of these modals we need to do
-        this behavior for so def something to abstract and nuxt-link is prob not
-        what we want to use here -->
-        <nuxt-link :to="member.url" v-for="member in data.team" class="section-team-member team-popup" :style="{backgroundImage: 'url(' + member.cover_photo + ')' }">
-          <span class="team-hover">
-            <span class="team-name">{{member.full_name}}</span>
-            <span class="team-position">{{member.title}}</span>
-          </span>
-        </a>
-      </div>
-    </section><!-- section-team -->
-    <div :id="member.url" v-for="member in data.team" class="popup popup-team mfp-hide">
-      <div class="row">
-        <div class="small-4 columns">
-          <p><img :src="member.modal_photo" width="316" height="432"></p>
-        </div>
-        <div class="small-8 columns">
-          <h1>{{member.full_name}}</h1>
-          <span v-html="member.bio"></p>
-          <p>
-            <a :href="member.instagram" target="_blank" class="team-social"><span class="icon-instagram"></span></a>
-            <a :href="member.twitter" target="_blank" class="team-social"><span class="icon-twitter"></span></a>
-            <a :href="member.facebook" target="_blank" class="team-social"><span class="icon-facebook"></span></a>
-            <a :href="member.linkedin" target="_blank" class="team-social"><span class="icon-linkedin"></span></a>
-          </p>
-        </div>
-      </div>
-    </div> <!-- popup-team -->
-  </div>
+<template lang="pug">
+  div(v-if='data')
+    section.section-module.section-team
+      .row
+        .medium-8.medium-centered.columns
+          .section-header
+            h2.section-heading {{data.title}}
+            .section-desc
+              div(v-html='data.description')
+              p
+                nuxt-link(:to='data.link_href')
+                  | {{data.link_text}}
+                  span.icon-arrow
+      // @TODO: create a component for Plus3Person Model that this data is provided from
+      .section-team-members
+        //
+          this needs to update the url to /company#imene-saidi but shoudln't change urls,
+          on hard refresh it would take the user to that page.  This is basically a
+          modal that has the link of the other page, so this is obviously different
+          from other situations, but there are a few of these modals we need to do
+          this behavior for so def something to abstract and nuxt-link is prob not
+          what we want to use here
+        nuxt-link.section-team-member.team-popup(:to='member.url', v-for='member in data.team', :style="{backgroundImage: 'url(' + member.cover_photo + ')' }")
+          span.team-hover
+            span.team-name {{member.full_name}}
+            span.team-position {{member.title}}
+    // section-team
+    .popup.popup-team.mfp-hide(:id='member.url', v-for='member in data.team')
+      .row
+        .small-4.columns
+          p
+            img(:src='member.modal_photo', width='316', height='432')
+        .small-8.columns
+          h1 {{member.full_name}}
+          span(v-html='member.bio')
+            p
+            p
+              a.team-social(:href='member.instagram', target='_blank')
+                span.icon-instagram
+              a.team-social(:href='member.twitter', target='_blank')
+                span.icon-twitter
+              a.team-social(:href='member.facebook', target='_blank')
+                span.icon-facebook
+              a.team-social(:href='member.linkedin', target='_blank')
+                span.icon-linkedin
 </template>
 
 <script>

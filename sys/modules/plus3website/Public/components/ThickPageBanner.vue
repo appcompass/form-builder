@@ -1,13 +1,9 @@
-<template>
-  <div v-if="data" class="banner" :style="{backgroundImage: 'url(' + data.banner_image + ')' }">
-    <div class="banner-content">
-      <div class="row">
-        <div class="medium-8 medium-centered columns">
-          <h1 class="banner-title">{{ data.title }}</h1>
-        </div>
-      </div>
-    </div>
-  </div><!-- banner -->
+<template lang="pug">
+  .banner(v-if='data', :style="{backgroundImage: 'url(' + data.banner_image + ')' }")
+    .banner-content
+      .row
+        .medium-8.medium-centered.columns
+          h1.banner-title {{ data.title }}
 </template>
 
 <script>

@@ -1,36 +1,28 @@
-<template>
-  <div class="section-pad" v-if="data">
-    <div class="row">
-      <div class="medium-8 medium-centered columns">
-        <form>
-          <div class="row">
-            <div class="small-6 columns">
-              <label for="" class="inside">*Email</label>
-              <input type="email">
-            </div>
-            <div class="small-6 columns">
-              <label for="" class="inside">*Password</label>
-              <input type="text">
-            </div>
-          </div>
-          <div class="row">
-            <div class="small-6 columns">
-              <div class="checkbox">
-                <input type="checkbox" id="remember_me">
-                <label for="remember_me">Remember Me</label>
-              </div>
-            </div>
-            <div class="small-6 columns text-right">
-              <div class="row">
-                <div class="small-6 columns text-left"><a href="/forgot-password">Forgot Password?</a></div>
-                <div class="small-6 columns text-right"><button class="btn-blue">Login <span class="icon-arrow"></span></button></div>
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
+<template lang="pug">
+  .section-pad(v-if='data')
+    .row
+      .medium-8.medium-centered.columns
+        form
+          .row
+            .small-6.columns
+              label.inside(for='') *Email
+              input(type='email')
+            .small-6.columns
+              label.inside(for='') *Password
+              input(type='text')
+          .row
+            .small-6.columns
+              .checkbox
+                input#remember_me(type='checkbox')
+                label(for='remember_me') Remember Me
+            .small-6.columns.text-right
+              .row
+                .small-6.columns.text-left
+                  a(href='/forgot-password') Forgot Password?
+                .small-6.columns.text-right
+                  button.btn-blue
+                    | Login
+                    span.icon-arrow
 </template>
 
 <script>
