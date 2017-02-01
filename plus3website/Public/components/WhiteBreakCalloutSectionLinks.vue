@@ -2,19 +2,17 @@
   <div v-if="data" class="section-solution solution-intro">
     <div class="row">
       <div class="medium-8 medium-centered columns">
-        <h1>Title</h1>
-        <p>Desc</p>
-        <ul class="blue-list list-centered">
-          <li><a href="">Link 1</a></li>
+        <h1>{{data.title}}</h1>
+        <div v-html="data.description"></div>
+        <ul class="blue-list list-centered" v-if="data.link_format == 'ul'">
+          <li v-for="link in data.links"><nuxt-link :to="link.href">{{link.text}}</nuxt-link></li>
         </ul>
-        <!-- <br> added just for spacing, remove in final version of component. -->
-        <br>
-        <ol class="blue-list list-centered">
-          <li><a href="">Another format</a></li>
+        <ol class="blue-list list-centered" v-if="data.link_format == 'ol'">
+          <li v-for="link in data.links"><nuxt-link :to="link.href">{{link.text}}</nuxt-link></li>
         </ol>
-        <!-- <br> added just for spacing, remove in final version of component. -->
-        <br>
-        <a href="">Final format <span class="icon-arrow"></span></a>
+        <div v-if="data.link_format == 'arrow'">
+            <nuxt-link :to="link.href" v-for="link in data.links">{{link.text}} <span class="icon-arrow"></span></nuxt-link>
+        </div>
       </div>
     </div>
   </div>
