@@ -1,39 +1,33 @@
-<template>
-  <section v-if="data" class="section-module section-social">
-    <div class="row">
-      <div class="xsmall-12 columns">
-        <div class="section-header">
-          <h2 class="section-heading" v-html="data.title"></h2>
-          <div class="section-social-follow">
-            <span>Follow Us</span> <a class="icon-instagram" :href="data.site_instagram"></a> <a class="icon-twitter" :href="data.site_twitter"></a> <a class="icon-facebook" :href="data.site_facebook"></a>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="facebook-slideshow-wrap">
-
-      <div class="facebook-slideshow">
-        <div class="facebook-slide" v-for="feed in fb.feed">
-          <div class="fb-header">
-            <div class="fb-avatar"><img :src="fb.picture"></div>
-            <h3 class="fb-user"><a :href="data.site_facebook">{{fb.name}}</a></h3>
-            <div class="fb-followers">{{fb.fan_count}} followers</div>
-            <a :href="feed.page_link" class="fb-icon icon-facebook-square" target="_blank"></a>
-          </div>
-          <div class="fb-post">
-            <span class="fb-post-img"><img :src="feed.full_picture"></span>
-            <h2 class="fb-post-title">{{feed.message}}</h2>
-            <p class="fb-post-desc">{{feed.description}}</p>
-          </div>
-          <div class="fb-footer">
-            <a v-for="action in feed.actions" :href="action.link" target="_blank">{{action.name}}</a>
-            <span class="fb-likes">{{feed.reactions}} people like this</span>
-          </div>
-        </div>
-      </div>
-      <div class="facebook-slideshow-controls"></div>
-    </div>
-  </section>
+<template lang="pug">
+  section.section-module.section-social(v-if='data')
+    .row
+      .xsmall-12.columns
+        .section-header
+          h2.section-heading(v-html='data.title')
+          .section-social-follow
+            span Follow Us
+            a.icon-instagram(:href='data.site_instagram')
+            a.icon-twitter(:href='data.site_twitter')
+            a.icon-facebook(:href='data.site_facebook')
+    .facebook-slideshow-wrap
+      .facebook-slideshow
+        .facebook-slide(v-for='feed in fb.feed')
+          .fb-header
+            .fb-avatar
+              img(:src='fb.picture')
+            h3.fb-user
+              a(:href='data.site_facebook') {{fb.name}}
+            .fb-followers {{fb.fan_count}} followers
+            a.fb-icon.icon-facebook-square(:href='feed.page_link', target='_blank')
+          .fb-post
+            span.fb-post-img
+              img(:src='feed.full_picture')
+            h2.fb-post-title {{feed.message}}
+            p.fb-post-desc {{feed.description}}
+          .fb-footer
+            a(v-for='action in feed.actions', :href='action.link', target='_blank') {{action.name}}
+            span.fb-likes {{feed.reactions}} people like this
+      .facebook-slideshow-controls
 </template>
 
 <script>

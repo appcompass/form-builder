@@ -1,20 +1,14 @@
-<template>
-  <section v-if="data" class="section-module section-reviews">
-    <div class="row">
-      <div class="xsmall-12 columns">
-        <div class="review-slideshow">
-          <div class="review-slide" v-for="testimonial in data.testimonials">
-            <blockquote class="review">
-              <span class="icon-quote open-quote"></span>
-              <div v-html="testimonial.content"></div>
-              <cite>- {{testimonial.author}}</cite>
-              <span class="icon-quote close-quote"></span>
-            </blockquote>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+<template lang="pug">
+  section.section-module.section-reviews(v-if='data')
+    .row
+      .xsmall-12.columns
+        .review-slideshow
+          .review-slide(v-for='testimonial in data.testimonials')
+            blockquote.review
+              span.icon-quote.open-quote
+              div(v-html='testimonial.content')
+              cite - {{testimonial.author}}
+              span.icon-quote.close-quote
 </template>
 
 <script>

@@ -1,10 +1,8 @@
-<template>
-  <div v-if="data">
-    <section class="section-solution">
-      <div class="row">
-        <div class="medium-12 columns" v-html="data.content">
-      </div>
-  </div>
+<template lang="pug">
+  div(v-if='data')
+    section.section-solution
+      .row
+        .medium-12.columns(v-html='data.content')
 </template>
 
 <script>

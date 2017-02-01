@@ -1,18 +1,12 @@
-<template>
-  <section v-if="data" class="section-module section-process">
-    <div class="row">
-      <div class="medium-8 medium-centered columns">
-        <div class="section-header">
-          <h2 class="section-heading">{{data.title}}</h2>
-          <div class="section-desc" v-html="data.description">
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="medium-12 medium-centered columns" id="home-process-svg"></div>
-    </div>
-  </section><!-- section-process -->
+<template lang="pug">
+  section.section-module.section-process(v-if='data')
+    .row
+      .medium-8.medium-centered.columns
+        .section-header
+          h2.section-heading {{data.title}}
+          .section-desc(v-html='data.description')
+    .row
+      #home-process-svg.medium-12.medium-centered.columns
 </template>
 
 <script>

@@ -1084,7 +1084,24 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ]);
 
             $process_container
-                ->addSection($process_maintenance_details, 4);
+                ->addSection($process_maintenance_details, 4, [
+                    'content' => [
+                        'title' => 'What about Maintenance?',
+                        'description' => '<p>We take a phased approach to roll out.  After launch of your Web application, we can customize a maintenance plan that could include:
+    <ul>
+        <li>Ongoing application design or development</li>
+        <li>Ongoing content development</li>
+        <li>Research and planning consultations</li>
+    </ul>
+</p>
+<p>Please ask us about our maintenance plans.</p>',
+                        'image' => '/assets/images/content/icon_maintenance.svg',
+                        'image_width' => '152',
+                        'image_height' => '152',
+                        'link_title' => 'Contact Us',
+                        'link_href' => '',
+                    ]
+                ]);
 
             $projects = $wsb
                 ->addPage('Projects', 'projects')
