@@ -10,8 +10,6 @@ let makeCall = (context, url, cb) => {
       cb(res)
     }
     return res.data
-  }).catch((e) => {
-    return context.error({ statusCode: 404, message: e.message })
   })
 }
 
@@ -31,6 +29,8 @@ export default {
       pageData.menus = data[1]
 
       return pageData
+    }).catch((e) => {
+      context.error({ statusCode: 404, message: e.message + ' api endpoint: "' + e.config.url + '" not reachable.' });
     });
   }
 }
