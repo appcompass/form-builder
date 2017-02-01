@@ -422,14 +422,6 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 $fb->fieldset('Testimonials', 'testimonials', function (FormBuilder $testimonial) {
                     $testimonial->string('Author', 'author')->validation(['required'])->required();
                     $testimonial->wysiwyg('Content', 'content')->validation(['required'])->required();
-                    // $testimonial->fieldset('TestimonialsSub', 'testimonials', function (FormBuilder $lvl3) {
-                    //     $lvl3->string('Author', 'author')->validation(['required']);
-                    //     $lvl3->wysiwyg('Content', 'content')->validation(['required']);
-                    //     $lvl3->fieldset('TestimonialsSubSub', 'testimonials', function (FormBuilder $lvl4) {
-                    //         $lvl4->string('Author', 'author')->validation(['required']);
-                    //         $lvl4->wysiwyg('Content', 'content')->validation(['required']);
-                    //     })->repeatable();
-                    // })->repeatable();
                 })->repeatable();
             })->setOwner($customer_testimonials);
 
@@ -454,11 +446,11 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             FormBuilder::new('WhiteBreakCalloutSectionLinks', function (FormBuilder $fb) {
                 $fb->string('Title', 'title')->validation(['required']);
                 $fb->wysiwyg('Description', 'description')->validation(['required']);
-                $fb->fieldset('Page Section Quick Links', 'quick_links', function (FormBuilder $quickLinks) {
-                    // @TODO dataSource ['ol' => 'Ordered List', 'ul' => 'Un Ordered List', 'arrow' => 'Link with Arrow', ]
-                    $quickLinks->radio('Link Format', 'link_format')->required();
-                    $quickLinks->pageSectionSelect('Page Section Quick Links', 'quick_links')->repeatable();
-                });
+                // do we really need a fieldset here? fieldsets means the frontend adds a depth to the object, i.e: data.quick_links.format instead of simply data.format
+                // $fb->fieldset('Page Section Quick Links', 'quick_links', function (FormBuilder $quickLinks) {
+                    $fb->radio('Link Format', 'format')->required(); // @TODO DataSource: ['ol' => 'Ordered List', 'ul' => 'Un Ordered List', 'arrow' => 'Link with Arrow', ]
+                    $fb->pageSectionSelect('Page Section Quick Links', 'links')->repeatable();
+                // });
             })->setOwner($white_break_w_section_links);
 
             $provided_solution = Section::create([
@@ -472,6 +464,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                     $solution->radio('Layout', 'layout')->required(); // @TODO DataSource , ['left' => 'Left', 'right' => 'Right']
                     $solution->string('Title', 'title')->validation(['required']);
                     $solution->file('Solution Photo', 'solution_photo');
+                    $solution->string('Solution Photo Width', 'photo_width');
+                    $solution->string('Solution Photo Height', 'photo_height');
                     $solution->wysiwyg('Description', 'description')->validation(['required'])->required();
                     $solution->pageSectionSelect('Projects Using Solution', 'projects_using_solution')->repeatable();
                     $solution->text('Link Description', 'link_description')->required();
@@ -509,8 +503,6 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             ]);
 
             FormBuilder::new('ProcessTimeline', function (FormBuilder $fb) {
-                $fb->string('Title', 'title')->validation(['required']);
-                $fb->wysiwyg('Description', 'description')->validation(['required']);
                 $fb->fieldset('Process Steps', 'process_steps', function (FormBuilder $process) {
                     $process->file('Image File', 'image', ['type:svg']);
                     $process->string('Image width', 'image_width');
@@ -838,10 +830,157 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->setUpdatedFrequency('yearly');
 
             $solutions_container = $createHeaderFooterStructure($solutions)
-                ->addSection($thick_page_banner, 1)
-                ->addSection($white_break_w_section_links, 2)
-                ->addSection($provided_solution, 3)
-                ->addSection($blue_break_callout, 4);
+                ->addSection($thick_page_banner, 1, [
+                    'content' => [
+                        'background_image' => '',
+                        'title' => 'Solutions',
+                        'description' => '',
+                    ]
+                ])
+                ->addSection($white_break_w_section_links, 2, [
+                    'content' => [
+                        'title' => 'Targeted Web Solutions',
+                        'description' => '<p>We  find optimal solutions for your unique business challenges, including</p>',
+                        'link_format' => 'ul',
+                        'links' => [
+                            [
+                                'text' => 'Web applications for online businesses',
+                                'href' => '',
+                                //@TODO: Concept.
+                                'page_section' => [
+                                    'page_id' => 1,
+                                    'section_id' => 3
+                                ]
+                            ], [
+                                'text' => 'Middleware for integration of legacy systems',
+                                'href' => '',
+                                'page_section' => [
+                                    'page_id' => 1,
+                                    'section_id' => 3
+                                ]
+                            ], [
+                                'text' => 'Software for connected devices',
+                                'href' => '',
+                                'page_section' => [
+                                    'page_id' => 1,
+                                    'section_id' => 3
+                                ]
+                            ], [
+                                'text' => 'Customized application management systems',
+                                'href' => '',
+                                'page_section' => [
+                                    'page_id' => 1,
+                                    'section_id' => 3
+                                ]
+                            ],
+                        ]
+                    ]
+                ])
+                ->addSection($provided_solution, 3, [
+                    'content' => [
+                        'solutions' => [
+                            [
+                                'layout' => 'left',
+                                'title' => 'Custom Web Applications',
+                                'solution_photo' => '/assets/images/content/custom_web_applications.svg',
+                                'photo_width' => 380,
+                                'photo_height' => 320,
+                                'description' => '<p>Web development is our core competency, with expertise in eCommerce sites, intranet portals, and other Web apps that require custom integration with client systems.</p>
+<p>We’ve built Web applications for a range of business needs:
+    <ul>
+        <li>Streamlining, automating, and tracking client business data and information</li>
+        <li>Facilitating networked B2B relationships</li>
+        <li>Improving distributor interactions, sales, and maintenance workflows</li>
+        <li>Designing remote device networking and management, with increased performance and visibility</li>
+    </ul>
+</p>',
+                                'projects_using_solution' => [],
+                                'link_description' => 'Want to know more? Please contact us.',
+                                'link_title' => 'Learn More',
+                                'link_href' => '',
+                            ], [
+                                'layout' => 'right',
+                                'title' => 'Middleware Development',
+                                'solution_photo' => '/assets/images/content/middleware_development.svg',
+                                'photo_width' => 362,
+                                'photo_height' => 300,
+                                'description' => '<p>Are you using legacy CRM or ERP applications that hold you back in the modern Web landscape? We integrate your legacy backend systems with modern web applications.</p>
+
+<p>Our middleware work meets diverse client requirements, such as:
+    <ul>
+        <li>Integrating multiple sources of data into a modern web application</li>
+        <li>Upgrading legacy data architecture to enhance performance</li>
+        <li>Real time integration with improved performance and user experience</li>
+    </ul>
+</p>',
+                                'projects_using_solution' => [],
+                                'link_description' => 'Need to integrate legacy system with modern apps? Please contact us.',
+                                'link_title' => 'Contact Us',
+                                'link_href' => '',
+                            ], [
+                                'layout' => 'left',
+                                'title' => 'Device Communications',
+                                'solution_photo' => '/assets/images/content/device_communications.svg',
+                                'photo_width' => 324,
+                                'photo_height' => 290,
+                                'description' => '<p>We develop systems for efficient, remote management of numerous commercial devices. These systems are designed for scalability, performance, usability, and security.</p>
+<p>We have developed or consulted on such diverse areas as medical devices and banking machines, including:
+    <ul>
+        <li>Management of device configurations, upgrades, and repairs</li>
+        <li>Device monitoring and notifications</li>
+        <li>Trending and data analytics on device performance,  users, system resources, and more</li>
+    </ul>
+</p>',
+                                'projects_using_solution' => [],
+                                'link_description' => 'Do you want your devices connected? Contact us.',
+                                'link_title' => 'Contact Us',
+                                'link_href' => '',
+                            ], [
+                                'layout' => 'right',
+                                'title' => 'Modular Application Management System',
+                                'solution_photo' => '/assets/images/content/modular_application_management.svg',
+                                'photo_width' => 370,
+                                'photo_height' => 300,
+                                'description' => '<p>To facilitate our clients’ management of their Web applications, we developed a modular application management system (AMS). We customize the AMS so clients may build, modify, and manage one or many Web sites through one system.</p>
+
+<p>Benefits of the system:
+    <ul>
+        <li>Accessible from range of mobile devices or computer</li>
+        <li>Flexible design of Web pages, colors, images, content</li>
+        <li>Modifications of Web site easily implemented</li>
+        <li>Range of user permissions controlled by administrator</li>
+        <li>Bank-level security for eCommerce, banking, or medical sites</li>
+        <li>Regular updates of AMS provided by Plus 3 Interactive</li>
+    </ul>
+</p>',
+                                'projects_using_solution' => [],
+                                'link_description' => 'Looking for comprehensive app management? Contact us.',
+                                'link_title' => 'Contact Us',
+                                'link_href' => '',
+                            ], [
+                                'layout' => 'left',
+                                'title' => 'The Development Process',
+                                'solution_photo' => '/assets/images/content/development_process.svg',
+                                'photo_width' => 324,
+                                'photo_height' => 290,
+                                'description' => '<p>In big projects and small, Plus 3 Interactive builds value and well-crafted solutions through our defined development process. Before beginning work on a project, we gather information from the client and tailor an end-to-end project plan based on the client’s requirements.</p>
+
+<p>The project plan is a deliverable that we present to the client at the start of the project. It details information architecture, design, and development steps, including schedules, deliverables for each phase, responsibilities, and much more...</p>',
+                                'projects_using_solution' => [],
+                                'link_description' => 'Learn more about our process.',
+                                'link_title' => 'Our Process',
+                                'link_href' => '',
+                            ],
+                        ]
+                    ]
+                ])
+                ->addSection($blue_break_callout, 4, [
+                    'content' => [
+                        'link_title' => 'Interested in what we can do for you? Please submit an RFP.',
+                        'link_href' => ''
+                    ]
+                ]);
+
 
             $process = $solutions
                 ->addChild('Our Process', 'our-process')
@@ -851,11 +990,30 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->setUpdatedFrequency('yearly');
 
             $process_container = $createHeaderFooterStructure($process)
-                ->addSection($thick_page_banner, 1)
-                ->addSection($breadcrumb_with_right_link, 2);
+                ->addSection($thick_page_banner, 1, [
+                    'content' => [
+                        'background_image' => '',
+                        'title' => 'Our Process',
+                        'description' => '',
+                    ]
+                ])
+                ->addSection($breadcrumb_with_right_link, 2, [
+                    'content' => [
+                        'link_title' => 'Learn more about Plus 3 Interactive',
+                        'link_href' => '',
+                    ]
+                ])
+                ->addSection($white_break_w_section_links, 3, [
+                    'content' => [
+                        'title' => 'Steps to Software Success',
+                        'description' => '<p>From our first meeting with you, through each stage of product development, we follow a clear process to deliver quality and keep you informed.</p>',
+                        'link_format' => '',
+                        'links' => []
+                    ]
+                ]);
 
             $process_timeline_section = $process_container
-                ->addContainer(3, [
+                ->addContainer(4, [
                     'class' => 'row',
                 ])
                 ->addContainer(1, [
@@ -863,10 +1021,70 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ]);
 
             $process_timeline_section
-                ->addSection($process_timeline, 1);
+                ->addSection($process_timeline, 1, [
+                    'content' => [
+                        'process_steps' => [
+                            [
+                                'image' => '/assets/images/content/icon_discovery.svg',
+                                'image_width' => 86,
+                                'image_height' => 40,
+                                'title' => 'Discovery',
+                                'description' => '<p>You tell us about your project and we develop a proposal of responsibilities, budget, and timeline.</p>',
+                            ],[
+                                'image' => '/assets/images/content/icon_client_consultation.svg',
+                                'image_width' => 134,
+                                'image_height' => 143,
+                                'title' => 'Client Consultation',
+                                'description' => '<p>From your requirements, users, content, branding, and features, we begin developing the project plan.</p>',
+                            ],[
+                                'image' => '/assets/images/content/icon_kick_off.svg',
+                                'image_width' => 203,
+                                'image_height' => 126,
+                                'title' => 'Kick Off Meeting',
+                                'description' => '<p>We meet with you to discuss the project plan, including timeline, milestones, training, meeting schedule, risk management, and next steps.</p>',
+                            ],[
+                                'image' => '/assets/images/content/icon_info_architecture.svg',
+                                'image_width' => 140,
+                                'image_height' => 198,
+                                'title' => 'Information Architecture',
+                                'description' => '<p>Our information architect analyzes users; develops content outline for web pages;  and creates keywords, navigation, and site map.</p>',
+                            ],[
+                                'image' => '/assets/images/content/icon_design.svg',
+                                'image_width' => 174,
+                                'image_height' => 174,
+                                'title' => 'Design',
+                                'description' => '<p>Our designer provides a complete design consultation; creates wireframes; and implements design of pages and UI components.</p>',
+                            ],[
+                                'image' => '/assets/images/content/icon_frontend_dev.svg',
+                                'image_width' => 210,
+                                'image_height' => 132,
+                                'title' => 'Front-end Development',
+                                'description' => '<p>Upon your approval of the Web design, our front-end developer converts it into a responsive, accessible, and user-friendly Web experience.</p>',
+                            ],[
+                                'image' => '/assets/images/content/icon_middleware_dev.svg',
+                                'image_width' => 210,
+                                'image_height' => 132,
+                                'title' => 'Back-end & Middleware Development',
+                                'description' => '<p>Using modern technologies, our developers plan, build, and test the secure Web application, integrating it with your systems as required.</p>',
+                            ],[
+                                'image' => '/assets/images/content/icon_quality_assurance.svg',
+                                'image_width' => 225,
+                                'image_height' => 120,
+                                'title' => 'Quality Assurance Testing',
+                                'description' => '<p>We implement our standard processes to uncover issues to be corrected and features that require additional development.</p>',
+                            ],[
+                                'image' => '/assets/images/content/icon_launch.svg',
+                                'image_width' => 226,
+                                'image_height' => 210,
+                                'title' => 'Launch',
+                                'description' => '<p>Your Web application goes live! But our role isn’t done yet – we’ll resolve any post-launch bugs and help you plan for future phases of your project.</p>',
+                            ]
+                        ],
+                    ]
+                ]);
 
             $process_container
-                ->addSection($process_maintenance_details, 3);
+                ->addSection($process_maintenance_details, 4);
 
             $projects = $wsb
                 ->addPage('Projects', 'projects')
