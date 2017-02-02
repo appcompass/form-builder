@@ -3,6 +3,8 @@
 namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use P3in\Models\FieldData;
+
 
 class Field extends Model
 {
@@ -11,14 +13,14 @@ class Field extends Model
         'label',
         'type',
         'to_list',
-        'to_edit'
+        'to_edit',
+        'required',
+        'repeatable',
+        'sortable',
+        'dynamic'
     ];
 
     protected $hidden = [];
-
-    protected $with = [
-        // 'children'
-    ];
 
     public $timestamps = false; // we don't need ts on fields
 
@@ -65,9 +67,34 @@ class Field extends Model
         return $this->hasMany(Field::class, 'parent_id');
     }
 
+    /**
+     * Field Chiildren (sub-form)
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
     public function children()
     {
-        return $this->hasMany(Field::class, 'parent_id')->whereNull('parent_id');
+        return $this->hasMany(Field::class, 'parent_id');
+    }
+
+    /**
+     * { function_description }
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
+    public function source()
+    {
+        return $this->hasOne(FieldData::class);
+    }
+
+    /**
+     * { function_description }
+     */
+    public function dynamic($dynamic = true)
+    {
+        $this->update(['dynamic' => $dynamic]);
+
+        return $this;
     }
 
     /**
@@ -96,20 +123,6 @@ class Field extends Model
     public function list($show = true)
     {
         $this->update(['to_list' => $show]);
-
-        return $this;
-    }
-
-    /**
-     *  Validation
-     */
-    public function validation($validation)
-    {
-        if (is_array($validation)) {
-            $validation = implode('|', $validation);
-        }
-
-        $this->update(['validation' => $validation]);
 
         return $this;
     }
@@ -153,4 +166,24 @@ class Field extends Model
 
         return $this;
     }
+
+    /**
+     *  Validation
+     */
+    public function validation($validation)
+    {
+        if (is_array($validation)) {
+            $validation = implode('|', $validation);
+        }
+
+        $this->update(['validation' => $validation]);
+
+        return $this;
+    }
+
+    public function getDataAttribute()
+    {
+        return $this->source;
+    }
+
 }

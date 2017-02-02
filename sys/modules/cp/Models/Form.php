@@ -37,8 +37,7 @@ class Form extends Model
      */
     public function fields()
     {
-        // return $this->belongsToMany(Field::class);
-        return $this->hasMany(Field::class);
+        return $this->hasMany(Field::class)->with('source');
     }
 
     /**
@@ -51,6 +50,11 @@ class Form extends Model
         return $this->hasMany(Resource::class);
     }
 
+    /**
+     * { function_description }
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
     public function render()
     {
         return $this->buildTree($this->fields);
@@ -163,20 +167,29 @@ class Form extends Model
     private function buildTree(Collection &$items, $parent_id = null, $tree = null)
     {
         if (is_null($tree)) {
+
             $tree = [];
+
         }
 
         foreach ($items as &$node) {
+
             if ($node->parent_id === $parent_id) {
+
                 $fields = $this->buildTree($items, $node->id);
 
                 if (count($fields)) {
+
                     $node->fields = $fields;
+
                 } else {
+
                     $node->fields = [];
+
                 }
 
-                $tree[] = $node;
+                // @TODO we return as array because we wanna trigger Field->source()
+                $tree[] = $node->toArray();
             }
         }
 

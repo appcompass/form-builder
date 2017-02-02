@@ -4,8 +4,8 @@ div
     .page.column.is-6
       Container(v-for="container in collection.data", :container="container", @edit="edit")
     .column.is-6
-      FormBuilder(:form="form", :content="content", @add="add")
       a.button.is-primary(@click="store") Save
+      FormBuilder(:form="form", :content="content", @add="add")
 </template>
 
 <script>

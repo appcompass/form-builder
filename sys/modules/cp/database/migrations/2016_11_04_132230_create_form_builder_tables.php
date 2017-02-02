@@ -46,10 +46,25 @@ class CreateFormBuilderTables extends Migration
             $table->boolean('searchable')->default(false);
             $table->boolean('repeatable')->default(false);
             $table->string('validation')->nullable();
+            $table->boolean('dynamic')->default(false);
             $table->string('type');
             $table->integer('form_id')->references('id')->on('forms')->onDelete('cascade');
 
             $table->index('name');
+        });
+
+        // @TODO consider merging this table with fields? (reason not to is already too many fields in fields)
+        Schema::create('field_data', function(Blueprint $table) {
+            $table->increments('id');
+            $table->integer('field_id')->unsigned()->nullable();
+            $table->foreign('field_id')->references('id')->on('fields');
+            // sourceable allows us to link the field to a model
+            $table->nullableMorphs('sourceable');
+            // $table->integer('sourceable_id')->nullable();
+            // $table->string('sourceable_type')->nullable();
+
+            $table->json('data')->nullable();
+            $table->json('criteria')->nullable();
         });
 
         // Schema::create('field_form', function (Blueprint $table) {
@@ -92,6 +107,7 @@ class CreateFormBuilderTables extends Migration
         Schema::drop('resources');
         // Schema::drop('field_form');
         Schema::drop('forms');
+        Schema::drop('field_data');
         Schema::drop('fields');
         Schema::drop('fieldtypes');
     }
