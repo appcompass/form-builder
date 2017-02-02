@@ -504,7 +504,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             FormBuilder::new('ProcessTimeline', function (FormBuilder $fb) {
                 $fb->fieldset('Process Steps', 'process_steps', function (FormBuilder $process) {
-                    $process->file('Image File', 'image', ['type:svg']);
+                    $process->file('Image File', 'image')->validation(['type:svg']);
                     $process->string('Image width', 'image_width');
                     $process->string('Image Height', 'image_height');
                     $process->string('Title', 'title')->validation(['required']);

@@ -97,6 +97,8 @@ class WebsitesModuleDatabaseSeeder extends Seeder
         $form = FormBuilder::new('pages', function (FormBuilder $builder) {
             $builder->string('Page Title', 'title')->list()->required()->sortable()->searchable();
             $builder->string('Slug', 'slug')->list(false)->required()->sortable()->searchable();
+            $builder->select('Parent', 'parent_id')->list(false)->dynamic();
+            $builder->string('Website', 'website_id')->list(false)->required(); //->dynamic('\P3in\Models\Website');
         })->linkToResources(['pages.show', 'websites.pages.index', 'websites.pages.create', 'websites.pages.show'])
         ->getForm();
 

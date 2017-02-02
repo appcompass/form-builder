@@ -18,7 +18,7 @@
           a
             small.icon.is-small.handle
               i.fa.fa-arrows
-            &nbsp; {{ item.title }}
+            |  {{ item.title }}
     .section
       h1.title Links
       Sortable.menu-list(:list="data.repo.links", :element="'ul'", :options="{handle: '.handle', animation: 150, group: 'items', clone: true}")
@@ -26,7 +26,7 @@
           a
             small.icon.is-small.handle
               i.fa.fa-arrows
-            &nbsp; {{ item.title }}
+            |  {{ item.title }}
             small.icon.is-small.pull-right
               i.fa.fa-trash(@click="deleteLink(item)")
 
