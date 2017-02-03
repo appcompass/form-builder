@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use P3in\Builders\FormBuilder;
 use P3in\Builders\WebsiteBuilder;
+use P3in\Models\FieldSource;
 
 class WebsitesModuleDatabaseSeeder extends Seeder
 {
@@ -14,38 +15,11 @@ class WebsitesModuleDatabaseSeeder extends Seeder
         DB::statement('TRUNCATE websites RESTART IDENTITY CASCADE');
         DB::statement('TRUNCATE pages RESTART IDENTITY CASCADE');
 
-        WebsiteBuilder::new(env('ADMIN_WEBSITE_NAME'), env('ADMIN_WEBSITE_SCHEME'), env('ADMIN_WEBSITE_HOST'), function ($websiteBuilder) {
-            $users_management = [
-                'url' => '',
-                'title' => 'Users Management',
-                'alt' => 'Users Management',
-                'new_tab' => false,
-                'clickable' => false,
-            ];
-
-            $web_properties = [
-                'url' => '',
-                'title' => 'Web Properties',
-                'alt' => 'Web Properties',
-                'new_tab' => false,
-                'clickable' => false,
-            ];
-
-            $blog = [
-                'url' => '',
-                'title' => 'Blog',
-                'alt' => 'Blog',
-                'new_tab' => false,
-                'clickable' => false,
-            ];
-
-            $media_management = [
-                'url' => '',
-                'title' => 'Media Management',
-                'alt' => 'Media Management',
-                'new_tab' => false,
-                'clickable' => false,
-            ];
+        $cp = WebsiteBuilder::new(env('ADMIN_WEBSITE_NAME'), env('ADMIN_WEBSITE_SCHEME'), env('ADMIN_WEBSITE_HOST'), function ($websiteBuilder) {
+            $users_management = ['url' => '', 'title' => 'Users Management', 'alt' => 'Users Management', 'new_tab' => false, 'clickable' => false, ];
+            $web_properties = ['url' => '', 'title' => 'Web Properties', 'alt' => 'Web Properties', 'new_tab' => false, 'clickable' => false, ];
+            $blog = ['url' => '', 'title' => 'Blog', 'alt' => 'Blog', 'new_tab' => false, 'clickable' => false, ];
+            $media_management = ['url' => '', 'title' => 'Media Management', 'alt' => 'Media Management', 'new_tab' => false, 'clickable' => false, ];
 
             $users = $websiteBuilder->addPage('Users', 'users');
             $users_permissions = $users->addChild('User Permissions', 'permissions');
@@ -80,7 +54,8 @@ class WebsitesModuleDatabaseSeeder extends Seeder
 
             $media_management_item = $main_nav->addItem($media_management, 3);
             $media_management_item->addItem($galleries, 1)->setIcon('camera');
-        });
+        })->getWebsite();
+
 
         DB::statement("DELETE FROM forms WHERE name = 'websites'");
 
@@ -90,19 +65,27 @@ class WebsitesModuleDatabaseSeeder extends Seeder
         })->linkToResources(['websites.index', 'websites.show', 'websites.create'])
         ->getForm();
 
-        WebsiteBuilder::edit(1)->linkForm($form);
+        WebsiteBuilder::edit($cp->id)->linkForm($form);
 
         DB::statement("DELETE FROM forms WHERE name = 'pages'");
 
         $form = FormBuilder::new('pages', function (FormBuilder $builder) {
             $builder->string('Page Title', 'title')->list()->required()->sortable()->searchable();
             $builder->string('Slug', 'slug')->list(false)->required()->sortable()->searchable();
-            $builder->select('Parent', 'parent_id')->list(false)->dynamic();
-            $builder->string('Website', 'website_id')->list(false)->required(); //->dynamic('\P3in\Models\Website');
-        })->linkToResources(['pages.show', 'websites.pages.index', 'websites.pages.create', 'websites.pages.show'])
-        ->getForm();
 
-        WebsiteBuilder::edit(1)->linkForm($form);
+            $builder->select('Parent', 'parent_id')
+                ->list(false)
+                ->dynamic(\P3in\Models\Page::class, function(FieldSource $source) {
+                    $source->limit(4);
+                    $source->where('website_id', \P3in\Models\Website::whereHost(env('ADMIN_WEBSITE_HOST'))->first()->id);
+                });
+
+            $builder->string('Website', 'website_id')->list(false)->required(); //->dynamic('\P3in\Models\Website');
+        })
+            ->linkToResources(['pages.show', 'websites.pages.index', 'websites.pages.create', 'websites.pages.show'])
+            ->getForm();
+
+        WebsiteBuilder::edit($cp->id)->linkForm($form);
 
         DB::statement("DELETE FROM forms WHERE name = 'page-content-editor'");
 
@@ -111,7 +94,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
         })->linkToResources(['pages.content.index'])
         ->getForm();
 
-        WebsiteBuilder::edit(1)->linkForm($form);
+        WebsiteBuilder::edit($cp->id)->linkForm($form);
 
         DB::statement("DELETE FROM forms WHERE name = 'menus'");
 
@@ -147,7 +130,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             $builder->boolean('Clickable', 'clickable');
         })->getForm();
 
-        WebsiteBuilder::edit(1)->linkForm($form);
+        WebsiteBuilder::edit($cp->id)->linkForm($form);
 
         DB::statement("DELETE FROM forms WHERE name = 'edit-link'");
 
@@ -161,6 +144,6 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             $builder->wysiwyg('Content', 'content');
         })->getForm();
 
-        WebsiteBuilder::edit(1)->linkForm($form);
+        WebsiteBuilder::edit($cp->id)->linkForm($form);
     }
 }

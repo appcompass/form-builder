@@ -4,16 +4,16 @@ namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 
-class DataBuilder
+class SourceBuilder
 {
     /**
      * render
      *
-     * @param      FieldData  $field_data  The field data
+     * @param      FieldSource  $field_data  The field data
      *
-     * @return     array      ( description_of_the_return_value )
+     * @return     array        ( description_of_the_return_value )
      */
-    public static function render(FieldData $field_data)
+    public static function render(FieldSource $field_data)
     {
 
         $instance = new static;
