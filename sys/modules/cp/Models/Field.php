@@ -3,8 +3,7 @@
 namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use P3in\Models\FieldData;
-
+use P3in\Models\FieldSource;
 
 class Field extends Model
 {
@@ -84,15 +83,24 @@ class Field extends Model
      */
     public function source()
     {
-        return $this->hasOne(FieldData::class);
+        return $this->morphOne(FieldSource::class, 'linked');
+        // return $this->hasOne(FieldSource::class);
     }
 
     /**
      * { function_description }
      */
-    public function dynamic($dynamic = true)
+    public function dynamic($what_to_link, \Closure $callback = null)
     {
-        $this->update(['dynamic' => $dynamic]);
+        $this->update(['dynamic' => true]);
+
+        $field_source = $this->addSource($what_to_link);
+
+        if ($callback) {
+
+            $callback($field_source);
+
+        }
 
         return $this;
     }
@@ -179,6 +187,46 @@ class Field extends Model
         $this->update(['validation' => $validation]);
 
         return $this;
+    }
+
+    // public function addSource($class_name, array $data = null, array $criteria = null)
+    public function addSource($source)
+    {
+
+        // make sure we keep stuff clean, we never want more than one source for a field
+        FieldSource::whereLinkedId($this->id)->whereLinkedType(get_class($this))->delete();
+
+        // generate a fieldSource
+        $field_source = FieldSource::create([
+            // if passed an array we assume we'd want to store data
+            'data' => is_array($source) ? $source : null,
+            'criteria' => [] // generate default criteria
+        ]);
+
+        if (is_string($source)) {
+
+            $field_source->sourceable_type = $source;
+
+        } elseif ($source instanceof Model) {
+
+            $field_source->sourceable_type = get_class($source);
+
+            $key = $source->getKeyName();
+
+            if (isset($source->{$key}) && !is_null($source->{$key})) {
+
+                $field_source->sourceable_id = $source->{$key};
+
+            }
+
+        }
+
+        // @TODO check if ->save() saves the model, it should
+        $this->source()->save($field_source);
+
+        $field_source->save();
+
+        return $field_source;
     }
 
     public function getDataAttribute()

@@ -68,6 +68,29 @@ class PageSectionContent extends Model
     //     return $this->morphMany(Photo::class, 'photoable');
     // }
 
+    public function source()
+    {
+        return $this->morphOne(\P3in\Models\FieldSource::class, 'linked');
+    }
+
+    /**
+     * Gets the content attribute.
+     *
+     * @return     <type>  The content attribute.
+     */
+    public function getContentAttribute()
+    {
+        if ($this->source) {
+
+            return $this->source->toArray();
+
+        } else {
+
+            return $this->attributes['content'];
+
+        }
+    }
+
     /**
      * Set the current section to a container type.
      * @param int $order

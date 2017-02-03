@@ -33,6 +33,7 @@ class CreateFormBuilderTables extends Migration
             $table->index('name');
         });
 
+        // @NOTE Fields must belong to a form, and are unique to it
         Schema::create('fields', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
@@ -54,12 +55,14 @@ class CreateFormBuilderTables extends Migration
         });
 
         // @TODO consider merging this table with fields? (reason not to is already too many fields in fields)
-        Schema::create('field_data', function(Blueprint $table) {
+        Schema::create('field_sources', function(Blueprint $table) {
             $table->increments('id');
-            $table->integer('field_id')->unsigned()->nullable();
-            $table->foreign('field_id')->references('id')->on('fields');
+            // $table->integer('field_id')->unsigned()->nullable();
+            // $table->foreign('field_id')->references('id')->on('fields')->onDelete('cascade');
             // sourceable allows us to link the field to a model
             $table->nullableMorphs('sourceable');
+            $table->nullableMorphs('linked'); //linked_type // linked_id
+            $table->string('field_to_store')->nullable();
             // $table->integer('sourceable_id')->nullable();
             // $table->string('sourceable_type')->nullable();
 
@@ -105,9 +108,8 @@ class CreateFormBuilderTables extends Migration
     public function down()
     {
         Schema::drop('resources');
-        // Schema::drop('field_form');
         Schema::drop('forms');
-        Schema::drop('field_data');
+        Schema::drop('field_sources');
         Schema::drop('fields');
         Schema::drop('fieldtypes');
     }

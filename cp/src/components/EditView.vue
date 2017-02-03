@@ -22,14 +22,15 @@ div
               :is="Components[field.type]",
               :pointer="field.name",
               :data="value(field.name)",
+              :source="field.source"
               @input="set"
             )
           footer
             p.control
               .pull-left
                 a.button.is-primary(
-                  v-bind:class="{'is-loading': loading}",
-                  v-bind:disable="loading",
+                  :class="{'is-loading': loading}",
+                  :disable="loading",
                   @click="update"
                 ) Save
 

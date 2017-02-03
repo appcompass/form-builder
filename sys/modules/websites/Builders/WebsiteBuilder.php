@@ -46,12 +46,6 @@ class WebsiteBuilder
             'host' => $host,
         ]));
 
-        // $instance->website = Website::create([
-        //     'name' => $name,
-        //     'scheme' => $scheme,
-        //     'host' => $host,
-        // ]);
-
         if ($closure) {
             $closure($instance);
         }

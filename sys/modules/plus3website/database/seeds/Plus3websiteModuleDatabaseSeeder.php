@@ -11,6 +11,7 @@ use P3in\Models\Plus3Person;
 use P3in\Models\Section;
 use P3in\Models\User;
 use P3in\Models\Website;
+use P3in\Models\FieldSource;
 
 class Plus3websiteModuleDatabaseSeeder extends Seeder
 {
@@ -397,9 +398,12 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 $fb->wysiwyg('Description', 'description')->validation(['required']);
                 $fb->string('Link Text', 'link_text')->validation(['required']);
                 $fb->link('Link Destination', 'link_href')->validation(['required']);
-                // $fb->somefield('The Team', 'team')->dynamic(Plus3Person::class); // @TODO: yes? no?
-            })->setOwner($meet_our_team)
-            ;
+                // this will receive a configure_dynamic form
+                // dynamic field type // dynamic data for initial setup
+                $fb->dynamic('The Team', 'team')->dynamic(\P3in\Models\Plus3Person::class, function(FieldSource $source) {
+                    $source->sort('title', 'ASC');
+                });
+            })->setOwner($meet_our_team);
 
             $social_stream = Section::create([
                 'name' => 'Social Stream',
