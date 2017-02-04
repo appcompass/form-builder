@@ -189,10 +189,8 @@ class Field extends Model
         return $this;
     }
 
-    // public function addSource($class_name, array $data = null, array $criteria = null)
     public function addSource($source)
     {
-
         // make sure we keep stuff clean, we never want more than one source for a field
         FieldSource::whereLinkedId($this->id)->whereLinkedType(get_class($this))->delete();
 
@@ -203,9 +201,19 @@ class Field extends Model
             'criteria' => [] // generate default criteria
         ]);
 
+        // assume it's a class name
         if (is_string($source)) {
 
-            $field_source->sourceable_type = $source;
+            if (class_exists($source)) {
+
+                $field_source->sourceable_type = $source;
+
+            } else {
+
+                throw new \Exception('addSource: got string but not look like a class name');
+
+            }
+
 
         } elseif ($source instanceof Model) {
 
@@ -218,6 +226,17 @@ class Field extends Model
                 $field_source->sourceable_id = $source->{$key};
 
             }
+
+        }
+
+        // if the TYPE is dynamic means we want this to be reflected as data content, not field itself
+        // dynamic means the source is linked to the actual pagecontentsection in that specific case
+        // should that mean we don't link the source
+        if ($this->type === 'Dynamic') {
+
+            $field_source->save();
+
+            return $field_source;
 
         }
 

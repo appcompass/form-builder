@@ -115,19 +115,27 @@ class PageBuilder
 
     /**
      * Add a section to a container.
-     * @param Section $section
-     * @param int $columns
-     * @param int $order
-     * @return PageBuilder
+     *
+     * @param      Section      $section
+     * @param      int          $order
+     * @param      array        $data     The data
+     * @param      int   $columns
+     *
+     * @throws     Exception    (description)
+     *
+     * @return     PageBuilder
      */
     public function addSection(Section $section, int $order, array $data = [])
     {
-        if ($this->container) {
-            $this->container->addSection($section, $order, $data);
-            return $this;
-        } else {
+        if (!$this->container) {
+
             throw new Exception('a Container must be set to add Sections.');
+
         }
+
+        $this->container->addSection($section, $order, $data);
+
+        return $this;
     }
 
     /**
@@ -203,6 +211,13 @@ class PageBuilder
         return $this;
     }
 
+    /**
+     * { function_description }
+     *
+     * @param      <type>  $conf   The conf
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
     private function compileElement($conf)
     {
         $elm = !empty($conf->elm) ? $conf->elm : 'div';
@@ -212,6 +227,15 @@ class PageBuilder
         }
         return $elm;
     }
+
+    /**
+     * Gets the element data.
+     *
+     * @param      <type>  $depth  The depth
+     * @param      <type>  $name   The name
+     *
+     * @return     array   The element data.
+     */
     private function getElementData($depth, $name)
     {
         return [

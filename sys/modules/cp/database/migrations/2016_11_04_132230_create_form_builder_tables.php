@@ -62,7 +62,8 @@ class CreateFormBuilderTables extends Migration
             // sourceable allows us to link the field to a model
             $table->nullableMorphs('sourceable');
             $table->nullableMorphs('linked'); //linked_type // linked_id
-            $table->string('field_to_store')->nullable();
+            // related field is either the field we store, or the content value we push data into
+            $table->string('related_field')->nullable();
             // $table->integer('sourceable_id')->nullable();
             // $table->string('sourceable_type')->nullable();
 

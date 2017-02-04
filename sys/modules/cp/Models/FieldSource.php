@@ -25,8 +25,6 @@ class FieldSource extends Model
         'criteria'
     ];
 
-
-
     public $timestamps = false;
 
     protected $casts = [
@@ -38,11 +36,6 @@ class FieldSource extends Model
     {
         return $this->morphTo();
     }
-
-    // public function field()
-    // {
-    //     return $this->belongsTo(Field::class);
-    // }
 
     public function linked()
     {
@@ -80,6 +73,13 @@ class FieldSource extends Model
         $criteria['join'] = [ $destination_table, $origin_field, $destination_field ];
 
         $this->update(['criteria' => $criteria]);
+
+        return $this;
+    }
+
+    public function relatesTo($name)
+    {
+        $this->update(['related_field' => $name]);
 
         return $this;
     }
@@ -126,8 +126,13 @@ class FieldSource extends Model
         return $this;
     }
 
-    public function toArray()
+    public function render()
     {
         return SourceBuilder::render($this);
+    }
+
+    public function toArray()
+    {
+        return $this->render();
     }
 }
