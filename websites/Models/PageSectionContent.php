@@ -84,13 +84,13 @@ class PageSectionContent extends Model
 
             $content = json_decode($this->attributes['content']);
 
-            $content->{$this->source->related_field} = $this->source->toArray();
+            $content->{$this->source->related_field} = $this->source;
 
-            return json_encode($content);
+            return $content;
 
         } else {
 
-            return $this->attributes['content'];
+            return json_decode($this->attributes['content']);
 
         }
     }
