@@ -18,6 +18,7 @@ class CreatePermissionsTable extends Migration
 			$table->string('label');
 			$table->text('description')->nullable();
 			$table->unique('type');
+            $table->boolean('locked')->default(false);
 			$table->timestamps();
 		});
 	}
