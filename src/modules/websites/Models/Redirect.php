@@ -52,7 +52,7 @@ class Redirect extends Model
      */
     public function render($base_url)
     {
-        return "rewrite ^{$this->from}$ \$scheme://{$base_url}".$this->to. " last";
+        return "rewrite ^{$this->from}$ \$scheme://{$base_url}".$this->to. " permanent";
         // return "rewrite ^{$this->from}$ \$scheme://{$base_url}".trim($this->to, '/'). " last";
     }
 
