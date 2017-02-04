@@ -82,7 +82,11 @@ class PageSectionContent extends Model
     {
         if ($this->source) {
 
-            return $this->source->toArray();
+            $content = json_decode($this->attributes['content']);
+
+            $content->{$this->source->related_field} = $this->source->toArray();
+
+            return json_encode($content);
 
         } else {
 
@@ -128,10 +132,11 @@ class PageSectionContent extends Model
     /**
      * Add a section to a container.
      *
-     * @param      Section  $section
-     * @param      int        $columns
+     * @param      Section    $section
      * @param      int        $order
+     * @param      array      $data         The data
      * @param      boolean    $returnChild  The return child
+     * @param      int   $columns
      *
      * @throws     Exception  (description)
      *
@@ -139,31 +144,73 @@ class PageSectionContent extends Model
      */
     public function addSection(Section $section, int $order, array $data = [], $returnChild = false)
     {
-        if ($this->isContainer()) {
-            $data = array_merge(['order' => $order], $data);
-            if (isset($data['content'])) {
-                // validate the structure.  Throw error if doesn't match the section form structure and rules.
-            } else {
-                // if no content is passed, we still need to init the structure
-                // otherwise front-end might throw errors about "Cannot read properlty of null"
-                $data['content'] = $section->getFormStructure();
-            }
-            $child = new static($data);
+        if (!$this->isContainer()) {
 
-            $child->section()->associate($section);
-
-            $child->page()->associate($this->page);
-
-            $this->children()->save($child);
-
-            if ($returnChild) {
-                return $child;
-            }
-
-            return $this;
-        } else {
             throw new Exception('a Section can only be added to a Container.');
+
         }
+
+        $data = array_merge(['order' => $order], $data);
+
+        if (isset($data['content'])) {
+
+            // @TODO validate the structure.  Throw error if doesn't match the section form structure and rules.
+
+        } else {
+
+            $data['content'] = [];
+
+        }
+
+        $child = new self($data);
+
+        $child->section()->associate($section);
+
+        $child->page()->associate($this->page);
+
+        $this->children()->save($child);
+
+        if ($returnChild) {
+
+            return $child;
+
+        }
+
+        return $this;
+    }
+
+    public function dynamic($source, $callback)
+    {
+        $field_source = FieldSource::create([
+            'linked_id' => $this->id,
+            'linked_type' => get_class($this),
+            'data' => [],
+            'criteria' => []
+        ]);
+
+        if (is_string($source) && class_exists($source)) {
+
+            $field_source->sourceable_type = $source;
+
+        } elseif ($source instanceof Model) {
+
+            $field_source->sourceable_type = $source;
+
+            if (isset($source->{$source->getKeyName()}) && !is_null($source->{$source->getKeyName()}) ) {
+
+                $field_source->sourceable_id = $source->{$source->getKeyName()};
+
+            }
+
+        }
+
+        if ($callback) {
+
+            $callback($field_source);
+
+        }
+
+        return $this;
     }
 
     /**

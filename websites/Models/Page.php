@@ -87,27 +87,6 @@ class Page extends Model implements Linkable
         return $this->hasMany(PageSectionContent::class)->orderBy('order', 'asc');
     }
 
-
-    /**
-     * So this is here temporarily (unless we end up liking it) to allow us to
-     * fetch only the top level contents of a page. This is because as of
-     * right now, all PageComponentContent instances have a page_id, even if
-     * it is a child of another PageComponentContent, so when querying a page,
-     * it's contents, and the associated sections, you get a a lot of
-     * redundant data.  This method lets us recursivly fetch the whole tree
-     * without having to build a tree builder, and without removing page_id from
-     * the PageComponentContent instances that are sections (children of contents)
-     * @return hasMany
-     */
-    // public function contents()
-    // {
-    //     return $this->hasMany(PageComponentContent::class)
-    //     ->orderBy('order', 'asc')
-    //     ->whereHas('component', function ($query) {
-    //         $query->where('type', 'container');
-    //     })->whereNull('parent_id');
-    // }
-
     /**
      * get the Page via it's url
      *

@@ -659,12 +659,12 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             };
 
             // Build Pages
-                $homepage = $wsb
-                    ->addPage('Home Page', '')
-                    ->setAuthor('Aisha Saidi')
-                    ->setDescription('This is where we would put the Plus 3 Interactive description')
-                    ->setPriority('1.0')
-                    ->setUpdatedFrequency('always');
+            $homepage = $wsb
+                ->addPage('Home Page', '')
+                ->setAuthor('Aisha Saidi')
+                ->setDescription('This is where we would put the Plus 3 Interactive description')
+                ->setPriority('1.0')
+                ->setUpdatedFrequency('always');
 
             $home_container = $createHeaderFooterStructure($homepage)
                     ->addSection($slider_banner, 1, [
@@ -803,8 +803,15 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                         'link_text' => 'Check out the people who make our company work',
                         'link_href' => '/company#meet-our-team',
                     ]
-                ])
-                ->addSection($social_stream, 5, [
+                // @TODO this feels a bit hacky, but maybe it's me, better ideas?
+                // true makes the method return child (PageSectionContainer just added, not the container itself)
+                ], true)->dynamic(Plus3Person::class, function(FieldSource $source) {
+                    $source->relatesTo('team');
+                    $source->sort('created_at', 'DESC');
+                    $source->limit(3);
+                });
+
+            $home_container->addSection($social_stream, 5, [
                     'content' => [
                         'title' => 'Plus 3 Interactive <span class="color-blue">-</span> Active!',
                     ]
