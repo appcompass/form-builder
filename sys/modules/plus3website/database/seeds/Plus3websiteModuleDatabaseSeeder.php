@@ -400,9 +400,9 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 $fb->link('Link Destination', 'link_href')->validation(['required']);
                 // this will receive a configure_dynamic form
                 // dynamic field type // dynamic data for initial setup
-                $fb->dynamic('The Team', 'team')->dynamic(\P3in\Models\Plus3Person::class, function(FieldSource $source) {
-                    $source->sort('title', 'ASC');
-                });
+                $fb->dynamic('The Team', 'team'); //->dynamic(\P3in\Models\Plus3Person::class, function(FieldSource $source) {
+                    // $source->sort('title', 'ASC');
+                // });
             })->setOwner($meet_our_team);
 
             $social_stream = Section::create([
@@ -803,8 +803,6 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                         'link_text' => 'Check out the people who make our company work',
                         'link_href' => '/company#meet-our-team',
                     ]
-                // @TODO this feels a bit hacky, but maybe it's me, better ideas?
-                // true makes the method return child (PageSectionContainer just added, not the container itself)
                 ], true)->dynamic(Plus3Person::class, function(FieldSource $source) {
                     $source->relatesTo('team');
                     $source->sort('created_at', 'DESC');

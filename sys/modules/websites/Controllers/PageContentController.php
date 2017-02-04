@@ -22,6 +22,41 @@ class PageContentController extends AbstractChildController
 
     public function update(Request $request, $parent, $model)
     {
+        // check if we passing a content object, maybe a switch?, otherwise inferring it just from the content is gonna be tricky
+
+        // sooo, based on the pagesectioncontent
+        // we get the section
+        // from the section we get the form
+        // section form has a dynamic field
+        // no, from
+
+        dd($model);
+
+        if ($model->source) {
+
+            foreach ($model->section->form->fields as $field) {
+
+                if ($field->type === 'Dynamic') {
+
+                    // we found the dynamic field
+
+                    dd($field->name); // we now get the data point it's supposed to be referring
+
+                }
+
+            }
+
+        }
+
+        dd($model->section->form);
+
+
+        // dd($request->all());
+
+        // check if datasources
+
+        // update linked datasource
+
         if ($model->update(['content' => $request->all()])) {
             return ['success' => true];
         }

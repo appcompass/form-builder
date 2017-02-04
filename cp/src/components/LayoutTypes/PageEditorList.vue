@@ -35,11 +35,13 @@ export default {
       this.id = id
       this.$http.get(process.env.API_SERVER + 'pages/' + this.$route.params.id + '/content/' + id)
         .then(response => {
+          console.log(response)
           this.form = response.data.collection.form
           this.content = response.data.collection.content
         })
     },
     store () {
+      console.log(this.content)
       this.$http.put(process.env.API_SERVER + 'pages/' + this.$route.params.id + '/content/' + this.id, this.content)
         .then(response => {
           console.log(response)

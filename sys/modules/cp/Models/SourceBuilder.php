@@ -23,18 +23,16 @@ class SourceBuilder
 
             return $field_data->sourceable->toArray();
 
-        // when the type is set but not the id
+        // when the type is set but not the id we resolve the query using fieldsource's criteria
         } else if (!is_null($field_data->sourceable_type) && is_null($field_data->sourceable_id)) {
 
-            $class_name = $field_data->sourceable_type;
+            $source_instance = new $field_data->sourceable_type();
 
-            $instance->builder = (new $class_name())->newQuery();
+            $instance->builder = $source_instance->newQuery();
 
-            $instance->table = (new $class_name())->getTable();
+            $instance->table = $source_instance->getTable();
 
             $b = $instance->parseCriteria($field_data->criteria);
-
-            // dd($b->toSql());
 
             return $b->get()->toArray();
 

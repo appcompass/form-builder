@@ -5,7 +5,7 @@ div
     a.icon.is-small(v-if="field.repeatable", @click="clone(field.name, fieldIndex)")
       i.fa.fa-plus
 
-    //- SINGLE VALUE
+    //- SINGLE VALUE (single value returned from content for field)
     span(
         v-if="!Array.isArray(value(field.name))",
         :is="Components[field.type]",
@@ -15,7 +15,7 @@ div
         @input="set"
       )
 
-    //- SINGLE FIELD REPEATABLE -- value(field.name) returns an array
+    //- SINGLE FIELD REPEATABLE (multiple values but no sub-form) -- value(field.name) returns an array
     div(v-if="Array.isArray(value(field.name)) && !field.fields.length", v-for="(single, subFieldIndex) in value(field.name)")
       span.pull-right.icon.is-small(@click="unlink(field.name, subFieldIndex)")
         i.fa.fa-trash-o
@@ -27,7 +27,7 @@ div
           @input="function(e) { return set(e, subFieldIndex); }"
         )
 
-    //- MULTI FIELD REPEATABLE SORTABLE
+    //- MULTI FIELD REPEATABLE SORTABLE(sub-form present and multiple values and field is repeatable)
     Sortable(v-if="field.repeatable && field.fields.length", :list="value(field.name)", :options="{handle: '.handle', animation: 150, group: 'items'}")
       div(v-for="(val, index) in value(field.name)")
 
@@ -91,9 +91,8 @@ export default {
         this.content[fieldName].push('')
       }
     },
+    /* sets a value */
     set (data, index) {
-      // set a value
-
       // based on index
       if (Array.isArray(this.content[data.pointer])) {
         if (index) {
@@ -105,8 +104,8 @@ export default {
         _.set(this.content, data.pointer, data.value)
       }
     },
+    /* _.get the element in content object */
     value (fieldName, $index) {
-      // _.get the element in content object
       let c = _.get(this.content, fieldName)
 
       // if it returns an array we look at $index, if preset
