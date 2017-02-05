@@ -20,29 +20,28 @@
           from other situations, but there are a few of these modals we need to do
           this behavior for so def something to abstract and nuxt-link is prob not
           what we want to use here
-        nuxt-link.section-team-member.team-popup(:to='member.url', v-for='member in data.team', :style="{backgroundImage: 'url(' + member.cover_photo + ')' }")
+        nuxt-link.section-team-member.team-popup(:to='member.slug', v-for='member in data.team', :style="{backgroundImage: 'url(' + member.cover_photo + ')' }")
           span.team-hover
             span.team-name {{member.full_name}}
             span.team-position {{member.title}}
     // section-team
-    .popup.popup-team.mfp-hide(:id='member.url', v-for='member in data.team')
+    .popup.popup-team.mfp-hide(:id='member.slug', v-for='member in data.team')
       .row
         .small-4.columns
           p
-            img(:src='member.modal_photo', width='316', height='432')
+            img(:src='member.full_photo', width='316', height='432')
         .small-8.columns
           h1 {{member.full_name}}
           span(v-html='member.bio')
-            p
-            p
-              a.team-social(:href='member.instagram', target='_blank')
-                span.icon-instagram
-              a.team-social(:href='member.twitter', target='_blank')
-                span.icon-twitter
-              a.team-social(:href='member.facebook', target='_blank')
-                span.icon-facebook
-              a.team-social(:href='member.linkedin', target='_blank')
-                span.icon-linkedin
+          p
+            a.team-social(:href='member.instagram', target='_blank')
+              span.icon-instagram
+            a.team-social(:href='member.twitter', target='_blank')
+              span.icon-twitter
+            a.team-social(:href='member.facebook', target='_blank')
+              span.icon-facebook
+            a.team-social(:href='member.linkedin', target='_blank')
+              span.icon-linkedin
 </template>
 
 <script>
@@ -55,7 +54,7 @@
 // <!-- Schema.org markup for Google+ -->
 // <meta itemprop="name" :content="member.full_url">
 // <meta itemprop="description" :content="member.bio_summary">
-// <meta itemprop="image" :content="member.modal_photo">
+// <meta itemprop="image" :content="member.full_photo">
 //
 // <!-- Twitter Card data -->
 // <meta name="twitter:url" :content="member.full_url">
@@ -63,14 +62,14 @@
 // <meta name="twitter:site" :content="member.twitter" />
 // <meta name="twitter:title" :content="member.full_name" />
 // <meta name="twitter:description" :content="member.bio_summary" />
-// <meta name="twitter:image" content="member.modal_photo" />
+// <meta name="twitter:image" content="member.full_photo" />
 // <meta name="twitter:image:alt" content="member.full_name" />
 
 // <!-- Open Graph data -->
 // <meta property="og:title" :content="member.full_name" />
 // <meta property="og:type" content="profile" />
 // <meta property="og:url" :content="member.full_url" />
-// <meta property="og:image" :content="member.modal_photo" />
+// <meta property="og:image" :content="member.full_photo" />
 // <meta property="og:description" :content="member.bio_summary" />
 //
   export default {

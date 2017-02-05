@@ -37,10 +37,13 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
         ]);
 
         (new Plus3Person([
-            'title' => 'Co-Founder and CEO',
+            'title' => 'Co-Founder and Client Relations',
             'meta_keywords' => 'words',
             'meta_description' => 'desc',
             'bio' => 'imene\'s Bio',
+            'bio_summary' => '',
+            'cover_photo' => '/assets/images/content/team_imene.jpg',
+            'full_photo' => '/assets/images/content/team_imene_popup.jpg',
             'instagram' => 'imenebsaidi',
             'twitter' => 'imenesaidi',
             'facebook' => 'Imene.Saidi',
@@ -61,10 +64,13 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
         ]);
 
         (new Plus3Person([
-            'title' => 'Co-Founder and CTO',
+            'title' => 'Co-Founder and Development Lead',
             'meta_keywords' => 'words',
             'meta_description' => 'desc',
             'bio' => 'Jubair\'s Bio',
+            'bio_summary' => '',
+            'cover_photo' => '/assets/images/content/team_jubair.jpg',
+            'full_photo' => '/assets/images/content/team_jubair.jpg',
             'instagram' => 'jubairsaidi',
             'twitter' => 'jubairsaidi',
             'facebook' => 'jubairsaidi',
@@ -89,6 +95,9 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             'meta_keywords' => 'words',
             'meta_description' => 'desc',
             'bio' => 'aisha\'s Bio',
+            'bio_summary' => '',
+            'cover_photo' => '/assets/images/content/team_aisha.jpg',
+            'full_photo' => '/assets/images/content/team_aisha.jpg',
             'instagram' => '',
             'twitter' => '',
             'facebook' => '',
@@ -113,6 +122,9 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             'meta_keywords' => 'words',
             'meta_description' => 'desc',
             'bio' => 'federico\'s Bio',
+            'bio_summary' => '',
+            'cover_photo' => '/assets/images/content/team_federico.jpg',
+            'full_photo' => '/assets/images/content/team_federico.jpg',
             'instagram' => '',
             'twitter' => '',
             'facebook' => '',
@@ -120,6 +132,34 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
         ]))
             ->user()
             ->associate($federico)
+            ->save();
+
+        // Michael
+        $michael = User::create([
+            'first_name' => 'Michael',
+            'last_name' => 'Farrell',
+            'email' => 'michael@p3in.com',
+            'phone' => '',
+
+            'password' => 'd3velopment',
+            'active' => true,
+        ]);
+
+        (new Plus3Person([
+            'title' => 'Web Designer & Front-End Developer',
+            'meta_keywords' => 'words',
+            'meta_description' => 'desc',
+            'bio' => 'Michael Farrell\'s Bio',
+            'bio_summary' => '',
+            'cover_photo' => '/assets/images/content/team_michael.jpg',
+            'full_photo' => '/assets/images/content/team_michael.jpg',
+            'instagram' => '',
+            'twitter' => '',
+            'facebook' => '',
+            'linkedin' => '',
+        ]))
+            ->user()
+            ->associate($michael)
             ->save();
 
         // Lazarus
@@ -137,6 +177,9 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             'meta_keywords' => 'words',
             'meta_description' => 'desc',
             'bio' => 'lazarus\'s Bio',
+            'bio_summary' => '',
+            'cover_photo' => '/assets/images/content/team_lazarus.jpg',
+            'full_photo' => '/assets/images/content/team_lazarus.jpg',
             'instagram' => '',
             'twitter' => '',
             'facebook' => '',
@@ -145,6 +188,62 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             ->user()
             ->associate($lazarus)
             ->save();
+
+        // Justin
+        $justin = User::create([
+            'first_name' => 'Justin',
+            'last_name' => 'Varberakis',
+            'email' => 'justin@p3in.com',
+            'phone' => '',
+
+            'password' => 'd3velopment',
+            'active' => true,
+        ]);
+
+        (new Plus3Person([
+            'title' => 'Graphic & Web Designer',
+            'meta_keywords' => 'words',
+            'meta_description' => 'desc',
+            'bio' => 'Justin\'s Bio',
+            'bio_summary' => '',
+            'cover_photo' => '/assets/images/content/team_justin.jpg',
+            'full_photo' => '/assets/images/content/team_justin.jpg',
+            'instagram' => '',
+            'twitter' => '',
+            'facebook' => '',
+            'linkedin' => '',
+        ]))
+            ->user()
+            ->associate($justin)
+            ->save();
+
+        // Mike Duffy
+        $mike_duffy = User::create([
+            'first_name' => 'Mike',
+            'last_name' => 'Duffy',
+            'email' => 'mike.duffy@p3in.com',
+            'phone' => '',
+            'password' => 'd3velopment',
+            'active' => true,
+        ]);
+
+        (new Plus3Person([
+            'title' => 'Web Developer',
+            'meta_keywords' => 'words',
+            'meta_description' => 'desc',
+            'bio' => 'Michael Duffy\'s Bio',
+            'bio_summary' => '',
+            'cover_photo' => '/assets/images/content/team_duffy.jpg',
+            'full_photo' => '/assets/images/content/team_duffy.jpg',
+            'instagram' => '',
+            'twitter' => '',
+            'facebook' => '',
+            'linkedin' => '',
+        ]))
+            ->user()
+            ->associate($mike_duffy)
+            ->save();
+
 
         // Website Builder API Design
 
@@ -176,6 +275,11 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             'MapAddress',
             'CustomerLogin',
             'BlockText',
+        ])->delete();
+
+        DB::table('field_sources')->whereIn('linked_type', [
+            'P3in\Models\Types\DynamicType', //@TODO: we shouldn't be clearing this here like this, need to be more specific
+            'P3in\Models\PageSectionContent',
         ])->delete();
 
         $website = WebsiteBuilder::new('Plus 3 Interactive, LLC', 'https', 'www.plus3interactive.com', function ($wsb) {
@@ -805,8 +909,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                     ]
                 ], true)->dynamic(Plus3Person::class, function(FieldSource $source) {
                     $source->relatesTo('team');
-                    $source->sort('created_at', 'DESC');
-                    $source->limit(3);
+                    $source->sort('id', 'ASC');
+                    // $source->limit(3);
                 });
 
             $home_container->addSection($social_stream, 5, [
