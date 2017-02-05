@@ -7,6 +7,12 @@ div
     label.label Related Field
     input.input(v-model="data.related_field")
   p.control
+    label.label Select
+    span.icon.is-small(@click="addSelect()")
+      i.fa.fa-plus
+    span(v-for="(select, index) in data.criteria.select")
+      input.input(v-model="data.criteria.select[index]")
+  p.control
     label.label Limit
     input.input(type="number", v-model="data.criteria.limit")
   p.control
@@ -31,6 +37,21 @@ export default {
       handler: function (nv) {
         this.$emit('input', nv)
       }
+    }
+  },
+  methods: {
+    addSelect () {
+      console.log(JSON.stringify(this.data.criteria.select))
+
+      if (!this.data.criteria.select) {
+        this.$set(this.data.criteria, 'select', [])
+      }
+
+      // if (this.data.criteria.select || !Array.isArray(this.data.crieria.select)) {
+        // console.log('how')
+      // }
+      // this.$set(this.data.criteria)
+      this.data.criteria.select.push('')
     }
   }
 }
