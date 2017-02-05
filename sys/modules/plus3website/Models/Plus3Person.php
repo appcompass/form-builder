@@ -19,7 +19,8 @@ class Plus3Person extends Model
         'linkedin_link',
     ];
 
-    protected $appends = ['full_name', 'slug'];
+    // @TODO in order to append full_name, we'd need to include a with[users], which we wanna avoid
+    // protected $appends = ['full_name', 'slug'];
 
     public function user()
     {
