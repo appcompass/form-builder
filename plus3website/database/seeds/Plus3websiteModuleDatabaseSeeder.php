@@ -374,11 +374,11 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                         ['src' => '~assets/sass/main.scss', 'lang' => 'sass']
                     ],
                     'build' => [
-                        'analyze' => [
-                          'analyzerMode' => 'static',
-                          'reportFilename' => 'report.html',
-                          'generateStatsFile' => true
-                        ],
+                        // 'analyze' => [
+                        //   'analyzerMode' => 'static',
+                        //   'reportFilename' => 'report.html',
+                        //   'generateStatsFile' => true
+                        // ],
                         'filenames' => [
                             'css' => 'app.css',
                             'vendor' => 'vendor.js',
