@@ -2,31 +2,35 @@
 div
   p.control
     label.label Model
-    input.input(v-model="model")
+    input.input(v-model="data.sourceable_type", disabled="true")
+  p.control
+    label.label Related Field
+    input.input(v-model="data.related_field")
   p.control
     label.label Limit
-    input(v-model="limit")
+    input.input(type="number", v-model="data.criteria.limit")
   p.control
     label.label Sort
-    input.input(v-model="sort")
+    span(v-for="(sort, index) in data.criteria.sort")
+      input.input(v-model="data.criteria.sort[index]")
   p.control
     label.label Join
-    input.input(v-model="join")
+    input.input(v-model="data.criteria.join")
   p.control
     label.label Where
-    input.input(v-model="where")
+    input.input(v-model="data.criteria.where")
 </template>
 
 <script>
 export default {
   name: 'Dynamic',
-  data () {
-    return {
-      model: null,
-      limit: 0,
-      sort: 'created_at ASC',
-      join: null,
-      where: null
+  props: ['data', 'pointer'],
+  watch: {
+    data: {
+      deep: true,
+      handler: function (nv) {
+        this.$emit('input', nv)
+      }
     }
   }
 }
