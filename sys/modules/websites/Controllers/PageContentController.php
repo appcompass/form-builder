@@ -22,25 +22,29 @@ class PageContentController extends AbstractChildController
 
     public function update(Request $request, $parent, $model)
     {
-        // check if we passing a content object, maybe a switch?, otherwise inferring it just from the content is gonna be tricky
-
-        // sooo, based on the pagesectioncontent
-        // we get the section
-        // from the section we get the form
-        // section form has a dynamic field
-        // no, from
-
-        dd($model);
-
+        // if the PageSectionContent has a source, we go deeper
         if ($model->source) {
 
+            // based on the form linked to the current PageContentSection, look for a dynamic field
             foreach ($model->section->form->fields as $field) {
 
-                if ($field->type === 'Dynamic') {
+                if ($field->type !== 'Dynamic') {
 
-                    // we found the dynamic field
+                    continue;
 
-                    dd($field->name); // we now get the data point it's supposed to be referring
+                }
+
+                // we found a dynamic field
+
+                // now check if we have corresponding data coming in
+
+                if ($request->{$field->name}['config']) {
+
+                    $config = $request->{$field->name}['config'];
+
+                    $field_source = $model->source;
+
+                    $field_source->update($config);
 
                 }
 
@@ -48,21 +52,26 @@ class PageContentController extends AbstractChildController
 
         }
 
-        dd($model->section->form);
-
-
-        // dd($request->all());
-
         // check if datasources
 
         // update linked datasource
 
         if ($model->update(['content' => $request->all()])) {
+
             return ['success' => true];
+
         }
 
     }
 
+    /**
+     * show
+     *
+     * @param      <type>  $parent  The parent
+     * @param      <type>  $model   The model
+     *
+     * @return     array   ( description_of_the_return_value )
+     */
     public function show($parent, $model)
     {
         $model->load('section.form');

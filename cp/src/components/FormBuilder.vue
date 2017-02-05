@@ -7,16 +7,16 @@ div
 
     //- SINGLE VALUE (single value returned from content for field)
     span(
-        v-if="!Array.isArray(value(field.name))",
+        v-if="!Array.isArray(value(field))",
         :is="Components[field.type]",
         :pointer="field.name",
-        :data="value(field.name)",
-        :value="value(field.name)",
+        :data="value(field)",
+        :value="value(field)",
         @input="set"
       )
 
-    //- SINGLE FIELD REPEATABLE (multiple values but no sub-form) -- value(field.name) returns an array
-    div(v-if="Array.isArray(value(field.name)) && !field.fields.length", v-for="(single, subFieldIndex) in value(field.name)")
+    //- SINGLE FIELD REPEATABLE (multiple values but no sub-form) -- value(field) returns an array
+    div(v-if="Array.isArray(value(field)) && !field.fields.length", v-for="(single, subFieldIndex) in value(field)")
       span.pull-right.icon.is-small(@click="unlink(field.name, subFieldIndex)")
         i.fa.fa-trash-o
       span(
@@ -28,8 +28,8 @@ div
         )
 
     //- MULTI FIELD REPEATABLE SORTABLE(sub-form present and multiple values and field is repeatable)
-    Sortable(v-if="field.repeatable && field.fields.length", :list="value(field.name)", :options="{handle: '.handle', animation: 150, group: 'items'}")
-      div(v-for="(val, index) in value(field.name)")
+    Sortable(v-if="field.repeatable && field.fields.length", :list="value(field)", :options="{handle: '.handle', animation: 150, group: 'items'}")
+      div(v-for="(val, index) in value(field)")
 
         span.icon.is-small(@click="collapse(value(field.name, index), true)", v-if="!value(field.name, index).isCollapsed")
           i.fa.fa-minus-square-o
@@ -105,13 +105,18 @@ export default {
       }
     },
     /* _.get the element in content object */
-    value (fieldName, $index) {
-      let c = _.get(this.content, fieldName)
+    value (field, index) {
+      let c = _.get(this.content, field.name)
 
-      // if it returns an array we look at $index, if preset
-      if ($index >= 0 && Array.isArray(c)) {
+      // @TODO this is hacky: in case of dynamic field we pass through the configuration instead of data
+      if (field.type === 'Dynamic' && c.config) {
+        return c.config
+      }
+
+      // if it returns an array we look at index, if preset
+      if (index >= 0 && Array.isArray(c)) {
         // return that specific value
-        return c[$index]
+        return c[index]
       } else {
         // else return whatever you found (single value, whole array)
         return c
@@ -120,8 +125,8 @@ export default {
     collapse (item, collapsed) {
       this.$set(item, 'isCollapsed', collapsed)
     },
-    unlink (fieldName, $index) {
-      this.content[fieldName].splice($index, 1)
+    unlink (fieldName, index) {
+      this.content[fieldName].splice(index, 1)
     }
   },
   mounted () {

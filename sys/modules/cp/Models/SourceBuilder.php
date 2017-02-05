@@ -18,28 +18,44 @@ class SourceBuilder
 
         $instance = new static;
 
+        // do we return the data stored in the fieldData?
+        if ($field_data->data) {
+
+            return $field_data->data;
+
         // if both type and id are set we want a single record
-        if (!is_null($field_data->sourceable_id) && !is_null($field_data->sourceable_type)) {
+        } elseif (!is_null($field_data->sourceable_id) && !is_null($field_data->sourceable_type)) {
 
             return $field_data->sourceable->toArray();
 
         // when the type is set but not the id we resolve the query using fieldsource's criteria
         } else if (!is_null($field_data->sourceable_type) && is_null($field_data->sourceable_id)) {
 
+            // instantiate the model pointed by FieldSource
             $source_instance = new $field_data->sourceable_type();
 
+            // get a Builder instance (so we can take care of scopes eventually)
             $instance->builder = $source_instance->newQuery();
 
             $instance->table = $source_instance->getTable();
 
-            $b = $instance->parseCriteria($field_data->criteria);
+            // build the actual query
+            $builder = $instance->parseCriteria($field_data->criteria);
 
-            return $b->get()->toArray();
+            // get the results
+            $res = $builder->get()->toArray();
 
-        // do we return the data stored in the fieldData?
-        } else if ($field_data->data) {
+            // @TODO this is a bit hacky, plus would return these informations at every request
+            // @TODO this needs a better approach
+            // @TODO maybe separate the calls? <- makes code more fragile
+            // append criteria to solve for cp
+            $res['config'] = [
+                'criteria' => $field_data->criteria,
+                'sourceable_type' => $field_data->sourceable_type,
+                'related_field' => $field_data->related_field
+            ];
 
-            return $field_data->data;
+            return $res;
 
         }
     }

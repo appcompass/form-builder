@@ -22,7 +22,8 @@ class FieldSource extends Model
         'linked_id',        // data belongs to
         'linked_type',
         'data',
-        'criteria'
+        'criteria',
+        'related_field'
     ];
 
     public $timestamps = false;

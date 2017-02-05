@@ -803,6 +803,10 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                         'link_text' => 'Check out the people who make our company work',
                         'link_href' => '/company#meet-our-team',
                     ]
+                // need a way to link it to the form field
+                // so this has a dynamic data type associated
+                // means data will be provided by resolving the criteria on that FieldSource
+                // the form has a dynamic field type that acknowledges that, but how about linking them?
                 ], true)->dynamic(Plus3Person::class, function(FieldSource $source) {
                     $source->relatesTo('team');
                     $source->sort('created_at', 'DESC');
