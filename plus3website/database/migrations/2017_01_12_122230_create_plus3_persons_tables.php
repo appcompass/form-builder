@@ -22,7 +22,10 @@ class CreatePlus3PersonsTables extends Migration
             $table->string('title');
             $table->string('meta_keywords');
             $table->string('meta_description');
+            $table->string('bio_summary');
             $table->string('bio');
+            $table->string('cover_photo');
+            $table->string('full_photo');
             $table->string('instagram');
             $table->string('twitter');
             $table->string('facebook');

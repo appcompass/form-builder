@@ -372,6 +372,9 @@ class Page extends Model implements Linkable
             $this->filterData();
         }
 
+        // we do this to avoid making 1 query per section content for the source.
+        $this->contents->load('source');
+
         $this->getContent($this->buildContentTree());
 
         $this->build['page'] = $this;
