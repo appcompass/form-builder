@@ -74,6 +74,14 @@ class SourceBuilder
     {
         foreach($criteria as $method => $single_criteria) {
 
+
+            if (!is_array($single_criteria)) {
+
+                \Log::info($method);
+                \Log::info($single_criteria);
+
+            }
+
             call_user_func_array([$this, $method], (array) $single_criteria);
 
         }
@@ -117,6 +125,7 @@ class SourceBuilder
      *
      * @return     <type>  ( description_of_the_return_value )
      */
+    // public function join($join_data)
     public function join($destination_table, $origin_field, $destination_field)
     {
         $origin = $this->table . '.' . $origin_field;

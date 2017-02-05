@@ -31,17 +31,17 @@ div
     Sortable(v-if="field.repeatable && field.fields.length", :list="value(field)", :options="{handle: '.handle', animation: 150, group: 'items'}")
       div(v-for="(val, index) in value(field)")
 
-        span.icon.is-small(@click="collapse(value(field.name, index), true)", v-if="!value(field.name, index).isCollapsed")
+        span.icon.is-small(@click="collapse(value(field, index), true)", v-if="!value(field, index).isCollapsed")
           i.fa.fa-minus-square-o
 
-        span.icon.is-small(@click="collapse(value(field.name, index), false)", v-if="value(field.name, index).isCollapsed")
+        span.icon.is-small(@click="collapse(value(field, index), false)", v-if="value(field, index).isCollapsed")
           i.fa.fa-plus-square
-        span  {{ value(field.name, index).title || '' }}
+        span  {{ value(field, index).title || '' }}
 
-        a.icon.is-small.pull-right(@click="unlink(field.name, index)")
+        a.icon.is-small.pull-right(@click="unlink(field, index)")
           i.fa.fa-trash-o
 
-        a.icon.is-small.pull-right.handle(v-if="value(field.name, index).isCollapsed")
+        a.icon.is-small.pull-right.handle(v-if="value(field, index).isCollapsed")
           i.fa.fa-arrows
 
         FormBuilder.fieldset(
@@ -108,7 +108,7 @@ export default {
     value (field, index) {
       let c = _.get(this.content, field.name)
 
-      // @TODO this is hacky: in case of dynamic field we pass through the configuration instead of data
+      // @TODO this is kinda hacky, review
       if (field.type === 'Dynamic' && c.config) {
         return c.config
       }
@@ -125,8 +125,8 @@ export default {
     collapse (item, collapsed) {
       this.$set(item, 'isCollapsed', collapsed)
     },
-    unlink (fieldName, index) {
-      this.content[fieldName].splice(index, 1)
+    unlink (field, index) {
+      this.content[field.name].splice(index, 1)
     }
   },
   mounted () {
