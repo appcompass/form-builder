@@ -30,10 +30,9 @@ class AfterRoute
         $uri = preg_replace("/^([a-z]*\/)/", '', $route->getName());
 
         // resolve form by uri
-        // $alias = FormAlias::byAlias($uri)->first();
         $form = Form::byResource($uri);
 
-        \Log::info('AfterRequest is looking for: ' . $uri);
+        // \Log::info('AfterRequest is looking for: ' . $uri);
 
         // get response
         $response = $next($request);
@@ -51,7 +50,6 @@ class AfterRoute
             }
 
             return response()->json($result, $response->getStatusCode());
-            // return response()->json($result, $response->getStatusCode())->first();
         }
 
         if ($response->getStatusCode() === 200 && in_array($request->getMethod(), $methods)) {
@@ -61,27 +59,9 @@ class AfterRoute
 
             $original_content = $response->getOriginalContent();
 
-            // dd($model);
-
-            // here we can have either a single model or a collection
-
-            // if ($original_content instanceof Model) {
-
-            // 	dd($original_content);
-
-            // } elseif (isset($original_content['data']) && $original_content['data'] instanceof LengthAwarePaginator) {
-
-            // 	dd('paginated stuff');
-
-            // }
-
-            // if ($original_content instanceof PageContent) {
-                // $content['edit'] = $original_content->section->form;
-            // } elseif (!is_null($form)) {
             $content['edit'] = $form->toEdit()->first();
 
             $content['list'] = $form->toList()->first();
-            // }
 
             $response->setContent($content);
         }
@@ -89,7 +69,5 @@ class AfterRoute
         return $response;
     }
 
-    public function terminate()
-    {
-    }
+    public function terminate() {}
 }

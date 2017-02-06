@@ -18,7 +18,7 @@ class SourceBuilder
 
         $instance = new static;
 
-        // do we return the data stored in the fieldData?
+        // do we return the data stored in the fieldData (precendece)?
         if ($field_data->data) {
 
             return $field_data->data;
@@ -48,12 +48,12 @@ class SourceBuilder
             // @TODO this is a bit hacky, plus would return these informations at every request
             // @TODO this needs a better approach
             // @TODO maybe separate the calls? <- makes code more fragile
-            // append criteria to solve for cp
-            $res['config'] = [
-                'criteria' => $field_data->criteria,
-                'sourceable_type' => $field_data->sourceable_type,
-                'related_field' => $field_data->related_field
-            ];
+            // append criteria, used on cp to configure a dynamic field (if type === "Dynamic")
+            // $res['config'] = [
+            //     'criteria' => $field_data->criteria,
+            //     'sourceable_type' => $field_data->sourceable_type,
+            //     'related_field' => $field_data->related_field
+            // ];
 
             return $res;
 
@@ -74,13 +74,8 @@ class SourceBuilder
     {
         foreach($criteria as $method => $single_criteria) {
 
-
-            if (!is_array($single_criteria)) {
-
-                \Log::info($method);
-                \Log::info($single_criteria);
-
-            }
+            // @TODO/@NOTE the pain point here is the UI not sending correctly formed arrays, to solve make sure ui
+            // doesn't send strings instead of arrays i.e. NOT '["item1", "item2"]' (join, looking at you)
 
             call_user_func_array([$this, $method], (array) $single_criteria);
 
@@ -116,16 +111,15 @@ class SourceBuilder
     }
 
     /**
-     * join
+     * join - simple source.field = dest.field join
      *
      * @param      <type>  $destination_table  The destination table
-     * @param      <type>  $origin_field       The origin field
-     * @param      <type>  $destination_field  The destination field
+     * @param      <type>  $origin_field       Field in the starting table
+     * @param      <type>  $destination_field  Field on destination table
      * @param      \Illuminate\Database\Eloquent\Builder  $builder  The builder
      *
      * @return     <type>  ( description_of_the_return_value )
      */
-    // public function join($join_data)
     public function join($destination_table, $origin_field, $destination_field)
     {
         $origin = $this->table . '.' . $origin_field;
@@ -160,10 +154,16 @@ class SourceBuilder
         return $this->builder->limit($limit);
     }
 
-    function __call($method, $args) {
+    /**
+     * Make methods available
+     *
+     * @param      Function  $method  The method
+     * @param      <type>    $args    The arguments
+     */
+    // function __call($method, $args) {
 
-        $this->$method($args);
+    //     $this->$method($args);
 
-    }
+    // }
 
 }

@@ -20,14 +20,14 @@ div
       span.pull-right.icon.is-small(@click="unlink(field.name, subFieldIndex)")
         i.fa.fa-trash-o
       span(
-          :is="Components[field.type]",
-          :pointer="field.name",
-          :data="single",
-          :value="single",
-          @input="function(e) { return set(e, subFieldIndex); }"
-        )
+        :is="Components[field.type]",
+        :pointer="field.name",
+        :data="single",
+        :value="single",
+        @input="function(e) { return set(e, subFieldIndex); }"
+      )
 
-    //- MULTI FIELD REPEATABLE SORTABLE(sub-form present and multiple values and field is repeatable)
+    //- MULTI FIELD REPEATABLE SORTABLE (sub-form present, has multiple values and field.repeatable is true)
     Sortable(v-if="field.repeatable && field.fields.length", :list="value(field)", :options="{handle: '.handle', animation: 150, group: 'items'}")
       div(v-for="(val, index) in value(field)")
 
@@ -67,6 +67,7 @@ export default {
     }
   },
   methods: {
+    // adds a repeatable
     clone (fieldName, fieldIndex) {
       // when cloning check if we're cloning a fieldset or a single repeatable (with multiple values)
 
@@ -91,7 +92,20 @@ export default {
         this.content[fieldName].push('')
       }
     },
-    /* sets a value */
+    // _.get the element in content object
+    value (field, index) {
+      let c = _.get(this.content, field.name)
+
+      // if it returns an array we look at index, if preset
+      if (index >= 0 && Array.isArray(c)) {
+        // return that specific value
+        return c[index]
+      } else {
+        // else return whatever you found (single value, whole array)
+        return c
+      }
+    },
+    // sets a value
     set (data, index) {
       // based on index
       if (Array.isArray(this.content[data.pointer])) {
@@ -104,33 +118,14 @@ export default {
         _.set(this.content, data.pointer, data.value)
       }
     },
-    /* _.get the element in content object */
-    value (field, index) {
-      let c = _.get(this.content, field.name)
-
-      // @TODO this is kinda hacky, review
-      if (field.type === 'Dynamic' && c.config) {
-        return c.config
-      }
-
-      // if it returns an array we look at index, if preset
-      if (index >= 0 && Array.isArray(c)) {
-        // return that specific value
-        return c[index]
-      } else {
-        // else return whatever you found (single value, whole array)
-        return c
-      }
-    },
+    // collapse a structure
     collapse (item, collapsed) {
       this.$set(item, 'isCollapsed', collapsed)
     },
+    // remove branch
     unlink (field, index) {
       this.content[field.name].splice(index, 1)
     }
-  },
-  mounted () {
-    // this.
   }
 }
 </script>

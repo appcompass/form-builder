@@ -67,7 +67,7 @@ trait HasPermissions
 
         $action = is_null($action) ? '' : '@' . $action;
 
-        \Log::info($class);
+        // \Log::info($class);
 
         return new Model($class . $action);
     }

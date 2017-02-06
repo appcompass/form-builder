@@ -127,6 +127,21 @@ class FieldSource extends Model
         return $this;
     }
 
+    public function config(array $config = null)
+    {
+
+        if (is_null($config)) {
+
+            return [
+                'criteria' => $this->criteria,
+                'sourceable_type' => $this->sourceable_type,
+                'related_field' => $this->related_field
+            ];
+
+        }
+
+    }
+
     public function render()
     {
         return SourceBuilder::render($this);
