@@ -320,6 +320,28 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
   export default {}
 </script>
 ')
+                ->setLayout('error', '
+<template lang="pug">
+  div
+    div.wrapper
+      header.header
+      main.main
+        section.section-module.section-solutions
+          .row
+            .medium-8.medium-centered.columns
+              .section-header
+                h2.section-heading {{ error.statusCode }}
+                .section-desc
+                p {{error.message}}
+                nuxt-link.button(to="/", v-if="error.statusCode ===404")
+                  | Go to Home Page
+</template>
+<script>
+  export default {
+    props: [\'error\']
+  }
+</script>
+')
                 ->setDeploymentNpmPackages([
                     'name' => 'Plus3Website',
                     'version' => '3.0.0',
