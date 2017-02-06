@@ -96,6 +96,10 @@ export default {
     value (field, index) {
       let c = _.get(this.content, field.name)
 
+      if (field.source) {
+        return field.source
+      }
+
       // if it returns an array we look at index, if preset
       if (index >= 0 && Array.isArray(c)) {
         // return that specific value
