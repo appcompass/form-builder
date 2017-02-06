@@ -41,8 +41,6 @@ class PhotosPolicy
 
     public function create(User $user, $ability)
     {
-        \Log::info($user->allPermissions());
-
         return $user->hasPermissions($this->create_perms);
     }
 

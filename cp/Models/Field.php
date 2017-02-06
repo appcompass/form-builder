@@ -4,9 +4,14 @@ namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use P3in\Models\FieldSource;
+use P3in\Traits\HasDynamicContent;
 
 class Field extends Model
 {
+    use HasDynamicContent {
+        dynamic as dynamicTrait;
+    }
+
     protected $fillable = [
         'name',
         'label',
@@ -84,7 +89,6 @@ class Field extends Model
     public function source()
     {
         return $this->morphOne(FieldSource::class, 'linked');
-        // return $this->hasOne(FieldSource::class);
     }
 
     /**
@@ -94,13 +98,7 @@ class Field extends Model
     {
         $this->update(['dynamic' => true]);
 
-        $field_source = $this->addSource($what_to_link);
-
-        if ($callback) {
-
-            $callback($field_source);
-
-        }
+        $this->dynamicTrait($what_to_link, $callback);
 
         return $this;
     }
@@ -189,65 +187,11 @@ class Field extends Model
         return $this;
     }
 
-    public function addSource($source)
-    {
-        // make sure we keep stuff clean, we never want more than one source for a field
-        FieldSource::whereLinkedId($this->id)->whereLinkedType(get_class($this))->delete();
-
-        // generate a fieldSource
-        $field_source = FieldSource::create([
-            // if passed an array we assume we'd want to store data
-            'data' => is_array($source) ? $source : null,
-            'criteria' => [] // generate default criteria
-        ]);
-
-        // assume it's a class name
-        if (is_string($source)) {
-
-            if (class_exists($source)) {
-
-                $field_source->sourceable_type = $source;
-
-            } else {
-
-                throw new \Exception('addSource: got string but not look like a class name');
-
-            }
-
-
-        } elseif ($source instanceof Model) {
-
-            $field_source->sourceable_type = get_class($source);
-
-            $key = $source->getKeyName();
-
-            if (isset($source->{$key}) && !is_null($source->{$key})) {
-
-                $field_source->sourceable_id = $source->{$key};
-
-            }
-
-        }
-
-        // if the TYPE is dynamic means we want this to be reflected as data content, not field itself
-        // dynamic means the source is linked to the actual pagecontentsection in that specific case
-        // should that mean we don't link the source
-        if ($this->type === 'Dynamic') {
-
-            $field_source->save();
-
-            return $field_source;
-
-        }
-
-        // @TODO check if ->save() saves the model, it should
-        $this->source()->save($field_source);
-
-        $field_source->save();
-
-        return $field_source;
-    }
-
+    /**
+     * Gets the data attribute.
+     *
+     * @return     <type>  The data attribute.
+     */
     public function getDataAttribute()
     {
         return $this->source;

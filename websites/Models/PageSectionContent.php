@@ -3,12 +3,15 @@
 namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use P3in\Traits\HasDynamicContent;
 use P3in\Models\Section;
 use P3in\Models\Page;
 use Exception;
 
 class PageSectionContent extends Model
 {
+    use HasDynamicContent;
+
     protected $table = 'page_section_content';
 
     protected $fillable = [
@@ -60,16 +63,14 @@ class PageSectionContent extends Model
         return $this->hasMany(self::class, 'parent_id');
     }
 
-    // /**
-    //  *
-    //  */
-    // public function photos()
-    // {
-    //     return $this->morphMany(Photo::class, 'photoable');
-    // }
-
+    /**
+     * Link to FieldSource
+     *
+     * @return     morphOne
+     */
     public function source()
     {
+        // @TODO @jubair can we make this ->load() to cut queries #
         return $this->morphOne(\P3in\Models\FieldSource::class, 'linked');
     }
 
@@ -80,17 +81,23 @@ class PageSectionContent extends Model
      */
     public function getContentAttribute()
     {
+        $content = json_decode($this->attributes['content']);
+
         if ($this->source) {
 
-            $content = json_decode($this->attributes['content']);
+            // store the dynamic part in the appropriate location
+            $content->{$this->source->related_field} = $this->source->render();
 
-            $content->{$this->source->related_field} = $this->source;
+            // we don't need a separate field in this case
+            unset($this->source);
 
             return $content;
 
         } else {
 
-            return json_decode($this->attributes['content']);
+            // if content doesn't have a linked source just return actual content
+
+            return $content;
 
         }
     }
@@ -179,40 +186,6 @@ class PageSectionContent extends Model
         return $this;
     }
 
-    public function dynamic($source, $callback)
-    {
-        $field_source = FieldSource::create([
-            'linked_id' => $this->id,
-            'linked_type' => get_class($this),
-            'data' => [],
-            'criteria' => []
-        ]);
-
-        if (is_string($source) && class_exists($source)) {
-
-            $field_source->sourceable_type = $source;
-
-        } elseif ($source instanceof Model) {
-
-            $field_source->sourceable_type = $source;
-
-            if (isset($source->{$source->getKeyName()}) && !is_null($source->{$source->getKeyName()}) ) {
-
-                $field_source->sourceable_id = $source->{$source->getKeyName()};
-
-            }
-
-        }
-
-        if ($callback) {
-
-            $callback($field_source);
-
-        }
-
-        return $this;
-    }
-
     /**
      * Saves a content.
      *
@@ -225,6 +198,33 @@ class PageSectionContent extends Model
         $this->content = $content;
         $this->save();
         return $this;
+    }
+
+    /**
+     * Edit - returns config data for dynamic fields
+     *
+     * @return     array  ( description_of_the_return_value )
+     */
+    public function edit()
+    {
+        if ($this->source) {
+
+            $source = $this->source;
+
+            $content = json_decode($this->attributes['content']);
+
+            $content->{$this->source->related_field} = $source->config();
+
+        } else {
+
+            $content = json_decode($this->attributes['content']);
+
+        }
+
+        return [
+            'form' => $this->section->form->render(),
+            'content' => $content
+        ];
     }
 
     /**

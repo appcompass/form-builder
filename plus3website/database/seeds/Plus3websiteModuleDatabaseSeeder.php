@@ -502,11 +502,9 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 $fb->wysiwyg('Description', 'description')->validation(['required']);
                 $fb->string('Link Text', 'link_text')->validation(['required']);
                 $fb->link('Link Destination', 'link_href')->validation(['required']);
-                // this will receive a configure_dynamic form
-                // dynamic field type // dynamic data for initial setup
-                $fb->dynamic('The Team', 'team'); //->dynamic(\P3in\Models\Plus3Person::class, function(FieldSource $source) {
-                    // $source->sort('title', 'ASC');
-                // });
+                // this is a Dynamic field type
+                // @TODO we want a cleaner way to link it to the actual PageSectionContent
+                $fb->dynamic('The Team', 'team');
             })->setOwner($meet_our_team);
 
             $social_stream = Section::create([

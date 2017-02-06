@@ -22,10 +22,8 @@ class PageContentController extends AbstractChildController
 
     public function update(Request $request, $parent, $model)
     {
-        // if the PageSectionContent has a source, we go deeper
         if ($model->source) {
 
-            // based on the form linked to the current PageContentSection, look for a dynamic field
             foreach ($model->section->form->fields as $field) {
 
                 if ($field->type !== 'Dynamic') {
@@ -34,27 +32,13 @@ class PageContentController extends AbstractChildController
 
                 }
 
-                // we found a dynamic field
+                $field_source = $model->source->update($request->{$field->name});
 
-                // now check if we have corresponding data coming in
-
-                if ($request->{$field->name}['config']) {
-
-                    $config = $request->{$field->name}['config'];
-
-                    $field_source = $model->source;
-
-                    $field_source->update($config);
-
-                }
+                unset($request->{$field->name});
 
             }
 
         }
-
-        // check if datasources
-
-        // update linked datasource
 
         if ($model->update(['content' => $request->all()])) {
 
@@ -74,13 +58,6 @@ class PageContentController extends AbstractChildController
      */
     public function show($parent, $model)
     {
-        $model->load('section.form');
-
-        return [
-            'form' => $model->section->form ? $model->section->form->render() : null,
-            'content' => count($model->content) ? $model->content : ['' => ''] // @TODO needed to provide a workable object to the frontend, not gud
-        ];
-
-        return $model->section->form->render();
+        return $model->edit();
     }
 }
