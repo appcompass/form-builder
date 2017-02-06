@@ -158,18 +158,6 @@ class FormBuilder
         return $this->form->fields;
     }
 
-
-    /**
-     * { function_description }
-     */
-    // public function dynamic()
-    // {
-        // dynamic field as *TYPE* means the field receives a dynamic selector form
-
-
-
-    // }
-
     /**
      * drops a field by name or name/type
      *
