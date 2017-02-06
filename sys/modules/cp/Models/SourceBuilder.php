@@ -42,20 +42,7 @@ class SourceBuilder
             // build the actual query
             $builder = $instance->parseCriteria($field_data->criteria);
 
-            // get the results
-            $res = $builder->get()->toArray();
-
-            // @TODO this is a bit hacky, plus would return these informations at every request
-            // @TODO this needs a better approach
-            // @TODO maybe separate the calls? <- makes code more fragile
-            // append criteria, used on cp to configure a dynamic field (if type === "Dynamic")
-            // $res['config'] = [
-            //     'criteria' => $field_data->criteria,
-            //     'sourceable_type' => $field_data->sourceable_type,
-            //     'related_field' => $field_data->related_field
-            // ];
-
-            return $res;
+            return $builder->get()->toArray();
 
         }
     }
@@ -153,17 +140,4 @@ class SourceBuilder
     {
         return $this->builder->limit($limit);
     }
-
-    /**
-     * Make methods available
-     *
-     * @param      Function  $method  The method
-     * @param      <type>    $args    The arguments
-     */
-    // function __call($method, $args) {
-
-    //     $this->$method($args);
-
-    // }
-
 }

@@ -96,10 +96,10 @@ export default {
     value (field, index) {
       let c = _.get(this.content, field.name)
 
+      // in case field has a source we want that as data source
       if (field.source) {
         return field.source
       }
-
       // if it returns an array we look at index, if preset
       if (index >= 0 && Array.isArray(c)) {
         // return that specific value
@@ -115,7 +115,6 @@ export default {
       if (Array.isArray(this.content[data.pointer])) {
         if (index) {
           this.$set(this.content[data.pointer], index, data.value)
-          // this.content[data.pointer][index] = data.value
         }
       // or on an object
       } else {

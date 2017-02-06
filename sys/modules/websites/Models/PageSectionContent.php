@@ -85,8 +85,17 @@ class PageSectionContent extends Model
 
         if ($this->source) {
 
-            // store the dynamic part in the appropriate location
-            $content->{$this->source->related_field} = $this->source->render();
+            // @TODO this needs to go, why is content sometimes an array and sometimes an object
+            // when content is empty json_decode treats it as an array, how can it tell...
+            if (is_array($content)) {
+
+                $content[$this->source->related_field] = $this->source->render();
+
+            } else {
+
+                $content->{$this->source->related_field} = $this->source->render();
+
+            }
 
             // we don't need a separate field in this case
             unset($this->source);
@@ -213,7 +222,17 @@ class PageSectionContent extends Model
 
             $content = json_decode($this->attributes['content']);
 
-            $content->{$this->source->related_field} = $source->config();
+            // @TODO this needs to go, why is content sometimes an array and sometimes an object
+            // when content is empty json_decode treats it as an array, how can it tell...
+            if (is_array($content)) {
+
+                $content[$this->source->related_field] = $this->source->config();
+
+            } else {
+
+                $content->{$this->source->related_field} = $this->source->config();
+
+            }
 
         } else {
 

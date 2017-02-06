@@ -41,16 +41,9 @@ export default {
   },
   methods: {
     addSelect () {
-      console.log(JSON.stringify(this.data.criteria.select))
-
       if (!this.data.criteria.select) {
         this.$set(this.data.criteria, 'select', [])
       }
-
-      // if (this.data.criteria.select || !Array.isArray(this.data.crieria.select)) {
-        // console.log('how')
-      // }
-      // this.$set(this.data.criteria)
       this.data.criteria.select.push('')
     }
   }

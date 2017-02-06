@@ -1,5 +1,5 @@
 <template lang="jade">
-h1 {{ data.text }}
+h1 {{ data }}
 </template>
 
 <script>
