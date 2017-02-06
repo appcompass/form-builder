@@ -951,7 +951,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                     'content' => [
                         'title' => 'Targeted Web Solutions',
                         'description' => '<p>We  find optimal solutions for your unique business challenges, including</p>',
-                        'format' => 'ul',
+                        'link_format' => 'ul',
                         'links' => [
                             [
                                 'text' => 'Web applications for online businesses',
@@ -1255,8 +1255,11 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             $company_container = $createHeaderFooterStructure($company)
                 ->addSection($thick_page_banner, 1)
-                ->addSection($meet_our_team, 2)
-                ->addSection($social_stream, 3);
+                ->addSection($social_stream, 3)
+                ->addSection($meet_our_team, 2, [], true)->dynamic(Plus3Person::class, function(FieldSource $source) {
+                    $source->relatesTo('team');
+                    $source->sort('id', 'ASC');
+                });
 
             $contact = $wsb
                 ->addPage('Contact Us', 'contact')
