@@ -19,8 +19,16 @@ class Plus3Person extends Model
         'linkedin_link',
     ];
 
-    // @TODO in order to append full_name, we'd need to include a with[users], which we wanna avoid
-    // protected $appends = ['full_name', 'slug'];
+    // @TODO find a way around this if possible.  not a fan of using $with on a global level.
+    // i.e. include it as an option for the Dynamic field type.
+    protected $with = [
+        'user',
+    ];
+
+    protected $appends = [
+        'full_name',
+        'slug'
+    ];
 
     public function user()
     {
