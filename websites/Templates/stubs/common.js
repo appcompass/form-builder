@@ -15,18 +15,20 @@ let makeCall = (context, url, cb) => {
 
 export default {
   getPageData (context) {
+    // @TODO: needs better handling.
+    var page_url = context ? context.route.path : '/404';
     let promises = [
+      makeCall (context, `/content${page_url}`, (res) => {
+        res.data.current_url = page_url
+      }),
       makeCall (context, `/content/site-meta`),
-      makeCall (context, `/content/menus`),
-      makeCall (context, `/content${context.route.path}`, (res) => {
-        res.data.current_url = context.route.path
-      })
+      makeCall (context, `/content/menus`)
     ]
 
     return Promise.all(promises).then((data) => {
-      let pageData = data[2]
-      pageData.site_meta = data[0]
-      pageData.menus = data[1]
+      let pageData = data[0]
+      pageData.site_meta = data[1]
+      pageData.menus = data[2]
 
       return pageData
     }).catch((e) => {
