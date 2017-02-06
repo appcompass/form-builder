@@ -83,6 +83,12 @@ class PageSectionContent extends Model
     {
         $content = json_decode($this->attributes['content']);
 
+        if ($content === '[]') {
+
+            $content = json_decode('{}');
+
+        }
+
         if ($this->source) {
 
             // @TODO this needs to go, why is content sometimes an array and sometimes an object

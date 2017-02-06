@@ -98,7 +98,10 @@ export default {
 
       // in case field has a source we want that as data source
       if (field.source) {
-        return field.source
+        return {
+          data: c,
+          source: field.source
+        }
       }
       // if it returns an array we look at index, if preset
       if (index >= 0 && Array.isArray(c)) {

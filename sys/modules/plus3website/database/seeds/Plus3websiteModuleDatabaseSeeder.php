@@ -951,7 +951,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                     'content' => [
                         'title' => 'Targeted Web Solutions',
                         'description' => '<p>We  find optimal solutions for your unique business challenges, including</p>',
-                        'link_format' => 'ul',
+                        'format' => 'ul',
                         'links' => [
                             [
                                 'text' => 'Web applications for online businesses',
@@ -1117,7 +1117,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                     'content' => [
                         'title' => 'Steps to Software Success',
                         'description' => '<p>From our first meeting with you, through each stage of product development, we follow a clear process to deliver quality and keep you informed.</p>',
-                        'link_format' => '',
+                        'format' => '',
                         'links' => []
                     ]
                 ]);

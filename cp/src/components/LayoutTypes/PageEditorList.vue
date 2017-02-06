@@ -5,7 +5,7 @@ div
       Container(v-for="container in collection.data", :container="container", @edit="edit")
     .column.is-6
       a.button.is-primary(@click="store") Save
-      FormBuilder(:form="form", :content="content", @add="add")
+      FormBuilder(:form="form", :content="content")
 </template>
 
 <script>
@@ -26,9 +26,6 @@ export default {
     }
   },
   methods: {
-    add (field) {
-      this.form.push(field)
-    },
     value (fieldName) {
       return _.get(this.dataObject, fieldName)
     },
@@ -37,7 +34,12 @@ export default {
       this.$http.get(process.env.API_SERVER + 'pages/' + this.$route.params.id + '/content/' + id)
         .then(response => {
           this.form = response.data.collection.form
-          this.content = response.data.collection.content
+          // @TODO backend sends in an empty array instead of object in case no content is present
+          if (Array.isArray(response.data.collection.content)) {
+            this.content = Object.create({})
+          } else {
+            this.content = response.data.collection.content
+          }
         })
     },
     store () {
