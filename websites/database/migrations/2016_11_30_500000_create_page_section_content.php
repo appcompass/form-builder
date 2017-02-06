@@ -28,7 +28,7 @@ class CreatePageSectionContent extends Migration
             $table->json('config')->nullable();
             $table->integer('order')->unsigned()->nullable();
 
-            $table->json('content')->nullable();
+            $table->json('content')->default(json_encode('{}'));
 
             $table->timestamps();
         });
