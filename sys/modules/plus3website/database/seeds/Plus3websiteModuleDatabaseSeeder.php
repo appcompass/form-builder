@@ -554,7 +554,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 $fb->wysiwyg('Description', 'description')->validation(['required']);
                 // do we really need a fieldset here? fieldsets means the frontend adds a depth to the object, i.e: data.quick_links.format instead of simply data.format
                 // $fb->fieldset('Page Section Quick Links', 'quick_links', function (FormBuilder $quickLinks) {
-                    $fb->radio('Link Format', 'format')->required(); // @TODO DataSource: ['ol' => 'Ordered List', 'ul' => 'Un Ordered List', 'arrow' => 'Link with Arrow', ]
+                    $fb->radio('Link Format', 'format')->required()->dynamic(['ol' => 'Ordered List', 'ul' => 'Un Ordered List', 'arrow' => 'Link with Arrow', ]);
                     $fb->pageSectionSelect('Page Section Quick Links', 'links')->repeatable();
                 // });
             })->setOwner($white_break_w_section_links);
@@ -905,14 +905,9 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                         'link_text' => 'Check out the people who make our company work',
                         'link_href' => '/company#meet-our-team',
                     ]
-                // need a way to link it to the form field
-                // so this has a dynamic data type associated
-                // means data will be provided by resolving the criteria on that FieldSource
-                // the form has a dynamic field type that acknowledges that, but how about linking them?
                 ], true)->dynamic(Plus3Person::class, function(FieldSource $source) {
                     $source->relatesTo('team');
                     $source->sort('id', 'ASC');
-                    // $source->limit(3);
                 });
 
             $home_container->addSection($social_stream, 5, [

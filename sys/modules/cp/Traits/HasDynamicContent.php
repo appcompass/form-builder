@@ -23,7 +23,7 @@ trait HasDynamicContent
         $field_source = FieldSource::create([
             'linked_id' => $this->id,
             'linked_type' => get_class($this),
-            'data' => [],
+            'data' => is_array($source) ? $source : [],
             'criteria' => []
         ]);
 

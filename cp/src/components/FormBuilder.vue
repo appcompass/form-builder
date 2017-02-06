@@ -17,7 +17,7 @@ div
 
     //- SINGLE FIELD REPEATABLE (multiple values but no sub-form) -- value(field) returns an array
     div(v-if="Array.isArray(value(field)) && !field.fields.length", v-for="(single, subFieldIndex) in value(field)")
-      span.pull-right.icon.is-small(@click="unlink(field.name, subFieldIndex)")
+      span.pull-right.icon.is-small(@click="unlink(field, subFieldIndex)")
         i.fa.fa-trash-o
       span(
         :is="Components[field.type]",
