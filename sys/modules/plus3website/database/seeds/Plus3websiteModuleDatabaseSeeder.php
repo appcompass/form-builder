@@ -1243,7 +1243,13 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->setUpdatedFrequency('monthly');
 
             $projects_container = $createHeaderFooterStructure($projects)
-                ->addSection($thick_page_banner, 1)
+                ->addSection($thick_page_banner, 1, [
+                    'content' => [
+                        'background_image' => '',
+                        'title' => 'Projects',
+                        'description' => '<p>We find unique solutions to our clients’ unique problems through developing custom web applications, integrating proprietary systems with the modern web, and turning business ideas into web solutions. See some of our projects.</p>',
+                    ]
+                ])
                 ->addSection($project_list, 2);
 
 
@@ -1276,14 +1282,24 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->setUpdatedFrequency('monthly');
 
             $company_container = $createHeaderFooterStructure($company)
-                ->addSection($thick_page_banner, 1)
-                ->addSection($social_stream, 3)
+                ->addSection($thick_page_banner, 1, [
+                    'content' => [
+                        'background_image' => '',
+                        'title' => 'Company',
+                        'description' => '<p>We love connecting with clients, learning about their business objectives, and building well-crafted web applications for them. As if this weren’t enough, we also get to work with bright, inventive, and fun teammates. We at Plus 3 Interactive are dedicated to creating quality Web solutions, and we have the experience to turn ideas into reality.</p>',
+                    ]
+                ])
+                ->addSection($social_stream, 3, [
+                    'content' => [
+                        'title' => 'Plus 3 Interactive <span class="color-blue">-</span> Active!',
+                    ]
+                ])
                 ->addSection($meet_our_team, 2, [
                     'content' => [
-                        'title' => 'The Team',
-                        'description' => '<p>Plus 3 Interactive is a customer-focused business.  Our team finds  the right solutions to our customers’ unique challenges. Check out the people who make our company work.</p>',
-                        'link_text' => 'Check out the people who make our company work',
-                        'link_href' => '/company#meet-our-team',
+                        'title' => 'Meet our Team!',
+                        'description' => '',
+                        'link_text' => '',
+                        'link_href' => '',
                     ]
                 ], true)->dynamic(Plus3Person::class, function(FieldSource $source) {
                     $source->relatesTo('team');
@@ -1298,7 +1314,13 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->setUpdatedFrequency('yearly');
 
             $contact_container = $createHeaderFooterStructure($contact)
-                ->addSection($thick_page_banner, 1)
+                ->addSection($thick_page_banner, 1, [
+                    'content' => [
+                        'background_image' => '',
+                        'title' => 'Contact Us',
+                        'description' => '<p>Are you interested in design and development of a business Web site or Web application? Are you looking for web marketing services to get the most out of your current Web site?</p><p>Please let us know how we can help your business grow.</p>',
+                    ]
+                ])
                 ->addSection($contact_form, 2)
                 ->addSection($map_address, 3);
 
@@ -1310,7 +1332,13 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->setUpdatedFrequency('never');
 
             $login_container = $createHeaderFooterStructure($login)
-                ->addSection($thick_page_banner, 1)
+                ->addSection($thick_page_banner, 1, [
+                    'content' => [
+                        'background_image' => '',
+                        'title' => 'Customer Login',
+                        'description' => '',
+                    ]
+                ])
                 ->addSection($login_form, 2);
 
 
