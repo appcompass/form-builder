@@ -4,6 +4,7 @@ namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
@@ -14,13 +15,21 @@ use P3in\Models\Section;
 use P3in\Models\Website;
 use P3in\ModularBaseModel;
 use P3in\Traits\HasPermissions;
-use P3in\Traits\NavigatableTrait as Navigatable;
+// use P3in\Traits\NavigatableTrait as Navigatable;
 use P3in\Traits\SettingsTrait;
+use P3in\Interfaces\Linkable;
 
 class Page extends ModularBaseModel
 {
 
-    use SettingsTrait, Navigatable, HasPermissions;
+    // use SettingsTrait,
+    // Navigatable,
+    // HasPermissions,
+    // SoftDeletes;
+    use
+        SettingsTrait,
+        HasPermissions,
+        SoftDeletes;
 
     /**
      * The database table used by the model.
@@ -46,12 +55,7 @@ class Page extends ModularBaseModel
         'published_at',
     ];
 
-    /**
-    *   Fields that needs to be treated as a date
-    *
-    */
     protected $dates = ['published_at'];
-
 
     public function parent()
     {
@@ -67,6 +71,7 @@ class Page extends ModularBaseModel
     {
         return !empty($this->parent->id);
     }
+
     public function getUrl()
     {
         $tree = $this->withParents()->orderBy('level', 'desc')->get();
@@ -81,6 +86,7 @@ class Page extends ModularBaseModel
         }
         return trim($url,'/');
     }
+
     /**
      *
      */
@@ -117,16 +123,40 @@ class Page extends ModularBaseModel
     /**
      *  Build a LinkClass out of this class
      */
-    public function makeLink($overrides = [])
-    {
-        $req_perm = $this->getRequiredPermission()->first();
+    // public function makeLink($overrides = [])
+    // {
+    //     $req_perm = $this->getRequiredPermission()->first();
 
-        return array_replace([
-            "label" => $this->title,
-            "url" => $this->url,
-            "req_perms" => $req_perm ? $req_perm->id : null, //Permission::GUEST_PERMISSION,
-            "props" => ['icon' => 'list']
-        ], $overrides);
+    //     return array_replace([
+    //         "label" => $this->title,
+    //         "url" => $this->url,
+    //         "req_perms" => $req_perm ? $req_perm->id : null, //Permission::GUEST_PERMISSION,
+    //         "props" => ['icon' => 'list']
+    //     ], $overrides);
+    // }
+
+    /**
+     * Makes a menu item.
+     *
+     * @param      integer   $order  The order
+     *
+     * @return     MenuItem  ( description_of_the_return_value )
+     */
+    public function makeMenuItem($order = 0): MenuItem
+    {
+        $item = new MenuItem([
+            'title' => $this->title,
+            'alt' => $this->description,
+            'order' => $order,
+            'new_tab' => false,
+            'url' => $this->fullUrl,
+            'clickable' => true,
+            'icon' => null
+        ]);
+
+        $item->navigatable()->associate($this);
+
+        return $item;
     }
 
     /**
@@ -352,12 +382,18 @@ class Page extends ModularBaseModel
         $url = $this->dynamic_segment ? str_replace('([a-z0-9-]+)', $this->dynamic_segment, $this->url) : $this->url;
         $schema = Request::capture()->secure() ? 'https' : 'http';
 
-        return $schema.'://'.$this->website->site_url.'/'.$url;
+        return $schema.'://'.$this->website->site_url.$url;
     }
 
     public function getUrlAttribute()
     {
-        return $this->dynamic_segment ? str_replace('([a-z0-9-]+)', $this->dynamic_segment, $this->attributes['url']) : $this->attributes['url'];
+        $replace_with = $this->dynamic_segment ? $this->dynamic_segment : '{dynamic_slug}';
+        return '/'.str_replace('([a-z0-9-]+)', $replace_with, $this->attributes['url']);
+    }
+
+    public function getParentTitleAttribute()
+    {
+        return $this->parent ? $this->parent->title : '-';
     }
 
     public function getImagesAttribute()

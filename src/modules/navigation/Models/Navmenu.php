@@ -75,6 +75,29 @@ class Navmenu extends Model
     }
 
     /**
+     *  Link navmenu to NavitemNavmenu items
+     *
+     *  NavitemNavmenu is the pivot table that links an instance of a NavigationItem to a specific Navmenu
+     */
+    public function navitems()
+    {
+
+        $user_perms = [];
+
+        if (\Auth::check()) {
+
+            $user_perms = \Auth::user()->allPermissions()->toArray();
+
+        }
+
+        return $this->hasMany(NavitemNavmenu::class)
+            ->whereHas('navitem', function($q) use ($user_perms) {
+                $q->whereNull('req_perms');
+                $q->orWhereIn('req_perms', array_keys($user_perms));
+        })->orderBy('order');
+    }
+
+    /**
      *  Add a child nav
      *
      */
@@ -141,6 +164,8 @@ class Navmenu extends Model
 
         return $nav;
     }
+
+
     private static function filterNav(&$nav, $perms)
     {
             foreach ($nav as $i => $item) {
@@ -162,29 +187,6 @@ class Navmenu extends Model
                 }
 
             }
-    }
-
-    /**
-     *  Link navmenu to NavitemNavmenu items
-     *
-     *  NavitemNavmenu is the pivot table that links an instance of a NavigationItem to a specific Navmenu
-     */
-    public function navitems()
-    {
-
-        $user_perms = [];
-
-        if (\Auth::check()) {
-
-            $user_perms = \Auth::user()->allPermissions()->toArray();
-
-        }
-
-        return $this->hasMany(NavitemNavmenu::class)
-            ->whereHas('navitem', function($q) use ($user_perms) {
-                $q->whereNull('req_perms');
-                $q->orWhereIn('req_perms', array_keys($user_perms));
-        })->orderBy('order');
     }
 
     /**
@@ -331,7 +333,7 @@ class Navmenu extends Model
     public function scopeByName($query, $name, $label = null)
     {
 
-        $navmenu = Navmenu::where('name', '=', $name)->first();
+        $navmenu = $query->where('name', '=', $name)->first();
 
         if (is_null($navmenu)) {
 

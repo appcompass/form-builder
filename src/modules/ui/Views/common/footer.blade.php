@@ -53,6 +53,8 @@
     <script src="/assets/ui/js/gritter.js" type="text/javascript"></script>
     <script src="/assets/ui/js/jquery.nicescroll.js"></script>
 
+    <script src="/assets/ui/js/sortablejs/Sortable.min.js"></script>
+
     <!-- <script src="/assets/ui/js/jvector-map/jquery-jvectormap-1.2.2.min.js"></script> -->
     <!-- <script src="/assets/ui/js/jvector-map/jquery-jvectormap-us-lcc-en.js"></script> -->
     <!-- <script src="/assets/ui/js/gauge/gauge.js"></script> -->
@@ -157,6 +159,9 @@
             });
 
             call.done(function(){
+                if (!obj.attribute) {
+                    loadData($(obj.target));
+                }
                 if (obj.next && obj.next.url) {
                     loadSourceToTarget(obj.next);
                 };
@@ -534,6 +539,12 @@
             $(document).on('change', '.ajax-form input', function(e){
                 $(this).parents('.form-group').removeClass('has-error');
                 $(this).next('.input-error').remove();
+            });
+
+            $(document).on('submit', 'form:not(.ajax-form)', function(e) {
+                e.preventDefault();
+                $(this)[0].submit();
+                // $(this).submit();
             });
 
             $(document).on('submit', '.ajax-form', function(e){
