@@ -37,7 +37,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
         ]);
 
         (new Plus3Person([
-            'title' => 'Co-Founder and Client Relations',
+            'title' => 'Co-Founder & Client Relations',
             'meta_keywords' => 'words',
             'meta_description' => 'desc',
             'bio' => 'imene\'s Bio',
@@ -64,7 +64,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
         ]);
 
         (new Plus3Person([
-            'title' => 'Co-Founder and Development Lead',
+            'title' => 'Co-Founder & Development Lead',
             'meta_keywords' => 'words',
             'meta_description' => 'desc',
             'bio' => 'Jubair\'s Bio',
@@ -1278,7 +1278,14 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             $company_container = $createHeaderFooterStructure($company)
                 ->addSection($thick_page_banner, 1)
                 ->addSection($social_stream, 3)
-                ->addSection($meet_our_team, 2, [], true)->dynamic(Plus3Person::class, function(FieldSource $source) {
+                ->addSection($meet_our_team, 2, [
+                    'content' => [
+                        'title' => 'The Team',
+                        'description' => '<p>Plus 3 Interactive is a customer-focused business.  Our team finds  the right solutions to our customers’ unique challenges. Check out the people who make our company work.</p>',
+                        'link_text' => 'Check out the people who make our company work',
+                        'link_href' => '/company#meet-our-team',
+                    ]
+                ], true)->dynamic(Plus3Person::class, function(FieldSource $source) {
                     $source->relatesTo('team');
                     $source->sort('id', 'ASC');
                 });

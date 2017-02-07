@@ -14,17 +14,13 @@
       // @TODO: create a component for Plus3Person Model that this data is provided from
       .section-team-members
         //
-          this needs to update the url to /company#imene-saidi but shoudln't change urls,
-          on hard refresh it would take the user to that page.  This is basically a
-          modal that has the link of the other page, so this is obviously different
-          from other situations, but there are a few of these modals we need to do
-          this behavior for so def something to abstract and nuxt-link is prob not
-          what we want to use here
-        nuxt-link.section-team-member.team-popup(:to='member.slug', v-for='member in data.team', :style="{backgroundImage: 'url(' + member.cover_photo + ')' }")
+          @TODO: make /company page dynamic so it can render a page via /company/:person_slug
+          and Nuxt handles the rest from there (basically).  On normal click the modal shows up
+          but the href (for SOE) is shown as the url link so each person has their own page.
+        a.section-team-member.team-popup(:href='member.slug', :data-mfp-src="modalUrl(member.slug)", v-for='member in data.team', :style="{backgroundImage: 'url(' + member.cover_photo + ')' }")
           span.team-hover
             span.team-name {{member.full_name}}
             span.team-position {{member.title}}
-    // section-team
     .popup.popup-team.mfp-hide(:id='member.slug', v-for='member in data.team')
       .row
         .small-4.columns
@@ -34,13 +30,13 @@
           h1 {{member.full_name}}
           span(v-html='member.bio')
           p
-            a.team-social(:href='member.instagram', target='_blank')
+            a.team-social(v-if="member.instagram", :href='member.instagram', target='_blank')
               span.icon-instagram
-            a.team-social(:href='member.twitter', target='_blank')
+            a.team-social(v-if="member.twitter", :href='member.twitter', target='_blank')
               span.icon-twitter
-            a.team-social(:href='member.facebook', target='_blank')
+            a.team-social(v-if="member.facebook", :href='member.facebook', target='_blank')
               span.icon-facebook
-            a.team-social(:href='member.linkedin', target='_blank')
+            a.team-social(v-if="member.linkedin", :href='member.linkedin', target='_blank')
               span.icon-linkedin
 </template>
 
@@ -73,12 +69,17 @@
 // <meta property="og:description" :content="member.bio_summary" />
 //
   export default {
-  props: ['data'],
-  mounted () {
-    $('.team-popup').magnificPopup({
-    type:'inline',
-    closeMarkup:'<button title="%title%" type="button" class="mfp-close icon-close"></button>'
-    });
-  }
+    props: ['data'],
+    mounted () {
+      $('.team-popup').magnificPopup({
+        type: 'inline',
+        closeMarkup:'<button title="%title%" type="button" class="mfp-close icon-close"></button>'
+      });
+    },
+    methods: {
+      modalUrl (path) {
+        return '#' + path.replace(/^\//, '')
+      }
+    }
   }
 </script>
