@@ -5,7 +5,7 @@
         .medium-8.medium-centered.columns
           .section-header
             h2.section-heading {{data.title}}
-            .section-desc
+            .section-desc(v-if="data.description || data.link_href")
               div(v-html='data.description')
               p
                 nuxt-link(:to='data.link_href')
