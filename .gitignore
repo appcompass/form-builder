@@ -29,4 +29,4 @@ npm-debug.log
 
 cp/config/server.env.js
 cp/src/components/FormBuilder/
-cp/src/websites
+websites

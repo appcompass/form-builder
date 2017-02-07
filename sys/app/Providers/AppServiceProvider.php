@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->bind('path.websites', function () {
-            return base_path() . '/../cp/src/websites';
+            return base_path() . '/../websites';
         });
     }
 
