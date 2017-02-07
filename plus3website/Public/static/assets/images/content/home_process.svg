@@ -161,9 +161,6 @@
     <g id="launch">
         <g id="launch_text">
             <text id="launch_text_title_text" transform="matrix(0.9924 0 0 1 775.9351 556.4482)" class="st0 step_title_text"><tspan class="launch_fill">9</tspan> Launch</text>
-            <g id="launch_text_description">
-                <text transform="matrix(1 0 0 1 670.2832 585.3438)" class="st3"><tspan x="0" y="0" class="step_desc_text">Your Web application goes live! But our role </tspan><tspan x="-3.4" y="19.2" class="step_desc_text">isn’t done yet – we’ll resolve any post-launch </tspan><tspan x="12.5" y="38.4" class="step_desc_text">bugs and help you plan for future phases</tspan><tspan x="104.8" y="57.6" class="step_desc_text">of your project.</tspan></text>
-            </g>
         </g>
         <g>
             <g>
@@ -206,9 +203,6 @@
     <g id="quality_assurance">
         <g id="quality_assurance_text">
             <text id="quality_assurance_text_title_text" transform="matrix(0.9924 0 0 1 665.3813 556.4482)" class="st0 step_title_text"><tspan class="quality_assurance_fill">8</tspan> Quality Assurance Testing</text>
-            <g id="quality_assurance_text_description">
-                <text transform="matrix(1 0 0 1 688.5947 584.9434)" class="st3"><tspan x="0" y="0" class="step_desc_text">We implement our standard processes </tspan><tspan x="2.8" y="19.2" class="step_desc_text">to uncover issues to be corrected and </tspan><tspan x="-21.9" y="38.4" class="step_desc_text">features that require additional development.</tspan></text>
-            </g>
         </g>
         <g>
             <rect x="795.6" y="378.4" class="st8" width="83.3" height="10.7"/>
@@ -247,9 +241,6 @@
     <g id="backend_development">
         <g id="backend_development_text_1_">
             <text id="backend_development_text_title_text" transform="matrix(0.9924 0 0 1 672.6626 556.4482)" class="st3"><tspan x="0" y="0" class="st0 step_title_text"><tspan class="backend_development_fill">7</tspan> Back-end &amp; Middleware </tspan><tspan x="77.6" y="31.2" class="st0 step_title_text">Development</tspan></text>
-            <g id="backend_development_text_description">
-                <text transform="matrix(1 0 0 1 710.6658 617.3438)" class="st3"><tspan x="0" y="0" class="step_desc_text">Using modern technologies, our </tspan><tspan x="-15.5" y="19.2" class="step_desc_text">developers plan, build, and test your </tspan><tspan x="-35.9" y="38.4" class="step_desc_text">secure Web application, integrating it with </tspan><tspan x="25" y="57.6" class="step_desc_text">your systems as required.</tspan></text>
-            </g>
         </g>
         <g>
             <g>
@@ -314,14 +305,6 @@
     <g id="frontend_development">
         <g id="frontend_development_text">
             <text id="frontend_development_text_title_text" transform="matrix(0.9924 0 0 1 679.6382 556.4482)" class="st0 step_title_text"><tspan class="front_end_development_fill">6</tspan> Front-end Development</text>
-            <g id="frontend_development_text_description">
-                <text transform="matrix(1 0 0 1 685.1384 585.3438)" class="st3">
-                    <tspan x="0" y="0" class="step_desc_text">Upon your approval of the Web design, </tspan>
-                    <tspan x="0" y="19.2" class="step_desc_text">our front-end developer converts it into </tspan>
-                    <tspan x="31.3" y="38.4" class="step_desc_text">an responsive, accessible, and </tspan>
-                    <tspan x="32.1" y="57.6" class="step_desc_text">user-friendly Web experience</tspan>
-                </text>
-            </g>
         </g>
         <g>
             <g>
@@ -386,9 +369,6 @@
     <g id="design">
         <g id="design_text">
             <text id="design_text_title_text" transform="matrix(0.9924 0 0 1 768.019 556.4482)" class="st0 step_title_text"><tspan class="design_fill">5</tspan> Design</text>
-            <g id="design_text_description">
-                <text transform="matrix(1 0 0 1 670.6592 584.608)" class="st3"><tspan x="0" y="0" class="step_desc_text">Our designer provides a complete design </tspan><tspan x="14.1" y="19.2" class="step_desc_text">consultation; creates wireframes; and </tspan><tspan x="31.2" y="38.4" class="step_desc_text">implements design of pages and </tspan><tspan x="95.2" y="57.6" class="step_desc_text">UI components</tspan></text>
-            </g>
         </g>
         <g>
             <path class="design_fill" d="M847.7,513.9l-1.9-1.9l2.1-2.1l-3.8-3.8l-2.1,2.1l-1.9-1.9l2.1-2.1l-3.8-3.8l-2.1,2.1l-1.9-1.9l2.1-2.1
@@ -430,13 +410,6 @@
     <g id="information_architecture">
         <g id="information_architecture_text">
             <text id="information_architecture_text_title_text" transform="matrix(0.9924 0 0 1 665.7227 556.4482)" class="st0 step_title_text"><tspan class="information_architecture_fill">4</tspan> Information Architecture</text>
-            <g id="information_architecture_text_description">
-                <text transform="matrix(1 0 0 1 672.0195 584.608)" class="st3">
-                    <tspan x="0" y="0" class="step_desc_text">Our information architect analyzes users; </tspan>
-                    <tspan x="-6" y="19.2" class="step_desc_text">develops content outline for web pages; and </tspan>
-                    <tspan x="-5" y="38.4" class="step_desc_text">creates keywords, navigation, and site map.</tspan>
-                </text>
-            </g>
         </g>
         <g>
             <g>
@@ -588,9 +561,6 @@
     <g id="kick_off">
         <g id="kick_off_text">
             <text id="kick_off_text_title_text" transform="matrix(0.9924 0 0 1 714.1548 556.4482)" class="st0 step_title_text"><tspan class="kick_off_fill">3</tspan> Kick Off Meeting</text>
-            <g id="kick_off_text_description">
-                <text transform="matrix(1 0 0 1 688.4346 585.3438)" class="st3"><tspan x="0" y="0" class="step_desc_text">We meet to discuss the project plan, </tspan><tspan x="-9.5" y="19.2" class="step_desc_text">including timeline, milestones, training, </tspan><tspan x="-1.9" y="38.4" class="step_desc_text">meeting schedule, risk management, </tspan><tspan x="77.3" y="57.6" class="step_desc_text">and next steps.</tspan></text>
-            </g>
         </g>
         <g>
             <rect x="808.3" y="468.5" class="st8" width="19.5" height="27.7"/>
@@ -630,9 +600,6 @@
     <g id="client_consultation">
         <g id="client_consultation_text">
             <text id="client_consultation_text_title_text" transform="matrix(0.9924 0 0 1 696.8018 556.4482)" class="st0 step_title_text"><tspan class="client_consultation_fill">2</tspan> Client Consultation</text>
-            <g id="client_consultation_text_description">
-                <text transform="matrix(1 0 0 1 681.7393 584.9434)" class="st3"><tspan x="0" y="0" class="step_desc_text">You provide your requirements, users, </tspan><tspan x="6.7" y="19.2" class="step_desc_text">content, branding, and features, and </tspan><tspan x="10" y="38.4" class="step_desc_text">we begin devoping the project plan.</tspan></text>
-            </g>
         </g>
         <g>
             <path class="st8" d="M842.2,342.5h-57.8c-6.5,0-11.8,5.3-11.8,11.8v46l11.2-10.7h22.4v-16.2c0-4,3.2-7.2,7.2-7.2h32.1v-20.4
@@ -655,9 +622,6 @@
     <g id="discovery">
         <g id="discovery_text">
             <text id="discovery_text_title_text" transform="matrix(0.9924 0 0 1 753.7764 556.4482)" class="st0 step_title_text"><tspan class="discovery_fill">1</tspan> Discovery</text>
-            <g id="discovery_text_description">
-                <text transform="matrix(1 0 0 1 712.8342 584.9434)" class="st3"><tspan x="0" y="0" class="step_desc_text">You tell us about your project </tspan><tspan x="-0.4" y="19.2" class="step_desc_text">and we develop a proposal of </tspan><tspan x="-25.9" y="38.4" class="step_desc_text">responsibilities, budget, and timeline.</tspan></text>
-            </g>
         </g>
         <g>
             <path class="st8" d="M815,379.6v-5.8h-12.8v5.6c1.9-0.9,4-1.4,6.3-1.4S813,378.6,815,379.6z"/>
