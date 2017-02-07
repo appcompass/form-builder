@@ -17,7 +17,7 @@
           @TODO: make /company page dynamic so it can render a page via /company/:person_slug
           and Nuxt handles the rest from there (basically).  On normal click the modal shows up
           but the href (for SOE) is shown as the url link so each person has their own page.
-        a.section-team-member.team-popup(:href='member.slug', :data-mfp-src="modalUrl(member.slug)", v-for='member in data.team', :style="{backgroundImage: 'url(' + member.cover_photo + ')' }")
+        a.section-team-member.team-popup(:href='member.slug', v-bind:data-mfp-src="modalUrl(member.slug)", v-for='member in data.team', :style="{backgroundImage: 'url(' + member.cover_photo + ')' }")
           span.team-hover
             span.team-name {{member.full_name}}
             span.team-position {{member.title}}
