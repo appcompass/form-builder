@@ -54,7 +54,7 @@ class Fieldtype extends Model
             $exporter_block[] = "export var $component->name = {$component->name}Type";
         }
 
-        $content = implode("\n", array_merge($importer_block, $exporter_block)); // . "\n" . implode("\n", $exporter_block) . "\n";
+        $content = implode("\n", array_merge($importer_block, $exporter_block))."\n"; // . "\n" . implode("\n", $exporter_block) . "\n";
 
         $disk->put('Components.js', $content);
     }
