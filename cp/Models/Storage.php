@@ -21,9 +21,9 @@ class Storage extends Model
     ];
 
     // @TODO: this is the wrong place for this.  we need a form per TYPE not per disk instance.
-    public function form()
+    public function type()
     {
-        return $this->morphOne(Form::class, 'formable');
+        return $this->belongsTo(StorageType::class);
     }
 
     public function getDisk()
