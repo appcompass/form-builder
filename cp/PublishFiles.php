@@ -15,14 +15,14 @@ class PublishFiles
     protected $mounts = [];
     protected $manager;
 
-    public function __construct($key, $path)
+    public function __construct($key = null, $path = null)
     {
         if ($key && $path) {
-            $this->setMount($key, $path);
+            $this->setSrc($key, $path);
         }
     }
 
-    public function setMount(string $key, string $path)
+    public function setSrc(string $key, string $path)
     {
         $this->mounts[$key] = new Flysystem(new LocalAdapter($path));
 
@@ -69,6 +69,7 @@ class PublishFiles
                 $disk->put($fileName, $data);
             }
         }
+        return $this;
     }
 
     public function listContents($from, $path = '')
@@ -86,6 +87,7 @@ class PublishFiles
                 $this->publishFile($disk, $path, $data, $overwrite);
             }
         }
+        return $this;
     }
 
     public function getPath($mount)
