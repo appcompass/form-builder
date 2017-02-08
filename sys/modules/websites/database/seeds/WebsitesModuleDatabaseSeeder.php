@@ -38,8 +38,8 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             $blogTags = $websites->addChild('Tags', 'blog-tags');
             $galleries = $websiteBuilder->addPage('Galleries', 'galleries');
 
-            $storage = $websiteBuilder->addPage('Storage Management', 'storage');
-            $forms = $websiteBuilder->addPage('forms', 'forms');
+            $storage = $websiteBuilder->addPage('Storage', 'storage');
+            $forms = $websiteBuilder->addPage('Forms', 'forms');
 
             $main_nav = $websiteBuilder->addMenu('main_nav');
 
