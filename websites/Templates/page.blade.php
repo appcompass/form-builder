@@ -5,14 +5,17 @@
 </template>
 
 <script>
-  import * as Components from '~components'
+@foreach($imports as $import)
+  import {!! $import !!} from '~components/{!! $import !!}'
+@endforeach
+
   import common from '~/common'
 
   export default {
 @if(!empty($layout))
     layout: '{!! $layout !!}',
 @endif
-    components: Components,
+    components: { {!! implode(',', $imports) !!} },
     data (context) {
       return common.getPageData(context)
     },

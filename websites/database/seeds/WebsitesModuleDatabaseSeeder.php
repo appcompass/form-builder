@@ -16,6 +16,9 @@ class WebsitesModuleDatabaseSeeder extends Seeder
         DB::statement('TRUNCATE pages RESTART IDENTITY CASCADE');
 
         $cp = WebsiteBuilder::new(env('ADMIN_WEBSITE_NAME'), env('ADMIN_WEBSITE_SCHEME'), env('ADMIN_WEBSITE_HOST'), function ($websiteBuilder) {
+
+            $websiteBuilder->setStorage('cp_root');
+
             $users_management = ['url' => '', 'title' => 'Users Management', 'alt' => 'Users Management', 'new_tab' => false, 'clickable' => false, ];
             $web_properties = ['url' => '', 'title' => 'Web Properties', 'alt' => 'Web Properties', 'new_tab' => false, 'clickable' => false, ];
             $blog = ['url' => '', 'title' => 'Blog', 'alt' => 'Blog', 'new_tab' => false, 'clickable' => false, ];

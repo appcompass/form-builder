@@ -2,12 +2,13 @@
 
 namespace P3in;
 
+use Exception;
 use Illuminate\Filesystem\Filesystem;
-use League\Flysystem\Adapter\Local as LocalAdapter;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\App;
+use League\Flysystem\Adapter\Local as LocalAdapter;
 use League\Flysystem\Filesystem as Flysystem;
 use League\Flysystem\MountManager;
-use Exception;
 
 class PublishFiles
 {
@@ -58,15 +59,14 @@ class PublishFiles
         return $this->manager->read($from.'://' . $fileName);
     }
 
-    public function publishFile($to, $fileName, $data, $overwrite = false)
+    public function publishFile(FilesystemAdapter $disk, $fileName, $data, $overwrite = false)
     {
-        $this->verifyMount($to);
 
         if ($overwrite) {
-            $this->manager->put($to.'://' . $fileName, $data);
+            $disk->put($fileName, $data);
         } else {
-            if (!$this->manager->has($to.'://' . $fileName)) {
-                $this->manager->put($to.'://' . $fileName, $data);
+            if (!$disk->exists($fileName)) {
+                $disk->put($fileName, $data);
             }
         }
     }
@@ -76,14 +76,14 @@ class PublishFiles
         return $this->manager->listContents($from.'://'.$path, true);
     }
 
-    public function publishFolder($from, $to, $overwrite = false)
+    public function publishFolder($from, FilesystemAdapter $disk, $overwrite = false)
     {
         foreach ($this->listContents($from) as $file) {
             if ($file['type'] === 'file') {
                 $path = $file['path'];
                 $data = $this->getFile($from, $path);
 
-                $this->publishFile($to, $path, $data, $overwrite);
+                $this->publishFile($disk, $path, $data, $overwrite);
             }
         }
     }

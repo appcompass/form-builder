@@ -11,6 +11,7 @@ use P3in\Models\Layout;
 use P3in\Models\Page;
 use P3in\Models\PageContent;
 use P3in\Models\Section;
+use P3in\Models\Storage;
 use P3in\Models\Website;
 use P3in\PublishFiles;
 use Symfony\Component\Process\Process;
@@ -121,6 +122,15 @@ class WebsiteBuilder
         $this->website->forms()->attach($form);
     }
 
+    public function setStorage($name)
+    {
+        $storage = Storage::where('name', $name)->firstOrFail();
+
+        $this->website->storage()->associate($storage);
+
+        $this->website->save();
+    }
+
     /**
      * Sets the header.
      *
@@ -207,80 +217,88 @@ class WebsiteBuilder
     // breaking this up a bit would prob be a good idea.
     public function deploy()
     {
-        if (empty($this->website->config->deployment)) {
+        $conf = $this->website->config;
+
+        if (empty($conf->deployment)) {
             throw new Exception('The website does not have deployment settings configured');
         }
 
-        $conf = $this->website->config;
         $depConfig = $conf->deployment;
+        $disk = $this->website->storage->getDisk();
+
         $manager = new PublishFiles('stubs', realpath(__DIR__.'/../Templates/stubs'));
 
-        // set destination path
-        if (!empty($depConfig->path)) {
-            $manager->setMount('dest', $depConfig->path);
-        } else {
-            throw new Exception('Website does not have the deployment path set');
-        }
+        // // @TODO: not sure that we should do this like this, this dir is supposed to be read only.
+        // Storage::where('name', 'stubs')->delete();
+        // Storage::create([
+        //     'name' => 'stubs',
+        //     'config' => [
+        //         'driver' => 'local',
+        //         'root' => realpath(__DIR__.'/../../Templates/stubs'),
+        //     ],
+        // ]);
 
         if (!empty($depConfig->publish_from)) {
             $manager
                 ->setMount('static', $depConfig->publish_from)
-                ->publishFolder('static', 'dest', true);
+                ->publishFolder('static', $disk, true);
 
             // @TODO: do we read the dest or src folder?
-            foreach ($manager->listContents('dest','components') as $component) {
-                if ($component['type'] == 'file' && $component['extension'] == 'vue') {
-                    $components[] = $component['filename'];
+            // dd($disk->allFiles('components'));
+            foreach ($disk->allFiles('components') as $component) {
+                $file = pathinfo($component);
+                if ($file['extension'] == 'vue' && $file['filename']) {
+                    $components[] = $file['filename'];
                 }
             }
             $components_import_file = view('websites::components', [
                 'components' => $components,
             ])->render();
 
-            $manager->publishFile('dest', 'components/index.js', $components_import_file, true);
+            $manager->publishFile($disk, 'components/index.js', $components_import_file, true);
         }
 
         // lets publish the structure in case it doesn't exist.  Never overwrite!
         // hell this one is not really necisary for us since we have a plus3website
         // module that has the structure stored already, but that isn't a requirement
         // and not an assumption we can make.
-        $manager->publishFolder('stubs', 'dest');
+        $manager->publishFolder('stubs', $disk);
 
         if (!empty($depConfig->package_json)) {
             $package_json = json_encode($depConfig->package_json, JSON_UNESCAPED_SLASHES);
 
-            $manager->publishFile('dest', 'package.json', $package_json, true);
+            $manager->publishFile($disk, 'package.json', $package_json, true);
         }
 
         if (!empty($depConfig->nuxt_config)) {
             // this method of creating the javascript file is meh imo.  No luck finding a better way yet.
             $nuxt_conf = 'module.exports = '.preg_replace('/"([a-zA-Z_]+[a-zA-Z0-9_]*)":/', '$1:', json_encode($depConfig->nuxt_config, JSON_UNESCAPED_SLASHES));
 
-            $manager->publishFile('dest', 'nuxt.config.js', $nuxt_conf, true);
+            $manager->publishFile($disk, 'nuxt.config.js', $nuxt_conf, true);
         }
 
         // now lets get the website layout(s)
         if (!empty($conf->layouts)) {
             foreach ($conf->layouts as $layout => $data) {
-                $content = $data;
-                $manager->publishFile('dest', '/layouts/'.$layout.'.vue', $content, true);
+                $manager->publishFile($disk, '/layouts/'.$layout.'.vue', $data, true);
             }
         }
 
-        $destPath = $manager->getPath('dest');
-        //sucks!... this is basically only working with local storage.
-        //this needs to be abstracted so that we can account for remote disk
-        //instances, AWS, or what ever other cloud instances that can be used
-        //(lots of them out there)
-        $process = new Process('npm install && npm run build', $destPath, null, null, null); //that last null param disables timeout.
-        $process->run(function ($type, $buffer) {
-            echo $buffer;
-            // if (Process::ERR === $type) {
-            //     echo $buffer;
-            // } else {
-            //     echo $buffer;
-            // }
-        });
+        // we shouldn't be running this here at all.
+        // $destPath = $manager->getPath($disk);
+        // //sucks!... this is basically only working with local storage.
+        // //this needs to be abstracted so that we can account for remote disk
+        // //instances, AWS, or what ever other cloud instances that can be used
+        // //(lots of them out there)
+        // $process = new Process('npm install && npm run build', $destPath, null, null, null); //that last null param disables timeout.
+        // $process->run(function ($type, $buffer) {
+        //     echo $buffer;
+        //     // if (Process::ERR === $type) {
+        //     //     echo $buffer;
+        //     // } else {
+        //     //     echo $buffer;
+        //     // }
+        // });
 
         // Page builder has something we need.
         // PageBuilder::buildTemplate($layout, $sections, $imports);
