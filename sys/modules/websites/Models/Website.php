@@ -2,6 +2,7 @@
 
 namespace P3in\Models;
 
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -9,17 +10,18 @@ use P3in\Models\Page;
 use P3in\Models\Redirect;
 use P3in\Traits\HasGallery;
 use P3in\Traits\HasPermissions;
+use P3in\Traits\HasStorage;
 use P3in\Traits\SettingsTrait;
-use Exception;
 
 class Website extends Model
 {
-    use SettingsTrait, HasGallery, HasPermissions, SoftDeletes;
+    use SettingsTrait, HasGallery, HasPermissions, HasStorage, SoftDeletes;
 
     protected $fillable = [
         'name',
         'scheme',
         'host',
+        'storage',
     ];
 
     protected $casts = [
