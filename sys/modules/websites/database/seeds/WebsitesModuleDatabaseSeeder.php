@@ -23,6 +23,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             $web_properties = ['url' => '', 'title' => 'Web Properties', 'alt' => 'Web Properties', 'new_tab' => false, 'clickable' => false, ];
             $blog = ['url' => '', 'title' => 'Blog', 'alt' => 'Blog', 'new_tab' => false, 'clickable' => false, ];
             $media_management = ['url' => '', 'title' => 'Media Management', 'alt' => 'Media Management', 'new_tab' => false, 'clickable' => false, ];
+            $settings = ['url' => '', 'title' => 'Settings', 'alt' => 'Settings', 'new_tab' => false, 'clickable' => false, ];
 
             $users = $websiteBuilder->addPage('Users', 'users');
             $users_permissions = $users->addChild('User Permissions', 'permissions');
@@ -36,6 +37,9 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             $blogCategories = $websites->addChild('Categories', 'blog-categories');
             $blogTags = $websites->addChild('Tags', 'blog-tags');
             $galleries = $websiteBuilder->addPage('Galleries', 'galleries');
+
+            $storage = $websiteBuilder->addPage('Storage Management', 'storage');
+            $forms = $websiteBuilder->addPage('forms', 'forms');
 
             $main_nav = $websiteBuilder->addMenu('main_nav');
 
@@ -57,6 +61,11 @@ class WebsitesModuleDatabaseSeeder extends Seeder
 
             $media_management_item = $main_nav->addItem($media_management, 3);
             $media_management_item->addItem($galleries, 1)->setIcon('camera');
+
+            $settings_item = $main_nav->addItem($settings, 4);
+            $settings_item->addItem($storage, 1)->setIcon('gear');
+            $settings_item->addItem($forms, 2)->setIcon('form');
+
         })->getWebsite();
 
 
