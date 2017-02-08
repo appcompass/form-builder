@@ -38,6 +38,11 @@ class CpStoragesSeeder extends Seeder
             'name' => 's3',
         ]);
 
+        // @TODO: we should prob have the base_path specified via config first, and throw an error if it's not set?
+        Storage::createLocal('cp_root', '../cp');
+        Storage::createLocal('cp_components', '../cp/src/components');
+        Storage::createLocal('cp_form_fields', '../cp/src/components/FormBuilder');
+
         FormBuilder::new('LocalStorage', function (FormBuilder $fb) {
             $fb->string('Name', 'name')->validation(['required']);
             $fb->string('Path', 'root')->validation(['required']);
@@ -85,27 +90,5 @@ class CpStoragesSeeder extends Seeder
             $fb->string('Bucket', 'bucket')->validation(['required']);
         })->setOwner($s3);
 
-
-        // @TODO: we should prob have the base_path specified via config first, and throw an error if it's not set?
-        $cp_root = new Storage([
-            'name' => 'cp_root',
-            'config' => [
-                'driver' => 'local',
-                'root' => base_path('../cp'),
-            ],
-        ]);
-        $cp_root->type()->associate($local);
-        $cp_root->save();
-
-        // @TODO: Don't think we really need two records here tbh.
-        $cp_components = new Storage([
-            'name' => 'cp_components',
-            'config' => [
-                'driver' => 'local',
-                'root' => base_path('../cp/src/components'),
-            ],
-        ]);
-        $cp_components->type()->associate($local);
-        $cp_components->save();
     }
 }

@@ -36,4 +36,26 @@ class Storage extends Model
         return LaravelStorage::disk($this->name);
     }
 
+    public static function diskByName($name)
+    {
+        $record = Storage::where('name', $name)->firstOrFail();
+
+        return $record->getDisk();
+    }
+
+    public static function createLocal($name, $path)
+    {
+        $type = StorageType::getType('local');
+        $disk = new Storage([
+            'name' => $name,
+            'config' => [
+                'driver' => 'local',
+                'root' => base_path($path),
+            ],
+        ]);
+        $disk->type()->associate($type);
+        $disk->save();
+
+        return $disk;
+    }
 }

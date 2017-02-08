@@ -240,7 +240,7 @@ class WebsiteBuilder
 
         if (!empty($depConfig->publish_from)) {
             $manager
-                ->setMount('static', $depConfig->publish_from)
+                ->setSrc('static', $depConfig->publish_from)
                 ->publishFolder('static', $disk, true);
 
             // @TODO: do we read the dest or src folder?

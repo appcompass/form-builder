@@ -27,6 +27,8 @@ sys/resources/node-scripts
 supervisord.conf
 npm-debug.log
 
-cp/config/server.env.js
-cp/src/components/FormBuilder/
-websites
+/cp
+! sys/modules/cp
+# cp/config/server.env.js
+# cp/src/components/FormBuilder/
+/websites
