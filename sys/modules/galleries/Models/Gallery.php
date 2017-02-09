@@ -19,9 +19,6 @@ class Gallery extends Model
 
     protected $fillable = [
         'name',
-        'user_id',
-        'galleryable_type',
-        'galleryable_id'
     ];
 
     protected $dates = [];
@@ -80,7 +77,7 @@ class Gallery extends Model
      */
     public function getPhotoCountAttribute()
     {
-        return count($this->photos);
+        return $this->photos->count();
     }
 
     /**
@@ -89,7 +86,7 @@ class Gallery extends Model
      */
     public function getVideoCountAttribute()
     {
-        return count($this->videos);
+        return $this->videos->count();
     }
 
 
