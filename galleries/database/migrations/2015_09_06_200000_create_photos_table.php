@@ -15,19 +15,24 @@ class CreatePhotosTable extends Migration
     {
         Schema::create('photos', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('path')->index();
-            $table->json('meta')->nullable();
 
-            // to use with polymorphic relationships
-            $table->morphs('photoable');
+            $table->integer('storage_id')->nullable();
+            $table->foreign('storage_id')
+                ->references('id')
+                ->on('storages');
 
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users');
 
+            $table->string('path')->index();
+            $table->json('meta')->nullable();
+
+            // to use with polymorphic relationships
+            $table->morphs('photoable');
+
             $table->string('status')->default('pending');
-            $table->string('storage');  // instance of disk
 
             $table->timestamps();
             $table->softDeletes();

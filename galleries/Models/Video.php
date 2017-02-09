@@ -10,13 +10,14 @@ use OpenCloud\Rackspace;
 use P3in\Interfaces\GalleryItemInterface;
 use P3in\Models\User as User;
 use P3in\ModularBaseModel;
+use P3in\Traits\HasStorage;
 use P3in\Traits\OptionableTrait;
 use P3in\Traits\SettingsTrait;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class Video extends ModularBaseModel implements GalleryItemInterface
 {
-    use OptionableTrait, SettingsTrait, SoftDeletes;
+    use OptionableTrait, SettingsTrait, HasStorage, SoftDeletes;
 
     /**
     * Table Name
@@ -29,7 +30,6 @@ class Video extends ModularBaseModel implements GalleryItemInterface
     protected $fillable = [
         'name',
         'meta',
-        'storage'
     ];
 
     /**
@@ -88,25 +88,25 @@ class Video extends ModularBaseModel implements GalleryItemInterface
         return $this->hasManyThrough(Gallery::class, GalleryItem::class, 'itemable_id', 'id');
     }
 
-    /**
-    *  Navigatable Trait
-    *
-    */
-    public function makeLink($overrides = [])
-    {
-        return array_replaces([
-            "label" => $this->label,
-            "url" => $this->path,
-            "req_perms" => null,
-            "props" => json_encode([
-              "icon" => "camera",
-              "link" => [
-                'href' => "",
-                "data-target" => ""
-              ],
-           ]),
-        ], $overrides);
-    }
+    // /**
+    // *  Navigatable Trait
+    // *
+    // */
+    // public function makeLink($overrides = [])
+    // {
+    //     return array_replaces([
+    //         "label" => $this->label,
+    //         "url" => $this->path,
+    //         "req_perms" => null,
+    //         "props" => json_encode([
+    //           "icon" => "camera",
+    //           "link" => [
+    //             'href' => "",
+    //             "data-target" => ""
+    //           ],
+    //        ]),
+    //     ], $overrides);
+    // }
 
     /**
     * Store a new image
