@@ -332,8 +332,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             FormBuilder::new('CustomerTestimonials', function (FormBuilder $fb) {
                 $fb->fieldset('Testimonials', 'testimonials', function (FormBuilder $testimonial) {
-                    $testimonial->string('Author', 'author')->validation(['required'])->required();
-                    $testimonial->wysiwyg('Content', 'content')->validation(['required'])->required();
+                    $testimonial->string('Author', 'author')->validation(['required']);
+                    $testimonial->wysiwyg('Content', 'content')->validation(['required']);
                 })->repeatable();
             })->setOwner($customer_testimonials);
 
@@ -360,7 +360,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 $fb->wysiwyg('Description', 'description')->validation(['required']);
                 // do we really need a fieldset here? fieldsets means the frontend adds a depth to the object, i.e: data.quick_links.format instead of simply data.format
                 // $fb->fieldset('Page Section Quick Links', 'quick_links', function (FormBuilder $quickLinks) {
-                    $fb->radio('Link Format', 'format')->required()->dynamic(['ol' => 'Ordered List', 'ul' => 'Un Ordered List', 'arrow' => 'Link with Arrow', ]);
+                    $fb->radio('Link Format', 'format')->validation(['required'])->dynamic(['ol' => 'Ordered List', 'ul' => 'Un Ordered List', 'arrow' => 'Link with Arrow', ]);
                     $fb->pageSectionSelect('Page Section Quick Links', 'links')->repeatable();
                 // });
             })->setOwner($white_break_w_section_links);
@@ -373,16 +373,16 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
             FormBuilder::new('ProvidedSolution', function (FormBuilder $fb) {
                 $fb->fieldset('Solution', 'solution', function (FormBuilder $solution) {
-                    $solution->radio('Layout', 'layout')->required(); // @TODO DataSource , ['left' => 'Left', 'right' => 'Right']
+                    $solution->radio('Layout', 'layout')->validation(['required']); // @TODO DataSource , ['left' => 'Left', 'right' => 'Right']
                     $solution->string('Title', 'title')->validation(['required']);
                     $solution->file('Solution Photo', 'solution_photo');
                     $solution->string('Solution Photo Width', 'photo_width');
                     $solution->string('Solution Photo Height', 'photo_height');
-                    $solution->wysiwyg('Description', 'description')->validation(['required'])->required();
+                    $solution->wysiwyg('Description', 'description')->validation(['required'])->validation(['required']);
                     $solution->pageSectionSelect('Projects Using Solution', 'projects_using_solution')->repeatable();
-                    $solution->text('Link Description', 'link_description')->required();
-                    $solution->string('Link Title', 'link_title')->required();
-                    $solution->link('Link Destination', 'link_href')->required();
+                    $solution->text('Link Description', 'link_description')->validation(['required']);
+                    $solution->string('Link Title', 'link_title')->validation(['required']);
+                    $solution->link('Link Destination', 'link_href')->validation(['required']);
                 })->repeatable();
             })->setOwner($provided_solution);
 
@@ -393,8 +393,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             ]);
 
             FormBuilder::new('BlueBreakCallout', function (FormBuilder $fb) {
-                $fb->string('Link Title', 'link_title')->required();
-                $fb->link('Link Destination', 'link_href')->required();
+                $fb->string('Link Title', 'link_title')->validation(['required']);
+                $fb->link('Link Destination', 'link_href')->validation(['required']);
             })->setOwner($blue_break_callout);
 
             $breadcrumb_with_right_link = Section::create([
@@ -404,8 +404,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             ]);
 
             FormBuilder::new('BreadCrumbRightSideLink', function (FormBuilder $fb) {
-                $fb->string('Link Title', 'link_title')->required();
-                $fb->link('Link Destination', 'link_href')->required();
+                $fb->string('Link Title', 'link_title')->validation(['required']);
+                $fb->link('Link Destination', 'link_href')->validation(['required']);
             })->setOwner($breadcrumb_with_right_link);
 
             $process_timeline = Section::create([
@@ -436,8 +436,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 $fb->file('Image File', 'image', ['type:svg']);
                 $fb->string('Image width', 'image_width');
                 $fb->string('Image Height', 'image_height');
-                $fb->string('Link Title', 'link_title')->required();
-                $fb->link('Link Destination', 'link_href')->required();
+                $fb->string('Link Title', 'link_title')->validation(['required']);
+                $fb->link('Link Destination', 'link_href')->validation(['required']);
             })->setOwner($process_maintenance_details);
 
             $project_list = Section::create([
@@ -449,11 +449,15 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             FormBuilder::new('ProjectList', function (FormBuilder $fb) {
                 $fb->fieldset('Projects', 'projects', function (FormBuilder $project) {
                     $project->file('Background Image', 'background_image')->validation(['required']);
+                    $project->file('White Logo', 'white_logo')->validation(['required']);
                     $project->file('Logo', 'logo')->validation(['required']);
+                    $project->string('Logo Link', 'logo_link');
                     $project->string('Name', 'name')->validation(['required']);
                     $project->string('Business Area', 'business_area')->validation(['required']);
                     $project->wysiwyg('Description', 'description')->validation(['required']);
-                    $project->pageSectionSelect('Page Section Quick Links', 'quick_links');
+                    $project->pageSectionSelect('Page Section Quick Links', 'services_provided');
+                    $project->string('Link Title', 'link_title');
+                    $project->link('Link Destination', 'link_href');
                 })->repeatable();
             })->setOwner($project_list);
 
@@ -466,6 +470,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             FormBuilder::new('MoreClientsList', function (FormBuilder $fb) {
                 $fb->fieldset('Clients', 'clients', function (FormBuilder $project) {
                     $project->file('Logo', 'logo')->validation(['required']);
+                    $project->file('Logo', 'logo')->validation(['required']);
+                    $project->string('Logo Link', 'logo_link');
                     $project->string('Name', 'name')->validation(['required']);
                     $project->string('Business Area', 'business_area')->validation(['required']);
                     $project->wysiwyg('Description', 'description')->validation(['required']);
@@ -918,15 +924,15 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                         'link_title' => 'Learn more about Plus 3 Interactive',
                         'link_href' => '',
                     ]
-                ])
-                ->addSection($white_break_w_section_links, 3, [
-                    'content' => [
-                        'title' => 'Steps to Software Success',
-                        'description' => '<p>From our first meeting with you, through each stage of product development, we follow a clear process to deliver quality and keep you informed.</p>',
-                        'format' => '',
-                        'links' => []
-                    ]
-                ]);
+                    ])
+                    ->addSection($white_break_w_section_links, 3, [
+                        'content' => [
+                            'title' => 'Steps to Software Success',
+                            'description' => '<p>From our first meeting with you, through each stage of product development, we follow a clear process to deliver quality and keep you informed.</p>',
+                            'format' => '',
+                            'links' => []
+                        ]
+                    ]);
 
             $process_timeline_section = $process_container
                 ->addContainer(4, [
@@ -1034,15 +1040,78 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                         'description' => '<p>We find unique solutions to our clients’ unique problems through developing custom web applications, integrating proprietary systems with the modern web, and turning business ideas into web solutions. See some of our projects.</p>',
                     ]
                 ])
-                ->addSection($project_list, 2);
+                ->addSection($white_break_w_section_links, 2, [
+                    'content' => [
+                        'title' => 'Our Work',
+                        'description' => '<p>We turn your business ideas into web solutions. Read about some of our clients:</p>',
+                        'format' => '',
+                        'links' => []
+                    ]
+                ])
+                ->addSection($project_list, 3, [
+                    'content' => [
+                        [
+                            'background_image' => '/assets/images/content/bg_project_atmgurus.jpg',
+                            'white_logo' => '/assets/images/content/logo_atmgurus.svg',
+                            'logo' => '/assets/images/content/logo_atmgurus_color.svg',
+                            'logo_link' => 'https://www.atmgurus.com/',
+                            'name' => 'ATM Gurus',
+                            'business_area' => 'Banking Device Repair & Training',
+                            'description' => '<p>We built a responsive e-commerce web application for ATM Gurus, helping their online customers easily order parts and services.</p><p>Our team integrated the web app with ATM Gurus’ backend to provide real time updates of inventory.  We also customized our proprietary application management system to allow the client to manage Web content and customer accounts.</p>',
+                            'services_provided' => [], // Custom Web application, Application management system, Middleware development
+                            'link_title' => 'For information on how we can help you, please contact us.',
+                            'link_href' => '/contact',
+                        ],[
+                            'background_image' => '/assets/images/content/bg_project_bostonpads.jpg',
+                            'white_logo' => '/assets/images/content/logo_bostonpads.svg',
+                            'logo' => '/assets/images/content/logo_bostonpads_color.svg',
+                            'logo_link' => 'http://www.bostonpads.com',
+                            'name' => 'BostonPads',
+                            'business_area' => 'Real Estate Management, Sales and Rentals',
+                            'description' => '<p>Boston Pads asked us to integrate their property listings data with a new, expandable web application for management of several business Web sites.</p><p>We customized our responsive, secure AMS for administration, data uploads, and editing of Web sites, as well as creation of new sites. Custom middleware populates the AMS from multiple data sources.</p>',
+                            'services_provided' => [], // Custom Web application, Application management system, Middleware development
+                            'link_title' => 'Are multiple data sources a problem for you? Please submit an RFP.',
+                            'link_href' => '/rfp-form',
+                        ],[
+                            'background_image' => '/assets/images/content/bg_project_versalink.jpg',
+                            'white_logo' => '/assets/images/content/logo_versalink.svg',
+                            'logo' => '/assets/images/content/logo_versalink_color.svg',
+                            'logo_link' => 'https://www.versasafe.com/versalink-info',
+                            'name' => 'VersaLink',
+                            'business_area' => 'Banking Devices Management and Reporting',
+                            'description' => '<p>VersaLink Communication System is Triton’s proprietary application for monitoring data and health of their smart safes and ATMs, via smart phone or computer.</p><p>We rebuilt VersaLink for efficiency, scalability, performance, and management of multiple devices. We also improved usability while maintaining full compatibility with previous versions.</p>',
+                            'services_provided' => [], // Custom Web application, Application management system, Middleware development, Device communication
+                            'link_title' => 'Are you juggling multiple devices? Please submit an RFP.',
+                            'link_href' => '/rfp-form',
+                        ],[
+                            'background_image' => '/assets/images/content/bg_project_pronto.jpg',
+                            'white_logo' => '/assets/images/content/logo_pronto.svg',
+                            'logo' => '/assets/images/content/logo_pronto_color.svg',
+                            'logo_link' => 'https://www.youtube.com/watch?v=INpGZPwkya4',
+                            'name' => 'Pronto',
+                            'business_area' => 'Banking Devices Management and Reporting',
+                            'description' => '<p>Equinox02 needed a system to manage distributors and deliveries of supplies to medical facilities. We designed an application to track deliveries, orders, refills, and cancellations. It sends status messages to facilities so patient needs are met without interruption.</p><p>We also consulted for Equinox02 on medical device communications protocols.</p>',
+                            'services_provided' => [], // Custom Web application, Device communication
+                            'link_title' => 'Do you need to communicate with your devices? Contact us.',
+                            'link_href' => '/contact',
+                        ]
+                    ]
+                ]);
+
+
 
 
             $projects_more_clients_container = $projects_container
-                ->addContainer(3, [
+                ->addContainer(4, [
                     'elm' => 'section',
                     'class' => 'section-module section-clients',
                 ])
-                ->addSection($section_heading, 1)
+                ->addSection($section_heading, 1, [
+                    'content' => [
+                        'title' => 'More Clients',
+                        'description' => '<p>text about this next section being about some of our other clients:</p>',
+                    ]
+                ])
                 ->addContainer(2, [
                     'class' => 'row',
                 ])
@@ -1052,11 +1121,56 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->addContainer(1, [
                     'class' => 'row',
                 ])
-                ->addSection($more_clients_list, 1);
+                ->addSection($more_clients_list, 1, [
+                    'content' => [
+                        [
+                            'logo' => '/assets/images/content/logo_level_headed.svg',
+                            'logo_link' => '',
+                            'name' => 'Level Headed Prep',
+                            'business_area' => 'Online education',
+                            // CALL TO ACTION:  [“Custom Web Application”  is link]
+                            // LINK:               O Solutions page and sub section
+                            'description' => '<p>Custom Web Application to demo viability of online student test prep, including practice tests, test results, & analytics.</p>',
+                        ],[
+                            'logo' => '/assets/images/content/logo_gpg.svg',
+                            'logo_link' => 'https://www.globalprofessorgroup.com',
+                            'name' => 'Global Professor Group',
+                            'business_area' => 'Online education',
+                            // CALL TO ACTION:  [“Custom Web Application” is link]
+                            // LINK:               TO Solutions page and sub section
+                            // CALL TO ACTION:  [“Application Management System” is link]
+                            // LINK:               O Solutions page and sub section
+                            'description' => '<p>Custom Web Application and Application Management System for online Akkadian language courses - student resources, registration, and live conference.</p>',
+                        ]
+                    ],
+                ]);
+
 
             $projects_container
-                ->addSection($white_break_w_section_links, 4)
-                ->addSection($blue_break_callout, 5);
+                ->addSection($white_break_w_section_links, 5, [
+                    'content' => [
+                        'title' => 'What is Plus 3 Interactive?',
+                        'description' => '<p>We are a small, innovative web development company that specializes in Web applications, middleware, and device communication. We also offer customization of our proprietary application management system.</p>',
+                        'format' => 'arrow',
+                        'links' => [
+                            [
+                                'text' => 'Please learn more about Plus 3 Interactive',
+                                'href' => '',
+                                //@TODO: Concept.
+                                'page_section' => [
+                                    'page_id' => 1,
+                                    'section_id' => 3
+                                ]
+                            ]
+                        ]
+                    ]
+                ])
+                ->addSection($blue_break_callout, 6, [
+                    'content' => [
+                        'link_title' => 'For information on how we can help you, please contact us',
+                        'link_href' => '/contact'
+                    ]
+                ]);
 
             $company = $wsb
                 ->addPage('Company', 'company')
