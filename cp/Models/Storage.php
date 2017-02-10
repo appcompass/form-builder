@@ -26,13 +26,17 @@ class Storage extends Model
         return $this->belongsTo(StorageType::class);
     }
 
-    public function getDisk()
+    public function setConfig()
     {
         // @TODO: we do this because it seems to be the cleanest way to set the
         // disk instance config that's handled mostly internally.  the TODO is to
         // look into if there is a better way of doing this or not.
         Config::set('filesystems.disks.'.$this->name, $this->config);
+    }
 
+    public function getDisk()
+    {
+        $this->setConfig();
         return LaravelStorage::disk($this->name);
     }
 
