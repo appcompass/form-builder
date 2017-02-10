@@ -14,4 +14,8 @@ trait HasStorage
         return $this->belongsTo(Storage::class);
     }
 
+    public function getDisk()
+    {
+        return $this->storage->getDisk();
+    }
 }

@@ -32,7 +32,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             $websites = $websiteBuilder->addPage('Websites', 'websites');
             $navigation = $websites->addChild('Navigation', 'menus');
             $pages = $websites->addChild('Pages', 'pages');
-            $contents = $pages->addChild('Contents', 'content');
+            $contents = $pages->addChild('Contents', 'contents');
             $blogEntries = $websites->addChild('Entries', 'blog-entries');
             $blogCategories = $websites->addChild('Categories', 'blog-categories');
             $blogTags = $websites->addChild('Tags', 'blog-tags');
