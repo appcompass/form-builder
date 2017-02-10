@@ -103,7 +103,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
 
         $form = FormBuilder::new('page-content-editor', function (FormBuilder $builder) {
             $builder->pageEditor('Page Editor', 'page-editor')->list(false);
-        })->linkToResources(['pages.content.index'])
+        })->linkToResources(['pages.contents.index'])
         ->getForm();
 
         WebsiteBuilder::edit($cp->id)->linkForm($form);

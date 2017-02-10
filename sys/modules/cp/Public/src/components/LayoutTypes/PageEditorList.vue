@@ -31,7 +31,7 @@ export default {
     },
     edit (id) {
       this.id = id
-      this.$http.get(process.env.API_SERVER + 'pages/' + this.$route.params.id + '/content/' + id)
+      this.$http.get(process.env.API_SERVER + 'pages/' + this.$route.params.id + '/contents/' + id)
         .then(response => {
           this.form = response.data.collection.form
           // @TODO backend sends in an empty array instead of object in case no content is present
@@ -43,7 +43,7 @@ export default {
         })
     },
     store () {
-      this.$http.put(process.env.API_SERVER + 'pages/' + this.$route.params.id + '/content/' + this.id, this.content)
+      this.$http.put(process.env.API_SERVER + 'pages/' + this.$route.params.id + '/contents/' + this.id, this.content)
         .then(response => {
           swal({title: 'Success', text: 'BOOM! Done!', type: 'success'})
         })
