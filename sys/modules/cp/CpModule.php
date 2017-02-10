@@ -11,8 +11,9 @@ class CpModule extends BaseModule
     public $module_name = 'cp';
 
     protected $publishes = [
-        'Public/' => '../cp',
-        'Models/templates/' => '../cp/src/components/FormBuilder',
+        // publishes to disk instances by name.
+        'Public/' => 'cp_root',
+        'Models/templates/' => 'cp_form_fields',
     ];
 
     public function __construct()
