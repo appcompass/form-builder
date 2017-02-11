@@ -38,10 +38,12 @@ class CpStoragesSeeder extends Seeder
             'name' => 's3',
         ]);
 
-        // @TODO: we should prob have the base_path specified via config first, and throw an error if it's not set?
-        Storage::createLocal('cp_root', '../cp');
-        Storage::createLocal('cp_components', '../cp/src/components');
-        Storage::createLocal('cp_form_fields', '../cp/src/components/FormBuilder');
+        $cp_root = (config('app.cp_root'));
+
+        Storage::createLocal('cp_root', $cp_root);
+        Storage::createLocal('cp_components', $cp_root.'/src/components');
+        Storage::createLocal('cp_layout_types', $cp_root.'/src/components/LayoutTypes');
+        Storage::createLocal('cp_form_fields', $cp_root.'/src/components/FormBuilder');
 
         FormBuilder::new('LocalStorage', function (FormBuilder $fb) {
             $fb->string('Name', 'name')->validation(['required']);

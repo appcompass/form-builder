@@ -110,6 +110,12 @@ class FormBuilder
         return $this;
     }
 
+    public function setListLayout($list_layout)
+    {
+        $this->form->setListLayout($list_layout);
+
+        return $this;
+    }
     /**
      * Gets the name.
      *
