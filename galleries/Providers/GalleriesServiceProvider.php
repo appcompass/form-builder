@@ -23,15 +23,15 @@ class GalleriesServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->app->bind(
-            GalleriesRepositoryInterface::class, GalleriesRepository::class
-        );
-        $this->app->bind(
-            GalleryPhotosRepositoryInterface::class, GalleryPhotosRepository::class
-        );
-        $this->app->bind(
-            GalleryVideosRepositoryInterface::class, GalleryVideosRepository::class
-        );
+        foreach ([
+            GalleriesRepositoryInterface::class => GalleriesRepository::class,
+            GalleryPhotosRepositoryInterface::class => GalleryPhotosRepository::class,
+            GalleryVideosRepositoryInterface::class => GalleryVideosRepository::class,
+        ] as $key => $val) {
+            $this->app->bind(
+                $key, $val
+            );
+        }
 
         Route::model('galleries', Gallery::class);
         Route::model('photos', Photo::class);

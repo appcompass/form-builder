@@ -19,12 +19,13 @@ class Plus3PeopleSeeder extends Seeder
     public function run()
     {
         DB::statement('TRUNCATE TABLE plus3_people RESTART IDENTITY CASCADE');
-        DB::statement('TRUNCATE TABLE users RESTART IDENTITY CASCADE');
+        // DB::statement('TRUNCATE TABLE users RESTART IDENTITY CASCADE');
         // Imene
-        $imene = User::create([
+        $imene = User::updateOrCreate([
+            'email' => 'imene.saidi@p3in.com',
+        ],[
             'first_name' => 'Imene',
             'last_name' => 'Saidi',
-            'email' => 'imene.saidi@p3in.com',
             'phone' => '617-470-6003',
             'password' => 'd3velopment',
             'active' => true,
@@ -48,10 +49,11 @@ class Plus3PeopleSeeder extends Seeder
             ->save();
 
         // Jubair
-        $jubair = User::create([
+        $jubair = User::updateOrCreate([
+            'email' => 'jubair.saidi@p3in.com',
+        ],[
             'first_name' => 'Jubair',
             'last_name' => 'Saidi',
-            'email' => 'jubair.saidi@p3in.com',
             'phone' => '617-755-7012',
             'password' => 'd3velopment',
             'active' => true,
@@ -75,10 +77,11 @@ class Plus3PeopleSeeder extends Seeder
             ->save();
 
         // Aisha
-        $aisha = User::create([
+        $aisha = User::updateOrCreate([
+            'email' => 'aisha.saidi@p3in.com',
+        ],[
             'first_name' => 'Aisha',
             'last_name' => 'Saidi',
-            'email' => 'aisha.saidi@p3in.com',
             'phone' => '',
             'password' => 'd3velopment',
             'active' => true,
@@ -102,10 +105,11 @@ class Plus3PeopleSeeder extends Seeder
             ->save();
 
         // Federico
-        $federico = User::create([
+        $federico = User::updateOrCreate([
+            'email' => 'federico@p3in.com',
+        ],[
             'first_name' => 'Federico',
             'last_name' => 'Francescato',
-            'email' => 'federico@p3in.com',
             'phone' => '',
             'password' => 'd3velopment',
             'active' => true,
@@ -129,10 +133,11 @@ class Plus3PeopleSeeder extends Seeder
             ->save();
 
         // Michael
-        $michael = User::create([
+        $michael = User::updateOrCreate([
+            'email' => 'michael@p3in.com',
+        ],[
             'first_name' => 'Michael',
             'last_name' => 'Farrell',
-            'email' => 'michael@p3in.com',
             'phone' => '',
 
             'password' => 'd3velopment',
@@ -157,10 +162,11 @@ class Plus3PeopleSeeder extends Seeder
             ->save();
 
         // Lazarus
-        $lazarus = User::create([
+        $lazarus = User::updateOrCreate([
+            'email' => 'lazarus@p3in.com',
+        ],[
             'first_name' => 'Lazarus',
             'last_name' => 'Morrison',
-            'email' => 'lazarus@p3in.com',
             'phone' => '',
             'password' => 'd3velopment',
             'active' => true,
@@ -184,10 +190,11 @@ class Plus3PeopleSeeder extends Seeder
             ->save();
 
         // Justin
-        $justin = User::create([
+        $justin = User::updateOrCreate([
+            'email' => 'justin@p3in.com',
+        ],[
             'first_name' => 'Justin',
             'last_name' => 'Varberakis',
-            'email' => 'justin@p3in.com',
             'phone' => '',
 
             'password' => 'd3velopment',
@@ -212,10 +219,11 @@ class Plus3PeopleSeeder extends Seeder
             ->save();
 
         // Mike Duffy
-        $mike_duffy = User::create([
+        $mike_duffy = User::updateOrCreate([
+            'email' => 'mike.duffy@p3in.com',
+        ],[
             'first_name' => 'Mike',
             'last_name' => 'Duffy',
-            'email' => 'mike.duffy@p3in.com',
             'phone' => '',
             'password' => 'd3velopment',
             'active' => true,

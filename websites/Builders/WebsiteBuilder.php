@@ -7,11 +7,13 @@ use Exception;
 use Illuminate\Support\Facades\App;
 use P3in\Builders\MenuBuilder;
 use P3in\Builders\PageBuilder;
+use P3in\Models\Gallery;
 use P3in\Models\Layout;
 use P3in\Models\Page;
 use P3in\Models\PageContent;
 use P3in\Models\Section;
 use P3in\Models\Storage;
+use P3in\Models\User;
 use P3in\Models\Website;
 use P3in\PublishFiles;
 use Symfony\Component\Process\Process;
@@ -46,6 +48,8 @@ class WebsiteBuilder
             'scheme' => $scheme,
             'host' => $host,
         ]));
+
+        $instance->setGallery();
 
         if ($closure) {
             $closure($instance);
@@ -94,6 +98,16 @@ class WebsiteBuilder
         $page = $this->website->addPage($page);
 
         return new PageBuilder($page);
+    }
+
+    public function setGallery()
+    {
+        $gallery = new Gallery(['name' => $this->website->host]);
+        $sysUser = User::SystemUsers()->firstOrFail();
+
+        $gallery->user()->associate($sysUser);
+
+        $this->website->gallery()->save($gallery);
     }
 
     /**
