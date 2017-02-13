@@ -55,7 +55,7 @@ class CreateFormBuilderTables extends Migration
         });
 
         // @TODO consider merging this table with fields? (reason not to is already too many fields in fields)
-        Schema::create('field_sources', function(Blueprint $table) {
+        Schema::create('field_sources', function (Blueprint $table) {
             $table->increments('id');
             // $table->integer('field_id')->unsigned()->nullable();
             // $table->foreign('field_id')->references('id')->on('fields')->onDelete('cascade');

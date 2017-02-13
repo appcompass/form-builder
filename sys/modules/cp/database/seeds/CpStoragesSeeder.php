@@ -91,6 +91,5 @@ class CpStoragesSeeder extends Seeder
             $fb->string('Region', 'region')->validation(['required']);
             $fb->string('Bucket', 'bucket')->validation(['required']);
         })->setOwner($s3);
-
     }
 }
