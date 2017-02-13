@@ -11,7 +11,8 @@ use Route;
 
 class AfterRoute
 {
-
+    private $logged = [];
+    private $content = [];
     /**
      * Handle an incoming request.
      *
@@ -21,6 +22,8 @@ class AfterRoute
      */
     public function handle(Request $request, Closure $next)
     {
+        $this->addLoggingStart();
+
         $route = Route::current();
 
         $methods = ['GET'];
@@ -53,21 +56,54 @@ class AfterRoute
         }
 
         if ($response->getStatusCode() === 200 && in_array($request->getMethod(), $methods)) {
-            $content = [
-                'collection' => json_decode($response->getContent()),
-            ];
+            $this->content['collection'] = $response->getOriginalContent();
+            // $content = [
+            //     'collection' => $response->getOriginalContent(),
+            // ];
 
-            $original_content = $response->getOriginalContent();
+            $this->content['edit'] = $form->toEdit()->first();
 
-            $content['edit'] = $form->toEdit()->first();
+            $this->content['list'] = $form->toList()->first();
+        }
 
-            $content['list'] = $form->toList()->first();
+        $this->addLoggingEnd($response);
 
-            $response->setContent($content);
+        if (!empty($this->content)) {
+            $response->setContent($this->content);
         }
 
         return $response;
     }
 
-    public function terminate() {}
+    public function terminate()
+    {
+    }
+
+    private function addLoggingStart()
+    {
+        if (env('APP_DEBUG')) {
+            \DB::enableQueryLog();
+
+            \Event::listen('illuminate.log', function ($level, $message, $context) {
+                $this->logged['logged'][] = [
+                    'level' => $level,
+                    'message' => $message,
+                    'context' => $context
+                ];
+            });
+        }
+    }
+
+    private function addLoggingEnd($response)
+    {
+        if (env('APP_DEBUG')) {
+            $this->logged['queries'] = \DB::getQueryLog();
+
+            if (empty($this->content)) {
+                $this->content = $response->getOriginalContent();
+            }
+
+            $this->content['debug'] = $this->logged;
+        }
+    }
 }

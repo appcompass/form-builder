@@ -31,5 +31,4 @@ trait HasGallery
     {
         return $this->morphOne(Gallery::class, 'galleryable');
     }
-
 }

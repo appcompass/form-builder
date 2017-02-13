@@ -2,13 +2,18 @@
 
 namespace P3in\Models;
 
-use P3in\Models\Photo;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use P3in\Models\Gallery;
+use P3in\Models\User;
+use P3in\Traits\HasPermissions;
+use P3in\Traits\HasStorage;
+use P3in\Traits\OptionableTrait;
 use P3in\Traits\SettingsTrait;
 
-class GalleryItem extends Model
+abstract class GalleryItem extends Model
 {
-    use SettingsTrait;
+    use OptionableTrait, SettingsTrait, HasStorage, SoftDeletes, HasPermissions;
 
     /**
      * Table Name
@@ -16,39 +21,40 @@ class GalleryItem extends Model
     protected $table = 'gallery_items';
 
     /**
-     * Doesn't need timestamps
+     * Fillable Attributes
      */
-    public $timestamps = false;
+    protected $fillable = [
+        'path',
+        'type',
+        'meta',
+        'order',
+    ];
+
+    /**
+    * Hidden properties
+    */
+    protected $hidden = [];
+
+    /**
+    * With
+    */
+    protected $with = [];
+
+    protected $casts = [
+        'meta' => 'object'
+    ];
+
+    protected static function boot()
+    {
+        static::addGlobalScope(new GalleryItemScope);
+        static::observe(new GalleryItemObserver);
+        parent::boot();
+    }
 
     /**
      *
      */
     // protected $appends = ['type'];
-
-    /**
-     * Always eager load itemable
-     */
-    protected $with= [];
-
-    /**
-     * Fillable Attributes
-     */
-    protected $fillable = [
-        'gallery_id',
-        'itemable_type',
-        'itemable_id',
-        'order',
-    ];
-
-    protected $primaryKey = "itemable_id";
-
-    /**
-     * Belongs to multiple Models through polymorphic
-     */
-    public function itemable()
-    {
-        return $this->morphTo('itemable');
-    }
 
     public function gallery()
     {
@@ -56,43 +62,10 @@ class GalleryItem extends Model
     }
 
     /**
-     * Add type
-     */
-    public function getTypeAttribute()
+    *
+    */
+    public function user()
     {
-        return get_class($this->itemable);
-    }
-
-    /**
-     *  Narrows the selection to a specific class type
-     *
-     *  @param Builder $query
-     *  @param mixed $type class name or instance of the filter
-     */
-    public function scopeByType($query, $type)
-    {
-        if (is_object($type)) {
-            $type = get_class($type);
-        }
-
-        return $query->where('itemable_type', '=', $type);
-    }
-
-    /**
-     *  Fetch items on a gallery
-     *
-     *  @param QueryBuilder $query
-     *  @param
-     *  @param
-     */
-    public function scopeByGallery($query, Gallery $gallery, $item = null)
-    {
-        $query->where('gallery_id', $gallery->id);
-
-        if (is_null($item)) {
-            return $query;
-        } else {
-            return $query->where('itemable_type', $item);
-        }
+        return $this->belongsTo(User::class);
     }
 }

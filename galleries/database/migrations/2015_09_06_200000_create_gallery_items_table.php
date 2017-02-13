@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePhotosTable extends Migration
+class CreateGalleryItemsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreatePhotosTable extends Migration
      */
     public function up()
     {
-        Schema::create('photos', function (Blueprint $table) {
+        Schema::create('gallery_items', function (Blueprint $table) {
             $table->increments('id');
 
             $table->integer('storage_id')->nullable();
@@ -21,18 +21,26 @@ class CreatePhotosTable extends Migration
                 ->references('id')
                 ->on('storages');
 
+            $table->integer('gallery_id')->unsigned();
+            $table->foreign('gallery_id')
+                ->references('id')
+                ->on('galleries')
+                ->onDelete('cascade');
+
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users');
 
             $table->string('path')->index();
+            $table->string('type');
             $table->json('meta')->nullable();
+            $table->integer('order')->nullable();
 
-            // to use with polymorphic relationships
-            $table->morphs('photoable');
+            // // to use with polymorphic relationships
+            // $table->morphs('photoable');
 
-            $table->string('status')->default('pending');
+            // $table->string('status')->default('pending');
 
             $table->timestamps();
             $table->softDeletes();
@@ -46,6 +54,6 @@ class CreatePhotosTable extends Migration
      */
     public function down()
     {
-        Schema::drop('photos');
+        Schema::drop('gallery_items');
     }
 }
