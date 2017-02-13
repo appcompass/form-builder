@@ -21,9 +21,10 @@ class Gallery extends Model
         'name',
     ];
 
+    protected $hidden = ['user'];
     protected $dates = [];
 
-    // protected $appends = ['photoCount', 'videoCount'];
+    protected $appends = ['photoCount', 'videoCount'];
 
     /**
      *  Relationship with users
@@ -106,23 +107,23 @@ class Gallery extends Model
     //     //     ->orderBy('order', 'asc');
     // }
 
-    // /**
-    //  *  Get Photos Count
-    //  *
-    //  */
-    // public function getPhotoCountAttribute()
-    // {
-    //     return $this->photos->count();
-    // }
+    /**
+     *  Get Photos Count
+     *
+     */
+    public function getPhotoCountAttribute()
+    {
+        return $this->photos->count();
+    }
 
-    // /**
-    //  * Get Videos Count
-    //  *
-    //  */
-    // public function getVideoCountAttribute()
-    // {
-    //     return $this->videos->count();
-    // }
+    /**
+     * Get Videos Count
+     *
+     */
+    public function getVideoCountAttribute()
+    {
+        return $this->videos->count();
+    }
 
     // /**
     //  *

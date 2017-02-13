@@ -22,11 +22,14 @@ class Website extends Model
         'scheme',
         'host',
         'storage',
+        'config',
     ];
 
     protected $casts = [
         'config' => 'object'
     ];
+
+    protected $hidden = ['config'];
 
     /**
      *
@@ -83,7 +86,7 @@ class Website extends Model
         return $this->morphOne(Photo::class, 'photoable');
     }
 
-    public function getStorage() {
+    public function getDefaultStorage() {
         return $this->storage;
     }
 

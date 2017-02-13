@@ -7,8 +7,6 @@ use Illuminate\Http\UploadedFile;
 use Intervention\Image\Facades\Image;
 use P3in\Interfaces\GalleryItemInterface;
 use P3in\Models\GalleryItem;
-use P3in\Models\GalleryItemObserver;
-use P3in\Models\GalleryItemScope;
 
 class Photo extends GalleryItem implements GalleryItemInterface
 {
@@ -16,6 +14,8 @@ class Photo extends GalleryItem implements GalleryItemInterface
      * Attributes appendend by default
      */
     protected $appends = ['dimensions', 'resolution'];
+
+    protected $hidden = ['user'];
 
     public function getType()
     {
