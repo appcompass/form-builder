@@ -1,14 +1,16 @@
 <template id="menu-element">
-<li class="menu__item">
+<span>
+
     <i class="handle fa fa-arrows"></i>
-    @{{ item.title }}
-    <menu :menu="item.children"></menu>
-</li>
+    @{{ item.title }} @{{ $index }}
+    <menu v-if="item.children.length" :menu="{items: item.children}"></menu>
+</span>
 </template>
 
 <script>
 var MenuElement = Vue.extend({
     template: '#menu-element',
+
     props: ['item']
 })
 </script>

@@ -68,6 +68,19 @@ class MenuItem extends Model
         return $this->hasMany(MenuItem::class, 'parent_id');
     }
 
+    /**
+     * MenuItems factory
+     *
+     * @param      <type>     $model  The model
+     *
+     * @throws     Exception  Model not allowed
+     *
+     * @return     <type>     MenuItem generator
+     */
+    public static function fromModel($model)
+    {
+        return $model->makeMenuItem();
+    }
 
     /**
      * Gets the url attribute.

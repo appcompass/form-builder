@@ -70,7 +70,6 @@
             options = _.merge(options,{
               onStart: function (evt) {
                 indexes = computeIndexes(_.chain(evt.from.children));
-                console.log(indexes);
               },
               onUpdate: function (evt) {
                 if (ctx.params.trackBy === "$index"){

@@ -7,6 +7,8 @@ Route::group([
     'middleware' => 'web',
 ], function() {
 
+    Route::post('/websites/{website}/link', '\P3in\Controllers\MenusController@addLink');
+    Route::delete('/websites/{website}/link/{link}', '\P3in\Controllers\MenusController@destroy');
     Route::resource('websites.menus', MenusController::class);
 
 });

@@ -19,30 +19,113 @@
   <section class="panel">
     <div class="panel-body">
       <div class="tab-content">
-        <div class="tab-pane col-lg-8 col-lg-offset-2 col-md-12" v-for="(index, menu) in menus" id="@{{ menu.name }}" :class="{'active': isActive(index)}">
-          <menu :menu="menu" :options="options"></menu>
-        </div>
+        <div
+          v-for="(menuIndex, menu) in menus"
+          class="tab-pane col-sm-12"
+          id="@{{ menu.name }}"
+          :class="{'active': isActive(menuIndex)}"
+        >
+          <div class="row">
+
+            <div class="col-sm-4">
+              <h2>Pages
+                <span class="pull-right">
+                  <a v-if="!status.pages.collapsed" @click="status.pages.collapsed = true"><i class="fa fa-minus-square"></i></a>
+                  <a v-else @click="status.pages.collapsed = false"><i class="fa fa-plus-square"></i></a>
+                </span>
+              </h2>
+              <ul class="menu" v-if="!status.pages.collapsed">
+                <li
+                  class="menu__item"
+                  v-draggable-for="item in pages"
+                  track-by="id"
+                  @dblclick="menu.items.push(item)"
+                  :options="{group: { name: 'menu', put: false, pull: 'clone' }}"
+                > @{{ item.title }} </li>
+              </ul>
+
+              <h2>Links
+                <span class="pull-right">
+                  <a class="btn btn-xs btn-warning" v-if="!status.addingLink" @click="status.addingLink = true">Add Link</a>
+                  <a class="btn btn-xs" v-if="status.addingLink" @click="status.addingLink = false">Cancel</a>
+                  <a v-if="!status.links.collapsed" @click="status.links.collapsed = true"><i class="fa fa-minus-square"></i></a>
+                  <a v-if="status.links.collapsed" @click="status.links.collapsed = false"><i class="fa fa-plus-square"></i></a>
+                </span>
+              </h2>
+
+              <form class="form-horizontal bucket-form" v-if="status.addingLink">
+                <div class="form-group">
+                  <label for="" class="col-sm-4 control-label">Label</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" v-model="link.title">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="" class="col-sm-4 control-label">Url</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" v-model="link.url">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-8 col-sm-offset-4">
+                    <div class="checkbox">
+                      <label class="control-label">
+                        <input type="checkbox" v-model="link.new_tab">
+                        New Tab
+                      </label>
+                    <div class="checkbox">
+                    </div>
+                      <label class="control-label">
+                        <input type="checkbox" v-model="link.clickable">
+                        Clickable
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="" class="col-sm-4 control-label">Content</label>
+                  <div class="col-sm-8">
+                    <textarea class="form-control" v-model="link.content"></textarea>
+                  </div>
+                </div>
+                <div class="footer">
+                  <div class="pull-right">
+                    <button class="btn btn-primary" @click="storeLink(menuIndex)">Store</button>
+                  </div>
+                </div>
+              </form>
+
+              <ul class="menu" v-if="!status.links.collapsed">
+                <li
+                  class="menu__item"
+                  v-draggable-for="item in links"
+                  track-by="id"
+                  @dblclick="menu.items.push(item)"
+                  :options="{group: { name: 'menu', put: false, pull: 'clone' }}"
+                > @{{ item.title }}
+                  <span class="pull-right">
+                    <a href @click="deleteLink(item)">
+                      <i class="fa fa-trash-o"></i>
+                    </a>
+                  </span>
+                </li>
+              </ul>
+
+            </div>
+
+            <div class="col-sm-8">
+              <h2>Menu: @{{ menu.name }}</h2>
+              <menu :menu="menu.items" :options="options" :deletions="menu.deletions"></menu>
+
+              <div class="pull-right">
+                <button class="btn btn-primary" @click="save(menuIndex)">Save</button>
+              </div>
+            </div>
+
+          </div>
       </div>
     </div>
   </section>
-
-
-  <section class="panel">
-    <div class="panel-body sources">
-      <ul class="menu">
-        <li
-          class="menu__item"
-          v-draggable-for="item in sources.items"
-          track-by="$index"
-          :options="{group: { name: 'menu', pull: 'clone', put: false }}"
-        > @{{ item.title }}
-      </ul>
-    </div>
-  </section>
-
-  <pre>
-    @{{ menus | json }}
-  </pre>
 
 </section>
 
@@ -52,44 +135,64 @@
 
 <script>
 var menus = {!! $menus !!}
+var pages = {!! $pages !!}
+var links = {!! $links !!}
+
+Vue.use(VueResource)
 
 new Vue({
   el: '#menu-builder',
   data: {
     menus: menus,
-    options: {"handle": '.handle', "group": {"name": 'menu'}, "animation": 200 },
-    sources: {
-      items: [
-        { title: 'foo', id: 110, children: [] },
-        { title: 'bat', id: 111, children: [] }
-      ],
-    },
+    pages: pages,
+    links: links,
+    options: {"handle": '.handle', "group": {"name": 'menu'}, "animation": 300 },
+    link: {title: null, url: null, new_tab: null, clickable: null, content: null },
     status: {
-      active: 0
-    }
-  },
-  events: {
-    updateMenu: function(event) {
-      console.log(this)
-    },
-    add: function(event) {
-      console.log('add')
-      // console.log(event.item.__vfrag__.scope.item)
-      // event.to.removeChild(event.item)
-      // event.to.__vue__.menu.push(event.item.__vfrag__.scope.item)
-    }
-  },
-  watch: {
-    menus: function(nv) {
-      console.log(nv)
-      // nv.forEach(function(menu) {
-      //   menu.items.forEach(function(item) {
-      //     console.log('-- ' + item.title )
-      //   })
-      // })
+      links: {collapsed: false },
+      pages: {collapsed: false },
+      active: 0,
+      addingLink: false
     }
   },
   methods: {
+    save: function(index) {
+      var menu = this.menus[index]
+      var payload = {
+        id: menu.id,
+        menu: {
+          menu: menu.items,
+          deletions: menu.deletions
+        }
+      }
+      this.$http.put('/websites/' + menu.website + '/menus/' + menu.id, payload)
+        .then(function(response) {
+          if (response.status === 200) {
+            this.menus = response.data
+            sweetAlert({title: 'Menu Updated', text: 'Navigation Menu updated succesfully', type: 'success', html: true, });
+          }
+        })
+    },
+    storeLink: function(menuIndex) {
+      var vm = this
+      // @TODO could replace with event instead of passing menuIndex every time
+      vm.$http.post('/websites/' + menu.website + '/link', vm.link)
+        .then(function(response) {
+          vm.menus[menuIndex].items.push(response.data.menuitem)
+          vm.links.push(response.data.menuitem)
+          vm.status.addingLink = false
+        })
+    },
+    deleteLink: function(link) {
+      var vm = this
+      // @TODO links are not website specific
+      sweetAlert({title: 'Remove Item', text: 'Are you sure you want to delete from the current Menu?', type: 'warning', showCancelButton: true }, function() {
+        vm.$http.delete('/websites/' + vm.menus[0].website + '/link/' + link.id)
+          .then(function(response) {
+            vm.links.$remove(link)
+          })
+      })
+    },
     active: function(menuIndex) {
       this.status.active = menuIndex
     },
