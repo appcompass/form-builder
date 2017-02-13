@@ -4,7 +4,6 @@ namespace P3in\Models;
 
 use P3in\Interfaces\GalleryItemInterface;
 use P3in\Models\GalleryItem;
-use P3in\Models\GalleryItemScope;
 
 class Video extends GalleryItem implements GalleryItemInterface
 {
