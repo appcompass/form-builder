@@ -54,7 +54,12 @@ class MenusController extends UiBaseController
     {
         $menus = $website->menus
             ->load('items')
-            ->toJson();
+            ->map(function($menu, $key) {
+                return [
+                    'items' => $menu->render(),
+                    'name' => $menu->name
+                ];
+            });
 
         return view('menus::index', compact('menus'));
     }

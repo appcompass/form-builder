@@ -19,7 +19,7 @@ use P3in\Traits\HasPermissions;
 use P3in\Traits\SettingsTrait;
 use P3in\Interfaces\Linkable;
 
-class Page extends ModularBaseModel
+class Page extends ModularBaseModel implements Linkable
 {
 
     // use SettingsTrait,
@@ -157,6 +157,10 @@ class Page extends ModularBaseModel
         $item->navigatable()->associate($this);
 
         return $item;
+    }
+
+    public function getTypeAttribute() {
+        return 'Page';
     }
 
     /**

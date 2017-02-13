@@ -90,9 +90,10 @@ class Menu extends Model
         }
 
         $items = $this->items()
-            ->whereNull('req_perm')
-            ->orWhereIn('req_perm', array_keys($user_perms))
-            ->get();
+            ->where(function($q) use($user_perms){
+                $q->whereNull('req_perm')
+                    ->orWhereIn('req_perm', array_keys($user_perms));
+            })->get();
 
         return $this->buildTree($items);
     }
@@ -120,7 +121,7 @@ class Menu extends Model
                 }
 
                 // @TODO make this add conditional based on permissions
-                $tree[] = $node;
+                $tree[] = $node->toArray();
 
                 unset($node); // mmm doesn't actually unset
             }
