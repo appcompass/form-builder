@@ -56,14 +56,11 @@ class GalleriesModuleDatabaseSeeder extends Seeder
             //     ->polymorphic();
 
             // $builder->string('Website', 'website_id')->list(false)->required(); //->dynamic('\P3in\Models\Website');
-
-
         })
             ->linkToResources(['galleries.photos.index'])
             ->setListLayout('PhotoGrid')
             ->getForm();
 
         // WebsiteBuilder::edit($cp->id)->linkForm($form);
-
     }
 }

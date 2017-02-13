@@ -3,8 +3,12 @@
 namespace P3in\Providers;
 
 use Illuminate\Contracts\Auth\Access\Gate;
+use Illuminate\Foundation\AliasLoader;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Intervention\Image\Facades\Image;
+use Intervention\Image\ImageServiceProvider;
 use P3in\Interfaces\GalleriesRepositoryInterface;
 use P3in\Interfaces\GalleryPhotosRepositoryInterface;
 use P3in\Interfaces\GalleryVideosRepositoryInterface;
@@ -19,6 +23,7 @@ class GalleriesServiceProvider extends ServiceProvider
 {
     public function boot(Gate $gate)
     {
+        $this->loadIntervention();
     }
 
     public function register()
@@ -48,5 +53,20 @@ class GalleriesServiceProvider extends ServiceProvider
         Route::bind('video', function ($value) {
             return Video::findOrFail($value);
         });
+    }
+
+    /**
+     * Load Intervention for images handling
+     */
+    public function loadIntervention()
+    {
+        $this->app->register(ImageServiceProvider::class);
+
+        $loader = AliasLoader::getInstance();
+
+        $loader->alias('Image', Image::class);
+
+        //@TODO: we require the use of imagick, not sure we should force this though.
+        Config::set(['image' => ['driver' => 'imagick']]);
     }
 }
