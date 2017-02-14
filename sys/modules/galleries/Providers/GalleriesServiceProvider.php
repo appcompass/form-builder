@@ -24,6 +24,23 @@ class GalleriesServiceProvider extends ServiceProvider
     public function boot(Gate $gate)
     {
         $this->loadIntervention();
+
+        Route::model('gallery', Gallery::class);
+        Route::model('photo', Photo::class);
+        Route::model('video', Video::class);
+
+        Route::bind('gallery', function ($value) {
+            return Gallery::findOrFail($value);
+        });
+
+        Route::bind('photo', function ($value) {
+            return Photo::findOrFail($value);
+        });
+
+        Route::bind('video', function ($value) {
+            return Video::findOrFail($value);
+        });
+
     }
 
     public function register()
@@ -37,22 +54,6 @@ class GalleriesServiceProvider extends ServiceProvider
                 $key, $val
             );
         }
-
-        Route::model('galleries', Gallery::class);
-        Route::model('photos', Photo::class);
-        Route::model('videos', Video::class);
-
-        Route::bind('gallery', function ($value) {
-            return Gallery::findOrFail($value);
-        });
-
-        Route::bind('photo', function ($value) {
-            return Photo::findOrFail($value);
-        });
-
-        Route::bind('video', function ($value) {
-            return Video::findOrFail($value);
-        });
     }
 
     /**

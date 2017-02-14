@@ -22,17 +22,15 @@ class Photo extends GalleryItem implements GalleryItemInterface
         return 'photo';
     }
 
-    public function getDefaultStorage() {
-        return $this->gallery->getStorage();
-    }
-
-    public function getBasePath() {
-        return 'photos/'.date('m-y');
+    public function apendStoragePath() {
+        return date('m-y');
     }
 
     public function afterStorage()
     {
-        $this->user()->associate(\Auth::user());
+        if (\Auth::check()) {
+            $this->user()->associate(\Auth::user());
+        }
         $this->setMetaFromExif();
     }
 
