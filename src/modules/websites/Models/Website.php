@@ -434,28 +434,27 @@ class Website extends Model
     *
     * Website::first()->render()
     *
-    *
+    * @TODO doesn't look like this is being used
     */
     public function renderPage($page_path)
     {
+      try {
 
-        try {
-
-            $page = $this->pages()
-                ->where('slug', $page_path)
-                ->firstOrFail();
+        $page = $this->pages()
+            ->where('slug', $page_path)
+            ->firstOrFail();
 
         if ($page->checkPermissions(Auth::user())) {
             return $page;
         }
 
-        } catch (ModelNotFoundException $e ) {
+      } catch (ModelNotFoundException $e ) {
 
-            return false;
+          return false;
 
-        }
+      }
 
-        return false;
+      return false;
     }
     /**
      *

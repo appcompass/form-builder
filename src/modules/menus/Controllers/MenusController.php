@@ -54,35 +54,49 @@ class MenusController extends UiBaseController
         $this->setControllerDefaults();
     }
 
+    /**
+     * Index
+     *
+     * @param      \Illuminate\Http\Request  $request   The request
+     * @param      \P3in\Models\Website      $websites  The websites
+     *
+     * @return     <type>                    ( description_of_the_return_value )
+     */
     public function index(Request $request, Website $websites)
     {
-        $menus = $websites->menus
-            ->load('items')
-            ->map(function($menu, $key) use($websites) {
-                return [
-                    'items' => $menu->render(),
-                    'deletions' => [],
-                    'name' => $menu->name,
-                    'id' => $menu->id,
-                    'website' => $websites->id
-                ];
-            });
 
+        $data = $this->prepareData($websites);
 
-        $pages = $websites->pages->each(function ($item) {
-            $item->children = [];
-            $item->type = 'Page';
-        });
-
-        $links = Link::all()->each(function ($item) {
-            $item->children = [];
-            $item->type = 'Link';
-        });
-
-        return view('menus::index', compact('menus', 'pages', 'links'));
+        return view('menus::index', $data);
     }
 
-    // public function update(Request $request, $parent, $menu)
+    /**
+     * Store
+     *
+     * @param      \Illuminate\Http\Request  $request  The request
+     * @param      \P3in\Models\Website      $website  The website
+     *
+     * @return     <type>                    ( description_of_the_return_value )
+     */
+    public function store(Request $request, Website $website)
+    {
+        $menu = Menu::create([
+            'name' => $request->name,
+            'website_id' => $website->id
+        ]);
+
+        return $this->prepareData($website);
+    }
+
+    /**
+     * Update
+     *
+     * @param      \Illuminate\Http\Request  $request   The request
+     * @param      \P3in\Models\Website      $websites  The websites
+     * @param      \P3in\Models\Menu         $menus     The menus
+     *
+     * @return     <type>                    ( description_of_the_return_value )
+     */
     public function update(Request $request, Website $websites, Menu $menus)
     {
         $menu_structure = $this->flatten($request->get('menu')['menu']);
@@ -111,6 +125,107 @@ class MenusController extends UiBaseController
                     'website' => $websites->id
                 ];
             });
+    }
+
+    /**
+     * destroy
+     *
+     * @param      \Illuminate\Http\Request  $request  The request
+     * @param      \P3in\Models\Website      $website  The website
+     * @param      \P3in\Models\Menu         $menu     The menu
+     *
+     * @return     <type>                    ( description_of_the_return_value )
+     */
+    public function destroy(Request $request, Website $website, Menu $menu)
+    {
+        if ($website->menus->find($menu->id)->delete()) {
+
+            return response()->json(['message' => 'Menu Deleted']);
+
+        }
+
+    }
+
+    /**
+     * prepareData for UI
+     *
+     * @param      \P3in\Models\Website  $website  The website
+     *
+     * @return     <type>                ( description_of_the_return_value )
+     */
+    private function prepareData(Website $website)
+    {
+        $menus = $website->menus
+            ->load('items')
+            ->map(function($menu, $key) use($website) {
+                return [
+                    'items' => $menu->render(),
+                    'deletions' => [],
+                    'name' => $menu->name,
+                    'id' => $menu->id,
+                    'website' => $website->id
+                ];
+            });
+
+
+        $pages = $website->pages->each(function ($item) {
+            $item->children = [];
+            $item->type = 'Page';
+        });
+
+        $links = Link::all()->each(function ($item) {
+            $item->children = [];
+            $item->type = 'Link';
+        });
+
+        return compact('menus', 'pages', 'links');
+    }
+
+    /**
+     * addLink
+     *
+     * @param      \Illuminate\Http\Request  $request  The request
+     *
+     * @return     array                     ( description_of_the_return_value )
+     */
+    public function addlink(Request $request)
+    {
+        if (!$request->has('alt')) {
+            $request['alt'] = '';
+        }
+        $link = Link::create($request->except(['children']));
+
+        $menuitem = MenuItem::fromModel($link);
+
+        $menuitem->save();
+
+        $link->children = [];
+
+        $menuitem->children = [];
+
+        return ['link' => $link, 'menuitem' => $menuitem];
+    }
+
+    /**
+     * DeleteLink
+     *
+     * @param      \Illuminate\Http\Request  $request  The request
+     * @param      \P3in\Models\Website      $website  The website
+     * @param      \P3in\Models\Link         $link     The link
+     *
+     * @return     <type>                    ( description_of_the_return_value )
+     */
+    public function deleteLink(Request $request, Website $website, Link $link)
+    {
+        // @TODO move this in Link? who does housekeeping
+        $menu_items = MenuItem::whereNavigatableId($link->id)->whereNavigatableType(get_class($link))->get()->pluck('id');
+
+        // @TODO extend this method (meh) or add a 'deleting' listener (yay)
+        $link->delete();
+
+        MenuItem::whereIn('id', $menu_items)->delete();
+
+        return response()->json(['message' => 'Model deleted.']);
     }
 
     /**
@@ -211,52 +326,4 @@ class MenusController extends UiBaseController
 
         return;
     }
-
-    /**
-     * addLink
-     *
-     * @param      \Illuminate\Http\Request  $request  The request
-     *
-     * @return     array                     ( description_of_the_return_value )
-     */
-    public function addlink(Request $request)
-    {
-        if (!$request->has('alt')) {
-            $request['alt'] = '';
-        }
-        $link = Link::create($request->except(['children']));
-
-        $menuitem = MenuItem::fromModel($link);
-
-        $menuitem->save();
-
-        $link->children = [];
-
-        $menuitem->children = [];
-
-        return ['link' => $link, 'menuitem' => $menuitem];
-    }
-
-    /**
-     * destroy
-     *
-     * @param      \Illuminate\Http\Request  $request  The request
-     * @param      \P3in\Models\Website      $website  The website
-     * @param      \P3in\Models\Link         $link     The link
-     *
-     * @return     <type>                    ( description_of_the_return_value )
-     */
-    public function destroy(Request $request, Website $website, Link $link)
-    {
-        // @TODO move this in Link? who does housekeeping
-        $menu_items = MenuItem::whereNavigatableId($link->id)->whereNavigatableType(get_class($link))->get()->pluck('id');
-
-        // @TODO extend this method (meh) or add a 'deleting' listener (yay)
-        $link->delete();
-
-        MenuItem::whereIn('id', $menu_items)->delete();
-
-        return response()->json(['message' => 'Model deleted.']);
-    }
-
 }

@@ -8,7 +8,7 @@ Route::group([
 ], function() {
 
     Route::post('/websites/{website}/link', '\P3in\Controllers\MenusController@addLink');
-    Route::delete('/websites/{website}/link/{link}', '\P3in\Controllers\MenusController@destroy');
+    Route::delete('/websites/{website}/link/{link}', '\P3in\Controllers\MenusController@deleteLink');
     Route::resource('websites.menus', MenusController::class);
 
 });

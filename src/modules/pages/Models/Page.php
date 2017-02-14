@@ -267,6 +267,16 @@ class Page extends ModularBaseModel implements Linkable
             ->with('navitems')
             ->get();
 
+        $menus = [];
+
+        foreach($website->menus as $menu) {
+
+            $menus[$menu->name] = $menu->render();
+
+        }
+
+        $views['menus'] = $menus;
+
         $views['navmenus'] = $navmenus;
 
         $views['navmenus']['main_nav'] = $navmenus->where('name', $website->getMachineName() . '_main_nav')->first();

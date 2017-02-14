@@ -8,10 +8,13 @@
 <section id="menu-builder">
   <header class="panel-heading tab-bg-dark-navy-blue ">
     <ul class="nav nav-tabs">
-      <li class="navmenu-tab" v-for="(index, menu) in menus" :class="{active: isActive(index)}">
-        <a data-toggle="tab" class="no-link" href="#@{{ menu.name }}" @click="active(index)">
+      <li class="navmenu-tab" v-for="(menuIndex, menu) in menus" :class="{active: isActive(menuIndex)}">
+        <a data-toggle="tab" class="no-link" href="#@{{ menu.name }}" @click="active(menuIndex)">
           @{{ menu.name }}
         </a>
+      </li>
+      <li class="pull-right">
+        <a href="" @click="addMenu" class="btn btn-primary"><i class="fa fa-plus-square" style="color: #ddd"></i></a>
       </li>
     </ul>
   </header>
@@ -25,7 +28,7 @@
           id="@{{ menu.name }}"
           :class="{'active': isActive(menuIndex)}"
         >
-          <div class="row">
+          <div class="row" v-if="menu.id">
 
             <div class="col-sm-4">
               <h2>Pages
@@ -34,12 +37,16 @@
                   <a v-else @click="status.pages.collapsed = false"><i class="fa fa-plus-square"></i></a>
                 </span>
               </h2>
+
               <ul class="menu" v-if="!status.pages.collapsed">
+                <li>
+                  <input type="text" class="form-control" v-model="search" placeholder="Search page">
+                </li>
                 <li
                   class="menu__item"
-                  v-draggable-for="item in pages"
+                  v-draggable-for="item in pages | filterBy search in 'title'"
                   track-by="id"
-                  @dblclick="menu.items.push(item)"
+                  @dblclick="addItem(menuIndex, item)"
                   :options="{group: { name: 'menu', put: false, pull: 'clone' }}"
                 > @{{ item.title }} </li>
               </ul>
@@ -100,7 +107,7 @@
                   class="menu__item"
                   v-draggable-for="item in links"
                   track-by="id"
-                  @dblclick="menu.items.push(item)"
+                  @dblclick="addItem(menuIndex, item)"
                   :options="{group: { name: 'menu', put: false, pull: 'clone' }}"
                 > @{{ item.title }}
                   <span class="pull-right">
@@ -118,11 +125,28 @@
               <menu :menu="menu.items" :options="options" :deletions="menu.deletions"></menu>
 
               <div class="pull-right">
+                <button class="btn" @click="undoEdits(menuIndex)">Cancel</button>
                 <button class="btn btn-primary" @click="save(menuIndex)">Save</button>
               </div>
             </div>
 
           </div>
+
+          <div class="row" v-if="menu.id == null">
+            <form class="form-horizontal bucket-form">
+              <div class="form-group">
+                <label for="" class="col-sm-4 control-label">Name</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" v-model="menu.name">
+                </div>
+              </div>
+              <div class="pull-right">
+                <button type="button" class="btn" @click="cancelMenu(menuIndex)">Cancel</button>
+                <button class="btn btn-primary" type="submit" @click="create(menuIndex)">Create</button>
+              </div>
+            </form>
+          </div>
+
       </div>
     </div>
   </section>
@@ -140,10 +164,19 @@ var links = {!! $links !!}
 
 Vue.use(VueResource)
 
+Vue.filter('match', function (value, input) {
+  return input ? value.filter(function(item) {
+     return item.genre === input ? value : null;
+  }) : value;
+});
+
 new Vue({
   el: '#menu-builder',
   data: {
     menus: menus,
+    originals: {
+      menus: null
+    },
     pages: pages,
     links: links,
     options: {"handle": '.handle', "group": {"name": 'menu'}, "animation": 300 },
@@ -154,6 +187,9 @@ new Vue({
       active: 0,
       addingLink: false
     }
+  },
+  created: function() {
+    this.originals.menus = _.cloneDeep(this.menus, this.originals.menus)
   },
   methods: {
     save: function(index) {
@@ -172,6 +208,22 @@ new Vue({
             sweetAlert({title: 'Menu Updated', text: 'Navigation Menu updated succesfully', type: 'success', html: true, });
           }
         })
+    },
+    create: function(index) {
+      var menu = this.menus[index]
+      var payload = {
+        name: menu.name
+      }
+      this.$http.post('/websites/' + menu.website + '/menus/', payload)
+        .then(function(response) {
+          if (response.status === 200) {
+            this.menus = response.data.menus
+            this.active(index)
+          }
+        })
+    },
+    undoEdits: function(menuIndex) {
+      this.menus.$set(menuIndex, _.cloneDeep(this.originals.menus[menuIndex]))
     },
     storeLink: function(menuIndex) {
       var vm = this
@@ -193,11 +245,28 @@ new Vue({
           })
       })
     },
+    addItem: function(menuIndex, item) {
+      this.menus[menuIndex].items.push(item)
+    },
     active: function(menuIndex) {
       this.status.active = menuIndex
     },
     isActive: function(menuIndex) {
       return this.status.active === menuIndex
+    },
+    cancelMenu: function(menuIndex) {
+      this.menus.splice(menuIndex, 1)
+      this.active(this.menus.length - 1)
+    },
+    addMenu: function() {
+      this.menus.push({
+        id: null,
+        deletions: [],
+        items: [],
+        name: 'New Menu',
+        website: this.menus[0].website
+      })
+      this.active(this.menus.length - 1)
     }
   }
 })
