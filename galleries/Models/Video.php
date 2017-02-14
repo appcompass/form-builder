@@ -12,12 +12,8 @@ class Video extends GalleryItem implements GalleryItemInterface
         return 'video';
     }
 
-    public function getDefaultStorage() {
-        return $this->gallery->getStorage();
-    }
-
-    public function getBasePath() {
-        return 'videos/'.date('m-y');
+    public function apendStoragePath() {
+        return '';
     }
 
     public function afterStorage()

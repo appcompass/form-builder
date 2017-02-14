@@ -86,11 +86,8 @@ class Website extends Model
         return $this->morphOne(Photo::class, 'photoable');
     }
 
-    public function getDefaultStorage() {
-        return $this->storage;
-    }
-
-    public function getBasePath() {
+    public function apendStoragePath() {
+        // @TODO: Needs tie in with website settings with fallback of empty string.
         return '';
     }
 

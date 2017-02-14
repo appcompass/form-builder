@@ -15,7 +15,7 @@ class WebsiteMenusController extends AbstractChildController
         $this->repo = $repo;
     }
 
-    public function show($parent, $model)
+    public function show(Request $request, $parent, $model)
     {
         return [
             'id' => $model->id,
