@@ -8,6 +8,11 @@ class GalleriesModule extends BaseModule
 {
     public $module_name = 'galleries';
 
+    protected $publishes = [
+        // publishes to disk instances by name.
+        'Public/components/FormBuilder' => 'cp_form_fields',
+    ];
+
     public function __construct()
     {
         // \Log::info('Loading <Galleries> Module');

@@ -2,12 +2,15 @@
 
 namespace P3in\Seeders;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 use P3in\Builders\FormBuilder;
-use Illuminate\Database\Eloquent\Model;
-use P3in\Models\User;
-use P3in\Models\Permission;
 use P3in\Models\Form;
+use P3in\Models\Permission;
+use P3in\Models\User;
+use P3in\Seeders\GroupsTableSeeder;
+use P3in\Seeders\PermissionsSeeder;
+use P3in\Seeders\UsersTableSeeder;
 
 class UsersModuleDatabaseSeeder extends Seeder
 {
@@ -27,7 +30,7 @@ class UsersModuleDatabaseSeeder extends Seeder
 
         $this->call(GroupsTableSeeder::class);
         $this->call(PermissionsSeeder::class);
-        // $this->call(UsersTableSeeder::class);
+        $this->call(UsersTableSeeder::class);
         // $this->call(UserUiFieldsSeeder::class);
         // factory(User::class, 30)->create()->each(function ($user) {
         //     $user->permissions()->saveMany(Permission::inRandomOrder()->limit(3)->get());

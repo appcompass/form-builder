@@ -288,6 +288,10 @@ class User extends ModularBaseModel implements
         // return $this->morphOne(Photo::class, 'photoable');
     }
 
+    public static function scopeSystemUsers($query)
+    {
+        return $query->where('system', true)->orderBy('id', 'asc');
+    }
     /**
       * Add current user to a group
       */
@@ -398,26 +402,4 @@ class User extends ModularBaseModel implements
 
     // }
 
-    // temp for demo/test purpose
-    public function latestUserActivity($config)
-    {
-        $random_lib = [
-            'total_new_users_today' => 5234,
-            'total_transactions_today' => 2136234,
-            'total_sales_today' => 67234234,
-            'total_orders_today' => 423661,
-            'some_value_not_user' => 2623426234,
-        ];
-        foreach ($config as $key => $val) {
-            if (isset($random_lib[$val->value_key])) {
-                $config[$key]->value = $random_lib[$val->value_key];
-            }
-        }
-
-        return $config;
-    }
-    public function latestActivity($count)
-    {
-        return static::take($count)->get();
-    }
 }
