@@ -7,6 +7,7 @@ use Auth;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use P3in\Interfaces\GalleryItemInterface;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use P3in\Models\GalleryItem;
 use P3in\Models\User;
 use P3in\Models\Video;
@@ -109,7 +110,8 @@ class Gallery extends Model
     public function galleryItems()
     {
 
-        return $this->hasMany(GalleryItem::class);
+        return $this->hasMany(GalleryItem::class)
+          ->orderBy('order', 'desc');
 
     }
 
@@ -126,18 +128,18 @@ class Gallery extends Model
     /**
      *
      */
-    public function addVideo(Video $video)
+    public function addVideo(Video $video, $order = null)
     {
-      return $this->addItem($video);
+      return $this->addItem($video, $order);
     }
 
     /**
      *
      *
      */
-    public function addPhoto(Photo $photo)
+    public function addPhoto(Photo $photo, $order = null)
     {
-        return $this->addItem($photo);
+        return $this->addItem($photo, $order);
     }
 
     /**
@@ -168,13 +170,27 @@ class Gallery extends Model
 
             foreach($items as $item) {
 
-                $acc[get_class($item)][] = $item->id;
+              try {
+
+                $start = GalleryItem::whereItemableType(get_class($item))
+                  ->whereGalleryId($this->id)
+                  ->orderBy('order', 'desc')
+                  ->firstOrFail()
+                  ->order + 1;
+
+              } catch (ModelNotFoundException $e) {
+
+                $start = 1;
+
+              }
+
+              $acc[get_class($item)][] = $item->id;
 
             }
 
             foreach($acc as $class => $items) {
 
-                return call_user_func_array([$this, $syncMap[$class]], [collect($items)]);
+                return call_user_func_array([$this, $syncMap[$class]], [collect($items), $start]);
 
             }
 
@@ -182,7 +198,7 @@ class Gallery extends Model
 
     }
 
-    public function syncPhotos(Collection $photos)
+    public function syncPhotos(Collection $photos, $start = null)
     {
         $owned = $this->photos->pluck('id');
 
@@ -196,13 +212,13 @@ class Gallery extends Model
 
         foreach(Photo::whereIn('id', $add)->get() as $photo) {
 
-            $this->addPhoto($photo);
+            $this->addPhoto($photo, $start++);
 
         }
 
     }
 
-    public function syncVideos(Collection $videos)
+    public function syncVideos(Collection $videos, $start = null)
     {
         // currently owned
         $owned = $this->videos->pluck('id');
@@ -220,7 +236,7 @@ class Gallery extends Model
 
         foreach(Video::whereIn('id', $add)->get() as $video) {
 
-            $this->addVideo($video);
+            $this->addVideo($video, $start);
 
         }
 
@@ -228,17 +244,20 @@ class Gallery extends Model
 
 
     /**
+     *  addItem
      *
-     *
+     *  Adds an item to this gallery
      */
-    private function addItem(GalleryItemInterface $item)
+    private function addItem(GalleryItemInterface $item, $order = 1)
     {
-        return GalleryItem::firstOrCreate([
-            'gallery_id' => $this->id,
-            'itemable_type' => get_class($item),
-            'itemable_id' => $item->id,
-            'order' => 0,
-        ]);
+
+      return GalleryItem::firstOrCreate([
+          'gallery_id' => $this->id,
+          'itemable_type' => get_class($item),
+          'itemable_id' => $item->id,
+          'order' => $order
+      ]);
+
     }
 
     public function scopeOf($query, $class_name)

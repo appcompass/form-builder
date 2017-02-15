@@ -2,15 +2,17 @@
 
 namespace P3in\Modules\Providers;
 
+use Chumper\Zipper\Zipper;
+use Chumper\Zipper\ZipperServiceProvider;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Foundation\AliasLoader;
-use P3in\Providers\BaseServiceProvider as ServiceProvider;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Config;
 use Intervention\Image\Facades\Image;
 use Intervention\Image\ImageServiceProvider;
 use P3in\Models\Photo;
 use P3in\Policies\PhotosPolicy;
+use P3in\Providers\BaseServiceProvider as ServiceProvider;
 
 class PhotosServiceProvider extends ServiceProvider
 {
@@ -56,10 +58,12 @@ class PhotosServiceProvider extends ServiceProvider
     public function loadIntervention()
     {
         $this->app->register(ImageServiceProvider::class);
+        $this->app->register(ZipperServiceProvider::class);
 
         $loader = AliasLoader::getInstance();
 
         $loader->alias('Image', Image::class);
+        $loader->alias('Zipper', Zipper::class);
 
         Config::set(['image' => ['driver' => 'imagick']]);
     }

@@ -100,7 +100,6 @@ class PagesController extends Controller
         Mail::send('mail.form-submission', $formData, function($message) use($from, $to, $request, $website) {
             $message->from($from)
                 ->to($to)
-                ->bcc('support@p3in.com')
                 ->subject('New '.$request->get('form_name').' from '.$website->site_name);
 
             foreach($request->file() as $field_name => $file) {

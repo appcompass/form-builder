@@ -303,10 +303,11 @@ class User extends ModularBaseModel implements AuthenticatableContract, CanReset
      *  Get/Set user's Avatar
      *
      */
-    public function avatar(Photo $photo = null)
+    public function avatar(Photo $photo = null, $size = 48)
     {
-
-        return "//www.gravatar.com/avatar/" . md5($this->email) . "?d=identicon&s=48";
+        if (is_null($photo)) {
+            return "//www.gravatar.com/avatar/" . md5($this->email) . "?d=identicon&s={$size}";
+        }
 
         // if (! Modular::isDef('photos')) {
 

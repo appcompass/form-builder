@@ -5,6 +5,7 @@ namespace P3in\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 use Image;
 use P3in\Interfaces\GalleryItemInterface;
 use P3in\Models\User as User;
@@ -59,7 +60,7 @@ class Photo extends ModularBaseModel implements GalleryItemInterface
     /**
     * With
     */
-    protected $with = ['options'];
+    protected $with = [];
 
     protected $casts = [
         'meta' => 'object'
@@ -354,6 +355,16 @@ class Photo extends ModularBaseModel implements GalleryItemInterface
         }
 
         return $this->attributes['path'];
+
+    }
+
+    public function getLocalPathAttribute()
+    {
+        $disk = Storage::disk($this->storage);
+        if ($disk) {
+            $base_path = $disk->getAdapter()->getPathPrefix();
+            return $base_path.$this->photoable->getLocalPhotoPath().$this->attributes['path'];
+        }
 
     }
 

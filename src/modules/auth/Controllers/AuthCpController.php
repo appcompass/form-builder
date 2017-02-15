@@ -24,7 +24,7 @@ class AuthCpController extends UiBaseController
      */
     public function __construct()
     {
-        // $this->middleware('guest', ['except' => ['getLogout', 'getLockScreen']]);
+        $this->middleware('guest', ['except' => ['getLogout', 'getLockScreen']]);
     }
 
     //-----------------------------------------------------------------------

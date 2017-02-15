@@ -38,7 +38,7 @@ trait HasGallery
 
         $rel = $this->morphOne(Gallery::class, 'galleryable');
 
-        if ($this->forceCreateGallery && !$rel->get()->count()) {
+        if ($this->forceCreateGallery && $this->id && !$rel->get()->count()) {
 
             $this->getOrCreateGallery($this->getGalleryName());
 

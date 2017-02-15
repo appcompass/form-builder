@@ -207,7 +207,7 @@
 @endif
 
 @if(empty($repeatable))
-{!! Form::submit('Save', ["class" => "btn btn-info"]) !!}
+{!! Form::submit('Save', ["class" => "btn btn-primary"]) !!}
 
 <script>
     (function mediaSelector(w) {

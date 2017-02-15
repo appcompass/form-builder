@@ -13,6 +13,7 @@ use P3in\Models\Navmenu;
 use P3in\Models\User;
 use P3in\Models\Website;
 use P3in\Modules\UiModule;
+use P3in\Profiles\Profile;
 
 class UiController extends UiBaseController {
 
@@ -21,6 +22,14 @@ class UiController extends UiBaseController {
             'data_targets' => [
                 [
                     'route' => 'dashboard',
+                    'target' => '#main-content-out',
+                ]
+            ],
+        ],
+        'getUserProfile' => [
+            'data_targets' => [
+                [
+                    'route' => 'user-profile',
                     'target' => '#main-content-out',
                 ]
             ],
@@ -69,12 +78,58 @@ class UiController extends UiBaseController {
 
     public function getUserAvatar($size = 56)
     {
-        return \Auth::user()->avatar();
+        return \Auth::user()->avatar(null, $size);
     }
 
     public function getUserNav()
     {
         return view('ui::sections.user-menu');
+    }
+
+    public function getUserProfile()
+    {
+        $user = Auth::user();
+        // $user = User::find(4);
+        $data = Profile::getUserProfiles($user);
+        return view('ui::sections.user-profile', ['data' => $data]);
+    }
+
+    public function updateUserProfile(Request $request)
+    {
+        $data = $request->except('_method','_token');
+        if (!empty($data['profile_type'])) {
+            $user = Auth::user();
+            switch ($data['profile_type']) {
+                case 'default':
+                    //@TODO: validation rules here.
+                    $user->first_name = $data['first_name'];
+                    $user->last_name = $data['last_name'];
+                    $user->phone = $data['phone'];
+                    $user->email = $data['email'];
+                    // confirm_password
+                    if ($data['password']) {
+                        $user->password = $data['password'];
+                    }
+                    $user->save();
+                break;
+                default:
+                    //@TODO: validation rules determined by the profile model here.
+
+                    $profile = $user->{$data['profile_type']};
+
+                    if ($profile) {
+                        unset($data['profile_type']);
+                        foreach ($data as $key => $val) {
+                            $profile->{$key} = $val;
+                        }
+
+                        $profile->save();
+                    }
+
+                break;
+            }
+        }
+        return $this->json('/user-profile');
     }
 
     public function postRequestMeta(Request $request)

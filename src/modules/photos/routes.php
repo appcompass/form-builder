@@ -7,5 +7,7 @@ Route::group([
 
     Route::resource('photos', 'CpPhotosController');
     Route::resource('galleries.photos', 'CpGalleryPhotosController');
+    Route::get('download-gallery-photos/{galleries}', 'CpGalleryPhotosController@downloadPhotos');
+    Route::get('download-gallery-source-photos/{galleries}', 'CpGalleryPhotosController@downloadSourcePhotos');
 
 });

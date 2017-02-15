@@ -32,8 +32,8 @@ class CpWebsitePagesController extends UiBaseController
             'table' => [
                 'headers' => [
                     'Title',
-                    'Name',
-                    'Slug',
+                    'Parent',
+                    'Url',
                     'Created',
                     'Updated',
                     'Actions',
@@ -43,11 +43,10 @@ class CpWebsitePagesController extends UiBaseController
                         'type' => 'link_by_id',
                         'target' => '#main-content-out',
                     ],
-                    'name' => [
-                        'type' => 'link_by_id',
-                        'target' => '#main-content-out',
+                    'parent_title' => [
+                        'type' => 'text',
                     ],
-                    'slug' => [
+                    'url' => [
                         'type' => 'text',
                     ],
                     'created_at' => [
@@ -342,14 +341,15 @@ class CpWebsitePagesController extends UiBaseController
 
         }
 
-        $pages->url = $pages->getUrl();
-
-        if ($pages->navItem) {
-            $pages->navItem->url = $pages->url;
-            $pages->navItem->save();
-        }
+        // if ($pages->navItem) {
+        //     $pages->navItem->url = $pages->url;
+        //     $pages->navItem->save();
+        // }
 
         $pages->update($request->except(['settings', 'parent']));
+
+        $pages->url = $pages->getUrl();
+        $pages->save();
 
         return $this->json($this->setBaseUrl(['websites', $websites->id, 'pages', $pages->id, 'edit']));
     }
