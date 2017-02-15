@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use P3in\Builders\FormBuilder;
 use P3in\Builders\WebsiteBuilder;
 use P3in\Models\FieldSource;
+use P3in\Models\Section;
 
 class WebsitesModuleDatabaseSeeder extends Seeder
 {
@@ -77,11 +78,41 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 ->validation(['required'])
                 ->sortable()
                 ->searchable();
-            $builder->string('Url', 'url')
+
+            $builder->select('Scheme', 'scheme')
+                ->list()
+                ->validation(['required'])
+                ->sortable()
+                ->searchable()
+                ->dynamic([
+                    'http' => 'http',
+                    'https' => 'https',
+                ]);
+
+            $builder->string('Host', 'host')
                 ->list()
                 ->validation(['required'])
                 ->sortable()
                 ->searchable();
+
+            $builder->fieldset('Configuration', 'config', function(FormBuilder $confBuilder){
+                $confBuilder->select('Header', 'header')
+                ->dynamic(Section::class, function(FieldSource $source) {
+                    $source->where('type', 'header');
+                });
+
+                $confBuilder->select('Footer', 'footer')
+                ->dynamic(Section::class, function(FieldSource $source) {
+                    $source->where('type', 'footer');
+                });
+
+                $confBuilder->codeeditor('Layouts', 'layouts')->keyedRepeatable();
+
+                $confBuilder->fieldset('Deployment', 'deployment', function (FormBuilder $depBuilder) {
+                    $depBuilder->string('Publish From Path', 'publish_from')
+                        ->validation(['required']);
+                });
+            });
         })->linkToResources(['websites.index', 'websites.show', 'websites.create'])
         ->getForm();
 
