@@ -15,6 +15,7 @@ class MenuItem extends Model
         'alt',
         'new_tab',
         'order',
+        'clickable',
         'req_perms'
     ];
 

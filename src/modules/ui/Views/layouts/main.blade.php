@@ -125,7 +125,6 @@
                 </ul>
             </li>
         </ul>
-        @{{ items | json }}
     </template>
 
     @section('scripts.footer')

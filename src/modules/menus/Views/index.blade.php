@@ -9,8 +9,13 @@
   <header class="panel-heading tab-bg-dark-navy-blue ">
     <ul class="nav nav-tabs">
       <li class="navmenu-tab" v-for="(menuIndex, menu) in menus" :class="{active: isActive(menuIndex)}">
-        <a data-toggle="tab" class="no-link" href="#@{{ menu.name }}" @click="active(menuIndex)">
-          @{{ menu.name }}
+        <a
+          data-toggle="tab"
+          class="no-link"
+          href="#@{{ menu.name }}"
+          @click="active(menuIndex)"
+        >@{{ menu.name }}
+          <span v-if="menu.id != null" class="menu__delete" @click="deleteMenu(menuIndex)"><i class="fa fa-times-circle"></i></span>
         </a>
       </li>
       <li class="pull-right">
@@ -28,6 +33,7 @@
           id="@{{ menu.name }}"
           :class="{'active': isActive(menuIndex)}"
         >
+          {{-- if menu.id exists the menu has been stored and we're editing it  --}}
           <div class="row" v-if="menu.id">
 
             <div class="col-sm-4">
@@ -97,7 +103,7 @@
                 </div>
                 <div class="footer">
                   <div class="pull-right">
-                    <button class="btn btn-primary" @click="storeLink(menuIndex)">Store</button>
+                    <button type="button" class="btn btn-primary" @click="storeLink(menuIndex)">Store</button>
                   </div>
                 </div>
               </form>
@@ -122,7 +128,7 @@
 
             <div class="col-sm-8">
               <h2>Menu: @{{ menu.name }}</h2>
-              <menu :menu="menu.items" :options="options" :deletions="menu.deletions"></menu>
+              <menu :menu="menu" :options="options"></menu>
 
               <div class="pull-right">
                 <button class="btn" @click="undoEdits(menuIndex)">Cancel</button>
@@ -180,7 +186,7 @@ new Vue({
     pages: pages,
     links: links,
     options: {"handle": '.handle', "group": {"name": 'menu'}, "animation": 300 },
-    link: {title: null, url: null, new_tab: null, clickable: null, content: null },
+    link: {title: null, url: null, new_tab: false, clickable: true, content: null },
     status: {
       links: {collapsed: false },
       pages: {collapsed: false },
@@ -190,6 +196,13 @@ new Vue({
   },
   created: function() {
     this.originals.menus = _.cloneDeep(this.menus, this.originals.menus)
+  },
+  events: {
+    unlink: function(menuIndex, itemIndex) {
+
+      console.log(menuIndex, itemIndex)
+      // this.menus[menuIndex].deletions.push(itemIndex)
+    }
   },
   methods: {
     save: function(index) {
@@ -203,6 +216,7 @@ new Vue({
       }
       this.$http.put('/websites/' + menu.website + '/menus/' + menu.id, payload)
         .then(function(response) {
+          console.log(response.data)
           if (response.status === 200) {
             this.menus = response.data
             sweetAlert({title: 'Menu Updated', text: 'Navigation Menu updated succesfully', type: 'success', html: true, });
@@ -237,7 +251,7 @@ new Vue({
     },
     deleteLink: function(link) {
       var vm = this
-      // @TODO links are not website specific
+      // @NOTE links are not website specific
       sweetAlert({title: 'Remove Item', text: 'Are you sure you want to delete from the current Menu?', type: 'warning', showCancelButton: true }, function() {
         vm.$http.delete('/websites/' + vm.menus[0].website + '/link/' + link.id)
           .then(function(response) {
@@ -267,6 +281,26 @@ new Vue({
         website: this.menus[0].website
       })
       this.active(this.menus.length - 1)
+    },
+    deleteMenu: function(menuIndex) {
+      var vm = this
+      sweetAlert({
+        title: 'Delete Menu',
+        text: 'Are you sure you want to delete from the current Menu? Deletion is permanent.',
+        type: 'warning',
+        showCancelButton: true }
+        , function() {
+          var menu = vm.menus[menuIndex]
+          vm.$http.delete('/websites/' + menu.website + '/menus/' + menu.id)
+            .then(function(response) {
+              if (response.status === 200) {
+                sweetAlert({title: 'Menu Deleted', text: 'Navigation Menu succesfully deleted.', type: 'success', html: true, });
+                this.menus.splice(menuIndex, 1)
+              }
+            }).catch(function() {
+              sweetAlert({title: 'Error', text: 'There was an error deleting the Menu.', type: 'error', html: true, });
+            })
+        })
     }
   }
 })
@@ -275,5 +309,15 @@ new Vue({
 <style>
 .sources .item--empty {
   display: none !important;
+}
+.navmenu-tab .menu__delete {
+  display: none;
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  background: transparent !important;
+}
+.navmenu-tab:hover .menu__delete {
+  display: block;
 }
 </style>

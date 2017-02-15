@@ -136,14 +136,14 @@ class MenusController extends UiBaseController
      *
      * @return     <type>                    ( description_of_the_return_value )
      */
-    public function destroy(Request $request, Website $website, Menu $menu)
+    public function destroy(Request $request, Website $website, Menu $menus)
     {
-        if ($website->menus->find($menu->id)->delete()) {
+
+        if ($website->menus->find($menus->id)->delete()) {
 
             return response()->json(['message' => 'Menu Deleted']);
 
         }
-
     }
 
     /**

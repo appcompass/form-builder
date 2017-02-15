@@ -4,7 +4,7 @@
   <ul class="menu">
     <li
       class="menu__item"
-      v-draggable-for="(index, item) in menu"
+      v-draggable-for="(index, item) in menu.items"
       track-by="id"
       :options="options"
     >
@@ -57,9 +57,9 @@
 
       </form>
 
-      <menu v-if="!item.collapsed" :menu="item.children" :options="options"></menu>
+      <menu v-if="!item.collapsed" :menu="{items: item.children, id: menu.id, deletions: menu.deletions}" :options="options"></menu>
     </li>
-    <li v-if="menu.length === 0" class="item--empty"></li>
+    <li v-if="menu.items.length === 0" class="item--empty"></li>
   </ul>
 </template>
 
@@ -68,20 +68,20 @@ Vue.config.debug = false
 
 Vue.component('menu', {
   template: '#menu',
-  props: ['menu', 'options', 'deletions'],
+  props: ['menu', 'options'],
   methods: {
     unlink: function(index) {
-      if (this.menu[index].navigatable_type) {
-        this.deletions.push(this.menu.splice(index, 1)[0].id)
-        return
+      // @NOTE only delete items with 'navigatable_type' set, housekeeping
+      if (this.menu.items[index].navigatable_type) {
+        this.menu.deletions.push(this.menu.items[index].id)
       }
-      this.menu.splice(index, 1)
+      this.menu.items.splice(index, 1)
     },
     editItem: function(index, value) {
-      this.$set('menu[' + index + '].edit', value)
+      this.$set('menu.items[' + index + '].edit', value)
     },
     collapse: function(index, value) {
-      this.$set('menu[' + index + '].collapsed', value)
+      this.$set('menu.items[' + index + '].collapsed', value)
     }
   }
 })
