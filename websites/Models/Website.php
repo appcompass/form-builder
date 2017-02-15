@@ -2,19 +2,20 @@
 
 namespace P3in\Models;
 
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use P3in\Models\Page;
 use P3in\Models\Redirect;
 use P3in\Traits\HasGallery;
+use P3in\Traits\HasJsonConfigFieldTrait;
 use P3in\Traits\HasPermissions;
 use P3in\Traits\SettingsTrait;
-use Exception;
 
 class Website extends Model
 {
-    use SettingsTrait, HasGallery, HasPermissions, SoftDeletes;
+    use SettingsTrait, HasGallery, HasPermissions, SoftDeletes, HasJsonConfigFieldTrait;
 
     protected $fillable = [
         'name',
@@ -36,6 +37,16 @@ class Website extends Model
      */
     public $appends = ['url'];
 
+    public function getAsFirstLevelConfig()
+    {
+        return [
+            'header',
+            'footer',
+            'deployment',
+            'meta',
+            'layouts',
+        ];
+    }
     /**
      * Pages
      *
@@ -113,12 +124,6 @@ class Website extends Model
     public function getUrlAttribute()
     {
         return $this->attributes['scheme'].'://'.$this->attributes['host'];
-    }
-
-    public function setConfig($key, $val)
-    {
-        $this->update(['config->'.$key => $val]);
-        return $this;
     }
 
     // @TODO refactor big time all following methods.

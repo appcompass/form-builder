@@ -14,9 +14,15 @@ class GalleriesModuleDatabaseSeeder extends Seeder
 
         \DB::statement("DELETE FROM forms WHERE name = 'galleries'");
         FormBuilder::new('galleries', function (FormBuilder $builder) {
-            $builder->string('Gallery Name', 'name')->list()->required()->sortable()->searchable();
+            $builder->string('Gallery Name', 'name')
+                ->list()
+                ->validation(['required'])
+                ->sortable()
+                ->searchable();
 
-            $builder->string('Owner', 'user.email')->list()->edit(false);
+            $builder->string('Owner', 'user.email')
+                ->list()
+                ->edit(false);
         })->linkToResources(['galleries.index', 'galleries.show', 'galleries.create']);
     }
 }

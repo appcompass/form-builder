@@ -277,10 +277,11 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             'BlockText',
         ])->delete();
 
-        DB::table('field_sources')->whereIn('linked_type', [
-            'P3in\Models\Types\DynamicType', //@TODO: we shouldn't be clearing this here like this, need to be more specific
-            'P3in\Models\PageSectionContent',
-        ])->delete();
+
+        // $form = FormBuilder::edit('websites', function (FormBuilder $builder) {
+        //     $builder->string('Website Name', 'name')->list()->required()->sortable()->searchable();
+        //     $builder->string('Url', 'url')->list()->required()->sortable()->searchable();
+        // });
 
         $website = WebsiteBuilder::new('Plus 3 Interactive, LLC', 'https', 'www.plus3interactive.com', function ($wsb) {
             $site = $wsb->getWebsite();
@@ -1567,15 +1568,15 @@ We collect this information for the purpose of providing the Service, identifyin
             // lets compile all the page templates
             // Note that we always want to do this last to account for any pages
             // that have children as they get generated a bit differently than normal pages.
-            $homepage->compilePageTemplate('public');
-            $solutions->compilePageTemplate('public');
-            $process->compilePageTemplate('public');
-            $projects->compilePageTemplate('public');
-            $company->compilePageTemplate('public');
-            $contact->compilePageTemplate('public');
-            $login->compilePageTemplate('public');
-            $terms_of_service->compilePageTemplate('public');
-            $privacy_policy->compilePageTemplate('public');
+            // $homepage->compilePageTemplate('public');
+            // $solutions->compilePageTemplate('public');
+            // $process->compilePageTemplate('public');
+            // $projects->compilePageTemplate('public');
+            // $company->compilePageTemplate('public');
+            // $contact->compilePageTemplate('public');
+            // $login->compilePageTemplate('public');
+            // $terms_of_service->compilePageTemplate('public');
+            // $privacy_policy->compilePageTemplate('public');
 
 
             // Create the nav menus and add the items.
@@ -1601,7 +1602,7 @@ We collect this information for the purpose of providing the Service, identifyin
             $main_footer_menu->addItem($terms_of_service, 7);
             $main_footer_menu->addItem($privacy_policy, 8);
 
-            $wsb->deploy();
+            // $wsb->deploy();
         })->getWebsite();
 
     }
