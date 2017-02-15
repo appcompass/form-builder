@@ -4,7 +4,6 @@ namespace P3in\Models;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model;
-use P3in\Traits\HasDynamicContent;
 use P3in\Traits\HasJsonConfigFieldTrait;
 use P3in\Models\Page;
 use P3in\Models\Section;

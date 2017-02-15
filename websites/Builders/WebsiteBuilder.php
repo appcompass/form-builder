@@ -231,24 +231,13 @@ class WebsiteBuilder
     // breaking this up a bit would prob be a good idea.
     public function deploy()
     {
-        if (empty($this->website->deployment)) {
+        if (!$depConfig = $this->website->deployment) {
             throw new Exception('The website does not have deployment settings configured');
         }
 
-        $depConfig = $this->website->deployment;
         $disk = $this->website->storage->getDisk();
 
         $manager = new PublishFiles('stubs', realpath(__DIR__.'/../Templates/stubs'));
-
-        // // @TODO: not sure that we should do this like this, this dir is supposed to be read only.
-        // Storage::where('name', 'stubs')->delete();
-        // Storage::create([
-        //     'name' => 'stubs',
-        //     'config' => [
-        //         'driver' => 'local',
-        //         'root' => realpath(__DIR__.'/../../Templates/stubs'),
-        //     ],
-        // ]);
 
         if (!empty($depConfig->publish_from)) {
             $manager

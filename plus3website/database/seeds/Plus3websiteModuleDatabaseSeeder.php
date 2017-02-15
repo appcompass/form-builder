@@ -1352,15 +1352,15 @@ We collect this information for the purpose of providing the Service, identifyin
             // lets compile all the page templates
             // Note that we always want to do this last to account for any pages
             // that have children as they get generated a bit differently than normal pages.
-            // $homepage->compilePageTemplate('public');
-            // $solutions->compilePageTemplate('public');
-            // $process->compilePageTemplate('public');
-            // $projects->compilePageTemplate('public');
-            // $company->compilePageTemplate('public');
-            // $contact->compilePageTemplate('public');
-            // $login->compilePageTemplate('public');
-            // $terms_of_service->compilePageTemplate('public');
-            // $privacy_policy->compilePageTemplate('public');
+            $homepage->compilePageTemplate('public');
+            $solutions->compilePageTemplate('public');
+            $process->compilePageTemplate('public');
+            $projects->compilePageTemplate('public');
+            $company->compilePageTemplate('public');
+            $contact->compilePageTemplate('public');
+            $login->compilePageTemplate('public');
+            $terms_of_service->compilePageTemplate('public');
+            $privacy_policy->compilePageTemplate('public');
 
 
             // Create the nav menus and add the items.
@@ -1386,7 +1386,7 @@ We collect this information for the purpose of providing the Service, identifyin
             $main_footer_menu->addItem($terms_of_service, 7);
             $main_footer_menu->addItem($privacy_policy, 8);
 
-            // $wsb->deploy();
+            $wsb->deploy();
         })->getWebsite();
 
     }
