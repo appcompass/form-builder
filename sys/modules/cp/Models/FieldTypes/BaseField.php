@@ -1,6 +1,6 @@
 <?php
 
-namespace P3in\Models\Types;
+namespace P3in\Models\FieldTypes;
 
 use P3in\Models\Field;
 use P3in\Models\Form;

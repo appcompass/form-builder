@@ -4,7 +4,7 @@ namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use P3in\Models\Storage;
-use P3in\Models\Types\BaseField;
+use P3in\Models\FieldTypes\BaseField;
 
 class Fieldtype extends Model
 {

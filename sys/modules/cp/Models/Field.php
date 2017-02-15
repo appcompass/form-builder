@@ -167,6 +167,14 @@ class Field extends Model
         return $this;
     }
 
+    // This is a repeatable field that you must specify the key for each item.
+    // i.e. an associative array rather than indexed one.
+    public function keyedRepeatable($keyedRepeatable = true)
+    {
+        $this->setConfig('keyed_repeatable', $keyedRepeatable);
+
+        return $this;
+    }
     /**
      *  Sortable
      */

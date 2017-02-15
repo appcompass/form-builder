@@ -8,6 +8,11 @@ class WebsitesModule extends BaseModule
 {
     public $module_name = 'websites';
 
+    protected $publishes = [
+        // publishes to disk instances by name.
+        'Models/FieldTypes/templates/' => 'cp_form_fields',
+    ];
+
     public function __construct()
     {
         // \Log::info('Loading <Websites> Module');
