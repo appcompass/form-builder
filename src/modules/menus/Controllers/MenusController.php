@@ -141,9 +141,13 @@ class MenusController extends UiBaseController
 
         if ($website->menus->find($menus->id)->delete()) {
 
-            return response()->json(['message' => 'Menu Deleted']);
+            return $this->prepareData($website);
+
+            // return response()->json(['message' => 'Menu Deleted']);
 
         }
+
+        throw new \Exception('Deletion failed');
     }
 
     /**
@@ -225,7 +229,7 @@ class MenusController extends UiBaseController
 
         MenuItem::whereIn('id', $menu_items)->delete();
 
-        return response()->json(['message' => 'Model deleted.']);
+        return $this->prepareData($website);
     }
 
     /**

@@ -15,6 +15,7 @@ class MenuItem extends Model
         'alt',
         'new_tab',
         'order',
+        'content',
         'clickable',
         'req_perms'
     ];
@@ -24,7 +25,7 @@ class MenuItem extends Model
     ];
 
     public $appends = [
-        'content', // get content through the Link if available
+        // 'content', // get content through the Link if available
         'url',  // make sure we fetch the url from the linked element
         'type' // [Page|Link] for now, but the type in general
     ];
@@ -102,14 +103,14 @@ class MenuItem extends Model
      *
      * @return     <type>  The content attribute.
      */
-    public function getContentAttribute()
-    {
-        if (get_class($this->navigatable) === Link::class) {
-            return $this->navigatable->content;
-        }
+    // public function getContentAttribute()
+    // {
+    //     if (get_class($this->navigatable) === Link::class) {
+    //         return $this->navigatable->content;
+    //     }
 
-        return null;
-    }
+    //     return null;
+    // }
 
     /**
      * Gets the type attribute.

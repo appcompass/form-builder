@@ -11,9 +11,9 @@
       <i class="handle fa fa-arrows"></i>
       @{{ item.title }}
 
-      <div class="pull-right" style="color: #fff">
-        <a href v-if="item.children.length && !item.collapsed" @click="collapse(index, true)"><i class="fa fa-minus-square"></i></a>
-        <a href v-if="item.collapsed" @click="collapse(index, false)"><i class="fa fa-plus-square"></i></a>
+      <div class="item-options pull-right" style="color: #fff">
+        <a href v-if="item.children.length && !item.collapsed" @click="collapse(index, true)"><i class="fa fa-minus-square-o"></i></a>
+        <a href v-if="item.collapsed" @click="collapse(index, false)"><i class="fa fa-plus-square-o"></i></a>
         <a href v-if="!item.edit" @click="editItem(index, true)"><i class="fa fa-pencil-square-o"></i></a>
         <a href v-if="item.edit === true" @click="editItem(index, false)"><i class="fa fa-chevron-up"></i></a>
         <a href @click="unlink(index)"><i class="fa fa-trash-o"></i></a>
@@ -30,6 +30,12 @@
           <label for="" class="col-sm-4 control-label">Alt</label>
           <div class="col-sm-8">
             <input type="text" class="form-control" v-model="item.alt">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="" class="col-sm-4 control-label">Url</label>
+          <div class="col-sm-8">
+            <input type="text" class="form-control" v-model="item.url">
           </div>
         </div>
         <div class="form-group">
@@ -52,6 +58,12 @@
                 Clickable
               </label>
             </div>
+          </div>
+        </div>
+        <div class="form-group" v-if="item.type === 'Link'">
+          <label for="" class="col-sm-4 control-label">Content</label>
+          <div class="col-sm-8">
+            <textarea class="form-control" id="" cols="30" rows="10" v-model="item.content"></textarea>
           </div>
         </div>
 
@@ -98,6 +110,9 @@ ul.menu {
 .menu__item > ul.menu {
   margin-top: 1rem;
 }
+.menu__item .handle {
+  margin-right: 10px;
+}
 .menu > .menu__item {
   background: #eee;
   border: 1px solid #fff;
@@ -108,6 +123,12 @@ ul.menu {
   display: inline-block;
   min-height: 2rem;
   width: 100%;
-  border-bottom: 1px solid thistle;
+  border-bottom: 1px solid #333;
+}
+.item-options a {
+  margin-left: 10px;
+}
+.item-options a:hover {
+  color: #1FB5AD;
 }
 </style>

@@ -57,9 +57,9 @@
                 > @{{ item.title }} </li>
               </ul>
 
-              <h2>Links
+              <h2>Widgets
                 <span class="pull-right">
-                  <a class="btn btn-xs btn-warning" v-if="!status.addingLink" @click="status.addingLink = true">Add Link</a>
+                  <a class="btn btn-xs btn-warning" v-if="!status.addingLink" @click="status.addingLink = true">Add</a>
                   <a class="btn btn-xs" v-if="status.addingLink" @click="status.addingLink = false">Cancel</a>
                   <a v-if="!status.links.collapsed" @click="status.links.collapsed = true"><i class="fa fa-minus-square"></i></a>
                   <a v-if="status.links.collapsed" @click="status.links.collapsed = false"><i class="fa fa-plus-square"></i></a>
@@ -197,13 +197,6 @@ new Vue({
   created: function() {
     this.originals.menus = _.cloneDeep(this.menus, this.originals.menus)
   },
-  events: {
-    unlink: function(menuIndex, itemIndex) {
-
-      console.log(menuIndex, itemIndex)
-      // this.menus[menuIndex].deletions.push(itemIndex)
-    }
-  },
   methods: {
     save: function(index) {
       var menu = this.menus[index]
@@ -245,7 +238,7 @@ new Vue({
       vm.$http.post('/websites/' + menu.website + '/link', vm.link)
         .then(function(response) {
           vm.menus[menuIndex].items.push(response.data.menuitem)
-          vm.links.push(response.data.menuitem)
+          vm.links.push(response.data.link)
           vm.status.addingLink = false
         })
     },
@@ -256,11 +249,13 @@ new Vue({
         vm.$http.delete('/websites/' + vm.menus[0].website + '/link/' + link.id)
           .then(function(response) {
             vm.links.$remove(link)
+            this.menus = response.data.menus
           })
       })
     },
     addItem: function(menuIndex, item) {
-      this.menus[menuIndex].items.push(item)
+      var clone = _.cloneDeep(item, {})
+      this.menus[menuIndex].items.push(clone)
     },
     active: function(menuIndex) {
       this.status.active = menuIndex
@@ -273,12 +268,13 @@ new Vue({
       this.active(this.menus.length - 1)
     },
     addMenu: function() {
+      // @NOTE kinda wonky but pretty secure. website HAS to have at least 1 page
       this.menus.push({
         id: null,
         deletions: [],
         items: [],
         name: 'New Menu',
-        website: this.menus[0].website
+        website: this.pages[0].website_id
       })
       this.active(this.menus.length - 1)
     },
