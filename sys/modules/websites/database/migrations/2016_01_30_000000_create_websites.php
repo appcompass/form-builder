@@ -15,6 +15,10 @@ class CreateWebsites extends Migration
     {
         Schema::create('websites', function (Blueprint $table) {
             $table->increments('id');
+
+            $table->integer('storage_id')->nullable();
+            $table->foreign('storage_id')->references('id')->on('storages');
+
             $table->string('name', 64);
             $table->string('scheme', 64);
             $table->string('host', 128)->unique();

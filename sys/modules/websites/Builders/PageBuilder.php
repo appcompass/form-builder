@@ -22,17 +22,11 @@ class PageBuilder
     private $template = [];
     private $imports = [];
     private $exports = [];
-    private $manager;
 
     public function __construct(Page $page = null)
     {
         if (!is_null($page)) {
             $this->page = $page;
-            // set the destination path for all website pages.
-            $siteDir = strtolower(str_slug($page->website->host));
-            $fullPath = realpath(App::make('path.websites')).'/'.$siteDir.'/pages';
-
-            $this->manager = new PublishFiles('dest', $fullPath);
         }
     }
 
@@ -293,10 +287,15 @@ class PageBuilder
     /**
      * Exports Page Template
      */
-    // @TODO: the use of $this->manager has been abstracted to the PublishFiles class, which will eventually become part of the Deploy family.
+    // @TODO: refactorrrr needs to be abstracted.
     public function compilePageTemplate($layout)
     {
         $page = $this->page;
+
+        $disk = $page->website->storage->getDisk();
+
+        $manager = new PublishFiles('stubs', realpath(__DIR__.'/../Templates/stubs'));
+
         $name = $page->url == '/' ? '/index' : $page->url;
 
         // //@TODO: On delete or parent change of a page (we use the url as the unique name for a page),
@@ -307,7 +306,7 @@ class PageBuilder
 
             $parent_template = static::buildTemplate($layout, $sections);
 
-            $this->manager->publishFile('dest', $name.'.vue', $parent_template, true);
+            $manager->publishFile($disk, "/pages{$name}.vue", $parent_template, true);
             $name = $name.'/index';
         }
         $pageStructure = $page->buildContentTree();
@@ -317,6 +316,6 @@ class PageBuilder
         // handling child page structures.
         $contents = static::buildTemplate($layout, $this->template, $this->imports);
 
-        $this->manager->publishFile('dest', $name.'.vue', $contents, true);
+        $manager->publishFile($disk, "/pages{$name}.vue", $contents, true);
     }
 }

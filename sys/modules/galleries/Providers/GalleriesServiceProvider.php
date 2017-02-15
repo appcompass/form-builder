@@ -3,8 +3,12 @@
 namespace P3in\Providers;
 
 use Illuminate\Contracts\Auth\Access\Gate;
+use Illuminate\Foundation\AliasLoader;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Intervention\Image\Facades\Image;
+use Intervention\Image\ImageServiceProvider;
 use P3in\Interfaces\GalleriesRepositoryInterface;
 use P3in\Interfaces\GalleryPhotosRepositoryInterface;
 use P3in\Interfaces\GalleryVideosRepositoryInterface;
@@ -19,23 +23,11 @@ class GalleriesServiceProvider extends ServiceProvider
 {
     public function boot(Gate $gate)
     {
-    }
+        $this->loadIntervention();
 
-    public function register()
-    {
-        $this->app->bind(
-            GalleriesRepositoryInterface::class, GalleriesRepository::class
-        );
-        $this->app->bind(
-            GalleryPhotosRepositoryInterface::class, GalleryPhotosRepository::class
-        );
-        $this->app->bind(
-            GalleryVideosRepositoryInterface::class, GalleryVideosRepository::class
-        );
-
-        Route::model('galleries', Gallery::class);
-        Route::model('photos', Photo::class);
-        Route::model('videos', Video::class);
+        Route::model('gallery', Gallery::class);
+        Route::model('photo', Photo::class);
+        Route::model('video', Video::class);
 
         Route::bind('gallery', function ($value) {
             return Gallery::findOrFail($value);
@@ -48,5 +40,34 @@ class GalleriesServiceProvider extends ServiceProvider
         Route::bind('video', function ($value) {
             return Video::findOrFail($value);
         });
+
+    }
+
+    public function register()
+    {
+        foreach ([
+            GalleriesRepositoryInterface::class => GalleriesRepository::class,
+            GalleryPhotosRepositoryInterface::class => GalleryPhotosRepository::class,
+            GalleryVideosRepositoryInterface::class => GalleryVideosRepository::class,
+        ] as $key => $val) {
+            $this->app->bind(
+                $key, $val
+            );
+        }
+    }
+
+    /**
+     * Load Intervention for images handling
+     */
+    public function loadIntervention()
+    {
+        $this->app->register(ImageServiceProvider::class);
+
+        $loader = AliasLoader::getInstance();
+
+        $loader->alias('Image', Image::class);
+
+        //@TODO: we require the use of imagick, not sure we should force this though.
+        Config::set(['image' => ['driver' => 'imagick']]);
     }
 }

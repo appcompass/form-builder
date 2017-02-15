@@ -25,6 +25,7 @@
         "roumen/sitemap": "2.6.*",
         "tymon/jwt-auth": "dev-develop",
         "laravel/passport": "^1.0",
+        "intervention/image": "^2.3",
 
         "facebook/graph-sdk": "^5.4",
 

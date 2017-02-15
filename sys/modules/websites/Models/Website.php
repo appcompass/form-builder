@@ -11,21 +11,27 @@ use P3in\Models\Redirect;
 use P3in\Traits\HasGallery;
 use P3in\Traits\HasJsonConfigFieldTrait;
 use P3in\Traits\HasPermissions;
+use P3in\Traits\HasStorage;
 use P3in\Traits\SettingsTrait;
 
 class Website extends Model
 {
-    use SettingsTrait, HasGallery, HasPermissions, SoftDeletes, HasJsonConfigFieldTrait;
+
+    use SettingsTrait, HasGallery, HasPermissions, HasStorage, SoftDeletes, HasJsonConfigFieldTrait;
 
     protected $fillable = [
         'name',
         'scheme',
         'host',
+        'storage',
+        'config',
     ];
 
     protected $casts = [
         'config' => 'object'
     ];
+
+    protected $hidden = ['config'];
 
     /**
      *
@@ -91,6 +97,17 @@ class Website extends Model
     {
         return $this->morphOne(Photo::class, 'photoable');
     }
+
+    public function apendStoragePath() {
+        // @TODO: Needs tie in with website settings with fallback of empty string.
+        return '';
+    }
+
+    public function afterStorage()
+    {
+        // need to do anything after we store a website?
+    }
+
 
     /**
      *
