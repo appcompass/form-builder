@@ -231,13 +231,11 @@ class WebsiteBuilder
     // breaking this up a bit would prob be a good idea.
     public function deploy()
     {
-        $conf = $this->website->config;
-
-        if (empty($conf->deployment)) {
+        if (empty($this->website->deployment)) {
             throw new Exception('The website does not have deployment settings configured');
         }
 
-        $depConfig = $conf->deployment;
+        $depConfig = $this->website->deployment;
         $disk = $this->website->storage->getDisk();
 
         $manager = new PublishFiles('stubs', realpath(__DIR__.'/../Templates/stubs'));
@@ -292,8 +290,8 @@ class WebsiteBuilder
         }
 
         // now lets get the website layout(s)
-        if (!empty($conf->layouts)) {
-            foreach ($conf->layouts as $layout => $data) {
+        if (!empty($this->website->layouts)) {
+            foreach ($this->website->layouts as $layout => $data) {
                 $manager->publishFile($disk, '/layouts/'.$layout.'.vue', $data, true);
             }
         }

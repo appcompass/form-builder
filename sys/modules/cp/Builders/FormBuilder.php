@@ -224,6 +224,7 @@ class FormBuilder
         $field_name = ucfirst($field_type) . 'Type';
 
         // full class name
+        // @TODO: too vague, should be P3in\Models\FieldTypes\WhateverType
         $class_name = '\P3in\Models\Types\\' . $field_name;
 
         // if no such class we dead

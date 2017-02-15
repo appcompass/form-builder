@@ -17,7 +17,7 @@ class GalleriesModuleDatabaseSeeder extends Seeder
         FormBuilder::new('galleries', function (FormBuilder $builder) {
             $builder->string('Gallery Name', 'name')
                 ->list()
-                ->required()
+                ->validation(['required'])
                 ->sortable()
                 ->searchable();
 
