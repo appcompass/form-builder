@@ -4,13 +4,14 @@ namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use P3in\Traits\HasDynamicContent;
+use P3in\Traits\HasJsonConfigFieldTrait;
 use P3in\Models\Section;
 use P3in\Models\Page;
 use Exception;
 
 class PageSectionContent extends Model
 {
-    use HasDynamicContent;
+    use HasDynamicContent, HasJsonConfigFieldTrait;
 
     protected $table = 'page_section_content';
 
@@ -26,6 +27,11 @@ class PageSectionContent extends Model
     ];
 
     // protected $with = ['section'];
+
+    public function getAsFirstLevelConfig()
+    {
+        return [];
+    }
 
     /**
      *

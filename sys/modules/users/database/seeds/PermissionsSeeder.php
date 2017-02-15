@@ -25,15 +25,32 @@ class PermissionsSeeder extends Seeder
         DB::statement("DELETE FROM forms WHERE name = 'permissions'");
 
         FormBuilder::new('permissions', function (FormBuilder $builder) {
-            $builder->string('Name', 'label')->list()->required()->sortable()->searchable();
-            $builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();
-            $builder->string('Created', 'created_at')->list()->edit(false)->required()->sortable()->searchable();
+            $builder->string('Name', 'label')
+                ->list()
+                ->validation(['required'])
+                ->sortable()
+                ->searchable();
+            $builder->text('Description', 'description')
+                ->list(false)
+                ->validation(['required'])
+                ->sortable()
+                ->searchable();
+            $builder->string('Created', 'created_at')
+                ->list()
+                ->edit(false)
+                ->validation(['required'])
+                ->sortable()
+                ->searchable();
         })->linkToResources(['permissions.index', 'permissions.show', 'permissions.create']);
 
         DB::statement("DELETE FROM forms WHERE name = 'user-permissions'");
 
         FormBuilder::new('user-permissions', function (FormBuilder $builder) {
-            $builder->string('Name', 'label')->list()->required()->sortable()->searchable();
+            $builder->string('Name', 'label')
+                ->list()
+                ->validation(['required'])
+                ->sortable()
+                ->searchable();
         })->linkToResources(['users.permissions.index']);
 
         Permission::create([

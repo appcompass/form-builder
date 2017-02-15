@@ -5,27 +5,38 @@ namespace P3in\Models;
 use Illuminate\Database\Eloquent\Model;
 use P3in\Models\FieldSource;
 use P3in\Traits\HasDynamicContent;
+use P3in\Traits\HasJsonConfigFieldTrait;
 
 class Field extends Model
 {
     use HasDynamicContent {
         dynamic as dynamicTrait;
     }
+    use HasJsonConfigFieldTrait;
 
-    protected $fillable = [
+    public $fillable = [
         'name',
         'label',
         'type',
-        'to_list',
-        'to_edit',
-        'required',
-        'repeatable',
-        'sortable',
+        'config',
+        'validation',
         'dynamic'
     ];
 
+    protected $casts = [
+        'config' => 'object',
+    ];
     protected $hidden = [];
 
+    protected $appends = [
+        'to_list',
+        'to_edit',
+        'sortable',
+        'searchable',
+        'repeatable',
+    ];
+
+    // @TODO: would be nice to know when fields were added/changed?
     public $timestamps = false; // we don't need ts on fields
 
     /**
@@ -38,6 +49,19 @@ class Field extends Model
         parent::boot();
 
         static::addGlobalScope(new OrderScope('id', 'asc'));
+    }
+
+    // used with HasJsonConfigFieldTrait
+    public function getAsFirstLevelConfig() {
+        // if appends changes to add real fields, we then have to use the actual array here.
+        return $this->appends;
+        // return [
+        //     'to_list',
+        //     'to_edit',
+        //     'sortable',
+        //     'searchable',
+        //     'repeatable',
+        // ];
     }
 
     /**
@@ -118,7 +142,7 @@ class Field extends Model
      */
     public function edit($show = true)
     {
-        $this->update(['to_edit' => $show]);
+        $this->setConfig('to_edit', $show);
 
         return $this;
     }
@@ -128,17 +152,7 @@ class Field extends Model
      */
     public function list($show = true)
     {
-        $this->update(['to_list' => $show]);
-
-        return $this;
-    }
-
-    /**
-     *  Required
-     */
-    public function required($required = true)
-    {
-        $this->update(['required' => $required]);
+        $this->setConfig('to_list', $show);
 
         return $this;
     }
@@ -148,7 +162,7 @@ class Field extends Model
      */
     public function repeatable($repeatable = true)
     {
-        $this->update(['repeatable' => $repeatable]);
+        $this->setConfig('repeatable', $repeatable);
 
         return $this;
     }
@@ -158,7 +172,7 @@ class Field extends Model
      */
     public function sortable($sortable = true)
     {
-        $this->update(['sortable' => $sortable]);
+        $this->setConfig('sortable', $sortable);
 
         return $this;
     }
@@ -168,7 +182,7 @@ class Field extends Model
      */
     public function searchable($searchable = true)
     {
-        $this->update(['searchable' => $searchable]);
+        $this->setConfig('searchable', $searchable);
 
         return $this;
     }
