@@ -1,8 +1,8 @@
 <template lang="jade">
 div
   span(v-if="form", v-for="(field, fieldIndex) in form")
-    label.label(v-if="!field.repeatable") {{ field.label }}
-    a.icon.is-small(v-if="field.repeatable", @click="clone(field.name, fieldIndex)")
+    label.label(v-if="!field.config.repeatable") {{ field.label }}
+    a.icon.is-small(v-if="field.config.repeatable", @click="clone(field.name, fieldIndex)")
       i.fa.fa-plus
 
     //- SINGLE VALUE (single value returned from content for field)
@@ -27,8 +27,8 @@ div
         @input="function(e) { return set(e, subFieldIndex); }"
       )
 
-    //- MULTI FIELD REPEATABLE SORTABLE (sub-form present, has multiple values and field.repeatable is true)
-    Sortable(v-if="field.repeatable && field.fields.length", :list="value(field)", :options="{handle: '.handle', animation: 150, group: 'items'}")
+    //- MULTI FIELD REPEATABLE SORTABLE (sub-form present, has multiple values and field.config.repeatable is true)
+    Sortable(v-if="field.config.repeatable && field.fields.length", :list="value(field)", :options="{handle: '.handle', animation: 150, group: 'items'}")
       div(v-for="(val, index) in value(field)")
 
         span.icon.is-small(@click="collapse(value(field, index), true)", v-if="!value(field, index).isCollapsed")

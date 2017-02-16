@@ -20,12 +20,6 @@ class WebsitesModuleDatabaseSeeder extends Seeder
 
             $websiteBuilder->setStorage('cp_root');
 
-            // $users_management = ['url' => '', 'title' => 'Users Management', 'alt' => 'Users Management', 'new_tab' => false, 'clickable' => false, ];
-            $web_properties = ['url' => '', 'title' => 'Web Properties', 'alt' => 'Web Properties', 'new_tab' => false, 'clickable' => false, ];
-            $blog = ['url' => '', 'title' => 'Blog', 'alt' => 'Blog', 'new_tab' => false, 'clickable' => false, ];
-            $media_management = ['url' => '', 'title' => 'Media Management', 'alt' => 'Media Management', 'new_tab' => false, 'clickable' => false, ];
-            $settings = ['url' => '', 'title' => 'Settings', 'alt' => 'Settings', 'new_tab' => false, 'clickable' => false, ];
-
             $users = $websiteBuilder->addPage('Users', 'users');
             $users_permissions = $users->addChild('User Permissions', 'permissions');
             $groups = $websiteBuilder->addPage('Groups', 'groups');
@@ -33,7 +27,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             $websites = $websiteBuilder->addPage('Websites', 'websites');
             $navigation = $websites->addChild('Navigation', 'menus');
             $pages = $websites->addChild('Pages', 'pages');
-            $contents = $pages->addChild('Content', 'content');
+            $contents = $pages->addChild('Content', 'contents');
             $blogEntries = $websites->addChild('Entries', 'blog-entries');
             $blogCategories = $websites->addChild('Categories', 'blog-categories');
             $blogTags = $websites->addChild('Tags', 'blog-tags');
@@ -43,29 +37,29 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             $forms = $websiteBuilder->addPage('Forms', 'forms');
 
             $websiteBuilder->addMenu('main_nav')
-                ->add(['url' => '', 'title' => 'Users Management', 'alt' => 'Users Management'], 1)->unclickable()->sub()
+                ->add(['title' => 'Users Management', 'alt' => 'Users Management'], 1)->sub()
                     ->add($users, 1)->icon('users')->sub()
                         ->add($users_permissions, 1)
-                        ->parent() // up 1
+                        ->parent()
                     ->add($groups, 2)->icon('users')
                     ->add($permissions, 3)->icon('lock')->parent()
-                ->add($web_properties, 2)->unclickable()->sub()
-                    ->add($websites, 1)->sub() // down 1
+                ->add(['title' => 'Web Properties', 'alt' => 'Web Properties'], 2)->sub()
+                    ->add($websites, 1)->sub()
                         ->add($navigation, 1)
-                        ->add($pages, 2)->icon('page')->sub() // down 1
+                        ->add($pages, 2)->icon('page')->sub()
                             ->add($contents, 1)
                             ->parent()
-                        ->add($blog, 3)->icon('page') ->sub()
+                        ->add(['url' => '', 'title' => 'Blog', 'alt' => 'Blog'], 3)->icon('page') ->sub()
                             ->add($blogEntries, 1)
                             ->add($blogCategories, 2)
                             ->add($blogTags, 3)
                             ->parent()
                         ->parent()
                     ->parent()
-                ->add($media_management, 3)->unclickable()->sub()
+                ->add(['title' => 'Media Management', 'alt' => 'Media Management'], 3)->sub()
                     ->add($galleries, 1)->icon('camera')
                     ->parent()
-                ->add($settings, 4)->unclickable()->sub()
+                ->add(['title' => 'Settings', 'alt' => 'Settings'], 4)->sub()
                     ->add($storage, 1)->icon('gear')
                     ->add($forms, 2)->icon('form');
 
