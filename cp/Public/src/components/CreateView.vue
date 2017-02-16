@@ -6,7 +6,7 @@ div.columns
       .control(v-for="field in create.fields")
         label.label(v-bind:class="{checkbox: field.type === 'boolean'}") {{ field.label }}
         span(
-          v-bind:is="'Form' + field.type",
+          :is="Components[field.type]",
           v-bind:pointer="field.name"
           v-bind:data="value(field.name)"
           v-bind:value="value(field.name)"
@@ -26,6 +26,7 @@ div.columns
 </template>
 
 <script>
+import * as Components from './Components'
 import Formstring from './FormBuilder/String'
 import Formtext from './FormBuilder/Text'
 import Formsecret from './FormBuilder/Secret'
@@ -38,6 +39,7 @@ export default {
   components: { Formstring, Formtext, Formsecret, Formboolean },
   data () {
     return {
+      Components,
       create: {},
       collection: {}
     }

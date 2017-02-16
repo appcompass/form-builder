@@ -29,13 +29,15 @@ class ValidateWebsite
             list($scheme, $host) = $parts;
         }
 
+        // \Log::info($host);
+
         // temporary ofcourse so we can work locally with properly seeded data.
-        $host = 'www.plus3interactive.com';
+        // $host = 'k1cc0.me:8080';
 
         try {
-            $website = Website::where('host', $host)->firstOrFail();
+            // $website = Website::where('host', $host)->firstOrFail();
 
-            $request->website = $website;
+            $request->website = Website::first();
 
             return $next($request);
         } catch (NotFoundException $e) {

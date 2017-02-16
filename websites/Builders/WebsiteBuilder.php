@@ -117,13 +117,9 @@ class WebsiteBuilder
      *
      * @return     MenuBuilder  ( description_of_the_return_value )
      */
-    public function addMenu($name)
+    public function addMenu($name, Closure $closure = null)
     {
-        $menu = $this->website->menus()->create([
-            'name' => $name,
-        ]);
-
-        return new MenuBuilder($menu);
+        return MenuBuilder::new($name, $this->website, $closure);
     }
 
     /**

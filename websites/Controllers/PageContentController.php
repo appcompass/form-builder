@@ -28,6 +28,7 @@ class PageContentController extends AbstractChildController
     {
         if ($model->source) {
             foreach ($model->section->form->fields as $field) {
+
                 if ($field->type !== 'Dynamic') {
                     continue;
                 }

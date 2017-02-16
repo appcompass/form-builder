@@ -237,6 +237,7 @@ class PageBuilder
             'value' => $name,
         ];
     }
+
     /**
      * Builds a page template tree.
      *
@@ -317,5 +318,15 @@ class PageBuilder
         $contents = static::buildTemplate($layout, $this->template, $this->imports);
 
         $manager->publishFile($disk, "/pages{$name}.vue", $contents, true);
+    }
+
+    /**
+     * Passthrough for building a MenuItem from the page
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
+    public function makeMenuItem($order)
+    {
+        return $this->page->makeMenuItem($order);
     }
 }

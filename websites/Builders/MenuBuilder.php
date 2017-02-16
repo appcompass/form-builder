@@ -16,23 +16,21 @@ class MenuBuilder
     /**
      * Menu instance
      */
-    private $menu;
-    private $item;
+    private $menu = null;
 
-    private $allowedModels = [Page::class, Link::class];
+    /**
+     * Current MenuItem Instance
+     */
+    private $menu_item = null;
 
-    // we only set the MenuItem second param when we are looking to add child items to a parent item
-    // not sure how I feel about this aproach here though.
-    public function __construct(Menu $menu = null, MenuItem $item = null)
+    /**
+     * Parent instance
+     */
+    private $parent = null;
+
+    private function __construct(Menu $menu)
     {
-        if (!is_null($menu)) {
-            $this->menu = $menu;
-        }
-        if (!is_null($item)) {
-            $this->item = $item;
-        }
-
-        return $this;
+        $this->menu = $menu;
     }
 
     /**
@@ -44,21 +42,41 @@ class MenuBuilder
      */
     public static function new($name, Website $website, Closure $closure = null)
     {
-        $instance = new static();
-
-        $menu = new Menu([
+        $menu = Menu::create([
             'name' => $name,
+            'website_id' => $website->id
         ]);
 
-        $menu->website()->associate($website);
-
-        $menu->save();
-
-        $instance->menu = $menu;
+        $instance = new static($menu);
 
         if ($closure) {
             $closure($instance);
         }
+
+        return $instance;
+    }
+
+    /**
+     * edit
+     *
+     * @param      <type>       $menu  The menu being edited
+     *
+     * @throws     \Exception   Menu must be set
+     *
+     * @return     MenuBuilder  MenuBuilder instance
+     */
+    public static function edit($menu, $parent = null)
+    {
+        if (!$menu instanceof Menu && !is_int($menu)) {
+            throw new \Exception('Must pass id or menu instance');
+        }
+
+        if (is_int($menu)) {
+            $menu = Menu::findOrFail($menu);
+        }
+
+
+        $instance = (new static($menu))->setParent($parent);
 
         return $instance;
     }
@@ -73,101 +91,106 @@ class MenuBuilder
      *
      * @return     <type>      ( description_of_the_return_value )
      */
-    public function addItem($item, $order = 1)
+    public function add($item, $order = 0)
     {
-        if (!$this->menu) {
+
+        if (!isset($this->menu)) {
+
             throw new \Exception('Menu not selected.');
+
         }
 
         if (is_array($item)) {
+
             $item = Link::create($item);
+
         }
 
-        if ($item instanceof PageBuilder) {
-            $item = $item->getPage();
+        $this->menu_item = MenuItem::fromModel($item, $order);
+
+        if ($this->hasParent()) {
+
+            // we are pointing the last inserted menu_item aka the parent -f
+            $this->menu_item->setParent($this->parent->menu_item);
         }
 
-        if (!in_array(get_class($item), $this->allowedModels)) {
-            throw new \Exception("Model " . get_class($item) ." is not allowed");
+        if ($this->menu->add($this->menu_item)) {
+
+            // to have both worlds (return a MenuBuilder or a MenuItem) we return $this here
+            // and we use a magic __call to check if we're calling methods MenuItem has -f
+            return $this;
+
+        } else {
+
+            throw new \Exception("Something went wrong while adding the MenuItem {$this->menu_item->id} to Menu {$this->menu->id}");
+
         }
 
-        $menu_item = $item->makeMenuItem($order);
-
-        $menu_item->menu()->associate($this->menu);
-
-        $menu_item->setParent($this->item);
-
-        return new static($this->menu, $menu_item);
     }
 
+    /**
+     * { function_description }
+     *
+     * @return     self  ( description_of_the_return_value )
+     */
+    public function parent()
+    {
+        if (!$this->hasParent()) {
+            // @TODO wouldn't end a while cycle
+            return $this;
+        }
+
+        return $this->parent;
+    }
 
     /**
-     * Sets the icon.
      *
-     * @param      string  $name   The name
-     *
-     * @return     <type>  ( description_of_the_return_value )
      */
-    public function setIcon($name = '')
+    public function sub()
     {
-        $this->item->icon($name);
+        return MenuBuilder::edit($this->menu, $this);
+    }
+
+    /**
+     * Sets the parent.
+     *
+     * @param      MenuBuilder  $menu_item  The menu builder
+     */
+    public function setParent(MenuBuilder $menu_builder = null)
+    {
+        $this->parent = $menu_builder;
 
         return $this;
     }
 
-
     /**
-     * edit
+     * Determines if it has parent.
      *
-     * @param      <type>       $menu  The menu being edited
-     *
-     * @throws     \Exception   Menu must be set
-     *
-     * @return     MenuBuilder  MenuBuilder instance
+     * @return     boolean  True if has parent, False otherwise.
      */
-    public static function edit($menu)
+    public function hasParent()
     {
-        if (!$menu instanceof Menu && !is_int($menu)) {
-            throw new \Exception('Must pass id or menu instance');
-        }
-
-        if (is_int($menu)) {
-            $menu = Menu::findOrFail($menu);
-        }
-
-        return new static($menu);
+        return !!$this->parent;
     }
 
     /**
-     * add factory
+     * { function_description }
      *
-     * @param      $item        Mixed
-     *
-     * @throws     \Exception   (description)
-     *
-     * @return     MenuItem      MenuItem instance
+     * @param      <type>  $method  The method
+     * @param      <type>  $args    The arguments
      */
-    public function add($item)
+    public function __call($method, $args)
     {
-        if (!$this->menu) {
-            throw new \Exception('Menu not selected.');
+        if (!method_exists($this->menu_item, $method)) {
+
+            // @NOTE ignore and return this -f
+            return $this;
+
         }
 
-        if (is_array($item)) {
-            $item = Link::create($item);
-        }
+        call_user_func([$this->menu_item, $method], $args[0]);
 
-        if (!in_array(get_class($item), $this->allowedModels)) {
-            throw new \Exception("Model " . get_class($item) ." is not allowed");
-        }
-
-        $menu_item = MenuItem::fromModel($item);
-
-        if ($this->menu->add($menu_item)) {
-            return $menu_item;
-        } else {
-            throw new \Exception("Something went wrong while adding the MenuItem {$menu_item->id} to Menu {$this->menu->id}");
-        }
+        return $this;
     }
 
     /**
@@ -188,5 +211,15 @@ class MenuBuilder
         } else {
             throw new \Exception("Errors while removing MenuItem");
         }
+    }
+
+    /**
+     *
+     * @return     Function  ( description_of_the_return_value )
+     */
+    public function done() {
+
+        return $this->menu;
+
     }
 }
