@@ -17,7 +17,7 @@ class GalleriesModuleDatabaseSeeder extends Seeder
         FormBuilder::new('galleries', function (FormBuilder $builder) {
             $builder->string('Gallery Name', 'name')
                 ->list()
-                ->required()
+                ->validation(['required'])
                 ->sortable()
                 ->searchable();
 
@@ -56,14 +56,11 @@ class GalleriesModuleDatabaseSeeder extends Seeder
             //     ->polymorphic();
 
             // $builder->string('Website', 'website_id')->list(false)->required(); //->dynamic('\P3in\Models\Website');
-
-
         })
             ->linkToResources(['galleries.photos.index'])
             ->setListLayout('PhotoGrid')
             ->getForm();
 
         // WebsiteBuilder::edit($cp->id)->linkForm($form);
-
     }
 }

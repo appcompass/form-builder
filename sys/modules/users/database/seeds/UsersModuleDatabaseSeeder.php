@@ -50,12 +50,32 @@ class UsersModuleDatabaseSeeder extends Seeder
         // $builder->datetime('End of absence', 'settings.absent.end'); <- working
 
         FormBuilder::new('users', function (FormBuilder $builder) {
-            $builder->string('First Name', 'first_name')->list()->required()->sortable()->searchable();
-            $builder->string('Last Name', 'last_name')->list()->required()->sortable()->searchable();
-            $builder->string('Email', 'email')->list()->required()->validation('email')->sortable()->searchable();
-            $builder->string('Phone Number', 'phone')->list()->required()->sortable()->searchable();
-            $builder->string('Date Added', 'created_at')->list()->edit(false)->sortable();
-            $builder->secret('Password', 'password')->required();
+            $builder->string('First Name', 'first_name')
+                ->list()
+                ->validation(['required'])
+                ->sortable()
+                ->searchable();
+            $builder->string('Last Name', 'last_name')
+                ->list()
+                ->validation(['required'])
+                ->sortable()
+                ->searchable();
+            $builder->string('Email', 'email')
+                ->list()
+                ->validation(['required', 'email'])
+                ->sortable()
+                ->searchable();
+            $builder->string('Phone Number', 'phone')
+                ->list()
+                ->validation(['required'])
+                ->sortable()
+                ->searchable();
+            $builder->string('Date Added', 'created_at')
+                ->list()
+                ->edit(false)
+                ->sortable();
+            $builder->secret('Password', 'password')
+                ->validation(['required']);
         })->linkToResources(['users.index', 'users.show', 'users.create']);
 
         //
@@ -64,10 +84,25 @@ class UsersModuleDatabaseSeeder extends Seeder
         \DB::statement("DELETE FROM forms WHERE name = 'groups'");
 
         FormBuilder::new('groups', function (FormBuilder $builder) {
-            $builder->string('Group Name', 'name')->list()->required()->sortable()->searchable();
-            $builder->string('Group Label', 'label')->list()->required()->sortable()->searchable();
-            $builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();
-            $builder->string('Date Added', 'created_at')->list()->edit(false)->sortable();
+            $builder->string('Group Name', 'name')
+                ->list()
+                ->validation(['required'])
+                ->sortable()
+                ->searchable();
+            $builder->string('Group Label', 'label')
+                ->list()
+                ->validation(['required'])
+                ->sortable()
+                ->searchable();
+            $builder->text('Description', 'description')
+                ->list(false)
+                ->validation(['required'])
+                ->sortable()
+                ->searchable();
+            $builder->string('Date Added', 'created_at')
+                ->list()
+                ->edit(false)
+                ->sortable();
         })->linkToResources(['groups.index', 'groups.show', 'groups.create', ]);
 
         Model::reguard();

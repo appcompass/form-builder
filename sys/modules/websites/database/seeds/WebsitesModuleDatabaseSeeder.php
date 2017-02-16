@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use P3in\Builders\FormBuilder;
 use P3in\Builders\WebsiteBuilder;
 use P3in\Models\FieldSource;
+use P3in\Models\Section;
 
 class WebsitesModuleDatabaseSeeder extends Seeder
 {
@@ -72,8 +73,46 @@ class WebsitesModuleDatabaseSeeder extends Seeder
         DB::statement("DELETE FROM forms WHERE name = 'websites'");
 
         $form = FormBuilder::new('websites', function (FormBuilder $builder) {
-            $builder->string('Website Name', 'name')->list()->required()->sortable()->searchable();
-            $builder->string('Url', 'url')->list()->required()->sortable()->searchable();
+            $builder->string('Website Name', 'name')
+                ->list()
+                ->validation(['required'])
+                ->sortable()
+                ->searchable();
+
+            $builder->select('Scheme', 'scheme')
+                ->list()
+                ->validation(['required'])
+                ->sortable()
+                ->searchable()
+                ->dynamic([
+                    'http' => 'http',
+                    'https' => 'https',
+                ]);
+
+            $builder->string('Host', 'host')
+                ->list()
+                ->validation(['required'])
+                ->sortable()
+                ->searchable();
+
+            $builder->fieldset('Configuration', 'config', function(FormBuilder $confBuilder){
+                $confBuilder->select('Header', 'header')
+                ->dynamic(Section::class, function(FieldSource $source) {
+                    $source->where('type', 'header');
+                });
+
+                $confBuilder->select('Footer', 'footer')
+                ->dynamic(Section::class, function(FieldSource $source) {
+                    $source->where('type', 'footer');
+                });
+
+                $confBuilder->codeeditor('Layouts', 'layouts')->keyedRepeatable();
+
+                $confBuilder->fieldset('Deployment', 'deployment', function (FormBuilder $depBuilder) {
+                    $depBuilder->string('Publish From Path', 'publish_from')
+                        ->validation(['required']);
+                });
+            });
         })->linkToResources(['websites.index', 'websites.show', 'websites.create'])
         ->getForm();
 
@@ -82,8 +121,15 @@ class WebsitesModuleDatabaseSeeder extends Seeder
         DB::statement("DELETE FROM forms WHERE name = 'pages'");
 
         $form = FormBuilder::new('pages', function (FormBuilder $builder) {
-            $builder->string('Page Title', 'title')->list()->required()->sortable()->searchable();
-            $builder->string('Slug', 'slug')->list(false)->required()->sortable()->searchable();
+            $builder->string('Page Title', 'title')
+                ->list()
+                ->validation(['required'])
+                ->sortable()
+                ->searchable();
+            $builder->string('Slug', 'slug')->list(false)
+                ->validation(['required'])
+                ->sortable()
+                ->searchable();
 
             $builder->select('Parent', 'parent_id')
                 ->list(false)
@@ -92,7 +138,9 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                     $source->where('website_id', \P3in\Models\Website::whereHost(env('ADMIN_WEBSITE_HOST'))->first()->id);
                 });
 
-            $builder->string('Website', 'website_id')->list(false)->required(); //->dynamic('\P3in\Models\Website');
+            $builder->string('Website', 'website_id')
+                ->list(false)
+                ->validation(['required']); //->dynamic('\P3in\Models\Website');
         })
             ->linkToResources(['pages.show', 'websites.pages.index', 'websites.pages.create', 'websites.pages.show'])
             ->getForm();
@@ -111,7 +159,11 @@ class WebsitesModuleDatabaseSeeder extends Seeder
         DB::statement("DELETE FROM forms WHERE name = 'menus'");
 
         FormBuilder::new('menus', function (FormBuilder $builder) {
-            $builder->string('Name', 'name')->list()->required()->sortable()->searchable();
+            $builder->string('Name', 'name')
+                ->list()
+                ->validation(['required'])
+                ->sortable()
+                ->searchable();
         })->linkToResources(['websites.menus.index', 'websites.menus.create']);
 
         DB::statement("DELETE FROM forms WHERE name = 'menus-editor'");

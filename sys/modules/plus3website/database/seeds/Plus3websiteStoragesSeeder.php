@@ -18,20 +18,32 @@ class Plus3websiteStoragesSeeder extends Seeder
      */
     public function run()
     {
-        if (!Storage::where('name', 'plus3website')->count()) {
+        $local = StorageType::getType('local');
 
-            $local = StorageType::getType('local');
+        $siteStorage = Storage::firstOrNew([
+            'name' => 'plus3website',
+        ]);
 
-            $storage = new Storage([
-                'name' => 'plus3website',
-                'config' => [
-                    'driver' => 'local',
-                    'root' => base_path('../websites/plus3website'),
-                ],
-            ]);
+        $siteStorage->config = [
+            'driver' => 'local',
+            'root' => base_path('../websites/plus3website'),
+        ];
 
-            $storage->type()->associate($local);
-            $storage->save();
-        }
+        $siteStorage->type()->associate($local);
+        $siteStorage->save();
+
+
+        $siteImageStorage = Storage::firstOrNew([
+            'name' => 'plus3website_images',
+        ]);
+
+        $siteImageStorage->config = [
+            'driver' => 'local',
+            'root' => base_path('../websites/plus3website/static/assets/images/content'),
+        ];
+
+        $siteImageStorage->type()->associate($local);
+        $siteImageStorage->save();
+
     }
 }

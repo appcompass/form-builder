@@ -34,28 +34,34 @@ class CreateFormBuilderTables extends Migration
         });
 
         // @NOTE Fields must belong to a form, and are unique to it
+        // @TODO: look into converting to_list, to_edit, required, sortable, and searchable,
+        // to attributes of a config json field (we'll end up with more options as time goes on,
+        // and not all fields are created equal).  and if is null then is false can be used as a
+        // only when true usage aproach.
         Schema::create('fields', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->string('name')->index();
             $table->string('label');
+            $table->string('type');
+            $table->json('config')->nullable();
+
+            $table->string('validation')->nullable();
+
             $table->integer('parent_id')->nullable();
             $table->foreign('parent_id')->references('id')->on('fields')->onDelete('cascade');
-            $table->boolean('to_list')->default(false); // should field show up in list view?
-            $table->boolean('to_edit')->default(true); // should the field show up in edit view? default true
-            $table->boolean('required')->default(false);
-            $table->boolean('sortable')->default(false);
-            $table->boolean('searchable')->default(false);
-            $table->boolean('repeatable')->default(false);
-            $table->string('validation')->nullable();
-            $table->boolean('dynamic')->default(false);
-            $table->string('type');
-            $table->integer('form_id')->references('id')->on('forms')->onDelete('cascade');
 
-            $table->index('name');
+            $table->integer('form_id')->unsigned();
+            $table->foreign('form_id')->references('id')->on('forms')->onDelete('cascade');
+
+
+            $table->boolean('dynamic')->default(false);
+
+            // $table->index('name');
         });
 
         // @TODO consider merging this table with fields? (reason not to is already too many fields in fields)
-        Schema::create('field_sources', function(Blueprint $table) {
+        // @TODO: yes, merge field_sources into fields because 6 of the fields columns are config columns that can be put into a json object.
+        Schema::create('field_sources', function (Blueprint $table) {
             $table->increments('id');
             // $table->integer('field_id')->unsigned()->nullable();
             // $table->foreign('field_id')->references('id')->on('fields')->onDelete('cascade');

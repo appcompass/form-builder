@@ -21,6 +21,7 @@ class Gallery extends Model
         'name',
     ];
 
+    protected $hidden = ['user'];
     protected $dates = [];
 
     protected $appends = ['photoCount', 'videoCount'];
@@ -44,32 +45,67 @@ class Gallery extends Model
     }
 
     /**
-     *  Get all the photos in the gallery
+     *  Relation with galleryItems
+     *
+     */
+    public function items()
+    {
+        return $this->hasMany(GalleryItem::class)
+            ->orderBy('order', 'asc');
+    }
+
+    /**
+     *  Relation with galleryItems
      *
      */
     public function photos()
     {
-        return $this->hasManyThrough(Photo::class, GalleryItem::class, 'gallery_id', 'id')
-            ->where('itemable_type', Photo::class)
-            ->orderBy('order', 'asc')
-            ->orderBy('created_at', 'desc');
+        return $this->hasMany(Photo::class)
+            ->orderBy('order', 'asc');
     }
 
     /**
-     *  Relation with videos
+     *  Relation with galleryItems
      *
      */
     public function videos()
     {
-        return $this->hasManyThrough(Video::class, GalleryItem::class, 'gallery_id', 'id')
-            ->where('itemable_type', Video::class)
-            ->orderBy('gallery_items.order', 'asc')
-            ->orderBy('created_at', 'desc');
-
-        // return $this->hasMany(GalleryItem::class)
-        //     ->where('itemable_type', Video::class)
-        //     ->orderBy('order', 'asc');
+        return $this->hasMany(Video::class)
+            ->orderBy('order', 'asc');
     }
+
+    public function getStorage()
+    {
+        return $this->galleryable->storage;
+    }
+
+    // /**
+    //  *  Get all the photos in the gallery
+    //  *
+    //  */
+    // public function photos()
+    // {
+    //     return $this->hasManyThrough(Photo::class, GalleryItem::class, 'gallery_id', 'id')
+    //         ->where('itemable_type', Photo::class)
+    //         ->orderBy('order', 'asc')
+    //         ->orderBy('created_at', 'desc');
+    // }
+
+    // /**
+    //  *  Relation with videos
+    //  *
+    //  */
+    // public function videos()
+    // {
+    //     return $this->hasManyThrough(Video::class, GalleryItem::class, 'gallery_id', 'id')
+    //         ->where('itemable_type', Video::class)
+    //         ->orderBy('gallery_items.order', 'asc')
+    //         ->orderBy('created_at', 'desc');
+
+    //     // return $this->hasMany(GalleryItem::class)
+    //     //     ->where('itemable_type', Video::class)
+    //     //     ->orderBy('order', 'asc');
+    // }
 
     /**
      *  Get Photos Count
@@ -89,170 +125,132 @@ class Gallery extends Model
         return $this->videos->count();
     }
 
+    // /**
+    //  *
+    //  */
+    // public function addVideo(Video $video, $order = null)
+    // {
+    //     return $this->addItem($video, $order);
+    // }
 
-    /**
-     *  Relation with galleryItems
-     *
-     */
-    public function galleryItems()
-    {
-        return $this->hasMany(GalleryItem::class)
-            ->orderBy('order', 'asc');
-    }
+    // /**
+    //  *
+    //  *
+    //  */
+    // public function addPhoto(Photo $photo, $order = null)
+    // {
+    //     return $this->addItem($photo, $order);
+    // }
 
-    /**
-     *  Return all the gallery items spawning model instances for each type
-     *
-     */
-    public function items()
-    {
-        return $this->galleryItems();
-    }
+    // /**
+    //  *  addItem
+    //  *
+    //  *  Adds an item to this gallery
+    //  */
+    // public function addItem(GalleryItemInterface $item, $order = 1)
+    // {
+    //     $galleryItem = new GalleryItem([
+    //         'order' => $order,
+    //     ]);
 
-    /**
-     *
-     */
-    public function addVideo(Video $video, $order = null)
-    {
-        return $this->addItem($video, $order);
-    }
+    //     $galleryItem
+    //         ->itemable()
+    //         ->associate($item);
 
-    /**
-     *
-     *
-     */
-    public function addPhoto(Photo $photo, $order = null)
-    {
-        return $this->addItem($photo, $order);
-    }
+    //     return $this->galleryItems()->save($galleryItem);
+    // }
 
-    /**
-     *  addItem
-     *
-     *  Adds an item to this gallery
-     */
-    public function addItem(GalleryItemInterface $item, $order = 1)
-    {
-        $galleryItem = new GalleryItem([
-            'order' => $order,
-        ]);
+    // /**
+    //  *
+    //  */
+    // public function sync(\Illuminate\Database\Eloquent\Collection $items, $type = null)
+    // {
+    //     $syncMap = [
+    //         Photo::class => 'syncPhotos',
+    //         Video::class => 'syncVideos'
+    //     ];
 
-        $galleryItem
-            ->itemable()
-            ->associate($item);
+    //     if (!is_null($type)) {
+    //         switch ($type) {
+    //             case 'videos':
+    //                 $this->syncVideos($items);
+    //                 break;
+    //             case 'photos':
+    //                 $this->syncPhotos($items);
+    //                 break;
+    //         }
+    //     } elseif ($items instanceof \Illuminate\Database\Eloquent\Collection) {
+    //         $acc = [];
 
-        return $this->galleryItems()->save($galleryItem);
-    }
+    //         foreach ($items as $item) {
+    //             try {
+    //                 $start = GalleryItem::whereItemableType(get_class($item))
+    //               ->whereGalleryId($this->id)
+    //               ->orderBy('order', 'desc')
+    //               ->firstOrFail()
+    //               ->order + 1;
+    //             } catch (ModelNotFoundException $e) {
+    //                 $start = 1;
+    //             }
 
-    /**
-     *
-     */
-    public function sync(\Illuminate\Database\Eloquent\Collection $items, $type = null)
-    {
-        $syncMap = [
-            Photo::class => 'syncPhotos',
-            Video::class => 'syncVideos'
-        ];
+    //             $acc[get_class($item)][] = $item->id;
+    //         }
 
-        if (!is_null($type)) {
-            switch ($type) {
-                case 'videos':
-                    $this->syncVideos($items);
-                    break;
-                case 'photos':
-                    $this->syncPhotos($items);
-                    break;
-            }
-        } elseif ($items instanceof \Illuminate\Database\Eloquent\Collection) {
-            $acc = [];
+    //         foreach ($acc as $class => $items) {
+    //             return call_user_func_array([$this, $syncMap[$class]], [collect($items), $start]);
+    //         }
+    //     }
+    // }
 
-            foreach ($items as $item) {
-                try {
-                    $start = GalleryItem::whereItemableType(get_class($item))
-                  ->whereGalleryId($this->id)
-                  ->orderBy('order', 'desc')
-                  ->firstOrFail()
-                  ->order + 1;
-                } catch (ModelNotFoundException $e) {
-                    $start = 1;
-                }
+    // public function syncPhotos(Collection $photos, $start = null)
+    // {
+    //     $owned = $this->photos->pluck('id');
 
-                $acc[get_class($item)][] = $item->id;
-            }
+    //     $keep = $owned->intersect($photos);
 
-            foreach ($acc as $class => $items) {
-                return call_user_func_array([$this, $syncMap[$class]], [collect($items), $start]);
-            }
-        }
-    }
+    //     $add = $photos->diff($owned);
 
-    public function syncPhotos(Collection $photos, $start = null)
-    {
-        $owned = $this->photos->pluck('id');
+    //     $delete = $owned->diff($keep);
 
-        $keep = $owned->intersect($photos);
+    //     \DB::table('gallery_items')->where('gallery_id', $this->id)->whereIn('itemable_id', $delete->toArray())->delete();
 
-        $add = $photos->diff($owned);
+    //     foreach (Photo::whereIn('id', $add)->get() as $photo) {
+    //         $this->addPhoto($photo, $start++);
+    //     }
+    // }
 
-        $delete = $owned->diff($keep);
+    // public function syncVideos(Collection $videos, $start = null)
+    // {
+    //     // currently owned
+    //     $owned = $this->videos->pluck('id');
 
-        \DB::table('gallery_items')->where('gallery_id', $this->id)->whereIn('itemable_id', $delete->toArray())->delete();
+    //     // the ones we keep
+    //     $keep = $owned->intersect($videos);
 
-        foreach (Photo::whereIn('id', $add)->get() as $photo) {
-            $this->addPhoto($photo, $start++);
-        }
-    }
+    //     // the oned we add
+    //     $add = $videos->diff($owned);
 
-    public function syncVideos(Collection $videos, $start = null)
-    {
-        // currently owned
-        $owned = $this->videos->pluck('id');
+    //     // the oned we delete
+    //     $delete = $owned->diff($keep);
 
-        // the ones we keep
-        $keep = $owned->intersect($videos);
+    //     \DB::table('gallery_items')->where('gallery_id', $this->id)->whereIn('itemable_id', $delete->toArray())->delete();
 
-        // the oned we add
-        $add = $videos->diff($owned);
+    //     foreach (Video::whereIn('id', $add)->get() as $video) {
+    //         $this->addVideo($video, $start);
+    //     }
+    // }
 
-        // the oned we delete
-        $delete = $owned->diff($keep);
+    // public function scopeOf($query, $class_name)
+    // {
+    //     return $query->where('galleryable_type', $class_name);
+    // }
 
-        \DB::table('gallery_items')->where('gallery_id', $this->id)->whereIn('itemable_id', $delete->toArray())->delete();
+    // public function scopeFromRoute($query, $params)
+    // {
+    //     if (!empty($params)) {
+    //         return $params['galleries'];
+    //     }
 
-        foreach (Video::whereIn('id', $add)->get() as $video) {
-            $this->addVideo($video, $start);
-        }
-    }
-
-    public function scopeOf($query, $class_name)
-    {
-        return $query->where('galleryable_type', $class_name);
-    }
-
-    public function scopeFromRoute($query, $params)
-    {
-        if (!empty($params)) {
-            return $params['galleries'];
-        }
-
-        return $query;
-    }
-
-    // temp for demo/test purpose
-    public function latestActivity($count)
-    {
-        return Gallery::take($count)
-            ->orderBy('updated_at', 'desc')
-            ->get()
-            ->makeHidden('id')
-            ->makeHidden('user_id');
-    }
-
-    public function mostUploads($count)
-    {
-        return Gallery::take($count)
-            ->get()
-            ->makeHidden('id')
-            ->makeHidden('user_id');
-    }
+    //     return $query;
+    // }
 }

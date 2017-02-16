@@ -61,10 +61,11 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             'BlockText',
         ])->delete();
 
-        DB::table('field_sources')->whereIn('linked_type', [
-            'P3in\Models\Types\DynamicType', //@TODO: we shouldn't be clearing this here like this, need to be more specific
-            'P3in\Models\PageSectionContent',
-        ])->delete();
+
+        // $form = FormBuilder::edit('websites', function (FormBuilder $builder) {
+        //     $builder->string('Website Name', 'name')->list()->required()->sortable()->searchable();
+        //     $builder->string('Url', 'url')->list()->required()->sortable()->searchable();
+        // });
 
         $website = WebsiteBuilder::new('Plus 3 Interactive, LLC', 'https', 'www.plus3interactive.com', function ($wsb) {
 

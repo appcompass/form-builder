@@ -3,8 +3,12 @@
 namespace P3in\Providers;
 
 use Illuminate\Contracts\Auth\Access\Gate;
+use Illuminate\Foundation\AliasLoader;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Intervention\Image\Facades\Image;
+use Intervention\Image\ImageServiceProvider;
 use P3in\Interfaces\GalleriesRepositoryInterface;
 use P3in\Interfaces\GalleryPhotosRepositoryInterface;
 use P3in\Interfaces\GalleryVideosRepositoryInterface;
@@ -19,6 +23,24 @@ class GalleriesServiceProvider extends ServiceProvider
 {
     public function boot(Gate $gate)
     {
+        $this->loadIntervention();
+
+        Route::model('gallery', Gallery::class);
+        Route::model('photo', Photo::class);
+        Route::model('video', Video::class);
+
+        Route::bind('gallery', function ($value) {
+            return Gallery::findOrFail($value);
+        });
+
+        Route::bind('photo', function ($value) {
+            return Photo::findOrFail($value);
+        });
+
+        Route::bind('video', function ($value) {
+            return Video::findOrFail($value);
+        });
+
     }
 
     public function register()
@@ -32,21 +54,20 @@ class GalleriesServiceProvider extends ServiceProvider
                 $key, $val
             );
         }
+    }
 
-        Route::model('galleries', Gallery::class);
-        Route::model('photos', Photo::class);
-        Route::model('videos', Video::class);
+    /**
+     * Load Intervention for images handling
+     */
+    public function loadIntervention()
+    {
+        $this->app->register(ImageServiceProvider::class);
 
-        Route::bind('gallery', function ($value) {
-            return Gallery::findOrFail($value);
-        });
+        $loader = AliasLoader::getInstance();
 
-        Route::bind('photo', function ($value) {
-            return Photo::findOrFail($value);
-        });
+        $loader->alias('Image', Image::class);
 
-        Route::bind('video', function ($value) {
-            return Video::findOrFail($value);
-        });
+        //@TODO: we require the use of imagick, not sure we should force this though.
+        Config::set(['image' => ['driver' => 'imagick']]);
     }
 }

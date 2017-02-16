@@ -231,26 +231,13 @@ class WebsiteBuilder
     // breaking this up a bit would prob be a good idea.
     public function deploy()
     {
-        $conf = $this->website->config;
-
-        if (empty($conf->deployment)) {
+        if (!$depConfig = $this->website->deployment) {
             throw new Exception('The website does not have deployment settings configured');
         }
 
-        $depConfig = $conf->deployment;
         $disk = $this->website->storage->getDisk();
 
         $manager = new PublishFiles('stubs', realpath(__DIR__.'/../Templates/stubs'));
-
-        // // @TODO: not sure that we should do this like this, this dir is supposed to be read only.
-        // Storage::where('name', 'stubs')->delete();
-        // Storage::create([
-        //     'name' => 'stubs',
-        //     'config' => [
-        //         'driver' => 'local',
-        //         'root' => realpath(__DIR__.'/../../Templates/stubs'),
-        //     ],
-        // ]);
 
         if (!empty($depConfig->publish_from)) {
             $manager
@@ -292,8 +279,8 @@ class WebsiteBuilder
         }
 
         // now lets get the website layout(s)
-        if (!empty($conf->layouts)) {
-            foreach ($conf->layouts as $layout => $data) {
+        if (!empty($this->website->layouts)) {
+            foreach ($this->website->layouts as $layout => $data) {
                 $manager->publishFile($disk, '/layouts/'.$layout.'.vue', $data, true);
             }
         }

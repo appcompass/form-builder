@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use P3in\Models\Field;
 use P3in\Models\Form;
 use P3in\Models\Resource;
-use P3in\Models\Types\BaseField;
+use P3in\Models\FieldTypes\BaseField;
 
 class FormBuilder
 {
@@ -224,7 +224,8 @@ class FormBuilder
         $field_name = ucfirst($field_type) . 'Type';
 
         // full class name
-        $class_name = '\P3in\Models\Types\\' . $field_name;
+        // @TODO: too vague, should be P3in\Models\FieldTypes\WhateverType
+        $class_name = '\P3in\Models\FieldTypes\\' . $field_name;
 
         // if no such class we dead
         if (!class_exists($class_name)) {
