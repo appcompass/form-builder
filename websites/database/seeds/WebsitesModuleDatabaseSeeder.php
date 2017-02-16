@@ -20,7 +20,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
 
             $websiteBuilder->setStorage('cp_root');
 
-            $users_management = ['url' => '', 'title' => 'Users Management', 'alt' => 'Users Management', 'new_tab' => false, 'clickable' => false, ];
+            // $users_management = ['url' => '', 'title' => 'Users Management', 'alt' => 'Users Management', 'new_tab' => false, 'clickable' => false, ];
             $web_properties = ['url' => '', 'title' => 'Web Properties', 'alt' => 'Web Properties', 'new_tab' => false, 'clickable' => false, ];
             $blog = ['url' => '', 'title' => 'Blog', 'alt' => 'Blog', 'new_tab' => false, 'clickable' => false, ];
             $media_management = ['url' => '', 'title' => 'Media Management', 'alt' => 'Media Management', 'new_tab' => false, 'clickable' => false, ];
@@ -43,13 +43,13 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             $forms = $websiteBuilder->addPage('Forms', 'forms');
 
             $websiteBuilder->addMenu('main_nav')
-                ->add($users_management, 1)->sub() // down 1
-                    ->add($users, 1)->icon('users')->sub() // down 1
+                ->add(['url' => '', 'title' => 'Users Management', 'alt' => 'Users Management'], 1)->unclickable()->sub()
+                    ->add($users, 1)->icon('users')->sub()
                         ->add($users_permissions, 1)
                         ->parent() // up 1
                     ->add($groups, 2)->icon('users')
-                    ->add($permissions, 3)->icon('lock')->parent() // up 1
-                ->add($web_properties, 2)->sub() // down 1
+                    ->add($permissions, 3)->icon('lock')->parent()
+                ->add($web_properties, 2)->unclickable()->sub()
                     ->add($websites, 1)->sub() // down 1
                         ->add($navigation, 1)
                         ->add($pages, 2)->icon('page')->sub() // down 1
@@ -62,40 +62,13 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                             ->parent()
                         ->parent()
                     ->parent()
-                ->add($media_management, 3)->sub()
+                ->add($media_management, 3)->unclickable()->sub()
                     ->add($galleries, 1)->icon('camera')
                     ->parent()
-                ->add($settings, 4)->sub()
+                ->add($settings, 4)->unclickable()->sub()
                     ->add($storage, 1)->icon('gear')
                     ->add($forms, 2)->icon('form');
 
-
-                // ->add($media_management, 3)
-                // ->add($settings, 4);
-
-            // $main_nav = $websiteBuilder->addMenu('main_nav');
-            // $user_management_item = $main_nav->add($users_management, 1);
-            // $user_item = $user_management_item->add($users, 1)->icon('user');
-            // $user_item->add($users_permissions, 1)->icon('user');
-            // $user_management_item->add($groups, 2)->icon('users');
-            // $user_management_item->add($permissions, 3)->icon('lock');
-
-            // $web_properties_item = $main_nav->add($web_properties, 2)->icon('globe');
-            // $websites_item = $web_properties_item->add($websites, 1);
-            // $websites_item->add($navigation, 1)->icon('bars');
-            // $pages_menuitem = $websites_item->add($pages, 2)->icon('page');
-            // $pages_menuitem->add($contents, 2)->icon('bars');
-            // $blog_menuitem = $websites_item->add($blog, 3)->icon('page');
-            // $blog_menuitem->add($blogEntries, 1)->icon('page');
-            // $blog_menuitem->add($blogCategories, 2)->icon('page');
-            // $blog_menuitem->add($blogTags, 3)->icon('page');
-
-            // $media_management_item = $main_nav->add($media_management, 3);
-            // $media_management_item->add($galleries, 1)->icon('camera');
-
-            // $settings_item = $main_nav->add($settings, 4);
-            // $settings_item->add($storage, 1)->icon('gear');
-            // $settings_item->add($forms, 2)->icon('form');
 
         })->getWebsite();
 

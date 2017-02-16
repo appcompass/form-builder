@@ -102,7 +102,8 @@ class MenuBuilder
 
         if (is_array($item)) {
 
-            $item = Link::create($item);
+            // relying on default values requires a fresh() copy of the model
+            $item = Link::create($item)->fresh();
 
         }
 
@@ -188,7 +189,7 @@ class MenuBuilder
 
         }
 
-        call_user_func([$this->menu_item, $method], $args[0]);
+        call_user_func_array([$this->menu_item, $method], $args);
 
         return $this;
     }
