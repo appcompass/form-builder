@@ -14,6 +14,7 @@ class MenuItem extends Model
         'title',
         'alt',
         'new_tab',
+        'clickable',
         'order'
     ];
 

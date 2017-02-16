@@ -6,7 +6,7 @@ Route::group([
 ], function ($router) {
     $router->post('login', 'AuthController@login');
     $router->get('logout', 'AuthController@logout')->middleware('auth:api');
-    $router->get('user', 'AuthController@user')->middleware('auth:api');
+    $router->get('user', 'AuthController@user')->middleware('auth');
 });
 
 Route::group([

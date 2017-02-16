@@ -21,7 +21,7 @@ class CreateMenuItems extends Migration
             $table->foreign('parent_id')->references('id')->on('menu_items')->onDelete('cascade');
             $table->string('title');
             $table->text('alt');
-            $table->boolean('new_tab');
+            $table->boolean('new_tab')->default(false);
             $table->string('url', 2083)->nullable();
             $table->integer('order')->unsigned()->nullable();
             $table->integer('req_perm')->unsigned()->nullable();
