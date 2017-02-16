@@ -43,16 +43,6 @@ class Website extends Model
      */
     public $appends = ['url'];
 
-    public function getAsFirstLevelConfig()
-    {
-        return [
-            'header',
-            'footer',
-            'deployment',
-            'meta',
-            'layouts',
-        ];
-    }
     /**
      * Pages
      *

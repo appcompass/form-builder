@@ -2,11 +2,12 @@
 
 namespace P3in\Controllers;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use P3in\Interfaces\WebsiteMenusRepositoryInterface;
+use P3in\Models\Link;
 use P3in\Models\MenuItem;
 use P3in\Models\Page;
-use P3in\Models\Link;
 
 class WebsiteMenusController extends AbstractChildController
 {
@@ -15,7 +16,7 @@ class WebsiteMenusController extends AbstractChildController
         $this->repo = $repo;
     }
 
-    public function show(Request $request, $parent, $model)
+    public function show(Request $request, Model $parent, Model $model)
     {
         return [
             'id' => $model->id,
@@ -36,7 +37,7 @@ class WebsiteMenusController extends AbstractChildController
         ];
     }
 
-    public function update(Request $request, $parent, $menu)
+    public function update(Request $request, Model $parent, Model $menu)
     {
         $menu_structure = $this->flatten($request->get('menu')['menu']);
 

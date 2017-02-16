@@ -2,8 +2,11 @@
 
 namespace P3in\Controllers;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use P3in\Interfaces\PageContentRepositoryInterface;
+// use P3in\Models\Page;
+// use P3in\Models\PageSectionContent;
 
 class PageContentController extends AbstractChildController
 {
@@ -13,7 +16,7 @@ class PageContentController extends AbstractChildController
         $this->repo = $repo;
     }
 
-    public function index(Request $request, $parent)
+    public function index(Request $request, Model $parent)
     {
         return [
             'data' => $parent->buildContentTree(true),
@@ -21,7 +24,7 @@ class PageContentController extends AbstractChildController
         ];
     }
 
-    public function update(Request $request, $parent, $model)
+    public function update(Request $request, Model $parent, Model $model)
     {
         if ($model->source) {
             foreach ($model->section->form->fields as $field) {
@@ -48,7 +51,7 @@ class PageContentController extends AbstractChildController
      *
      * @return     array   ( description_of_the_return_value )
      */
-    public function show($parent, $model)
+    public function show(Request $request, Model $parent, Model $model)
     {
         return $model->edit();
     }
