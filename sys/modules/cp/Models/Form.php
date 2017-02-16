@@ -104,8 +104,10 @@ class Form extends Model
         if (isset($this->id)) {
             $query->where('id', $this->id);
         }
-
-        return $this->filterBySub($query, 'fields', 'to_list', true);
+        return $query->with(['fields' => function($q){
+            $q->config('to_list', true);
+        }]);
+        // return $this->filterBySub($query, 'fields', 'to_list', true);
     }
 
     /**
@@ -118,7 +120,10 @@ class Form extends Model
             $query->where('id', $this->id);
         }
 
-        return $this->filterBySub($query, 'fields', 'to_edit', true);
+        return $query->with(['fields' => function($q){
+            $q->config('to_edit', true);
+        }]);
+        // return $this->filterBySub($query, 'fields', 'to_edit', true);
     }
 
     /**
@@ -143,18 +148,18 @@ class Form extends Model
         return $field->form()->save($this);
     }
 
-    /**
-     *
-     */
-    private function filterBySub(Builder $query, $sub, $param, $val)
-    {
-        return $query->with([
+    // /**
+    //  *
+    //  */
+    // private function filterBySub(Builder $query, $sub, $param, $val)
+    // {
+    //     return $query->with([
 
-            $sub => function ($query) use ($param, $val) {
-                $query->where($param, $val);
-            }
-        ]);
-    }
+    //         $sub => function ($query) use ($param, $val) {
+    //             $query->where($param, $val);
+    //         }
+    //     ]);
+    // }
 
     /**
      * Builds a menu tree recursively.

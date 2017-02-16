@@ -231,7 +231,7 @@ class WebsiteBuilder
     // breaking this up a bit would prob be a good idea.
     public function deploy()
     {
-        if (!$depConfig = $this->website->deployment) {
+        if (!$depConfig = $this->website->config->deployment) {
             throw new Exception('The website does not have deployment settings configured');
         }
 
@@ -279,8 +279,8 @@ class WebsiteBuilder
         }
 
         // now lets get the website layout(s)
-        if (!empty($this->website->layouts)) {
-            foreach ($this->website->layouts as $layout => $data) {
+        if (!empty($this->website->config->layouts)) {
+            foreach ($this->website->config->layouts as $layout => $data) {
                 $manager->publishFile($disk, '/layouts/'.$layout.'.vue', $data, true);
             }
         }

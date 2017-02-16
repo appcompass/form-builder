@@ -29,11 +29,6 @@ class PageSectionContent extends Model
 
     // protected $with = ['section'];
 
-    public function getAsFirstLevelConfig()
-    {
-        return [];
-    }
-
     /**
      *
      */
