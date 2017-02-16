@@ -28,6 +28,5 @@ class DatabaseSeeder extends Seeder
         factory(User::class, 100)->create()->each(function ($user) {
             $user->permissions()->saveMany(Permission::inRandomOrder()->limit(3)->get());
         });
-
     }
 }

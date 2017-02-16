@@ -3,15 +3,11 @@
 namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use P3in\Models\Types\BaseField;
-use League\Flysystem\MountManager;
-use League\Flysystem\Filesystem as Flysystem;
-use League\Flysystem\Adapter\Local as LocalAdapter;
+use P3in\Models\Storage;
+use P3in\Models\FieldTypes\BaseField;
 
 class Fieldtype extends Model
 {
-    const COMPONENTS_LIB_PATH = /* base_path */ '/../cp/src/components';
-
     // public $table = 'fieldtypes';
 
     public $fillable = [
@@ -44,13 +40,10 @@ class Fieldtype extends Model
         return $instance->name;
     }
 
+    // @TODO: we have a view template that we can abstract and use for this currently in websites module.
     private static function renderComponents()
     {
-        $manager = new MountManager([
-            // @TODO in case we wanna get rid of the table and work on a 100% file based instance
-            // 'source' => new Flysystem(new LocalAdapter(base_path() . self::PUBLIC_COMPONENTS_FOLDER)),
-            'to' => new Flysystem(new LocalAdapter(base_path() . self::COMPONENTS_LIB_PATH)),
-        ]);
+        $disk = Storage::diskByName('cp_components');
 
         $importer_block = [];
         $exporter_block = [];
@@ -61,8 +54,8 @@ class Fieldtype extends Model
             $exporter_block[] = "export var $component->name = {$component->name}Type";
         }
 
-        $content = implode("\n", array_merge($importer_block, $exporter_block)); // . "\n" . implode("\n", $exporter_block) . "\n";
+        $content = implode("\n", array_merge($importer_block, $exporter_block))."\n"; // . "\n" . implode("\n", $exporter_block) . "\n";
 
-        $manager->put('to://' . 'Components.js', $content . "\n");
+        $disk->put('Components.js', $content);
     }
 }

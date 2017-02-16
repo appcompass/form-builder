@@ -3,13 +3,17 @@
 namespace P3in;
 
 use P3in\BaseModule;
+use P3in\Models\Storage;
+use P3in\PublishFiles;
 
 class CpModule extends BaseModule
 {
     public $module_name = 'cp';
 
-    protected $publishesComponents = [
-        'Models/templates/' => '/FormBuilder',
+    protected $publishes = [
+        // publishes to disk instances by name.
+        'Public/' => 'cp_root',
+        'Models/FieldTypes/templates/' => 'cp_form_fields',
     ];
 
     public function __construct()
@@ -19,13 +23,11 @@ class CpModule extends BaseModule
 
     public function bootstrap()
     {
-        // \Log::info('Bootstrapping <Cp> Module');
+        \Log::info('Bootstrapping <Cp> Module');
     }
 
     public function register()
     {
-        // \Log::info('Registering <Cp> Module');
-        // @TODO load stuff here. like caching routes etc
-        // $this->setSeeders();
+        \Log::info('Registering <Cp> Module');
     }
 }
