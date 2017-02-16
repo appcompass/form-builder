@@ -6,6 +6,6 @@ use P3in\Models\MenuItem;
 
 interface Linkable
 {
-    public function makeMenuItem(): MenuItem;
+    // public function makeMenuItem($order = 0);
     public function getTypeAttribute();
 }

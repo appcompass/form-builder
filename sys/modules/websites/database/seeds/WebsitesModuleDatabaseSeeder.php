@@ -33,7 +33,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             $websites = $websiteBuilder->addPage('Websites', 'websites');
             $navigation = $websites->addChild('Navigation', 'menus');
             $pages = $websites->addChild('Pages', 'pages');
-            $contents = $pages->addChild('Contents', 'contents');
+            $contents = $pages->addChild('Content', 'content');
             $blogEntries = $websites->addChild('Entries', 'blog-entries');
             $blogCategories = $websites->addChild('Categories', 'blog-categories');
             $blogTags = $websites->addChild('Tags', 'blog-tags');
@@ -42,30 +42,60 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             $storage = $websiteBuilder->addPage('Storage', 'storage');
             $forms = $websiteBuilder->addPage('Forms', 'forms');
 
-            $main_nav = $websiteBuilder->addMenu('main_nav');
+            $websiteBuilder->addMenu('main_nav')
+                ->add($users_management, 1)->sub() // down 1
+                    ->add($users, 1)->icon('users')->sub() // down 1
+                        ->add($users_permissions, 1)
+                        ->parent() // up 1
+                    ->add($groups, 2)->icon('users')
+                    ->add($permissions, 3)->icon('lock')->parent() // up 1
+                ->add($web_properties, 2)->sub() // down 1
+                    ->add($websites, 1)->sub() // down 1
+                        ->add($navigation, 1)
+                        ->add($pages, 2)->icon('page')->sub() // down 1
+                            ->add($contents, 1)
+                            ->parent()
+                        ->add($blog, 3)->icon('page') ->sub()
+                            ->add($blogEntries, 1)
+                            ->add($blogCategories, 2)
+                            ->add($blogTags, 3)
+                            ->parent()
+                        ->parent()
+                    ->parent()
+                ->add($media_management, 3)->sub()
+                    ->add($galleries, 1)->icon('camera')
+                    ->parent()
+                ->add($settings, 4)->sub()
+                    ->add($storage, 1)->icon('gear')
+                    ->add($forms, 2)->icon('form');
 
-            $user_management_item = $main_nav->addItem($users_management, 1);
-            $user_item = $user_management_item->addItem($users, 1)->setIcon('user');
-            $user_item->addItem($users_permissions, 1)->setIcon('user');
-            $user_management_item->addItem($groups, 2)->setIcon('users');
-            $user_management_item->addItem($permissions, 3)->setIcon('lock');
 
-            $web_properties_item = $main_nav->addItem($web_properties, 2)->setIcon('globe');
-            $websites_item = $web_properties_item->addItem($websites, 1);
-            $websites_item->addItem($navigation, 1)->setIcon('bars');
-            $pages_menuitem = $websites_item->addItem($pages, 2)->setIcon('page');
-            $pages_menuitem->addItem($contents, 2)->setIcon('bars');
-            $blog_menuitem = $websites_item->addItem($blog, 3)->setIcon('page');
-            $blog_menuitem->addItem($blogEntries, 1)->setIcon('page');
-            $blog_menuitem->addItem($blogCategories, 2)->setIcon('page');
-            $blog_menuitem->addItem($blogTags, 3)->setIcon('page');
+                // ->add($media_management, 3)
+                // ->add($settings, 4);
 
-            $media_management_item = $main_nav->addItem($media_management, 3);
-            $media_management_item->addItem($galleries, 1)->setIcon('camera');
+            // $main_nav = $websiteBuilder->addMenu('main_nav');
+            // $user_management_item = $main_nav->add($users_management, 1);
+            // $user_item = $user_management_item->add($users, 1)->icon('user');
+            // $user_item->add($users_permissions, 1)->icon('user');
+            // $user_management_item->add($groups, 2)->icon('users');
+            // $user_management_item->add($permissions, 3)->icon('lock');
 
-            $settings_item = $main_nav->addItem($settings, 4);
-            $settings_item->addItem($storage, 1)->setIcon('gear');
-            $settings_item->addItem($forms, 2)->setIcon('form');
+            // $web_properties_item = $main_nav->add($web_properties, 2)->icon('globe');
+            // $websites_item = $web_properties_item->add($websites, 1);
+            // $websites_item->add($navigation, 1)->icon('bars');
+            // $pages_menuitem = $websites_item->add($pages, 2)->icon('page');
+            // $pages_menuitem->add($contents, 2)->icon('bars');
+            // $blog_menuitem = $websites_item->add($blog, 3)->icon('page');
+            // $blog_menuitem->add($blogEntries, 1)->icon('page');
+            // $blog_menuitem->add($blogCategories, 2)->icon('page');
+            // $blog_menuitem->add($blogTags, 3)->icon('page');
+
+            // $media_management_item = $main_nav->add($media_management, 3);
+            // $media_management_item->add($galleries, 1)->icon('camera');
+
+            // $settings_item = $main_nav->add($settings, 4);
+            // $settings_item->add($storage, 1)->icon('gear');
+            // $settings_item->add($forms, 2)->icon('form');
 
         })->getWebsite();
 
@@ -96,13 +126,11 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 ->searchable();
 
             $builder->fieldset('Configuration', 'config', function(FormBuilder $confBuilder){
-                $confBuilder->select('Header', 'header')
-                ->dynamic(Section::class, function(FieldSource $source) {
+                $confBuilder->select('Header', 'header')->dynamic(Section::class, function(FieldSource $source) {
                     $source->where('type', 'header');
                 });
 
-                $confBuilder->select('Footer', 'footer')
-                ->dynamic(Section::class, function(FieldSource $source) {
+                $confBuilder->select('Footer', 'footer')->dynamic(Section::class, function(FieldSource $source) {
                     $source->where('type', 'footer');
                 });
 
@@ -121,28 +149,13 @@ class WebsitesModuleDatabaseSeeder extends Seeder
         DB::statement("DELETE FROM forms WHERE name = 'pages'");
 
         $form = FormBuilder::new('pages', function (FormBuilder $builder) {
-            $builder->string('Page Title', 'title')
-                ->list()
-                ->validation(['required'])
-                ->sortable()
-                ->searchable();
-            $builder->string('Slug', 'slug')->list(false)
-                ->validation(['required'])
-                ->sortable()
-                ->searchable();
-
-            $builder->select('Parent', 'parent_id')
-                ->list(false)
-                ->dynamic(\P3in\Models\Page::class, function(FieldSource $source) {
+            $builder->string('Page Title', 'title')->list()->validation(['required'])->sortable()->searchable();
+            $builder->select('Parent', 'parent_id')->list(false)->dynamic(\P3in\Models\Page::class, function(FieldSource $source) {
                     $source->limit(4);
                     $source->where('website_id', \P3in\Models\Website::whereHost(env('ADMIN_WEBSITE_HOST'))->first()->id);
                 });
-
-            $builder->string('Website', 'website_id')
-                ->list(false)
-                ->validation(['required']); //->dynamic('\P3in\Models\Website');
-        })
-            ->linkToResources(['pages.show', 'websites.pages.index', 'websites.pages.create', 'websites.pages.show'])
+            $builder->string('Website', 'website_id')->list(false)->validation(['required']);
+        })->linkToResources(['pages.show', 'websites.pages.index', 'websites.pages.create', 'websites.pages.show'])
             ->getForm();
 
         WebsiteBuilder::edit($cp->id)->linkForm($form);
@@ -159,11 +172,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
         DB::statement("DELETE FROM forms WHERE name = 'menus'");
 
         FormBuilder::new('menus', function (FormBuilder $builder) {
-            $builder->string('Name', 'name')
-                ->list()
-                ->validation(['required'])
-                ->sortable()
-                ->searchable();
+            $builder->string('Name', 'name')->list()->validation(['required'])->sortable()->searchable();
         })->linkToResources(['websites.menus.index', 'websites.menus.create']);
 
         DB::statement("DELETE FROM forms WHERE name = 'menus-editor'");

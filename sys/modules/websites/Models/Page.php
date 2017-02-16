@@ -316,10 +316,11 @@ class Page extends Model implements Linkable
      *
      * @return     MenuItem
      */
-    public function makeMenuItem($order = 0): MenuItem
+    public function makeMenuItem($order = 0)
     {
 
         // @TODO find a way to auto-determine order based on previous insertions
+        \Log::info('From Page: ' . $order);
 
         $item = new MenuItem([
             'title' => $this->title,

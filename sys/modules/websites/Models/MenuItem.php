@@ -120,9 +120,9 @@ class MenuItem extends Model
      *
      * @return     <type>     MenuItem generator
      */
-    public static function fromModel($model)
+    public static function fromModel($model, $order = 0)
     {
-        return $model->makeMenuItem();
+        return $model->makeMenuItem($order);
     }
 
     /**
@@ -145,11 +145,19 @@ class MenuItem extends Model
         return $this;
     }
 
+    /**
+     * Adds a child.
+     *
+     * @param      MenuItem  $item   The item
+     *
+     * @return     <type>    ( description_of_the_return_value )
+     */
     public function addChild(MenuItem $item)
     {
         $this->children()->save($item);
         return $this;
     }
+
     /**
      * Makes a MenuItem unclickable
      *
