@@ -320,7 +320,6 @@ class Page extends Model implements Linkable
     {
 
         // @TODO find a way to auto-determine order based on previous insertions
-        \Log::info('From Page: ' . $order);
 
         $item = new MenuItem([
             'title' => $this->title,

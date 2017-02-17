@@ -14,11 +14,11 @@ table.table.is-striped
           span.is-primary(
             v-else
             @click="$parent.toggleSorter(field)",
-            :class="{'is-active': $parent.sorters[field.name], 'asc': $parent.sorters[field.name] === 'ASC', 'desc': $parent.sorters[field.name] === 'DESC', 'is-sortable': field.sortable}"
+            :class="{'is-active': $parent.sorters[field.name], 'asc': $parent.sorters[field.name] === 'ASC', 'desc': $parent.sorters[field.name] === 'DESC', 'is-sortable': field.config.sortable}"
           ) {{ field.label }}
         .column.is-1
           span.filter-toggle.fa.is-small.pull-right(
-            v-if="field.searchable",
+            v-if="field.config.searchable",
             style="margin-top: 5px; font-size: 1rem"
             @click="$parent.toggleEdit(field)",
             :class="{'fa-search': forms.edit.indexOf(field.id) === -1, 'fa-close': forms.edit.indexOf(field.id) > -1}"
