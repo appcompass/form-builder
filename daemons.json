@@ -34,7 +34,8 @@
     "args": ["queue:listen", "--tries=1", "--sleep=1", "--timeout=120"],
     "exec_interpreter": "php",
     "exec_mode"  : "fork_mode",
-    "watch": true,
+    "max_memory_restart" : "1G",
+    "watch": false,
     "merge_logs": true,
     "cwd": "/usr/share/nginx/api/sys/",
   }]
