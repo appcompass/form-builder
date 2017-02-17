@@ -67,7 +67,9 @@ class WebsiteMenusController extends AbstractChildController
     {
         // item is a MenuItem (has the polymorphic ref)
         if (isset($item['navigatable_id'])) {
+
             $menuitem = MenuItem::findOrFail($item['id']);
+
         } else {
 
             // doing the extra mile here to greatly simplify the frontend stuff
@@ -103,7 +105,9 @@ class WebsiteMenusController extends AbstractChildController
         $res = [];
 
         if (is_null($order)) {
+
             $order = 0;
+
         }
 
         foreach ($menu as $branch) {
@@ -120,7 +124,9 @@ class WebsiteMenusController extends AbstractChildController
             $res[] = $menuitem;
 
             if (count($children)) {
+
                 $res = array_merge($res, $this->flatten($children, $menuitem->id, $order));
+
             }
         }
 

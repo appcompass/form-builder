@@ -17,9 +17,6 @@ class WebsiteMenusRepository extends AbstractChildRepository implements WebsiteM
         $this->parent = $parent;
 
         $this->relationName = 'menus';
-
-        // relation from parent to child
-        // $this->parentToChild = 'pages';
     }
 
     public function findByPrimaryKey($id)
