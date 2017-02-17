@@ -27,6 +27,7 @@ class PageContentController extends AbstractChildController
     public function update(Request $request, Model $parent, Model $model)
     {
         if ($model->source) {
+
             foreach ($model->section->form->fields as $field) {
 
                 if ($field->type !== 'Dynamic') {

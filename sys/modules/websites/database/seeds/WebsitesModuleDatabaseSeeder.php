@@ -117,11 +117,12 @@ class WebsitesModuleDatabaseSeeder extends Seeder
 
         $form = FormBuilder::new('pages', function (FormBuilder $builder) {
             $builder->string('Page Title', 'title')->list()->validation(['required'])->sortable()->searchable();
+            $builder->string('Slug', 'slug')->list(false)->validation(['required']);
             $builder->select('Parent', 'parent_id')->list(false)->dynamic(\P3in\Models\Page::class, function(FieldSource $source) {
                     $source->limit(4);
                     $source->where('website_id', \P3in\Models\Website::whereHost(env('ADMIN_WEBSITE_HOST'))->first()->id);
                 });
-            $builder->string('Website', 'website_id')->list(false)->validation(['required']);
+            // $builder->string('Website', 'website_id')->list(false)->validation(['required']);
         })->linkToResources(['pages.show', 'websites.pages.index', 'websites.pages.create', 'websites.pages.show'])
             ->getForm();
 

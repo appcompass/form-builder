@@ -249,7 +249,7 @@ class PageSectionContent extends Model
         }
 
         return [
-            'form' => $this->section->form->render(),
+            'form' => $this->section->form ? $this->section->form->render() : null,
             'content' => $content
         ];
     }

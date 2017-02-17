@@ -128,6 +128,7 @@ export default {
           this.pagination = _.omit(response.data.collection.data, ['data'])
           this.collection = response.data.collection
           this.resource = this.$resource(api + this.list.resource)
+          this.resource = this.$resource(api + this.$route.path.slice(1))
         }, (response) => {
           this.loading = false
           if (!Auth.user.authenticated) {
@@ -138,7 +139,9 @@ export default {
     },
     remove (id) {
       swal({ title: 'Are you sure?', text: 'You will not be able to recover this', type: 'warning', showCancelButton: true, closeOnConfirm: false }, () => {
-        this.resource.delete({id: id})
+        var api = process.env.API_SERVER
+        this.$http.delete(api + this.$route.path.slice(1) + '/' + id)
+        // this.resource.delete(id)
           .then((response) => {
             swal({title: 'Success', text: response.data.message, type: 'success'}, () => {
               return this.update()
@@ -163,7 +166,7 @@ export default {
       }
     },
     toggleSorter (field) {
-      if (!field.sortable) {
+      if (!field.config.sortable) {
         return
       }
       let sorter = this.sorters[field.name]
