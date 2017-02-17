@@ -17,6 +17,8 @@ class GalleriesRepository extends AbstractRepository implements GalleriesReposit
         $this->model = $model;
 
         // @TODO not sure about this, we need a way to make sure the model is injected what it needs for create
+        //      how about we post into User/Gallery? -f
+        //      that or -in this specific instance- we know we want the logged in user, so this repository should be in charge of that -f
         $this->requires = User::class;
     }
 
