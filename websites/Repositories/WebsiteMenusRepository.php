@@ -5,6 +5,7 @@ namespace P3in\Repositories;
 use P3in\Repositories\AbstractChildRepository;
 use P3in\Interfaces\WebsiteMenusRepositoryInterface;
 use P3in\Models\Menu;
+use P3in\Models\Link;
 use P3in\Models\Website;
 
 class WebsiteMenusRepository extends AbstractChildRepository implements WebsiteMenusRepositoryInterface
@@ -19,5 +20,32 @@ class WebsiteMenusRepository extends AbstractChildRepository implements WebsiteM
 
         // relation from parent to child
         // $this->parentToChild = 'pages';
+    }
+
+    public function findByPrimaryKey($id)
+    {
+        $model = $this->make()
+            ->builder
+            ->where($this->model->getTable() . '.' . $this->model->getKeyName(), $id)
+            ->firstOrFail();
+
+        return [
+            'id' => $model->id,
+            'menu' => [
+                'menu' => $model->render(),
+                'repo' => [
+                    'pages' => $this->parent->pages->each(function ($item) {
+                        $item->children = [];
+                        $item->type = 'Page';
+                    }),
+                    'links' => Link::all()->each(function ($item) {
+                        $item->children = [];
+                        $item->type = 'Link';
+                    })
+                ],
+                'deletions' => []
+            ]
+        ];
+
     }
 }

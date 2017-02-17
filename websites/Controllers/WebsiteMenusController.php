@@ -16,27 +16,6 @@ class WebsiteMenusController extends AbstractChildController
         $this->repo = $repo;
     }
 
-    public function show(Request $request, Model $parent, Model $model)
-    {
-        return [
-            'id' => $model->id,
-            'menu' => [
-                'menu' => $model->render(),
-                'repo' => [
-                    'pages' => $parent->pages->each(function ($item) {
-                        $item->children = [];
-                        $item->type = 'Page';
-                    }),
-                    'links' => Link::all()->each(function ($item) {
-                        $item->children = [];
-                        $item->type = 'Link';
-                    })
-                ],
-                'deletions' => []
-            ]
-        ];
-    }
-
     public function update(Request $request, Model $parent, Model $menu)
     {
         $menu_structure = $this->flatten($request->get('menu')['menu']);
