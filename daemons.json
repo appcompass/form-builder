@@ -4,7 +4,7 @@
     "name": "plus3-website",
     "script": "npm",
     "args": ["run", "start"],
-    "watch": true,
+    "watch": false,
     "node_args": "--harmony",
     "merge_logs": true,
     "cwd": "/usr/share/nginx/api/websites/wwwplus3interactivecom/",
