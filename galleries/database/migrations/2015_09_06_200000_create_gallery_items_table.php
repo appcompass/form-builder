@@ -19,7 +19,7 @@ class CreateGalleryItemsTable extends Migration
             $table->integer('storage_id')->nullable();
             $table->foreign('storage_id')
                 ->references('id')
-                ->on('storages');
+                ->on('storage_configs');
 
             $table->integer('gallery_id')->unsigned();
             $table->foreign('gallery_id')

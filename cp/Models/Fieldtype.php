@@ -3,7 +3,7 @@
 namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use P3in\Models\Storage;
+use P3in\Storage;
 use P3in\Models\FieldTypes\BaseField;
 
 class Fieldtype extends Model
@@ -43,7 +43,7 @@ class Fieldtype extends Model
     // @TODO: we have a view template that we can abstract and use for this currently in websites module.
     private static function renderComponents()
     {
-        $disk = Storage::diskByName('cp_components');
+        $disk = Storage::disk('cp_components');
 
         $importer_block = [];
         $exporter_block = [];

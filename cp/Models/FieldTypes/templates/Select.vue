@@ -1,6 +1,6 @@
 <template lang="jade">
 div
-  {{ data }}
+  | {{ data }}
 </template>
 
 <script>

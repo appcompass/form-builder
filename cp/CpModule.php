@@ -3,7 +3,6 @@
 namespace P3in;
 
 use P3in\BaseModule;
-use P3in\Models\Storage;
 use P3in\PublishFiles;
 
 class CpModule extends BaseModule

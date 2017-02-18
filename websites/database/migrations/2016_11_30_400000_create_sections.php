@@ -16,11 +16,14 @@ class CreateSections extends Migration
         // @TODO this will be merged with cp_fieldtypes
         Schema::create('sections', function (Blueprint $table) {
             $table->increments('id');
-
             $table->string("name");
             $table->string("template");
             $table->string('type'); //container, section, (form?), etc?
             $table->json("config")->nullable();
+            // @TODO: do we want to have section storage?
+            // Technically these reference files so the question must be asked.
+            // $table->integer('storage_id')->nullable();
+            // $table->foreign('storage_id')->references('id')->on('storage_configs');
             $table->timestamps();
         });
     }

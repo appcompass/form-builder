@@ -5,7 +5,7 @@ namespace P3in\Seeders;
 use DB;
 use Illuminate\Database\Seeder;
 use P3in\Builders\FormBuilder;
-use P3in\Models\Storage;
+use P3in\Models\StorageConfig;
 use P3in\Models\StorageType;
 
 class CpStoragesSeeder extends Seeder
@@ -40,10 +40,22 @@ class CpStoragesSeeder extends Seeder
 
         $cp_root = (config('app.cp_root'));
 
-        Storage::createLocal('cp_root', $cp_root);
-        Storage::createLocal('cp_components', $cp_root.'/src/components');
-        Storage::createLocal('cp_layout_types', $cp_root.'/src/components/LayoutTypes');
-        Storage::createLocal('cp_form_fields', $cp_root.'/src/components/FormBuilder');
+        $local->createDrive('cp_root', [
+            'driver' => 'local',
+            'root' => $cp_root,
+        ]);
+        $local->createDrive('cp_components', [
+            'driver' => 'local',
+            'root' => $cp_root.'/src/components',
+        ]);
+        $local->createDrive('cp_layout_types', [
+            'driver' => 'local',
+            'root' => $cp_root.'/src/components/LayoutTypes',
+        ]);
+        $local->createDrive('cp_form_fields', [
+            'driver' => 'local',
+            'root' => $cp_root.'/src/components/FormBuilder',
+        ]);
 
         FormBuilder::new('LocalStorage', function (FormBuilder $fb) {
             $fb->string('Name', 'name')->validation(['required']);
