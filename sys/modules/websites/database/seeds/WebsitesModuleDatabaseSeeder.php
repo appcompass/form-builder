@@ -62,7 +62,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                     ->parent()
                 ->add(['title' => 'Settings', 'alt' => 'Settings'], 4)->sub()
                     ->add($storage, 1)->icon('gear')
-                    ->add($forms, 2)->icon('form');
+                    ->add($forms, 2)->icon('file-text-o');
         })->getWebsite();
 
 
