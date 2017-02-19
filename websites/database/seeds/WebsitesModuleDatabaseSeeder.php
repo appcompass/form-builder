@@ -49,7 +49,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                         ->add($pages, 2)->icon('page')->sub()
                             ->add($contents, 1)
                             ->parent()
-                        ->add(['url' => '', 'title' => 'Blog', 'alt' => 'Blog'], 3)->icon('page') ->sub()
+                        ->add(['url' => '/blog', 'title' => 'Blog', 'alt' => 'Blog'], 3)->icon('page') ->sub()
                             ->add($blogEntries, 1)
                             ->add($blogCategories, 2)
                             ->add($blogTags, 3)
