@@ -49,13 +49,13 @@ class Photo extends ModularBaseModel implements GalleryItemInterface
         'photoable_id',
         'created_at',
         'updated_at',
-        'options'
+        // 'options'
     ];
 
     /**
     * Hidden properties
     */
-    protected $hidden = [];
+    protected $hidden = ['meta'];
 
     /**
     * With
