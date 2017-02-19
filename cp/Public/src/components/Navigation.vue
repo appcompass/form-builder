@@ -1,21 +1,27 @@
 <template lang="jade">
 div
+  p.menu-label
+    router-link(to="/" exact) Dashboard
   aside.menu(v-for="cat in navigation.full")
-    p.menu-label {{ cat.title }}
-    ul.menu-list
+    p.menu-label(v-if="!cat.url") {{ cat.title }}
+    router-link(v-bind:to="cat.url" exact, v-if="cat.url") {{ cat.title }}
+    ul.menu-list.main-nav
+      li
       li(v-for="item in cat.children")
         router-link(v-bind:to="item.url")
+          span.icon.is-small
+            i.fa.is-small(:class="'fa-' + item.icon")
           span {{ item.title }}
 </template>
 
 <script>
-import State from './State'
+import Navigation from './State'
 
 export default {
   name: 'Navigation',
   data () {
     return {
-      navigation: State
+      navigation: Navigation
     }
   }
 }
@@ -27,4 +33,9 @@ export default {
   margin-top: 1rem
 .router-link-active
   color: $primary-color !important
+.main-nav
+  .icon
+    margin-right: 10px
+    i.fa
+      color: #ddd
 </style>

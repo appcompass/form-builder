@@ -44,7 +44,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                     ->add($groups, 2)->icon('users')
                     ->add($permissions, 3)->icon('lock')->parent()
                 ->add(['title' => 'Web Properties', 'alt' => 'Web Properties'], 2)->sub()
-                    ->add($websites, 1)->sub()
+                    ->add($websites, 1)->icon('globe')->sub()
                         ->add($navigation, 1)
                         ->add($pages, 2)->icon('page')->sub()
                             ->add($contents, 1)
@@ -62,8 +62,6 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 ->add(['title' => 'Settings', 'alt' => 'Settings'], 4)->sub()
                     ->add($storage, 1)->icon('gear')
                     ->add($forms, 2)->icon('form');
-
-
         })->getWebsite();
 
 
