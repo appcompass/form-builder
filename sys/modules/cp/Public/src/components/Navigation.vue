@@ -1,10 +1,8 @@
 <template lang="jade">
 div
-  p.menu-label
-    router-link(to="/" exact) Dashboard
   aside.menu(v-for="cat in navigation.full")
     p.menu-label(v-if="!cat.url") {{ cat.title }}
-    router-link(v-bind:to="cat.url" exact, v-if="cat.url") {{ cat.title }}
+    router-link.menu-label(v-bind:to="cat.url" exact, v-if="cat.url") {{ cat.title }}
     ul.menu-list.main-nav
       li
       li(v-for="item in cat.children")

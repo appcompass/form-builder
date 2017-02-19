@@ -37,6 +37,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             $forms = $websiteBuilder->addPage('Forms', 'forms');
 
             $websiteBuilder->addMenu('main_nav')
+                ->add(['title' => 'Dashboard', 'url' => '/', 'alt' => ''], 0)
                 ->add(['title' => 'Users Management', 'alt' => 'Users Management'], 1)->sub()
                     ->add($users, 1)->icon('users')->sub()
                         ->add($users_permissions, 1)
