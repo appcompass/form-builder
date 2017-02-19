@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use P3in\Builders\FormBuilder;
 use P3in\Models\StorageConfig;
 use P3in\Models\StorageType;
+use P3in\Models\Form;
 
 class CpStoragesSeeder extends Seeder
 {
@@ -17,6 +18,8 @@ class CpStoragesSeeder extends Seeder
      */
     public function run()
     {
+        StorageType::whereIn('name', ['local', 'sftp', 'ftp', 'rackspace', 's3'])->delete();
+
         // set the default supported storage types and their forms.
         $local = StorageType::create([
             'name' => 'local',
@@ -56,6 +59,8 @@ class CpStoragesSeeder extends Seeder
             'driver' => 'local',
             'root' => $cp_root.'/src/components/FormBuilder',
         ]);
+
+        Form::whereIn('forms.name', ['LocalStorage', 'SftpStorage', 'FtpStorage', 'RackspaceStorage', 'S3Storage'])->delete();
 
         FormBuilder::new('LocalStorage', function (FormBuilder $fb) {
             $fb->string('Name', 'name')->validation(['required']);

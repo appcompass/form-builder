@@ -101,14 +101,15 @@ class MenuItem extends Model
      */
     public function setUrlAttribute($url)
     {
-        if (get_class($this->navigatable) !== Link::class) {
+
+        // this affects item creation, so we only care if navigatable is set
+        if (isset($this->navigatable) && get_class($this->navigatable) !== Link::class) {
 
             throw new \Exception('This item url cannot be set, item is not a Link instance.');
 
         }
 
         $this->attributes['url'] = $url;
-
 
     }
 
