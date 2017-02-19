@@ -23,18 +23,15 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
      */
     public function run()
     {
+        // this moves here otherwise we can't unlink storage instances
+        DB::table('websites')->where('host', 'www.plus3interactive.com')->delete();
+
         $this->call(Plus3websiteStoragesSeeder::class);
         $this->call(Plus3PeopleSeeder::class);
 
         // @TODO: for santiy sake, lets break up this file.
         DB::statement('TRUNCATE TABLE sections RESTART IDENTITY CASCADE');
 
-        // Website Builder API Design
-
-        // field type ->link() allows the admin to select page || select link || create new link.
-        // field validation should match exactly: https://laravel.com/docs/5.3/validation#available-validation-rules
-
-        DB::table('websites')->where('host', 'www.plus3interactive.com')->delete();
         DB::table('forms')->whereIn('name', [
             'SiteHeader',
             'SiteFooter',

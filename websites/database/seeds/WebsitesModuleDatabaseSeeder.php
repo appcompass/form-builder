@@ -39,7 +39,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             $websiteBuilder->addMenu('main_nav')
                 ->add(['title' => 'Dashboard', 'url' => '/', 'alt' => ''], 0)
                 ->add(['title' => 'Users Management', 'alt' => 'Users Management'], 1)->sub()
-                    ->add($users, 1)->icon('users')->sub()
+                    ->add($users, 1)->icon('user')->sub()
                         ->add($users_permissions, 1)
                         ->parent()
                     ->add($groups, 2)->icon('users')

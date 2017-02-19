@@ -5,7 +5,7 @@ namespace P3in\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use P3in\Models\StorageType;
-
+use P3in\Models\StorageConfig;
 
 class Plus3websiteStoragesSeeder extends Seeder
 {
@@ -17,6 +17,8 @@ class Plus3websiteStoragesSeeder extends Seeder
      */
     public function run()
     {
+        StorageConfig::whereIn('name', ['plus3website', 'plus3website_images'])->delete();
+
         $local = StorageType::getType('local');
 
         $local->createDrive('plus3website', [

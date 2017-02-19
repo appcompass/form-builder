@@ -66,7 +66,7 @@ class MenuBuilder
      *
      * @return     MenuBuilder  MenuBuilder instance
      */
-    public static function edit($menu, $parent = null)
+    public static function edit($menu, Closure $closure = null, $parent = null): MenuBuilder
     {
         if (!$menu instanceof Menu && !is_int($menu)) {
             throw new \Exception('Must pass id or menu instance');
@@ -76,8 +76,13 @@ class MenuBuilder
             $menu = Menu::findOrFail($menu);
         }
 
-
         $instance = (new static($menu))->setParent($parent);
+
+        if (!is_null($closure)) {
+
+            $closure($this);
+
+        }
 
         return $instance;
     }
@@ -150,7 +155,7 @@ class MenuBuilder
      */
     public function sub()
     {
-        return MenuBuilder::edit($this->menu, $this);
+        return MenuBuilder::edit($this->menu, null, $this);
     }
 
     /**
