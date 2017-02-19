@@ -3,12 +3,13 @@
 namespace P3in\Builders;
 
 use Closure;
-use P3in\Builders\PageBuilder;
+use P3in\Models\Page;
 use P3in\Models\Link;
 use P3in\Models\Menu;
 use P3in\Models\MenuItem;
-use P3in\Models\Page;
 use P3in\Models\Website;
+use P3in\Builders\PageBuilder;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class MenuBuilder
 {
@@ -57,7 +58,7 @@ class MenuBuilder
     }
 
     /**
-     * edit
+     * edits a menu
      *
      * @param      <type>       $menu  The menu being edited
      *
@@ -201,24 +202,79 @@ class MenuBuilder
      */
     public function drop($item)
     {
-        if (is_int($item)) {
-            $menu_item = $this->menu->items()->where('id', $item)->firstOrFail();
-        } elseif ($item instanceof MenuItem) {
-            $menu_item = $this->menu->items()->where('id', $item->id)->firstOrFail();
-        }
+        $menu_item = $this->findItem($item);
 
         if ($menu_item->delete()) {
+
             return true;
+
         } else {
-            throw new \Exception("Errors while removing MenuItem");
+
+            ; // @TODO meh -f
+
         }
+    }
+
+    /**
+     * Edit a related MenuItem
+     *
+     * @param      <type>      $item   The item
+     *
+     * @throws     \Exception  (description)
+     *
+     * @return     <type>      ( description_of_the_return_value )
+     */
+    public function item($item): MenuItem
+    {
+        return $this->findItem($item);
+    }
+
+    /**
+     * Finds a MenuItem from current menu
+     *
+     * @param      <type>  $item   The item
+     *
+     * @return     array   ( description_of_the_return_value )
+     */
+    private function findItem($item): MenuItem {
+
+        try {
+
+            if (is_int($item)) {
+
+                return $this->menu->items()->where('id', $item)->firstOrFail();
+
+            } elseif ($item instanceof MenuItem) {
+
+                return $this->menu->items()->where('id', $item->id)->firstOrFail();
+
+            }
+
+        } catch (ModelNotFoundException $e) {
+
+            throw new \Exception('Passed item is not part of the current Menu. Weird.');
+
+        }
+
+    }
+
+    /**
+     * Gets the menu.
+     *
+     * @return     <type>  The menu.
+     */
+    public function getMenu(): Menu
+    {
+        return $this->menu;
     }
 
     /**
      *
      * @return     Function  ( description_of_the_return_value )
      */
-    public function done() {
+    public function done()
+    {
+        // @TODO this should return the root instance menu -f
 
         return $this->menu;
 

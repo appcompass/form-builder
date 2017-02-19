@@ -76,11 +76,40 @@ class MenuItem extends Model
      */
     public function getUrlAttribute()
     {
+        // @TODO this to allow an override on Link->url for the current Item
+        if (!is_null($this->attributes['url'])) {
+
+            return $this->attributes['url'];
+
+        }
+
         if (is_null($this->navigatable)) {
+
             return null;
+
         }
 
         return $this->navigatable->url;
+    }
+
+    /**
+     * Sets the url attribute.
+     *
+     * @param      <type>      $url    The url
+     *
+     * @throws     \Exception  (description)
+     */
+    public function setUrlAttribute($url)
+    {
+        if (get_class($this->navigatable) !== Link::class) {
+
+            throw new \Exception('This item url cannot be set, item is not a Link instance.');
+
+        }
+
+        $this->attributes['url'] = $url;
+
+
     }
 
     /**
@@ -102,6 +131,7 @@ class MenuItem extends Model
      */
     public function getTypeAttribute()
     {
+        // @TODO this should return the navigatable type, but that would involve more queries -f
         switch ($this->navigatable_type) {
             case 'P3in\Models\Link':
                 return 'Link';
@@ -160,6 +190,27 @@ class MenuItem extends Model
     }
 
     /**
+     * Sets the url. (only Link type)
+     *
+     * @param      <type>      $url    The url
+     *
+     * @throws     \Exception  (description)
+     *
+     * @return     self        ( description_of_the_return_value )
+     */
+    public function setUrl($url)
+    {
+        $this->url = $url;
+
+        if ($this->save()) {
+            return $this;
+        } else {
+            throw new \Exception('Unable to set url on MenuItem');
+        }
+
+    }
+
+    /**
      * Makes a MenuItem unclickable
      *
      * clickable defaults to true, so we revert it with this method
@@ -174,6 +225,26 @@ class MenuItem extends Model
             return $this;
         } else {
             throw new \Exception('Unable to set clickable on MenuItem');
+        }
+    }
+
+    /**
+     * new tab
+     *
+     * @param      boolean     $new_tab  The new tab
+     *
+     * @throws     \Exception  (description)
+     *
+     * @return     self        ( description_of_the_return_value )
+     */
+    public function newtab($new_tab = true)
+    {
+        $this->new_tab = $new_tab;
+
+        if ($this->save()) {
+            return $this;
+        } else {
+            throw new \Exception('Unable to set new_tab on MenuItem');
         }
     }
 
