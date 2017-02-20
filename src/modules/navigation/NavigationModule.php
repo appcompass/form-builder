@@ -41,19 +41,19 @@ Class NavigationModule extends BaseModule
     public function makeLink()
     {
         return [
-            [
-                'label' => 'Navigation',
-                'belongs_to' => ['websites'],
-                'sub_nav' => '',
-                'req_perms' => Permission::createCpRoutePerm('websites.navigation.index'),
-                'order' => 5,
-                'props' => [
-                    'icon' => 'bars',
-                    'link' => [
-                        'href' => '/navigation',
-                    ],
-                ],
-            ]
+            // [
+            //     'label' => 'Navigation',
+            //     'belongs_to' => ['websites'],
+            //     'sub_nav' => '',
+            //     'req_perms' => Permission::createCpRoutePerm('websites.navigation.index'),
+            //     'order' => 5,
+            //     'props' => [
+            //         'icon' => 'bars',
+            //         'link' => [
+            //             'href' => '/navigation',
+            //         ],
+            //     ],
+            // ]
         ];
     }
 

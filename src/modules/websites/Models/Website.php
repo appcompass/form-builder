@@ -15,6 +15,7 @@ use Less_Parser;
 use Log;
 use P3in\Models\Page;
 use P3in\Models\Photo;
+use P3in\Models\Menu;
 use P3in\Models\Redirect;
 use P3in\Module;
 use P3in\Traits\HasGallery;
@@ -96,6 +97,11 @@ class Website extends Model
     public function navmenus()
     {
         return $this->hasMany(Navmenu::class);
+    }
+
+    public function menus()
+    {
+      return $this->hasMany(Menu::class);
     }
 
     public function logo()
@@ -428,28 +434,27 @@ class Website extends Model
     *
     * Website::first()->render()
     *
-    *
+    * @TODO doesn't look like this is being used
     */
     public function renderPage($page_path)
     {
+      try {
 
-        try {
-
-            $page = $this->pages()
-                ->where('slug', $page_path)
-                ->firstOrFail();
+        $page = $this->pages()
+            ->where('slug', $page_path)
+            ->firstOrFail();
 
         if ($page->checkPermissions(Auth::user())) {
             return $page;
         }
 
-        } catch (ModelNotFoundException $e ) {
+      } catch (ModelNotFoundException $e ) {
 
-            return false;
+          return false;
 
-        }
+      }
 
-        return false;
+      return false;
     }
     /**
      *

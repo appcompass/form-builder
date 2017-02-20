@@ -164,6 +164,8 @@ class Navmenu extends Model
 
         return $nav;
     }
+
+
     private static function filterNav(&$nav, $perms)
     {
             foreach ($nav as $i => $item) {
