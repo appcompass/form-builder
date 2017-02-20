@@ -57,7 +57,7 @@ class MenusController extends AbstractController
      */
     public function storeForm(Request $request, $form_name)
     {
-        return \P3in\Models\FormButler::get($form_name, $request->all());
+        return \P3in\Models\FormButler::store($form_name, $request->all());
     }
 
     /**

@@ -28,13 +28,12 @@ class FormButler
 
     public static function store($form_name, $content)
     {
-        // validate form
+        // @TODO validate form
 
         // in this case we're storing related content, should become an obeserver
         // store form
         switch ($content['type']) {
             case 'Link':
-                // dd(MenuItem::findOrFail($content['id'])->navigatable);
                 MenuItem::findOrFail($content['id'])->navigatable->update($content);
                 break;
             case 'Page':

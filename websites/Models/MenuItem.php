@@ -15,7 +15,8 @@ class MenuItem extends Model
         'alt',
         'new_tab',
         'clickable',
-        'order'
+        'order',
+        'icon'
     ];
 
     protected $hidden = [
@@ -77,7 +78,7 @@ class MenuItem extends Model
     public function getUrlAttribute()
     {
         // @TODO this to allow an override on Link->url for the current Item
-        if (!is_null($this->attributes['url'])) {
+        if (isset($this->attributes['url']) && !is_null($this->attributes['url'])) {
 
             return $this->attributes['url'];
 
