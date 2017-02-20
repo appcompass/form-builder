@@ -68,14 +68,12 @@ class MenusController extends AbstractController
     {
         $link = Link::findOrFail($id);
 
-        // @TODO move this in Link? who does housekeeping
         $menu_items = MenuItem::whereNavigatableId($link->id)->whereNavigatableType(get_class($link))->get()->pluck('id');
 
-        // @TODO extend this method (meh) or add a 'deleting' listener (yay)
         $link->delete();
 
         MenuItem::whereIn('id', $menu_items)->delete();
 
-        return response()->json(['message' => 'Model deleted.']);
+        return ['message' => 'Model deleted.'];
     }
 }

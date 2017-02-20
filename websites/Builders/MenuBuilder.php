@@ -410,6 +410,7 @@ class MenuBuilder
         }
 
         foreach ($menu as $branch) {
+
             $branch['order'] = $order++;
 
             $menuitem = $this->getMenuItem($branch);

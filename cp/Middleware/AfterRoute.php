@@ -56,20 +56,20 @@ class AfterRoute
         }
 
         if ($response->getStatusCode() === 200 && in_array($request->getMethod(), $methods)) {
+
             $this->content['collection'] = $response->getOriginalContent();
-            // $content = [
-            //     'collection' => $response->getOriginalContent(),
-            // ];
 
             $this->content['edit'] = $form->toEdit()->first();
 
             $this->content['list'] = $form->toList()->first();
         }
 
-        $this->addLoggingEnd($response);
+        // $this->addLoggingEnd($response);
 
         if (!empty($this->content)) {
+
             $response->setContent($this->content);
+
         }
 
         return $response;
@@ -99,6 +99,7 @@ class AfterRoute
         if (env('APP_DEBUG')) {
             $this->logged['queries'] = \DB::getQueryLog();
 
+            // @TODO Jubair: this breaks on DELETE, didn't look into that -f
             if (empty($this->content)) {
                 $this->content = $response->getOriginalContent();
             }
