@@ -30,6 +30,7 @@ class WebsiteMenusRepository extends AbstractChildRepository implements WebsiteM
             'id' => $model->id,
             'menu' => [
                 'menu' => $model->render(),
+                'deletions' => [],
                 'repo' => [
                     'pages' => $this->parent->pages->each(function ($item) {
                         $item->children = [];
@@ -39,8 +40,7 @@ class WebsiteMenusRepository extends AbstractChildRepository implements WebsiteM
                         $item->children = [];
                         $item->type = 'Link';
                     })
-                ],
-                'deletions' => []
+                ]
             ]
         ];
 

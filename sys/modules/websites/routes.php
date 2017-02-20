@@ -4,7 +4,7 @@ Route::group([
     'namespace' => 'P3in\Controllers',
     'middleware' => ['auth', 'api', 'validateWebsite'],
 ], function ($router) {
-    $router->delete('menus/{link_id}', '\P3in\Controllers\MenusController@deleteLink');
+    $router->delete('menus/links/{link_id}', '\P3in\Controllers\MenusController@deleteLink');
     $router->resource('menus', MenusController::class);
     $router->resource('pages', PagesController::class);
     $router->resource('pages.contents', PageContentController::class);
