@@ -24,19 +24,6 @@ class CreateGalleriesTable extends Migration
             $table->softDeletes();
         });
 
-        // Schema::create('gallery_items', function (Blueprint $table) {
-        //     $table->increments('id');
-        //     $table->integer('gallery_id')->unsigned();
-        //     $table->foreign('gallery_id')
-        //         ->references('id')
-        //         ->on('galleries')
-        //         ->onDelete('cascade');
-
-        //     $table->morphs('itemable');
-        //     $table->integer('order')->nullable();
-
-        //     $table->unique(['gallery_id', 'itemable_id', 'itemable_type']);
-        // });
     }
 
     /**
@@ -46,7 +33,6 @@ class CreateGalleriesTable extends Migration
      */
     public function down()
     {
-        // Schema::drop('gallery_items');
         Schema::drop('galleries');
     }
 }

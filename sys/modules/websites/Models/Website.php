@@ -12,12 +12,11 @@ use P3in\Traits\HasGallery;
 use P3in\Traits\HasJsonConfigFieldTrait;
 use P3in\Traits\HasPermissions;
 use P3in\Traits\HasStorage;
-use P3in\Traits\SettingsTrait;
 
 class Website extends Model
 {
 
-    use SettingsTrait, HasGallery, HasPermissions, HasStorage, SoftDeletes, HasJsonConfigFieldTrait;
+    use HasGallery, HasPermissions, HasStorage, SoftDeletes, HasJsonConfigFieldTrait;
 
     protected $fillable = [
         'name',
