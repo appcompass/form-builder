@@ -88,6 +88,29 @@ class MenuBuilder
     }
 
     /**
+     * UI update, takes whatever the UI sends back
+     *
+     * @param      (array)  $menu_structure  The menu structure
+     */
+    public static function update(Menu $menu, array $menu_structure)
+    {
+        $instance = static::edit($menu);
+
+        $instance->drop($menu_structure['deletions']);
+
+        foreach ($instance->flatten($menu_structure['menu']) as $menuitem) {
+
+            if (is_null($menuitem->menu_id)) {
+
+                $instance->add($menuitem);
+
+            }
+
+        }
+
+    }
+
+    /**
      * Adds an item.
      *
      * @param      <type>      $item   The item
@@ -113,7 +136,16 @@ class MenuBuilder
 
         }
 
-        $this->menu_item = MenuItem::fromModel($item, $order);
+        if ($item instanceof MenuItem) {
+
+            $this->menu_item = $item;
+
+        } else {
+
+            $this->menu_item = MenuItem::fromModel($item, $order);
+
+        }
+
 
         if ($this->hasParent()) {
 
@@ -201,23 +233,54 @@ class MenuBuilder
     }
 
     /**
-     * Drop MenuItem
+     * Drop MenuItem(s)
      *
-     * @param      \App\MenuItem  $menu_item  The navigation item
+     * @param      mixed  $menu_item  The navigation item
      */
     public function drop($item)
     {
-        $menu_item = $this->findItem($item);
+        if (is_array($item)) {
 
-        if ($menu_item->delete()) {
+            foreach($item as $single) {
 
-            return true;
+                $this->drop($single);
 
-        } else {
+            }
 
-            ; // @TODO meh -f
+            return $this;
 
         }
+
+        $menu_item = $this->findItem($item);
+
+        $this->clean($menu_item);
+
+        return $this;
+
+    }
+
+    /**
+     * Recursively cleans MenuItem and children
+     *
+     * @param      \P3in\Models\MenuItem  $menuitem  The menuitem
+     */
+    private function clean(MenuItem $menuitem)
+    {
+        $children = MenuItem::where('parent_id', $menuitem->id)->get();
+
+        if ($children) {
+
+            foreach ($children as $child) {
+
+                $this->clean($child);
+
+            }
+
+        }
+
+        $menuitem->delete();
+
+        return;
     }
 
     /**
@@ -284,4 +347,90 @@ class MenuBuilder
         return $this->menu;
 
     }
+
+    /**
+     * Obtains a MenuItem from an array of properties expects either `type` or
+     * `navigatable_id` to be set
+     *
+     * @param      array  $item   Properties of the item
+     *
+     * @return     array  The menu item.
+     */
+    private function getMenuItem($item): MenuItem
+    {
+        if ($item instanceof MenuItem) {
+
+            return $item;
+
+        }
+
+        // item is a MenuItem (has the polymorphic ref)
+        if (isset($item['navigatable_id'])) {
+
+            $menuitem = MenuItem::findOrFail($item['id']);
+
+        } else {
+
+            // doing the extra mile here to greatly simplify the frontend stuff
+            switch ($item['type']) {
+                case 'Link':
+                    $class_name = Link::class;
+                    break;
+                case 'Page':
+                    $class_name = Page::class;
+                    break;
+            }
+
+            // otherwise generate a MenuItem instance from model being added
+            $menuitem = MenuItem::fromModel($class_name::findOrFail($item['id']), $item['order']);
+        }
+
+        $menuitem->fill($item)->save();
+
+        return $menuitem;
+    }
+
+    /**
+     * flattens a menu, converts item into MenuItem
+     *
+     * @param      array    $menu       The menu
+     * @param      <type>   $parent_id  The parent identifier
+     * @param      integer  $order      The order
+     *
+     * @return     array    ( description_of_the_return_value )
+     */
+    private function flatten(array $menu, $parent_id = null, $order = null)
+    {
+        $res = [];
+
+        if (is_null($order)) {
+
+            $order = 0;
+
+        }
+
+        foreach ($menu as $branch) {
+            $branch['order'] = $order++;
+
+            $menuitem = $this->getMenuItem($branch);
+
+            $menuitem->setParent(MenuItem::find($parent_id));
+
+            $menuitem->save();
+
+            $children = $branch['children'];
+
+            $res[] = $menuitem;
+
+            if (count($children)) {
+
+                $res = array_merge($res, $this->flatten($children, $menuitem->id, $order));
+
+            }
+        }
+
+        return $res;
+    }
+
+
 }

@@ -1,7 +1,7 @@
 <template lang="jade">
 div.menu
   Sortable.menu-list(:list="menu", :element="'ul'", :options="options")
-    li(v-for="(item, index) in menu")
+    li.menu__item(v-for="(item, index) in menu")
       a
         small.icon.is-small.handle
           i.fa.fa-arrows
@@ -20,7 +20,7 @@ div.menu
         span  {{ item.title }}
 
       MenuElement(v-if="item.children.length && !item.isCollapsed", :menu="item.children", @deleted="deleted")
-      Sortable.empty(v-if="!item.children.length", :list="item.children",  :options="options") Empty
+      Sortable.menu--empty(v-if="!item.children.length", :list="item.children",  :options="options")
 </template>
 
 <script>
@@ -88,24 +88,21 @@ export default {
 
 <style lang="sass" scoped>
 .menu-list li ul
+  margin-top: 2rem
   padding-right: 0
   margin-right: 0
-.item
-  display: block
-  padding: 0.8rem 0 0.8rem 0.8rem
-  with: 100%
-.empty
-  text-align: center
-  color: rgba(128, 128, 128, 0.6)
-  margin: 1rem
-  padding: 0.5rem 0
+  border-left: 0
+.menu__item
+  background: #eee
+.menu--empty
   width: 100%
-  border: 1px dashed rgba(128, 128, 128, 0.2)
-  display: inline-block
-  background: rgba(200, 200, 200, 0.2)
+  height: 20px
+  border-bottom: 1px solid rgba(128, 128, 128, 0.2)
+  padding-left: 4rem
 .icon:hover
-  color: red
+  color: cyan
 li a:hover
-  background: white
   color: #333
+  background: #eee
+
 </style>

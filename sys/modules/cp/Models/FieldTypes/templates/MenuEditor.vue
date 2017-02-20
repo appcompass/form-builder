@@ -2,7 +2,7 @@
 .columns
   .column.is-8
     MenuElement(:menu="data.menu", @deleted="deleted")
-    Sortable.empty(v-if="!data.menu.length", :list="data.menu",  :options="{handle: '.handle', animation: 150, group: 'items'}") Empty
+    Sortable.empty(v-if="!data.menu.length", :list="data.menu",  :options="{handle: '.handle', animation: 150, group: 'items'}")
 
     p.control
     a.button.is-small.is-success(@click="createLink('create-link')")
@@ -13,20 +13,15 @@
   .column.is-4
     .section
       h1.title Pages
-      Sortable.menu-list(:list="data.repo.pages", :element="'ul'", :options="{handle: '.handle', animation: 150, group: 'items', clone: true}")
-        li(v-for="(item, index) in data.repo.pages")
-          a
-            small.icon.is-small.handle
-              i.fa.fa-arrows
-            |  {{ item.title }}
+      Sortable.menu-list(:list="data.repo.pages", :element="'ul'", :options="{animation: 150, group: 'items', clone: true}")
+        li.repo__item(v-for="(item, index) in data.repo.pages", @dblclick="data.menu.push(item)")
+          p {{ item.title }}
+
     .section
-      h1.title Links
-      Sortable.menu-list(:list="data.repo.links", :element="'ul'", :options="{handle: '.handle', animation: 150, group: 'items', clone: true}")
-        li(v-for="(item, index) in data.repo.links")
-          a
-            small.icon.is-small.handle
-              i.fa.fa-arrows
-            |  {{ item.title }}
+      h1.title Widgets
+      Sortable.menu-list(:list="data.repo.links", :element="'ul'", :options="{animation: 150, group: 'items', clone: true}")
+        li.repo__item(v-for="(item, index) in data.repo.links", @dblclick="data.menu.push(item)")
+          p {{ item.title }}
             small.icon.is-small.pull-right
               i.fa.fa-trash(@click="deleteLink(item)")
 
@@ -53,7 +48,9 @@ export default {
   methods: {
     deleted (item) {
       // mark items for deletion
-      this.data.deletions.push(item.id)
+      if (item.navigatable_id != null) {
+        this.data.deletions.push(item.id)
+      }
     },
     storeLink (payload) {
       // get a MenuItem instance from the backend
@@ -97,10 +94,14 @@ export default {
 
 <style lang="sass">
 .repo__item
+  background: #ddd
   display: inline-block
   border: 1px solid #ddd
-  width: 12rem
-  height: 2rem
-  margin: 1rem
+  width: 100%
+  padding: 0.5rem
+  margin-bottom: 5px
+  &:hover
+    background: #ccc
+    cursor: pointer
 </style>
 
