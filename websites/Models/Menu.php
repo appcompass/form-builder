@@ -36,7 +36,7 @@ class Menu extends Model
     /**
      * add
      *
-     * @param      \App\MenuItem  $nav_item  The navigation item
+     * @param      \App\MenuItem  $menu_item  The navigation item
      *
      * @return     MenuItem instance
      */
@@ -48,21 +48,65 @@ class Menu extends Model
     /**
      * Drop MenuItem
      *
-     * @param      \App\MenuItem  $nav_item  The navigation item
+     * @param      \App\MenuItem  $menu_item  The navigation item(s)
      */
     public function drop($item)
     {
-        if (is_int($item)) {
-            $nav_item = $this->items()->where('id', $item)->firstOrFail();
-        } elseif ($item instanceof MenuItem) {
-            $nav_item = $this->items()->where('id', $item->id)->firstOrFail();
+        if (is_array($item)) {
+
+            foreach($item as $single) {
+
+                $this->drop($single);
+
+            }
+
+            return $this;
+
         }
 
-        if ($nav_item->delete()) {
-            return true;
-        } else {
-            throw new \Exception("Errors while removing MenuItem");
+        if (is_int($item)) {
+
+            $menu_item = $this->items()->where('id', $item)->firstOrFail();
+
+        } elseif ($item instanceof MenuItem) {
+
+            $menu_item = $this->items()->where('id', $item->id)->firstOrFail();
+
         }
+
+        if ($menu_item->delete() && $this->clean($menu_item)) {
+
+            return true;
+
+        } else {
+
+            throw new \Exception("Errors while removing MenuItem");
+
+        }
+    }
+
+    /**
+     * Recursively cleans MenuItem and children
+     *
+     * @param      \P3in\Models\MenuItem  $menuitem  The menuitem
+     */
+    private function clean(MenuItem $menuitem)
+    {
+        $children = MenuItem::where('parent_id', $menuitem->id)->get();
+
+        if ($children) {
+
+            foreach ($children as $child) {
+
+                $this->clean($child);
+
+            }
+
+        }
+
+        $menuitem->delete();
+
+        return true;
     }
 
     /**

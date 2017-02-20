@@ -90,15 +90,18 @@ class MenuBuilder
     /**
      * UI update, takes whatever the UI sends back
      *
-     * @param      (array)  $menu_structure  The menu structure
+     * @param      \P3in\Models\Menu  $menu       The menu
+     * @param      (array)            $structure  The menu structure coming from the UI
      */
-    public static function update(Menu $menu, array $menu_structure)
+    public static function update(Menu $menu, array $structure)
     {
         $instance = static::edit($menu);
 
-        $instance->drop($menu_structure['deletions']);
+        $instance->menu->drop($structure['deletions']);
 
-        foreach ($instance->flatten($menu_structure['menu']) as $menuitem) {
+        // $instance->drop($structure['deletions']);
+
+        foreach ($instance->flatten($structure['menu']) as $menuitem) {
 
             if (is_null($menuitem->menu_id)) {
 
@@ -210,77 +213,6 @@ class MenuBuilder
     public function hasParent()
     {
         return !!$this->parent;
-    }
-
-    /**
-     * { function_description }
-     *
-     * @param      <type>  $method  The method
-     * @param      <type>  $args    The arguments
-     */
-    public function __call($method, $args)
-    {
-        if (!method_exists($this->menu_item, $method)) {
-
-            // @NOTE ignore and return this -f
-            return $this;
-
-        }
-
-        call_user_func_array([$this->menu_item, $method], $args);
-
-        return $this;
-    }
-
-    /**
-     * Drop MenuItem(s)
-     *
-     * @param      mixed  $menu_item  The navigation item
-     */
-    public function drop($item)
-    {
-        if (is_array($item)) {
-
-            foreach($item as $single) {
-
-                $this->drop($single);
-
-            }
-
-            return $this;
-
-        }
-
-        $menu_item = $this->findItem($item);
-
-        $this->clean($menu_item);
-
-        return $this;
-
-    }
-
-    /**
-     * Recursively cleans MenuItem and children
-     *
-     * @param      \P3in\Models\MenuItem  $menuitem  The menuitem
-     */
-    private function clean(MenuItem $menuitem)
-    {
-        $children = MenuItem::where('parent_id', $menuitem->id)->get();
-
-        if ($children) {
-
-            foreach ($children as $child) {
-
-                $this->clean($child);
-
-            }
-
-        }
-
-        $menuitem->delete();
-
-        return;
     }
 
     /**
@@ -433,5 +365,23 @@ class MenuBuilder
         return $res;
     }
 
+    /**
+     * { function_description }
+     *
+     * @param      <type>  $method  The method
+     * @param      <type>  $args    The arguments
+     */
+    public function __call($method, $args)
+    {
+        if (!method_exists($this->menu_item, $method)) {
 
+            // @NOTE ignore and return this -f
+            return $this;
+
+        }
+
+        call_user_func_array([$this->menu_item, $method], $args);
+
+        return $this;
+    }
 }

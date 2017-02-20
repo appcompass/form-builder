@@ -10,12 +10,10 @@ use P3in\Models\Scopes\GalleryItemScope;
 use P3in\Models\User;
 use P3in\Traits\HasPermissions;
 use P3in\Traits\HasStorage;
-use P3in\Traits\OptionableTrait;
-use P3in\Traits\SettingsTrait;
 
 abstract class GalleryItem extends Model
 {
-    use OptionableTrait, SettingsTrait, HasStorage, SoftDeletes, HasPermissions;
+    use HasStorage, SoftDeletes, HasPermissions;
 
     /**
      * Table Name

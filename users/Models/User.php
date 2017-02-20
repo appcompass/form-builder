@@ -22,7 +22,6 @@ use P3in\Models\Photo;
 use P3in\ModularBaseModel;
 use P3in\Traits\HasPermissions;
 use P3in\Traits\HasProfileTrait;
-use P3in\Traits\OptionableTrait;
 
 class User extends ModularBaseModel implements
     AuthenticatableContract,
@@ -35,7 +34,6 @@ class User extends ModularBaseModel implements
         Authorizable,
         CanResetPassword,
         Notifiable,
-        OptionableTrait,
         HasPermissions,
         HasProfileTrait
         ;
