@@ -55,7 +55,7 @@ class Photo extends ModularBaseModel implements GalleryItemInterface
     /**
     * Hidden properties
     */
-    protected $hidden = ['meta'];
+    // protected $hidden = ['meta'];
 
     /**
     * With
