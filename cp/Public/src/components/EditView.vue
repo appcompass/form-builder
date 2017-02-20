@@ -16,15 +16,16 @@ div
 
       .section
         form
-          .control(v-for="field in edit.fields")
-            label.label {{ field.label }}
-            span(
-              :is="Components[field.type]",
-              :pointer="field.name",
-              :data="value(field.name)",
-              :source="field.source"
-              @input="set"
-            )
+          span(
+            v-for="field in edit.fields",
+            :is="Components[field.type]",
+            :pointer="field.name",
+            :data="value(field.name)",
+            :source="field.source",
+            :label="field.label",
+            @input="set"
+          )
+          //- p.control(v-for="field in edit.fields")
           footer
             p.control
               .pull-left
