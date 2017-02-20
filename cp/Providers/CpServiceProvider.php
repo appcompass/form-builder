@@ -20,5 +20,8 @@ class CpServiceProvider extends ServiceProvider
 
     public function register()
     {
+        $this->app->bind(
+            \P3in\Interfaces\StorageRepositoryInterface::class, \P3in\Repositories\StorageRepository::class
+        );
     }
 }

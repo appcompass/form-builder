@@ -6,8 +6,6 @@ Route::group([
 ], function ($router) {
     // $router->get('notification-center', 'CpController@getNotificationCenter');
     // $router->get('dashboard', 'CpController@getDashboard');
+    $router->resource('storage', StorageController::class);
 });
 
-Route::get('', function () {
-    return '';
-});
