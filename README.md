@@ -1,23 +1,3 @@
-# Storage
-
-##How it works
-* P3in\Storage extends Laravel's Illuminate\Support\Facades\Storage class.
-* Instead of using app config to set disk instances, we use the a StorageConfig Model for storing the configuration.
-* Each configuration has a StorageType (i.e. local, ftp, rackspace, s3) so as we add drivers (sftp, youtube, wistia, etc) we can maintain database relatiohships between the models that use storage (Website, Photos, Videos, etc) and the storage disk instances.
-* Calling: `Storage::disk('disk_name')` will:
-    * check the app config if there is a disk by that name.
-        * if has no config, then we `StorageConfig::byName('disk_name')->firstOrFail()` and set the stroage config in app memory.
-    * calls `Illuminate\Support\Facades\Storage::disk('disk_name')` since we set the config if it's not already set.
-
-###Programmatic Syntax
-
-    Storage::disk('disk_name')
-    Website::first()->storage->getDisk()
-    StorageConfig::first()->getDisk()
-
-    All three of the above return an instance of \Illuminate\Contracts\Filesystem\Filesystem
-
-
 # FieldSource
 
 ##How it works
