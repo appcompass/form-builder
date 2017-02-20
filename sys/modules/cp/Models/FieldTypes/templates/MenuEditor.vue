@@ -104,4 +104,3 @@ export default {
     background: #ccc
     cursor: pointer
 </style>
-
