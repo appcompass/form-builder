@@ -4,11 +4,6 @@
     MenuElement(:menu="data.menu", @deleted="deleted")
     Sortable.empty(v-if="!data.menu.length", :list="data.menu",  :options="{handle: '.handle', animation: 150, group: 'items'}")
 
-    p.control
-    a.button.is-small.is-success(@click="createLink('create-link')")
-      span.icon.is-small
-        i.fa.fa-link
-      span New Link
 
   .column.is-4
     .section
@@ -19,6 +14,10 @@
 
     .section
       h1.title Widgets
+      a.button.is-small.pull-right(@click="createLink('create-link')")
+        span.icon.is-small
+          i.fa.fa-link
+        span New Widget
       Sortable.menu-list(:list="data.repo.links", :element="'ul'", :options="{animation: 150, group: 'items', clone: true}")
         li.repo__item(v-for="(item, index) in data.repo.links", @dblclick="data.menu.push(item)")
           p {{ item.title }}

@@ -18,5 +18,8 @@ api.k1cc0.me {
 }
 
 cp.k1cc0.me {
-  root ./cp/dist
+  root ./cp/dist 
+  rewrite {
+    to {path} {path} /index.html?{path}
+  }
 }
