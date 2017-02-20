@@ -25,10 +25,9 @@ div
             :label="field.label",
             @input="set"
           )
-          //- p.control(v-for="field in edit.fields")
           footer
             p.control
-              .pull-left
+              .pull-right
                 a.button.is-primary(
                   :class="{'is-loading': loading}",
                   :disable="loading",
