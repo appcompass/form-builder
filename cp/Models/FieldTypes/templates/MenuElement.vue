@@ -26,7 +26,7 @@ div.menu
 <script>
 import Sortable from '../VueSortable'
 import Modal from '../Modal'
-import swal from 'sweetalert'
+// import swal from 'sweetalert'
 
 export default {
   name: 'MenuElement',
@@ -38,7 +38,7 @@ export default {
       modal: Modal,
       options: {
         handle: '.handle',
-        animation: 150,
+        animation: 300,
         group: 'items'
       }
     }
@@ -71,12 +71,12 @@ export default {
       this.$http.get(process.env.API_SERVER + 'menus/forms/' + this.endpoint)
         .then((response) => {
           // @TODO this implies we only can render forms inside modals
-          this.modal.show(response.data.collection, item, (result) => {
-            this.$http.post(process.env.API_SERVER + 'menus/forms/' + this.endpoint, result)
-              .then((response) => {
-                swal({title: 'Updated', type: 'success'})
-              })
-          })
+          this.modal.show(response.data.collection, item) //, (result) => {
+            // this.$http.post(process.env.API_SERVER + 'menus/forms/' + this.endpoint, result)
+            //   .then((response) => {
+            //     swal({title: 'Updated', type: 'success'})
+            //   })
+          // })
         })
     },
     deleted (item) {
