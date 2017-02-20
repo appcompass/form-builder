@@ -96,7 +96,7 @@ class Alert extends Model
 	{
 		\Log::info($excludeEmittingUser);
 
-		\Log::info($users);
+		// \Log::info($users);
 
 		\Log::info($alert);
 
