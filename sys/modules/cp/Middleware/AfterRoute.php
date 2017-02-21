@@ -11,8 +11,6 @@ use Route;
 
 class AfterRoute
 {
-    private $logged = [];
-    private $content = [];
     /**
      * Handle an incoming request.
      *
@@ -22,8 +20,6 @@ class AfterRoute
      */
     public function handle(Request $request, Closure $next)
     {
-        $this->addLoggingStart();
-
         $route = Route::current();
 
         $methods = ['GET'];
@@ -57,19 +53,13 @@ class AfterRoute
 
         if ($response->getStatusCode() === 200 && in_array($request->getMethod(), $methods)) {
 
-            $this->content['collection'] = $response->getOriginalContent();
+            $content['collection'] = $response->getOriginalContent();
 
-            $this->content['edit'] = $form->toEdit()->first();
+            $content['edit'] = $form->toEdit()->first();
 
-            $this->content['list'] = $form->toList()->first();
-        }
+            $content['list'] = $form->toList()->first();
 
-        // $this->addLoggingEnd($response);
-
-        if (!empty($this->content)) {
-
-            $response->setContent($this->content);
-
+            $response->setContent($content);
         }
 
         return $response;
@@ -77,34 +67,5 @@ class AfterRoute
 
     public function terminate()
     {
-    }
-
-    private function addLoggingStart()
-    {
-        if (env('APP_DEBUG')) {
-            \DB::enableQueryLog();
-
-            \Event::listen('illuminate.log', function ($level, $message, $context) {
-                $this->logged['logged'][] = [
-                    'level' => $level,
-                    'message' => $message,
-                    'context' => $context
-                ];
-            });
-        }
-    }
-
-    private function addLoggingEnd($response)
-    {
-        if (env('APP_DEBUG')) {
-            $this->logged['queries'] = \DB::getQueryLog();
-
-            // @TODO Jubair: this breaks on DELETE, didn't look into that -f
-            if (empty($this->content)) {
-                $this->content = $response->getOriginalContent();
-            }
-
-            $this->content['debug'] = $this->logged;
-        }
     }
 }
