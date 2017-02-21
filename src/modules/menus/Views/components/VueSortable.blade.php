@@ -67,6 +67,7 @@
             }
 
             options = _.isString(options)? JSON.parse(options) : options;
+            // console.log(options)
             options = _.merge(options,{
               onStart: function (evt) {
                 indexes = computeIndexes(_.chain(evt.from.children));
@@ -99,7 +100,7 @@
               onRemove: function (evt) {
                 var collection = ctx.collection;
                 var isCloning = !!evt.clone;
-                if (!!collection && !isCloning){
+                if (!!collection && options.group && options.group.pull !== 'clone'){
                   //If is cloning is set no need to remove item from collection
                   var realOld = indexes[evt.oldIndex];
                   collection.splice(realOld, 1);

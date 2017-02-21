@@ -185,7 +185,7 @@ new Vue({
     },
     pages: pages,
     links: links,
-    options: {"handle": '.handle', "group": {"name": 'menu'}, "animation": 300 },
+    options: {handle: '.handle', group: {name: 'menu', put: true, pull: true}, animation: 150 },
     link: {title: null, url: null, new_tab: false, clickable: true, content: null },
     status: {
       links: {collapsed: false },

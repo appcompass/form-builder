@@ -6,7 +6,7 @@
       class="menu__item"
       v-draggable-for="(index, item) in menu.items"
       track-by="id"
-      :options="options"
+      :options="{handle: '.handle', group: {name: 'menu', put: true, pull: true}, animation: 150 }"
     >
       <i class="handle fa fa-arrows"></i>
       @{{ item.title }}
