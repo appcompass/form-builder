@@ -224,9 +224,11 @@ class MenuBuilder
      *
      * @return     <type>      ( description_of_the_return_value )
      */
-    public function item($item): MenuItem
+    public function item($item): MenuBuilder
     {
-        return $this->findItem($item);
+        $this->menu_item = $this->findItem($item);
+
+        return $this;
     }
 
     /**
@@ -269,6 +271,16 @@ class MenuBuilder
     }
 
     /**
+     * Gets the current MenuItem.
+     *
+     * @return     MenuItem  The MenuItem.
+     */
+    public function getMenuItem()
+    {
+        return $this->menu_item;
+    }
+
+    /**
      *
      * @return     Function  ( description_of_the_return_value )
      */
@@ -288,7 +300,7 @@ class MenuBuilder
      *
      * @return     array  The menu item.
      */
-    private function getMenuItem($item): MenuItem
+    private function resolveMenuItem($item): MenuItem
     {
         if ($item instanceof MenuItem) {
 
@@ -345,7 +357,7 @@ class MenuBuilder
 
             $branch['order'] = $order++;
 
-            $menuitem = $this->getMenuItem($branch);
+            $menuitem = $this->resolveMenuItem($branch);
 
             $menuitem->setParent(MenuItem::find($parent_id));
 
