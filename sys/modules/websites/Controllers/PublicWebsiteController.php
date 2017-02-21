@@ -17,8 +17,7 @@ class PublicWebsiteController extends BaseController
 
     public function getPageData(Request $request, $uri = '')
     {
-        \DB::enableQueryLog();
-        // // cache for 14 days?
+        // // @SAVED-TODO: cache for 14 days?
         // $data = Cache::remember('public-page-'.$uri, 20160, function () use ($request, $uri) {
 
         $data = $request
@@ -28,10 +27,6 @@ class PublicWebsiteController extends BaseController
 
         //     return $data;
         // });
-
-        // @TODO: better abstract this so we can push stuff into the debug
-        // object rather than just log queries. Middlware maybe?
-        $data['debug'] = \DB::getQueryLog();
 
         return $data;
     }
