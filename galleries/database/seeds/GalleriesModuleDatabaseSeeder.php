@@ -5,6 +5,7 @@ namespace P3in\Seeders;
 use Illuminate\Database\Seeder;
 use P3in\Builders\FormBuilder;
 use P3in\Builders\MenuBuilder;
+use P3in\Models\Website;
 use P3in\Builders\WebsiteBuilder;
 
 use P3in\Models\User;
@@ -22,45 +23,13 @@ class GalleriesModuleDatabaseSeeder extends Seeder
             $builder->string('Owner', 'user.email')->list()->edit(false);
         })->linkToResources(['galleries.index', 'galleries.show', 'galleries.create']);
 
-        // @TODO build a better way to point menus, we are sure cms is 1st website but sitll not good enough
-        WebsiteBuilder::edit(1)
-            ->menu('main_nav')
-            ->item('galleries')->sub()
-            ->add(['title' => 'Photos', 'alt' => '', 'url' => '/photos']);
-
+        \DB::statement("DELETE FROM forms WHERE name = 'photos'");
         $form = FormBuilder::new('photos', function (FormBuilder $builder) {
-            // $builder->string('Photo Name', 'title')
-            //     ->list()
-            //     ->required()
-            //     ->sortable()
-            //     ->searchable();
-            // $builder->file('Path', 'path')
-            //     ->list()
-            //     ->edit(false);
-            // $builder->file('Photo', 'photo')
-            //     ->list(false)
-            //     ->required()
-            //     ->sortable()
-            //     ->searchable();
-            // $builder->select('Uploader', 'user.email')
-            //     ->list()
-            //     ->required()
-            //     ->sortable()
-            //     ->searchable()
-            //     ->dynamic('\P3in\Models\User');
-
-
-            // $builder->select('Uploaded For', 'photoable')
-            //     ->list()
-            //     // first slelect the model and then select the ID.
-            //     // in list layout we display just the polymorphic type or we
-            //     ->polymorphic();
-
-            // $builder->string('Website', 'website_id')->list(false)->required(); //->dynamic('\P3in\Models\Website');
-        })
-            ->linkToResources(['galleries.photos.index'])
-            ->setListLayout('PhotoGrid')
-            ->getForm();
+            $builder->setListLayout('Card');
+            $builder->string('Path', 'path')->list();
+            $builder->file('Photo', 'photo')->list(false);
+            $builder->string('Photo Name', 'title')->list()->validation(['required'])->sortable()->searchable();
+        })->linkToResources(['galleries.photos.index'])->getForm();
 
         // WebsiteBuilder::edit($cp->id)->linkForm($form);
     }

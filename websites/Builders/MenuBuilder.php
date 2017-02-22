@@ -256,6 +256,12 @@ class MenuBuilder
 
                 }
 
+                if (!$items->first()) {
+
+                    throw new \Exception("Item <$item> not found in this menu <{$this->menu->name}>.");
+
+                }
+
                 return $items->first(); // and only
 
             } elseif ($item instanceof MenuItem) {

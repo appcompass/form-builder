@@ -11,13 +11,20 @@
                 |  please provide one.
 
     .column.is-11(v-if="list")
-      p.control.pull-right
-        router-link.button.is-small.is-primary(:to="{name: 'create', params: {model: model}}")
-          span.icon.is-small
-            i.fa.fa-plus
-          span Create
-
       h1.title.is-4 List: {{ $route.params.sub || $route.params.model }}
+
+        p.control.pull-right
+          a.button.is-small.is-secondary(@click="list.list_layout = 'Card'")
+            span.icon.is-small
+              i.fa.fa-table
+          a.button.is-small.is-secondary(@click="list.list_layout = 'Table'")
+            span.icon.is-small
+              i.fa.fa-list
+          router-link.button.is-small.is-primary(:to="{name: 'create', params: {model: model}}", style="margin-left: 1rem")
+            span.icon.is-small
+              i.fa.fa-plus
+            span Create
+
 
       Pagination(:p="pagination", :disabled="loading", v-if="pagination.last_page > 1")
 
@@ -48,12 +55,13 @@ import Pagination from './Pagination'
 import TableList from './LayoutTypes/TableList'
 import MultiSelectList from './LayoutTypes/MultiSelectList'
 import PageEditorList from './LayoutTypes/PageEditorList'
+import CardList from './LayoutTypes/CardList'
 import Auth from './Auth.js'
 
 export default {
   name: 'ListView',
 
-  components: { Pagination, TableList, MultiSelectList, PageEditorList },
+  components: { Pagination, TableList, MultiSelectList, PageEditorList, CardList },
 
   data () {
     return {
