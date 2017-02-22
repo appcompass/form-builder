@@ -8,9 +8,7 @@ use P3in\Interfaces\GalleriesRepositoryInterface;
 
 class GalleriesRepository extends AbstractRepository implements GalleriesRepositoryInterface
 {
-    protected $with = ['user', 'photos', 'videos']; // we add photos and videos here because as of current logic,
-                                                    // every model fetches the photos and videos, so better to
-                                                    // do it in query builder than loop per record...
+    protected $with = ['user', 'photos', 'videos'];
 
     public function __construct(Gallery $model)
     {
@@ -24,7 +22,13 @@ class GalleriesRepository extends AbstractRepository implements GalleriesReposit
 
     public function create($attributes)
     {
-        $user = \Auth::loginUsingId(2);
+        // $user = \Auth::loginUsingId(2);
+
+        if (!Auth::user()) {
+
+            die('User not logged in');
+
+        }
 
         $attributes['user_id'] = $user->id;
 

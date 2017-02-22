@@ -17,7 +17,7 @@ Route::group([
     $router->resource('websites.pages', WebsitePagesController::class);
     // $router->resource('pages.contents', PageContentsController::class); // @TODO: websites.pages.contents
     // $router->resource('pages.sections', PageSectionsController::class); // @TODO: websites.pages.sections
-    $router->resource('websites.settings', WebsiteSettingsController::class); // @TODO:  Discuss this, not sure it's needed anymore since L5.3 fixed their Json field API.
+    // $router->resource('websites.settings', WebsiteSettingsController::class); // @TODO:  Discuss this, not sure it's needed anymore since L5.3 fixed their Json field API.
     $router->resource('websites.redirects', WebsiteRedirectsController::class);
 });
 

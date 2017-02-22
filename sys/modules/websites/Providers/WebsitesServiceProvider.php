@@ -12,7 +12,7 @@ use P3in\Models\Menu;
 use P3in\Models\Page;
 use P3in\Models\PageSectionContent;
 use P3in\Models\Redirect;
-use P3in\Models\Setting;
+// use P3in\Models\Setting;
 use P3in\Models\Website;
 use Roumen\Sitemap\SitemapServiceProvider;
 use Roumen\Feed\FeedServiceProvider;
@@ -36,7 +36,7 @@ class WebsitesServiceProvider extends ServiceProvider
             'P3in\Interfaces\WebsitesRepositoryInterface' => 'P3in\Repositories\WebsitesRepository',
             'P3in\Interfaces\WebsitePagesRepositoryInterface' => 'P3in\Repositories\WebsitePagesRepository',
             'P3in\Interfaces\WebsiteRedirectsRepositoryInterface' => 'P3in\Repositories\WebsiteRedirectsRepository',
-            'P3in\Interfaces\WebsiteSettingsRepositoryInterface' => 'P3in\Repositories\WebsiteSettingsRepository',
+            // 'P3in\Interfaces\WebsiteSettingsRepositoryInterface' => 'P3in\Repositories\WebsiteSettingsRepository',
             'P3in\Interfaces\PageContentRepositoryInterface' => 'P3in\Repositories\PageContentRepository',
             'P3in\Interfaces\PagesRepositoryInterface' => 'P3in\Repositories\PagesRepository',
             'P3in\Interfaces\MenusRepositoryInterface' => 'P3in\Repositories\MenusRepository',
@@ -49,7 +49,7 @@ class WebsitesServiceProvider extends ServiceProvider
 
         Route::model('websites', Website::class);
         Route::model('redirects', Redirect::class);
-        Route::model('settings', Setting::class);
+        // Route::model('settings', Setting::class);
         Route::model('pages', Page::class);
         Route::model('contents', PageSectionContent::class);
         // Route::model('sections', Section::class);
@@ -63,9 +63,9 @@ class WebsitesServiceProvider extends ServiceProvider
             return Redirect::findOrFail($value);
         });
 
-        Route::bind('setting', function ($value) {
-            return Setting::findOrFail($value);
-        });
+        // Route::bind('setting', function ($value) {
+        //     return Setting::findOrFail($value);
+        // });
 
         Route::bind('page', function ($value) {
             return Page::findOrFail($value);
