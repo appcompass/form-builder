@@ -61,11 +61,17 @@ class FormBuilder
     public static function edit($form): FormBuilder
     {
         if ($form instanceof Form) {
+
             $instance = new static($form);
+
         } elseif (is_string($form)) {
+
             $instance = new static(Form::whereName($form)->firstOrFail());
+
         } elseif (is_integer($form)) {
+
             $instance = new static(Form::findOrFail($form));
+
         }
 
         return $instance;

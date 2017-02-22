@@ -29,7 +29,7 @@ table.table.is-striped
   tbody(:class="{'is-opaque': $parent.loading}", v-if="collection.data.data.length")
     tr(v-for="row in collection.data.data")
       td(v-for="field in forms.list.fields")
-        | {{ row[field.name] }}
+        p(v-html="value(field.name, row)")
       td
         .control.is-grouped
 
@@ -52,22 +52,22 @@ table.table.is-striped
 </template>
 
 <script>
+// @TODO
+//  - only pass list form
+import _ from 'lodash'
+
 export default {
   name: 'TableList',
   props: [ 'forms', 'collection' ],
-  mounted () {
-    // @TODO here we should replace nested fields with the actual value in the collection
-    // but HOW :)
-    // @WARNING a json fields behaves the exact same way
-    // this.forms.list.fields.forEach(function (field) {
-    //   if (/\./.test(field.name)) {
-    //     let exploded = field.name.split('.')
-    //     // console.log(this.collection, exploded)
-    //     this.collection.data.data.forEach(function (data) {
-    //       console.log(data[exploded[0]][exploded[1]])
-    //     })
-    //   }
-    // }.bind(this))
+  data () {
+    return {
+      _
+    }
+  },
+  methods: {
+    value (name, row) {
+      return _.get(row, name)
+    }
   }
 }
 </script>
