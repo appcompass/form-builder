@@ -363,7 +363,7 @@ class Photo extends ModularBaseModel implements GalleryItemInterface
         $disk = Storage::disk($this->storage);
         if ($disk) {
             $base_path = $disk->getAdapter()->getPathPrefix();
-            return $base_path.$this->photoable->getLocalPhotoPath().$this->attributes['path'];
+            return $base_path.$this->photoable->getLocalPhotoPath($this).$this->attributes['path'];
         }
 
     }
