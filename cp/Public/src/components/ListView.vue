@@ -28,14 +28,14 @@
               p.notification.is-info.title.is-5 crafting the resource you requested...
 
         section(
-          v-if="list"
-          v-bind:is="list.list_layout + 'List'"
-          v-bind:sorters="sorters"
-          v-bind:loading="loading"
-          v-bind:collection="collection"
-          v-bind:model="model"
-          v-bind:search="search"
-          v-bind:forms="{list: list, edit: edit}"
+          v-if="list",
+          :is="list.list_layout + 'List'",
+          :sorters="sorters",
+          :loading="loading",
+          :collection="collection",
+          :model="model",
+          :search="search",
+          :forms="{list: list, edit: edit}"
         )
 
       Pagination(:p="pagination", :disabled="loading", v-if="pagination.last_page > 1")
@@ -141,7 +141,6 @@ export default {
       swal({ title: 'Are you sure?', text: 'You will not be able to recover this', type: 'warning', showCancelButton: true, closeOnConfirm: false }, () => {
         var api = process.env.API_SERVER
         this.$http.delete(api + this.$route.path.slice(1) + '/' + id)
-        // this.resource.delete(id)
           .then((response) => {
             swal({title: 'Success', text: response.data.message, type: 'success'}, () => {
               return this.update()

@@ -246,6 +246,18 @@ class MenuBuilder
 
                 return $this->menu->items()->where('id', $item)->firstOrFail();
 
+            } elseif (is_string($item)) {
+
+                $items = $this->menu->items()->whereTitle($item)->get();
+
+                if (!$items || count($items) > 1) {
+
+                    throw new \Exception('More than one instance found. Stopping.');
+
+                }
+
+                return $items->first(); // and only
+
             } elseif ($item instanceof MenuItem) {
 
                 return $this->menu->items()->where('id', $item->id)->firstOrFail();

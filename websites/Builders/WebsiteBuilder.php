@@ -10,6 +10,7 @@ use P3in\Builders\PageBuilder;
 use P3in\Models\Gallery;
 use P3in\Models\Layout;
 use P3in\Models\Page;
+use P3in\Models\Menu;
 use P3in\Models\PageContent;
 use P3in\Models\Section;
 use P3in\Models\StorageConfig;
@@ -25,6 +26,10 @@ class WebsiteBuilder
      * Page instance
      */
     private $website;
+
+    /**
+     * Storage manager
+     */
     private $manager;
 
     public function __construct(Website $website = null)
@@ -123,6 +128,39 @@ class WebsiteBuilder
     }
 
     /**
+     * Edit Menu
+     *
+     * @param      <type>  $menu   The menu
+     */
+    public function menu($menu)
+    {
+        if (is_string($menu)) {
+
+            $menu = $this->website
+                ->menus()
+                ->whereName($menu)
+                ->firstOrFail();
+
+        } elseif (is_int($menu)) {
+
+            $menu = $this->website
+                ->menus()
+                ->findOrFail($menu);
+
+        } elseif ($menu instanceof Menu) {
+
+            if ($menu->website->id !== $this->website->id) {
+
+                throw new \Exception('Menu does not belong to this website.');
+
+            }
+
+        }
+
+        return MenuBuilder::edit($menu);
+    }
+
+    /**
      * Links a form.
      *
      * @param      Form  $form   The form
@@ -132,6 +170,11 @@ class WebsiteBuilder
         $this->website->forms()->attach($form);
     }
 
+    /**
+     * Sets the storage.
+     *
+     * @param      <type>  $name   The name
+     */
     public function setStorage($name)
     {
         $storage = StorageConfig::setByName($name);

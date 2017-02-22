@@ -4,7 +4,9 @@ namespace P3in\Seeders;
 
 use Illuminate\Database\Seeder;
 use P3in\Builders\FormBuilder;
+use P3in\Builders\MenuBuilder;
 use P3in\Builders\WebsiteBuilder;
+
 use P3in\Models\User;
 
 class GalleriesModuleDatabaseSeeder extends Seeder
@@ -15,10 +17,16 @@ class GalleriesModuleDatabaseSeeder extends Seeder
 
         \DB::statement("DELETE FROM forms WHERE name = 'galleries'");
         FormBuilder::new('galleries', function (FormBuilder $builder) {
+            $builder->setListLayout('Card'); // @TODO options are currently hard coded in the UI, this defines the default view
             $builder->string('Gallery Name', 'name')->list()->validation(['required'])->sortable()->searchable();
             $builder->string('Owner', 'user.email')->list()->edit(false);
         })->linkToResources(['galleries.index', 'galleries.show', 'galleries.create']);
 
+        // @TODO build a better way to point menus, we are sure cms is 1st website but sitll not good enough
+        WebsiteBuilder::edit(1)
+            ->menu('main_nav')
+            ->item('galleries')->sub()
+            ->add(['title' => 'Photos', 'alt' => '', 'url' => '/photos']);
 
         $form = FormBuilder::new('photos', function (FormBuilder $builder) {
             // $builder->string('Photo Name', 'title')
