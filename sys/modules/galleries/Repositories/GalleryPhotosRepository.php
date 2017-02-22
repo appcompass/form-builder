@@ -9,6 +9,8 @@ use P3in\Models\Photo;
 class GalleryPhotosRepository extends AbstractChildRepository implements GalleryPhotosRepositoryInterface
 {
 
+    // protected $view = 'Card';
+
     // protected $with = ['user'];
 
     public function __construct(Photo $model, Gallery $parent)

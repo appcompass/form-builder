@@ -141,6 +141,24 @@ class Field extends Model
     }
 
     /**
+     * Required
+     */
+    public function required($required = true)
+    {
+        $exploded = explode(' | ', $this->validation);
+
+        if (isset($exploded['required'])) {
+
+            unset($exploded['required']);
+
+        }
+
+        $exploded['required'] = $required;
+
+        return $this->validation(implode(' | ', $exploded));
+    }
+
+    /**
      * Repeatable
      */
     public function repeatable($repeatable = true)

@@ -16,7 +16,11 @@ use P3in\Traits\HasStorage;
 class Website extends Model
 {
 
-    use HasGallery, HasPermissions, HasStorage, SoftDeletes, HasJsonConfigFieldTrait;
+    use HasGallery,
+        HasPermissions,
+        HasStorage,
+        SoftDeletes,
+        HasJsonConfigFieldTrait;
 
     protected $fillable = [
         'name',
@@ -82,10 +86,10 @@ class Website extends Model
         return $this->belongsToMany(Form::class);
     }
 
-    public function logo()
-    {
-        return $this->morphOne(Photo::class, 'photoable');
-    }
+    // public function logo()
+    // {
+    //     return $this->morphOne(Photo::class, 'photoable');
+    // }
 
     public function apendStoragePath() {
         // @TODO: Needs tie in with website settings with fallback of empty string.
@@ -119,20 +123,17 @@ class Website extends Model
     }
 
     /**
-     *  addItem ?
-     *  TODO Remove
+     * Gets the url attribute.
+     *
+     * @return     <type>  The url attribute.
      */
-    public function addItem(Page $page)
-    {
-        $this->pages()->save($page);
-    }
-
     public function getUrlAttribute()
     {
         return $this->attributes['scheme'].'://'.$this->attributes['host'];
     }
 
     // @TODO refactor big time all following methods.
+    //   - website is gonna be available in the request most of the time. no use cases for this yet -f
     /**
      *
      */
@@ -152,54 +153,54 @@ class Website extends Model
     /**
      *  current website
      */
-    public static function current(Request $request = null)
-    {
-        return static::$current ?: Website::admin();
-    }
+    // public static function current(Request $request = null)
+    // {
+    //     return static::$current ?: Website::admin();
+    // }
 
     /**
       * return admin
       *
       */
-    public function scopeAdmin($query)
-    {
-        return $query->where('site_name', '=', env('ADMIN_WEBSITE_NAME', 'CMS Admin CP'))->firstOrFail();
-    }
+    // public function scopeAdmin($query)
+    // {
+    //     return $query->where('site_name', '=', env('ADMIN_WEBSITE_NAME', 'CMS Admin CP'))->firstOrFail();
+    // }
 
     /**
       * return all but admin
       *
       */
-    public function scopeManaged($query)
-    {
-        return $query->where('site_name', '!=', env('ADMIN_WEBSITE_NAME', 'CMS Admin CP'));
-    }
+    // public function scopeManaged($query)
+    // {
+    //     return $query->where('site_name', '!=', env('ADMIN_WEBSITE_NAME', 'CMS Admin CP'));
+    // }
 
-    public static function isManaged()
-    {
-        return Website::current()->id !== Website::admin()->id;
-    }
+    // public static function isManaged()
+    // {
+    //     return Website::current()->id !== Website::admin()->id;
+    // }
 
     /**
       *
       *
       */
-    public function scopeManagedById($query, $id)
-    {
-        return $query->managed()->findOrFail($id);
-    }
+    // public function scopeManagedById($query, $id)
+    // {
+    //     return $query->managed()->findOrFail($id);
+    // }
 
-    public function scopeIsLive($query)
-    {
-        return $query->whereHas('settings', function ($query) {
-            $query->where("data->>'live'", 'true');
-        });
-    }
+    // public function scopeIsLive($query)
+    // {
+    //     return $query->whereHas('settings', function ($query) {
+    //         $query->where("data->>'live'", 'true');
+    //     });
+    // }
 
-    public function getIsLiveAttribute()
-    {
-        return $this->settings('live') ? 'Yes' : 'No';
-    }
+    // public function getIsLiveAttribute()
+    // {
+    //     return $this->settings('live') ? 'Yes' : 'No';
+    // }
 
     /**
      * as per hasGallery Trait

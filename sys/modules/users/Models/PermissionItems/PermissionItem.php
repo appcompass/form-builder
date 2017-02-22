@@ -29,17 +29,18 @@ class PermissionItem
     /**
      *  Provides means to fetch target
      */
-    public function how(Builder $query)
-    {
-        if (!Website::getCurrent()) {
-            Website::setCurrent(Website::admin());
-        }
+    // @TODO refactor this
+    // public function how(Builder $query)
+    // {
+    //     if (!Website::getCurrent()) {
+    //         Website::setCurrent(Website::admin());
+    //     }
 
-        return $query
-            ->where('website_id', '=', Website::getCurrent()->id)
-            ->where('pointer', '=', $this->getPointer())
-            ->where('type', '=', $this->getType())
-            ->firstOrFail()
-            ->permission;
-    }
+    //     return $query
+    //         ->where('website_id', '=', Website::getCurrent()->id)
+    //         ->where('pointer', '=', $this->getPointer())
+    //         ->where('type', '=', $this->getType())
+    //         ->firstOrFail()
+    //         ->permission;
+    // }
 }

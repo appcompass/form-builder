@@ -1361,8 +1361,6 @@ We collect this information for the purpose of providing the Service, identifyin
 
 
             // Create the nav menus and add the items.
-            // $main_header_menu = $wsb->addMenu('main_header_menu');
-
             $wsb->addMenu('main_header_menu')
                 ->add($solutions, 1)->icon('icon-solutions')->sub()
                     ->add($process, 1)->icon('icon-solutions')
@@ -1371,16 +1369,6 @@ We collect this information for the purpose of providing the Service, identifyin
                 ->add($company, 3)->icon('icon-company')
                 ->add($contact, 4)->icon('icon-contact')
                 ->add($login, 5)->icon('icon-login');
-
-            // $main_header_menu->addItem($homepage, 1)->setIcon('icon-home');
-
-            // $solutions_item = $main_header_menu->addItem($solutions, 1)->setIcon('icon-solutions');
-            // $solutions_item->addItem($process, 1)->setIcon('icon-solutions');
-
-            // $main_header_menu->addItem($projects, 2)->setIcon('icon-projects');
-            // $main_header_menu->addItem($company, 3)->setIcon('icon-company');
-            // $main_header_menu->addItem($contact, 4)->setIcon('icon-contact');
-            // $main_header_menu->addItem($login, 5)->setIcon('icon-login');
 
             $wsb->addMenu('main_footer_menu')
                 ->add($solutions, 1)
@@ -1391,16 +1379,6 @@ We collect this information for the purpose of providing the Service, identifyin
                 ->add($login, 6)
                 ->add($terms_of_service, 7)
                 ->add($privacy_policy, 8);
-
-            // $main_footer_menu = $wsb->addMenu('main_footer_menu');
-            // $main_footer_menu->addItem($solutions, 1);
-            // $main_footer_menu->addItem($process, 2);
-            // $main_footer_menu->addItem($projects, 3);
-            // $main_footer_menu->addItem($company, 4);
-            // $main_footer_menu->addItem($contact, 5);
-            // $main_footer_menu->addItem($login, 6);
-            // $main_footer_menu->addItem($terms_of_service, 7);
-            // $main_footer_menu->addItem($privacy_policy, 8);
 
             $wsb->deploy();
         })->getWebsite();
