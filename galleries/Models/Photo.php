@@ -10,6 +10,12 @@ use P3in\Models\GalleryItem;
 
 class Photo extends GalleryItem implements GalleryItemInterface
 {
+    protected $fillable = [
+        'user_id',
+        'name',
+        'path'
+    ];
+
     /**
      * Attributes appendend by default
      */

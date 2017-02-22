@@ -29,7 +29,8 @@ class GalleriesModuleDatabaseSeeder extends Seeder
             $builder->string('Path', 'path')->list();
             $builder->file('Photo', 'photo')->list(false);
             $builder->string('Photo Name', 'title')->list()->validation(['required'])->sortable()->searchable();
-        })->linkToResources(['galleries.photos.index', 'galleries.photos.create'])->getForm();
+        })->linkToResources(['galleries.photos.index', 'galleries.photos.create', 'galleries.photo.edit'])
+            ->getForm();
 
         // WebsiteBuilder::edit($cp->id)->linkForm($form);
     }
