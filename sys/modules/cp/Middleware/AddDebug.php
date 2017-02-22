@@ -22,12 +22,16 @@ class AddDebug
      */
     public function handle(Request $request, Closure $next)
     {
-        $this->enableLogging();
+        if (env('APP_DEBUG')) {
+            $this->enableLogging();
 
-        // get response
-        $response = $next($request);
+            // get response
+            $response = $next($request);
 
-        return $this->setOutput($response);
+            return $this->setOutput($response);
+        }else{
+            return $next($request);
+        }
     }
 
     public function terminate()
@@ -36,17 +40,15 @@ class AddDebug
 
     private function enableLogging()
     {
-        if (env('APP_DEBUG')) {
-            \DB::enableQueryLog();
+        \DB::enableQueryLog();
 
-            \Event::listen('illuminate.log', function ($level, $message, $context) {
-                $this->logged['logged'][] = [
-                    'level' => $level,
-                    'message' => $message,
-                    'context' => $context
-                ];
-            });
-        }
+        \Event::listen('illuminate.log', function ($level, $message, $context) {
+            $this->logged['logged'][] = [
+                'level' => $level,
+                'message' => $message,
+                'context' => $context
+            ];
+        });
     }
 
     private function setOutput($response)
@@ -59,11 +61,9 @@ class AddDebug
             $rtn_method = 'setContent';
         }
 
-        if (env('APP_DEBUG')) {
-            $this->logged['queries'] = \DB::getQueryLog();
+        $this->logged['queries'] = \DB::getQueryLog();
 
-            $content['debug'] = $this->logged;
-        }
+        $content['debug'] = $this->logged;
 
         return $response->$rtn_method($content);
     }
