@@ -11,7 +11,7 @@ class CpModule extends BaseModule
 
     protected $publishes = [
         // publishes to disk instances by name.
-        'Public/' => 'cp_root',
+//        'Public/' => 'cp_root',
         'Models/FieldTypes/templates/' => 'cp_form_fields',
     ];
 
