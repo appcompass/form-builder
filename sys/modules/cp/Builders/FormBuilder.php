@@ -116,12 +116,34 @@ class FormBuilder
         return $this;
     }
 
+    /**
+     * Sets the list layout.
+     *
+     * @param      <type>  $list_layout  The list layout
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
     public function setListLayout($list_layout)
     {
         $this->form->setListLayout($list_layout);
 
         return $this;
     }
+
+    /**
+     * sets the editor view
+     *
+     * @param      <type>  $editor  The editor
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
+    public function editor($editor)
+    {
+        $this->form->editor($editor);
+
+        return $this;
+    }
+
     /**
      * Gets the name.
      *
@@ -226,6 +248,9 @@ class FormBuilder
      */
     public function __call($field_type, array $args)
     {
+
+        // @TODO before calling for types we can simplify this class and check if $method can be called on the form?
+
         // setup class name
         $field_name = ucfirst($field_type) . 'Type';
 

@@ -10,7 +10,7 @@ class Form extends Model
 {
     protected $fillable = [
         'name',
-        'resource'
+        'editor'
     ];
 
     protected $hidden = [
@@ -132,6 +132,22 @@ class Form extends Model
     public function setListLayout($list_layout)
     {
         $this->list_layout = $list_layout;
+
+        if ($this->save()) {
+            return $this;
+        }
+    }
+
+    /**
+     * Sets the editor
+     *
+     * @param      <type>  $editor  The editor
+     *
+     * @return     self    ( description_of_the_return_value )
+     */
+    public function editor($editor)
+    {
+        $this->editor = $editor;
 
         if ($this->save()) {
             return $this;
