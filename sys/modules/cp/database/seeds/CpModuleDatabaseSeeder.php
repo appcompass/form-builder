@@ -4,8 +4,6 @@ namespace P3in\Seeders;
 
 use DB;
 use Illuminate\Database\Seeder;
-use P3in\Seeders\CpStoragesSeeder;
-use P3in\Seeders\FieldtypesTableSeeder;
 
 class CpModuleDatabaseSeeder extends Seeder
 {
@@ -16,6 +14,6 @@ class CpModuleDatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call(CpStoragesSeeder::class);
+        //
     }
 }
