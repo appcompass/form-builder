@@ -147,7 +147,8 @@ class WebsitesModuleDatabaseSeeder extends Seeder
         DB::statement("DELETE FROM forms WHERE name = 'menus-editor'");
 
         FormBuilder::new('menus-editor', function (FormBuilder $builder) {
-            $builder->menuEditor('Menu', 'menu')->list(false);
+            $builder->editor('Menu');
+            // $builder->menuEditor('Menu', 'menu')->list(false);
         })->linkToResources(['websites.menus.show']);
 
         DB::statement("DELETE FROM forms WHERE name = 'create-link'");

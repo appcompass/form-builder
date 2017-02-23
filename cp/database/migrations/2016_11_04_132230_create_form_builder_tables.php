@@ -28,6 +28,7 @@ class CreateFormBuilderTables extends Migration
             $table->string('name')->unique();
             $table->nullableMorphs('formable');
             $table->string('list_layout')->default('Table');
+            $table->string('editor')->default('Form'); // editors: ['Menu', 'Gallery'] specific components we can publish from modules
             // @NOTE we use resources table fo'dat -f
             // $table->string('resource')->nullable(); // point to base resource url
             $table->timestamps();
