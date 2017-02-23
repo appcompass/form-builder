@@ -19,8 +19,6 @@ class WebsiteMenusController extends AbstractChildController
 
     public function update(Request $request, Model $parent, Model $menu)
     {
-
-        return MenuBuilder::update($menu, $request->menu);
-
+        return MenuBuilder::update($menu, $request->all());
     }
 }

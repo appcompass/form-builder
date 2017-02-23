@@ -99,8 +99,6 @@ class MenuBuilder
 
         $instance->menu->drop($structure['deletions']);
 
-        // $instance->drop($structure['deletions']);
-
         foreach ($instance->flatten($structure['menu']) as $menuitem) {
 
             if (is_null($menuitem->menu_id)) {
