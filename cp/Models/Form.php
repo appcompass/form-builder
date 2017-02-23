@@ -107,7 +107,6 @@ class Form extends Model
         return $query->with(['fields' => function($q){
             $q->config('to_list', true);
         }]);
-        // return $this->filterBySub($query, 'fields', 'to_list', true);
     }
 
     /**
@@ -123,7 +122,6 @@ class Form extends Model
         return $query->with(['fields' => function($q){
             $q->config('to_edit', true);
         }]);
-        // return $this->filterBySub($query, 'fields', 'to_edit', true);
     }
 
     /**
@@ -148,18 +146,22 @@ class Form extends Model
         return $field->form()->save($this);
     }
 
-    // /**
-    //  *
-    //  */
-    // private function filterBySub(Builder $query, $sub, $param, $val)
-    // {
-    //     return $query->with([
+    /**
+     * Get form rules
+     */
+    public function rules()
+    {
+        $rules = [];
 
-    //         $sub => function ($query) use ($param, $val) {
-    //             $query->where($param, $val);
-    //         }
-    //     ]);
-    // }
+        // we only care about to_edit rules
+        foreach($this->toEdit()->first()->fields as $field) {
+
+            $rules[$field->name] = $field->validation;
+
+        }
+
+        return $rules;
+    }
 
     /**
      * Builds a menu tree recursively.

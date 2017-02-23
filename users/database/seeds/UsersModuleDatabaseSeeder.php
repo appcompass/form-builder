@@ -31,52 +31,17 @@ class UsersModuleDatabaseSeeder extends Seeder
         $this->call(GroupsTableSeeder::class);
         $this->call(PermissionsSeeder::class);
         $this->call(UsersTableSeeder::class);
-        // $this->call(UserUiFieldsSeeder::class);
-        // factory(User::class, 30)->create()->each(function ($user) {
-        //     $user->permissions()->saveMany(Permission::inRandomOrder()->limit(3)->get());
-        // });
-
-
-        //
-        //  USERS
-        //
 
         \DB::statement("DELETE FROM forms WHERE name = 'users'");
 
-        // @NOTE ResourceBuilder Parameters:
-        //      FormName // Resource Pointer (vue-resource syntax) // callback
-        // @IDEAS for the API
-        // $builder->actions('edit')->permissions('users.own.edit');
-        // $builder->datetime('End of absence', 'settings.absent.end'); <- working
-
         FormBuilder::new('users', function (FormBuilder $builder) {
-            $builder->string('First Name', 'first_name')
-                ->list()
-                ->validation(['required'])
-                ->sortable()
-                ->searchable();
-            $builder->string('Last Name', 'last_name')
-                ->list()
-                ->validation(['required'])
-                ->sortable()
-                ->searchable();
-            $builder->string('Email', 'email')
-                ->list()
-                ->validation(['required', 'email'])
-                ->sortable()
-                ->searchable();
-            $builder->string('Phone Number', 'phone')
-                ->list()
-                ->validation(['required'])
-                ->sortable()
-                ->searchable();
-            $builder->string('Date Added', 'created_at')
-                ->list()
-                ->edit(false)
-                ->sortable();
-            $builder->secret('Password', 'password')
-                ->validation(['required']);
-        })->linkToResources(['users.index', 'users.show', 'users.create']);
+            $builder->string('First Name', 'first_name')->list()->validation(['required'])->sortable()->searchable();
+            $builder->string('Last Name', 'last_name')->list()->validation(['required'])->sortable()->searchable();
+            $builder->string('Email', 'email')->list()->validation(['required', 'email'])->sortable()->searchable();
+            $builder->string('Phone Number', 'phone')->list()->validation(['required'])->sortable()->searchable();
+            $builder->string('Date Added', 'created_at')->list()->edit(false)->sortable();
+            $builder->secret('Password', 'password')->validation(['required']);
+        })->linkToResources(['users.index', 'users.show', 'users.create', 'users.update']);
 
         //
         //  GROUPS
@@ -84,26 +49,11 @@ class UsersModuleDatabaseSeeder extends Seeder
         \DB::statement("DELETE FROM forms WHERE name = 'groups'");
 
         FormBuilder::new('groups', function (FormBuilder $builder) {
-            $builder->string('Group Name', 'name')
-                ->list()
-                ->validation(['required'])
-                ->sortable()
-                ->searchable();
-            $builder->string('Group Label', 'label')
-                ->list()
-                ->validation(['required'])
-                ->sortable()
-                ->searchable();
-            $builder->text('Description', 'description')
-                ->list(false)
-                ->validation(['required'])
-                ->sortable()
-                ->searchable();
-            $builder->string('Date Added', 'created_at')
-                ->list()
-                ->edit(false)
-                ->sortable();
-        })->linkToResources(['groups.index', 'groups.show', 'groups.create', ]);
+            $builder->string('Group Name', 'name')->list()->validation(['required'])->sortable()->searchable();
+            $builder->string('Group Label', 'label')->list()->validation(['required'])->sortable()->searchable();
+            $builder->text('Description', 'description')->list(false)->validation(['required'])->sortable()->searchable();
+            $builder->string('Date Added', 'created_at')->list()->edit(false)->sortable();
+        })->linkToResources(['groups.index', 'groups.show', 'groups.create', 'groups.update']);
 
         Model::reguard();
     }

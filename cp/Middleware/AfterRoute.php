@@ -20,16 +20,18 @@ class AfterRoute
      */
     public function handle(Request $request, Closure $next)
     {
+        // return $next($request);
+
         $route = Route::current();
 
         $methods = ['GET'];
 
         // removes everything up to first / so we don't have to store the api/ prefix
         // in the alias table
-        $uri = preg_replace("/^([a-z]*\/)/", '', $route->getName());
+        // $uri = preg_replace("/^([a-z]*\/)/", '', $route->getName());
 
         // resolve form by uri
-        $form = Form::byResource($uri);
+        $form = Form::byResource($route->getName());
 
         // \Log::info('AfterRequest is looking for: ' . $uri);
 
@@ -37,19 +39,19 @@ class AfterRoute
         $response = $next($request);
 
         // return for exceptions
-        if (isset($response->exception)) {
-            $result = [
-                'errors' => $response->exception->getMessage(),
-            ];
+        // if (isset($response->exception)) {
+        //     $result = [
+        //         'errors' => $response->exception->getMessage(),
+        //     ];
 
-            if (env('APP_DEBUG')) {
-                $result['file'] = $response->exception->getFile();
-                $result['line'] = $response->exception->getLine();
-                $result['trace'] = $response->exception->getTrace();
-            }
+        //     if (env('APP_DEBUG')) {
+        //         $result['file'] = $response->exception->getFile();
+        //         $result['line'] = $response->exception->getLine();
+        //         $result['trace'] = $response->exception->getTrace();
+        //     }
 
-            return response()->json($result, $response->getStatusCode());
-        }
+        //     return response()->json($result, $response->getStatusCode());
+        // }
 
         if ($response->getStatusCode() === 200 && in_array($request->getMethod(), $methods)) {
 

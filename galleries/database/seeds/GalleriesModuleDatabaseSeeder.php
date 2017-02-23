@@ -20,6 +20,7 @@ class GalleriesModuleDatabaseSeeder extends Seeder
         FormBuilder::new('galleries', function (FormBuilder $builder) {
             $builder->setListLayout('Card'); // @TODO options are currently hard coded in the UI, this defines the default view
             $builder->string('Gallery Name', 'name')->list()->validation(['required'])->sortable()->searchable();
+            $builder->file('Photo', 'photo')->list(false);
             $builder->string('Owner', 'user.email')->list()->edit(false);
         })->linkToResources(['galleries.index', 'galleries.show', 'galleries.create']);
 

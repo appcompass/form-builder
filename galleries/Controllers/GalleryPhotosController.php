@@ -20,8 +20,9 @@ class GalleryPhotosController extends AbstractChildController
 
             $request->user = Auth::user();
 
-            return parent::store($request, $parent);
+            $result = parent::store($request, $parent);
 
+            return ['id' => $parent->id, 'model' => 'galleries'];
         }
 
         throw new \Exception('Not logged, or whatever we should do here.');

@@ -2,8 +2,9 @@
 
 namespace P3in\Controllers;
 
-use P3in\Models\User;
 use P3in\Interfaces\UsersRepositoryInterface;
+use P3in\Requests\FormRequest;
+use P3in\Models\User;
 
 class UsersController extends AbstractController
 {
@@ -11,4 +12,5 @@ class UsersController extends AbstractController
     {
         $this->repo = $repo;
     }
+
 }
