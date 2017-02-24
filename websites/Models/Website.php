@@ -34,7 +34,7 @@ class Website extends Model
         'config' => 'object'
     ];
 
-    protected $hidden = ['config'];
+    // protected $hidden = ['config'];
 
     /**
      *

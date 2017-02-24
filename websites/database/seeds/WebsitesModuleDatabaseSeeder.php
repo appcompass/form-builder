@@ -73,8 +73,8 @@ class WebsitesModuleDatabaseSeeder extends Seeder
         $form = FormBuilder::new('websites', function (FormBuilder $builder) {
             $builder->string('Website Name', 'name')->list()->validation(['required'])->sortable()->searchable();
             $builder->select('Scheme', 'scheme')->list()->validation(['required'])->sortable()->searchable()->dynamic([
-                    'http' => 'http',
-                    'https' => 'https',
+                    ['id' => 'http', 'name' => 'Plain (HTTP)'],
+                    ['id' => 'https', 'name' => 'Secure (HTTPS)']
                 ]);
             $builder->string('Host', 'host')->list()->validation(['required'])->sortable()->searchable();
             $builder->fieldset('Configuration', 'config', function(FormBuilder $confBuilder){
