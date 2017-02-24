@@ -39,6 +39,7 @@ class UsersModuleDatabaseSeeder extends Seeder
             $builder->string('Last Name', 'last_name')->list()->validation(['required'])->sortable()->searchable();
             $builder->string('Email', 'email')->list()->validation(['required', 'email'])->sortable()->searchable();
             $builder->string('Phone Number', 'phone')->list()->validation(['required'])->sortable()->searchable();
+            $builder->boolean('Active', 'active')->list(false);
             $builder->string('Date Added', 'created_at')->list()->edit(false)->sortable();
             $builder->secret('Password', 'password')->validation(['required']);
         })->linkToResources(['users.index', 'users.show', 'users.create', 'users.update', 'users.store']);
