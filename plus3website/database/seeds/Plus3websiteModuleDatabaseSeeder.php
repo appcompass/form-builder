@@ -72,8 +72,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             $publishFrom = realpath(__DIR__.'/../../Public');
 
             $wsb
-                ->setHeader('SiteHeader') //@TODO: may not be needed here anymore
-                ->setFooter('SiteFooter') //@TODO: may not be needed here anymore
+                ->setHeader(1) //@TODO: may not be needed here anymore
+                ->setFooter(2) //@TODO: may not be needed here anymore
                 ->setMetaData([
                     'title' => '',
                     'description' => '',
