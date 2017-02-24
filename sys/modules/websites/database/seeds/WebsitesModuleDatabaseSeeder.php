@@ -73,16 +73,18 @@ class WebsitesModuleDatabaseSeeder extends Seeder
         $form = FormBuilder::new('websites', function (FormBuilder $builder) {
             $builder->string('Website Name', 'name')->list()->validation(['required'])->sortable()->searchable();
             $builder->select('Scheme', 'scheme')->list()->validation(['required'])->sortable()->searchable()->dynamic([
-                    ['id' => 'http', 'name' => 'Plain (HTTP)'],
-                    ['id' => 'https', 'name' => 'Secure (HTTPS)']
+                    ['id' => 'http', 'label' => 'Plain (HTTP)'],
+                    ['id' => 'https', 'label' => 'Secure (HTTPS)']
                 ]);
             $builder->string('Host', 'host')->list()->validation(['required'])->sortable()->searchable();
             $builder->fieldset('Configuration', 'config', function(FormBuilder $confBuilder){
                 $confBuilder->select('Header', 'header')->dynamic(Section::class, function(FieldSource $source) {
                     $source->where('type', 'header');
+                    $source->select(['id', 'name AS label']);
                 });
                 $confBuilder->select('Footer', 'footer')->dynamic(Section::class, function(FieldSource $source) {
                     $source->where('type', 'footer');
+                    $source->select(['id', 'name AS label']);
                 });
                 $confBuilder->codeeditor('Layouts', 'layouts')->keyedRepeatable();
                 $confBuilder->fieldset('Deployment', 'deployment', function (FormBuilder $depBuilder) {

@@ -132,6 +132,19 @@ class Website extends Model
         return $this->attributes['scheme'].'://'.$this->attributes['host'];
     }
 
+    public function getConfigAttribute()
+    {
+        if (is_null($this->attributes['config'])) {
+
+            return json_decode(json_encode(["layouts" => ['error' => '', 'public' => '']]));
+
+        } else {
+
+            return json_decode($this->attributes['config']);
+
+        }
+    }
+
     // @TODO refactor big time all following methods.
     //   - website is gonna be available in the request most of the time. no use cases for this yet -f
     /**

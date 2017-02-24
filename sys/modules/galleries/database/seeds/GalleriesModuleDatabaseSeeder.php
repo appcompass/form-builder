@@ -18,6 +18,7 @@ class GalleriesModuleDatabaseSeeder extends Seeder
 
         \DB::statement("DELETE FROM forms WHERE name = 'galleries'");
         FormBuilder::new('galleries', function (FormBuilder $builder) {
+            $builder->editor('Gallery');
             $builder->setListLayout('Card'); // @TODO options are currently hard coded in the UI, this defines the default view
             $builder->string('Gallery Name', 'name')->list()->validation(['required'])->sortable()->searchable();
             $builder->file('Photo', 'photo')->list(false);
