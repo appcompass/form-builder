@@ -238,13 +238,9 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             ]);
 
             $form = FormBuilder::new('SliderBanner', function (FormBuilder $fb) {
-                // the fields internally are created in the order they appear in the builder.
                 $fb->string('Title', 'title')->validation(['required']);
 
-                // fieldset will return a FormBuilder instance with Parent set to current field
                 $fb->fieldset('Slides', 'slides', function (FormBuilder $slide) {
-                    // not field type, sub section builder.
-                    // $slide->file('Banner Image', 'banner_image', Photo::class, ['required']);
                     $slide->file('Banner Image', 'banner_image')->validation(['required']);
                     $slide->string('Title', 'title')->validation(['required']);
                     $slide->wysiwyg('Description', 'description')->validation(['required']);

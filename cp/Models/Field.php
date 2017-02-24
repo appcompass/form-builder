@@ -4,7 +4,6 @@ namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use P3in\Models\FieldSource;
-use P3in\Models\Oberservers\FieldObserver;
 use P3in\Traits\HasDynamicContent;
 use P3in\Traits\HasJsonConfigFieldTrait;
 
@@ -21,7 +20,8 @@ class Field extends Model
         'type',
         'config',
         'validation',
-        'dynamic'
+        'dynamic',
+        'form_id'
     ];
 
     protected $casts = [
@@ -31,8 +31,7 @@ class Field extends Model
 
     protected $appends = [];
 
-    // @TODO: would be nice to know when fields were added/changed?
-    public $timestamps = false; // we don't need ts on fields
+    public $timestamps = false;
 
     /**
      * override boot method
@@ -41,7 +40,6 @@ class Field extends Model
      */
     protected static function boot()
     {
-        static::observe(new FieldObserver);
         static::addGlobalScope(new OrderScope('id', 'asc'));
 
         parent::boot();
@@ -54,7 +52,6 @@ class Field extends Model
      */
     public function form()
     {
-        // return $this->belongsToMany(Form::class);
         return $this->belongsTo(Form::class);
     }
 
@@ -99,7 +96,7 @@ class Field extends Model
     }
 
     /**
-     * { function_description }
+     * Set the
      */
     public function dynamic($what_to_link, \Closure $callback = null)
     {
