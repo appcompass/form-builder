@@ -10,7 +10,8 @@ class WebsitesModule extends BaseModule
 
     protected $publishes = [
         // publishes to disk instances by name.
-        'Models/FieldTypes/templates/' => 'cp_form_fields',
+        // @TODO for now we wrok directly on cp repo, we'll discuss this later
+        // 'Models/FieldTypes/templates/' => 'cp_form_fields',
     ];
 
     public function __construct()
