@@ -71,39 +71,20 @@ class WebsitesModuleDatabaseSeeder extends Seeder
         DB::statement("DELETE FROM forms WHERE name = 'websites'");
 
         $form = FormBuilder::new('websites', function (FormBuilder $builder) {
-            $builder->string('Website Name', 'name')
-                ->list()
-                ->validation(['required'])
-                ->sortable()
-                ->searchable();
-
-            $builder->select('Scheme', 'scheme')
-                ->list()
-                ->validation(['required'])
-                ->sortable()
-                ->searchable()
-                ->dynamic([
+            $builder->string('Website Name', 'name')->list()->validation(['required'])->sortable()->searchable();
+            $builder->select('Scheme', 'scheme')->list()->validation(['required'])->sortable()->searchable()->dynamic([
                     'http' => 'http',
                     'https' => 'https',
                 ]);
-
-            $builder->string('Host', 'host')
-                ->list()
-                ->validation(['required'])
-                ->sortable()
-                ->searchable();
-
+            $builder->string('Host', 'host')->list()->validation(['required'])->sortable()->searchable();
             $builder->fieldset('Configuration', 'config', function(FormBuilder $confBuilder){
                 $confBuilder->select('Header', 'header')->dynamic(Section::class, function(FieldSource $source) {
                     $source->where('type', 'header');
                 });
-
                 $confBuilder->select('Footer', 'footer')->dynamic(Section::class, function(FieldSource $source) {
                     $source->where('type', 'footer');
                 });
-
                 $confBuilder->codeeditor('Layouts', 'layouts')->keyedRepeatable();
-
                 $confBuilder->fieldset('Deployment', 'deployment', function (FormBuilder $depBuilder) {
                     $depBuilder->string('Publish From Path', 'publish_from')
                         ->validation(['required']);

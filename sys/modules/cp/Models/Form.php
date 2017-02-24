@@ -57,7 +57,17 @@ class Form extends Model
      */
     public function render()
     {
+        // return array_merge($this->toArray(), $this->buildTree($this->fields));
         return $this->buildTree($this->fields);
+    }
+
+    public function toArray()
+    {
+        $form = $this->attributes;
+
+        $form['fields'] = $this->render();
+
+        return $form;
     }
 
     /**
