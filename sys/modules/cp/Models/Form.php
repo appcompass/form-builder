@@ -182,7 +182,11 @@ class Form extends Model
         // we only care about to_edit rules
         foreach($this->toEdit()->first()->fields as $field) {
 
-            $rules[$field->name] = $field->validation;
+            if (!is_null($field->validation)) {
+
+                $rules[$field->name] = $field->validation;
+
+            }
 
         }
 
