@@ -16,7 +16,8 @@ class MenuItem extends Model
         'new_tab',
         'clickable',
         'order',
-        'icon'
+        'icon',
+        'url'
     ];
 
     protected $hidden = [
@@ -106,7 +107,7 @@ class MenuItem extends Model
         // this affects item creation, so we only care if navigatable is set
         if (isset($this->navigatable) && get_class($this->navigatable) !== Link::class) {
 
-            throw new \Exception('This item url cannot be set, item is not a Link instance.');
+            return;
 
         }
 
