@@ -354,8 +354,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 $fb->wysiwyg('Description', 'description')->validation(['required']);
                 // do we really need a fieldset here? fieldsets means the frontend adds a depth to the object, i.e: data.quick_links.format instead of simply data.format
                 // $fb->fieldset('Page Section Quick Links', 'quick_links', function (FormBuilder $quickLinks) {
-                    $fb->radio('Link Format', 'format')->validation(['required'])->dynamic(['ol' => 'Ordered List', 'ul' => 'Un Ordered List', 'arrow' => 'Link with Arrow', ]);
-                    $fb->pageSectionSelect('Page Section Quick Links', 'links')->repeatable();
+                $fb->radio('Link Format', 'format')->validation(['required'])->dynamic(['ol' => 'Ordered List', 'ul' => 'Un Ordered List', 'arrow' => 'Link with Arrow', ]);
+                $fb->pageSectionSelect('Page Section Quick Links', 'links')->repeatable();
                 // });
             })->setOwner($white_break_w_section_links);
 
@@ -366,7 +366,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             ]);
 
             FormBuilder::new('ProvidedSolution', function (FormBuilder $fb) {
-                $fb->fieldset('Solution', 'solution', function (FormBuilder $solution) {
+                $fb->fieldset('Solution', 'solutions', function (FormBuilder $solution) {
                     $solution->radio('Layout', 'layout')->validation(['required']); // @TODO DataSource , ['left' => 'Left', 'right' => 'Right']
                     $solution->string('Title', 'title')->validation(['required']);
                     $solution->file('Solution Photo', 'solution_photo');
@@ -1044,50 +1044,52 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ])
                 ->addSection($project_list, 3, [
                     'content' => [
-                        [
-                            'background_image' => '/assets/images/content/bg_project_atmgurus.jpg',
-                            'white_logo' => '/assets/images/content/logo_atmgurus.svg',
-                            'logo' => '/assets/images/content/logo_atmgurus_color.svg',
-                            'logo_link' => 'https://www.atmgurus.com/',
-                            'name' => 'ATM Gurus',
-                            'business_area' => 'Banking Device Repair & Training',
-                            'description' => '<p>We built a responsive e-commerce web application for ATM Gurus, helping their online customers easily order parts and services.</p><p>Our team integrated the web app with ATM Gurus’ backend to provide real time updates of inventory.  We also customized our proprietary application management system to allow the client to manage Web content and customer accounts.</p>',
-                            'services_provided' => [], // Custom Web application, Application management system, Middleware development
-                            'link_title' => 'For information on how we can help you, please contact us.',
-                            'link_href' => '/contact',
-                        ],[
-                            'background_image' => '/assets/images/content/bg_project_bostonpads.jpg',
-                            'white_logo' => '/assets/images/content/logo_bostonpads.svg',
-                            'logo' => '/assets/images/content/logo_bostonpads_color.svg',
-                            'logo_link' => 'http://www.bostonpads.com',
-                            'name' => 'BostonPads',
-                            'business_area' => 'Real Estate Management, Sales and Rentals',
-                            'description' => '<p>Boston Pads asked us to integrate their property listings data with a new, expandable web application for management of several business Web sites.</p><p>We customized our responsive, secure AMS for administration, data uploads, and editing of Web sites, as well as creation of new sites. Custom middleware populates the AMS from multiple data sources.</p>',
-                            'services_provided' => [], // Custom Web application, Application management system, Middleware development
-                            'link_title' => 'Are multiple data sources a problem for you? Please submit an RFP.',
-                            'link_href' => '/rfp-form',
-                        ],[
-                            'background_image' => '/assets/images/content/bg_project_versalink.jpg',
-                            'white_logo' => '/assets/images/content/logo_versalink.svg',
-                            'logo' => '/assets/images/content/logo_versalink_color.svg',
-                            'logo_link' => 'https://www.versasafe.com/versalink-info',
-                            'name' => 'VersaLink',
-                            'business_area' => 'Banking Devices Management and Reporting',
-                            'description' => '<p>VersaLink Communication System is Triton’s proprietary application for monitoring data and health of their smart safes and ATMs, via smart phone or computer.</p><p>We rebuilt VersaLink for efficiency, scalability, performance, and management of multiple devices. We also improved usability while maintaining full compatibility with previous versions.</p>',
-                            'services_provided' => [], // Custom Web application, Application management system, Middleware development, Device communication
-                            'link_title' => 'Are you juggling multiple devices? Please submit an RFP.',
-                            'link_href' => '/rfp-form',
-                        ],[
-                            'background_image' => '/assets/images/content/bg_project_pronto.jpg',
-                            'white_logo' => '/assets/images/content/logo_pronto.svg',
-                            'logo' => '/assets/images/content/logo_pronto_color.svg',
-                            'logo_link' => 'https://www.youtube.com/watch?v=INpGZPwkya4',
-                            'name' => 'Pronto',
-                            'business_area' => 'Banking Devices Management and Reporting',
-                            'description' => '<p>Equinox02 needed a system to manage distributors and deliveries of supplies to medical facilities. We designed an application to track deliveries, orders, refills, and cancellations. It sends status messages to facilities so patient needs are met without interruption.</p><p>We also consulted for Equinox02 on medical device communications protocols.</p>',
-                            'services_provided' => [], // Custom Web application, Device communication
-                            'link_title' => 'Do you need to communicate with your devices? Contact us.',
-                            'link_href' => '/contact',
+                        'projects' => [
+                            [
+                                'background_image' => '/assets/images/content/bg_project_atmgurus.jpg',
+                                'white_logo' => '/assets/images/content/logo_atmgurus.svg',
+                                'logo' => '/assets/images/content/logo_atmgurus_color.svg',
+                                'logo_link' => 'https://www.atmgurus.com/',
+                                'name' => 'ATM Gurus',
+                                'business_area' => 'Banking Device Repair & Training',
+                                'description' => '<p>We built a responsive e-commerce web application for ATM Gurus, helping their online customers easily order parts and services.</p><p>Our team integrated the web app with ATM Gurus’ backend to provide real time updates of inventory.  We also customized our proprietary application management system to allow the client to manage Web content and customer accounts.</p>',
+                                'services_provided' => [], // Custom Web application, Application management system, Middleware development
+                                'link_title' => 'For information on how we can help you, please contact us.',
+                                'link_href' => '/contact',
+                            ],[
+                                'background_image' => '/assets/images/content/bg_project_bostonpads.jpg',
+                                'white_logo' => '/assets/images/content/logo_bostonpads.svg',
+                                'logo' => '/assets/images/content/logo_bostonpads_color.svg',
+                                'logo_link' => 'http://www.bostonpads.com',
+                                'name' => 'BostonPads',
+                                'business_area' => 'Real Estate Management, Sales and Rentals',
+                                'description' => '<p>Boston Pads asked us to integrate their property listings data with a new, expandable web application for management of several business Web sites.</p><p>We customized our responsive, secure AMS for administration, data uploads, and editing of Web sites, as well as creation of new sites. Custom middleware populates the AMS from multiple data sources.</p>',
+                                'services_provided' => [], // Custom Web application, Application management system, Middleware development
+                                'link_title' => 'Are multiple data sources a problem for you? Please submit an RFP.',
+                                'link_href' => '/rfp-form',
+                            ],[
+                                'background_image' => '/assets/images/content/bg_project_versalink.jpg',
+                                'white_logo' => '/assets/images/content/logo_versalink.svg',
+                                'logo' => '/assets/images/content/logo_versalink_color.svg',
+                                'logo_link' => 'https://www.versasafe.com/versalink-info',
+                                'name' => 'VersaLink',
+                                'business_area' => 'Banking Devices Management and Reporting',
+                                'description' => '<p>VersaLink Communication System is Triton’s proprietary application for monitoring data and health of their smart safes and ATMs, via smart phone or computer.</p><p>We rebuilt VersaLink for efficiency, scalability, performance, and management of multiple devices. We also improved usability while maintaining full compatibility with previous versions.</p>',
+                                'services_provided' => [], // Custom Web application, Application management system, Middleware development, Device communication
+                                'link_title' => 'Are you juggling multiple devices? Please submit an RFP.',
+                                'link_href' => '/rfp-form',
+                            ],[
+                                'background_image' => '/assets/images/content/bg_project_pronto.jpg',
+                                'white_logo' => '/assets/images/content/logo_pronto.svg',
+                                'logo' => '/assets/images/content/logo_pronto_color.svg',
+                                'logo_link' => 'https://www.youtube.com/watch?v=INpGZPwkya4',
+                                'name' => 'Pronto',
+                                'business_area' => 'Banking Devices Management and Reporting',
+                                'description' => '<p>Equinox02 needed a system to manage distributors and deliveries of supplies to medical facilities. We designed an application to track deliveries, orders, refills, and cancellations. It sends status messages to facilities so patient needs are met without interruption.</p><p>We also consulted for Equinox02 on medical device communications protocols.</p>',
+                                'services_provided' => [], // Custom Web application, Device communication
+                                'link_title' => 'Do you need to communicate with your devices? Contact us.',
+                                'link_href' => '/contact',
+                            ]
                         ]
                     ]
                 ]);
