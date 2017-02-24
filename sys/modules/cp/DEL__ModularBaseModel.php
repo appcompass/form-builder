@@ -11,10 +11,10 @@ use Illuminate\Support\Facades\DB;
 
 class ModularBaseModel extends Model
 {
-    public function getRules()
-    {
-        return isset($this->rules) ? $this->rules : [];
-    }
+    // public function getRules()
+    // {
+    //     return isset($this->rules) ? $this->rules : [];
+    // }
 
     /**
      * Method used to replicate models with the specified relationships to be cloned as well.
@@ -22,27 +22,27 @@ class ModularBaseModel extends Model
      * @return void
      * @author
      **/
-    public function replicateWithRelations()
-    {
-        $clone = $this->replicate();
-        foreach ($this->getRelations() as $relationName => $relation) {
-            $rel = $this->$relationName();
-            switch (true) {
-                case $rel instanceof HasMany:
-                    $newRelation = [];
-                    foreach ($relation as $row) {
-                        if ($row) {
-                            $newRelation[] = $row->replicateWithRelations();
-                        }
-                    }
-                    $clone->save();
-                    $clone->$relationName()->saveMany($newRelation);
-                break;
-            }
-        }
+    // public function replicateWithRelations()
+    // {
+    //     $clone = $this->replicate();
+    //     foreach ($this->getRelations() as $relationName => $relation) {
+    //         $rel = $this->$relationName();
+    //         switch (true) {
+    //             case $rel instanceof HasMany:
+    //                 $newRelation = [];
+    //                 foreach ($relation as $row) {
+    //                     if ($row) {
+    //                         $newRelation[] = $row->replicateWithRelations();
+    //                     }
+    //                 }
+    //                 $clone->save();
+    //                 $clone->$relationName()->saveMany($newRelation);
+    //             break;
+    //         }
+    //     }
 
-        return $clone;
-    }
+    //     return $clone;
+    // }
 
     /**
      * Used as a base starting point for route chain validation of models.
@@ -50,18 +50,18 @@ class ModularBaseModel extends Model
      * @return Builder
      * @author
      **/
-    public function scopeFromRoute($query, $params)
-    {
-        $last = null;
-        foreach ($params as $key => $model) {
-            $last = $model;
-        }
-        if ($last) {
-            return $last;
-        }
+    // public function scopeFromRoute($query, $params)
+    // {
+    //     $last = null;
+    //     foreach ($params as $key => $model) {
+    //         $last = $model;
+    //     }
+    //     if ($last) {
+    //         return $last;
+    //     }
 
-        return $query;
-    }
+    //     return $query;
+    // }
 
     /**
      * Used to allow us to filter results by their parent/child relationships.
@@ -69,14 +69,14 @@ class ModularBaseModel extends Model
      * @return Builder
      * @author
      **/
-    public function scopeOf($query, $relationship, $model)
-    {
-        return $query->whereHas($relationship, function ($q) use ($model) {
-            if ($key = $model->getKey()) {
-                $q->where($model->getKeyName(), $key);
-            }
-        });
-    }
+    // public function scopeOf($query, $relationship, $model)
+    // {
+    //     return $query->whereHas($relationship, function ($q) use ($model) {
+    //         if ($key = $model->getKey()) {
+    //             $q->where($model->getKeyName(), $key);
+    //         }
+    //     });
+    // }
 
 /* work to convert.
 |==========================================|==================|=============================================================|================================================|======================|
@@ -154,17 +154,17 @@ class ModularBaseModel extends Model
      * @var $search = string or array traversion the json elements for it's value
      * @return json
      **/
-    public function scopeWithJson($query, $field, $outKey, $search)
-    {
-        $chain = is_array($search) ? implode("','", $search) : $search;
+    // public function scopeWithJson($query, $field, $outKey, $search)
+    // {
+    //     $chain = is_array($search) ? implode("','", $search) : $search;
 
-        return $query->selectRaw("*, json_extract_path_text({$field}, '{$chain}') as {$outKey}");
-    }
+    //     return $query->selectRaw("*, json_extract_path_text({$field}, '{$chain}') as {$outKey}");
+    // }
 
-    public function scopeWhereJson($query, $field, $search, $operator, $value)
-    {
-        $chain = is_array($search) ? implode("','", $search) : $search;
+    // public function scopeWhereJson($query, $field, $search, $operator, $value)
+    // {
+    //     $chain = is_array($search) ? implode("','", $search) : $search;
 
-        return $query->whereRaw("json_extract_path_text({$field}, '{$chain}') {$operator} '{$value}'");
-    }
+    //     return $query->whereRaw("json_extract_path_text({$field}, '{$chain}') {$operator} '{$value}'");
+    // }
 }
