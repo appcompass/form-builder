@@ -18,8 +18,6 @@ class FormRequest extends BaseFormRequest
 
     public function rules(Request $request)
     {
-        // dd($request->hasFile());
-
         $form = Form::byResource(Route::current()->getName())->first();
 
         if ($form) {
