@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use P3in\Interfaces\MenusRepositoryInterface;
 use P3in\Models\Link;
 use P3in\Models\Form;
+use P3in\Requests\FormRequest;
 use P3in\Models\MenuItem;
 
 class MenusController extends AbstractController
@@ -21,7 +22,7 @@ class MenusController extends AbstractController
     }
 
     // @TODO we only hit this on Link creation, menu creation must go through websites->menu
-    public function store(Request $request)
+    public function store(FormRequest $request)
     {
         // @TODO validate link
         $link = Link::create($request->except(['children']));
