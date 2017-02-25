@@ -20,15 +20,7 @@ class ValidateWebsite
      */
     public function handle(Request $request, Closure $next)
     {
-        $origin = $request->header('origin');
-
-        $parts = explode('://', $origin);
-
-        if (count($parts) == 2) {
-
-            list($scheme, $host) = $parts;
-
-        }
+        $host = $request->header('host');
 
         try {
 
