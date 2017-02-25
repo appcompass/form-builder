@@ -2,7 +2,7 @@
 
 Route::group([
     'namespace' => 'P3in\Controllers',
-    'middleware' => ['auth', 'api', 'validateWebsite'],
+    'middleware' => ['auth', 'api'],
 ], function ($router) {
     $router->resource('galleries', GalleriesController::class);
     $router->resource('galleries.photos', GalleryPhotosController::class);

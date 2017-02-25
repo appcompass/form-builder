@@ -8,7 +8,7 @@ Route::group([
 });
 Route::group([
     'namespace' => 'P3in\Controllers',
-    'middleware' => ['web', 'validateWebsite'],
+    'middleware' => ['web'],
 ], function ($router) {
     $router->group([
         'prefix' => 'facebook',

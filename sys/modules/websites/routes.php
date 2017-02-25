@@ -2,7 +2,7 @@
 
 Route::group([
     'namespace' => 'P3in\Controllers',
-    'middleware' => ['auth', 'api', 'validateWebsite'],
+    'middleware' => ['auth', 'api'],
 ], function ($router) {
     $router->delete('menus/links/{link_id}', '\P3in\Controllers\MenusController@deleteLink');
     $router->resource('menus', MenusController::class);
@@ -17,7 +17,6 @@ Route::group([
     $router->resource('websites.pages', WebsitePagesController::class);
     // $router->resource('pages.contents', PageContentsController::class); // @TODO: websites.pages.contents
     // $router->resource('pages.sections', PageSectionsController::class); // @TODO: websites.pages.sections
-    // $router->resource('websites.settings', WebsiteSettingsController::class); // @TODO:  Discuss this, not sure it's needed anymore since L5.3 fixed their Json field API.
     $router->resource('websites.redirects', WebsiteRedirectsController::class);
 });
 
