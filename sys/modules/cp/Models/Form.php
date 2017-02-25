@@ -119,7 +119,7 @@ class Form extends Model
             $query->where('id', $this->id);
         }
         return $query->with(['fields' => function($q){
-            $q->byConfig('to_list', true);
+            $q->config('to_list', true);
         }]);
     }
 
@@ -134,7 +134,7 @@ class Form extends Model
         }
 
         return $query->with(['fields' => function($q){
-            $q->byConfig('to_edit', true);
+            $q->config('to_edit', true);
         }]);
     }
 
