@@ -202,7 +202,7 @@ class PageBuilder
      *
      * @return     <type>  ( description_of_the_return_value )
      */
-    public function setAuthor($val = '')
+    public function author($val = '')
     {
         return $this->setMeta('head->author', $val);
     }
@@ -214,7 +214,7 @@ class PageBuilder
      *
      * @return     <type>  ( description_of_the_return_value )
      */
-    public function setDescription($val = '')
+    public function description($val = '')
     {
         return $this->setMeta('head->description', $val);
     }
@@ -226,7 +226,7 @@ class PageBuilder
      *
      * @return     <type>  ( description_of_the_return_value )
      */
-    public function setPriority($val = '')
+    public function priority($val = '')
     {
         return $this->setMeta('priority', $val);
     }
@@ -238,7 +238,7 @@ class PageBuilder
      *
      * @return     <type>  ( description_of_the_return_value )
      */
-    public function setUpdatedFrequency($val = '')
+    public function updatedFrequency($val = '')
     {
         return $this->setMeta('update_frequency', $val);
     }

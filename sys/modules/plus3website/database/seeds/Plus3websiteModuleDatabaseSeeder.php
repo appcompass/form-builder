@@ -199,66 +199,66 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             // Build Pages
             $homepage = $wsb
                 ->addPage('Home Page', '')
-                ->setAuthor('Aisha Saidi')
-                ->setDescription('This is where we would put the Plus 3 Interactive description')
-                ->setPriority('1.0')
-                ->setUpdatedFrequency('always');
+                ->author('Aisha Saidi')
+                ->description('This is where we would put the Plus 3 Interactive description')
+                ->priority('1.0')
+                ->updatedFrequency('always');
 
             $solutions = $wsb
                 ->addPage('Solutions', 'solutions')
-                ->setAuthor('Aisha Saidi')
-                ->setDescription('This is where we would put the Plus 3 Interactive description')
-                ->setPriority('0.9')
-                ->setUpdatedFrequency('yearly');
+                ->author('Aisha Saidi')
+                ->description('This is where we would put the Plus 3 Interactive description')
+                ->priority('0.9')
+                ->updatedFrequency('yearly');
 
             $process = $solutions
                 ->addChild('Our Process', 'our-process')
-                ->setAuthor('Aisha Saidi')
-                ->setDescription('This is where we would put the Plus 3 Interactive description')
-                ->setPriority('0.8')
-                ->setUpdatedFrequency('yearly');
+                ->author('Aisha Saidi')
+                ->description('This is where we would put the Plus 3 Interactive description')
+                ->priority('0.8')
+                ->updatedFrequency('yearly');
 
             $projects = $wsb
                 ->addPage('Projects', 'projects')
-                ->setAuthor('Aisha Saidi')
-                ->setDescription('This is where we would put the Plus 3 Interactive description')
-                ->setPriority('0.9')
-                ->setUpdatedFrequency('monthly');
+                ->author('Aisha Saidi')
+                ->description('This is where we would put the Plus 3 Interactive description')
+                ->priority('0.9')
+                ->updatedFrequency('monthly');
 
             $company = $wsb
                 ->addPage('Company', 'company')
-                ->setAuthor('Aisha Saidi')
-                ->setDescription('This is where we would put the Plus 3 Interactive description')
-                ->setPriority('0.8')
-                ->setUpdatedFrequency('monthly');
+                ->author('Aisha Saidi')
+                ->description('This is where we would put the Plus 3 Interactive description')
+                ->priority('0.8')
+                ->updatedFrequency('monthly');
 
             $contact = $wsb
                 ->addPage('Contact Us', 'contact')
-                ->setAuthor('Aisha Saidi')
-                ->setDescription('This is where we would put the Plus 3 Interactive description')
-                ->setPriority('0.7')
-                ->setUpdatedFrequency('yearly');
+                ->author('Aisha Saidi')
+                ->description('This is where we would put the Plus 3 Interactive description')
+                ->priority('0.7')
+                ->updatedFrequency('yearly');
 
             $login = $wsb
                 ->addPage('Customer Login', 'customer-login')
-                ->setAuthor('Aisha Saidi')
-                ->setDescription('This is where we would put the Plus 3 Interactive description')
-                ->setPriority('0.6')
-                ->setUpdatedFrequency('never');
+                ->author('Aisha Saidi')
+                ->description('This is where we would put the Plus 3 Interactive description')
+                ->priority('0.6')
+                ->updatedFrequency('never');
 
             $terms_of_service = $wsb
                 ->addPage('Terms of Service', 'terms-of-service')
-                ->setAuthor('Jubair Saidi')
-                ->setDescription('Plus 3 Interactive\'s Terms of Service')
-                ->setPriority('0.5')
-                ->setUpdatedFrequency('yearly');
+                ->author('Jubair Saidi')
+                ->description('Plus 3 Interactive\'s Terms of Service')
+                ->priority('0.5')
+                ->updatedFrequency('yearly');
 
             $privacy_policy = $wsb
                 ->addPage('Privacy Policy', 'privacy-policy')
-                ->setAuthor('Jubair Saidi')
-                ->setDescription('Plus 3 Interactive\'s Privacy Policy')
-                ->setPriority('0.5')
-                ->setUpdatedFrequency('yearly');
+                ->author('Jubair Saidi')
+                ->description('Plus 3 Interactive\'s Privacy Policy')
+                ->priority('0.5')
+                ->updatedFrequency('yearly');
 
             $getPageContent = function($file, $path)
             {
@@ -270,35 +270,35 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             // header and footer are same on every page site wide.
             $createHeaderFooterStructure = function ($page) use ($site_header, $site_footer, $site_proposal_modal, $getPageContent) {
                 $page_container = $page
-                    ->addContainer()->setOrder(1)
+                    ->addContainer()->order(1)
                         ->addContainer()
-                            ->setOrder(1)
-                            ->setConfig('class', 'wrapper')
+                            ->order(1)
+                            ->config('class', 'wrapper')
                             ->addSection($site_header)
-                                ->setOrder(1)
-                                ->setProps([
+                                ->order(1)
+                                ->props([
                                     'menus' => 'menus',
                                     'meta' => 'site_meta',
                                     'current_url' => 'current_url',
                                 ])
                         ->getParent()
                             ->addContainer()
-                                ->setOrder(2)
-                                ->setConfig('elm', 'main')
-                                ->setConfig('class', 'main')
+                                ->order(2)
+                                ->config('elm', 'main')
+                                ->config('class', 'main')
                             ->cloneTo($main_container)
                         ->getParent()
                             ->addSection($site_footer)
-                                ->setOrder(3)
-                                ->setProps([
+                                ->order(3)
+                                ->props([
                                     'menus' => 'menus',
                                     'meta' => 'site_meta',
                                     'current_url' => 'current_url',
                                 ])
                     ->getParent(2)
                         ->addSection($site_proposal_modal)
-                            ->setOrder(2)
-                            ->setContent($getPageContent('global', 'site_proposal_modal'));
+                            ->order(2)
+                            ->content($getPageContent('global', 'site_proposal_modal'));
 
                 return $main_container;
             };
@@ -306,45 +306,45 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             // Home Page Layout and Content
             $createHeaderFooterStructure($homepage)
                 ->addSection($slider_banner)
-                    ->setOrder(1)
-                    ->setContent($getPageContent('homepage', 'slider_banner'))
+                    ->order(1)
+                    ->content($getPageContent('homepage', 'slider_banner'))
             ->getParent()
                 ->addContainer()
-                    ->setOrder(2)
-                    ->setConfig('elm', 'section')
-                    ->setConfig('class', 'section-module section-solutions')
+                    ->order(2)
+                    ->config('elm', 'section')
+                    ->config('class', 'section-module section-solutions')
                     ->addSection($section_heading)
-                        ->setOrder(1)
-                        ->setContent($getPageContent('homepage', 'section_heading'))
+                        ->order(1)
+                        ->content($getPageContent('homepage', 'section_heading'))
                     ->addContainer()
-                        ->setOrder(2)
-                        ->setConfig('class', 'row')
+                        ->order(2)
+                        ->config('class', 'row')
                         ->addContainer()
-                            ->setOrder(1)
-                            ->setConfig('class', 'medium-6 columns')
+                            ->order(1)
+                            ->config('class', 'medium-6 columns')
                             ->addContainer()
-                                ->setOrder(1)
-                                ->setConfig('class', 'row')
+                                ->order(1)
+                                ->config('class', 'row')
                                 ->addSection($box_callouts)
-                                    ->setOrder(1)
-                                    ->setContent($getPageContent('homepage', 'box_callouts_1'))
+                                    ->order(1)
+                                    ->content($getPageContent('homepage', 'box_callouts_1'))
                     ->getParent(3)
                         ->addContainer()
-                            ->setOrder(2)
-                            ->setConfig('class', 'medium-6 columns')
+                            ->order(2)
+                            ->config('class', 'medium-6 columns')
                             ->addContainer()
-                                ->setOrder(1)
-                                ->setConfig('class', 'row')
+                                ->order(1)
+                                ->config('class', 'row')
                                 ->addSection($box_callouts)
-                                    ->setOrder(1)
-                                    ->setContent($getPageContent('homepage', 'box_callouts_2'))
+                                    ->order(1)
+                                    ->content($getPageContent('homepage', 'box_callouts_2'))
             ->getParent(5)
                 ->addSection($our_proccess)
-                    ->setOrder(3)
-                    ->setContent($getPageContent('homepage', 'our_proccess'))
+                    ->order(3)
+                    ->content($getPageContent('homepage', 'our_proccess'))
                 ->addSection($meet_our_team)
-                    ->setOrder(4)
-                    ->setContent($getPageContent('homepage', 'meet_our_team'))
+                    ->order(4)
+                    ->content($getPageContent('homepage', 'meet_our_team'))
                     ->dynamic(Plus3Person::class, function(FieldSource $source) {
                         $source->relatesTo('team')
                             ->where('public', true)
@@ -352,148 +352,148 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                     })
             ->getParent()
                 ->addSection($social_stream)
-                    ->setOrder(5)
-                    ->setContent($getPageContent('homepage', 'social_stream'))
+                    ->order(5)
+                    ->content($getPageContent('homepage', 'social_stream'))
             ->getParent()
                 ->addSection($customer_testimonials)
-                    ->setOrder(6)
-                    ->setContent($getPageContent('homepage', 'customer_testimonials'));
+                    ->order(6)
+                    ->content($getPageContent('homepage', 'customer_testimonials'));
 
 
             // Solutions Page Layout and Content
             $createHeaderFooterStructure($solutions)
                 ->addSection($thick_page_banner)
-                    ->setOrder(1)
-                    ->setContent($getPageContent('solutions', 'thick_page_banner'))
+                    ->order(1)
+                    ->content($getPageContent('solutions', 'thick_page_banner'))
                 ->addSection($white_break_w_section_links)
-                    ->setOrder(2)
-                    ->setContent($getPageContent('solutions', 'white_break_w_section_links'))
+                    ->order(2)
+                    ->content($getPageContent('solutions', 'white_break_w_section_links'))
                 ->addSection($provided_solution)
-                    ->setOrder(3)
-                    ->setContent($getPageContent('solutions', 'provided_solution'))
+                    ->order(3)
+                    ->content($getPageContent('solutions', 'provided_solution'))
                 ->addSection($blue_break_callout)
-                    ->setOrder(4)
-                    ->setContent($getPageContent('solutions', 'blue_break_callout'));
+                    ->order(4)
+                    ->content($getPageContent('solutions', 'blue_break_callout'));
 
 
             // Process Page Layout and Content
             $createHeaderFooterStructure($process)
                 ->addSection($thick_page_banner)
-                    ->setOrder(1)
-                    ->setContent($getPageContent('process', 'thick_page_banner'))
+                    ->order(1)
+                    ->content($getPageContent('process', 'thick_page_banner'))
                 ->addSection($breadcrumb_with_right_link)
-                    ->setOrder(2)
-                    ->setContent($getPageContent('process', 'breadcrumb_with_right_link'))
+                    ->order(2)
+                    ->content($getPageContent('process', 'breadcrumb_with_right_link'))
                 ->addSection($white_break_w_section_links)
-                    ->setOrder(3)
-                    ->setContent($getPageContent('process', 'white_break_w_section_links'))
+                    ->order(3)
+                    ->content($getPageContent('process', 'white_break_w_section_links'))
             ->getParent()
                 ->addContainer()
-                    ->setOrder(4)
-                    ->setConfig('class', 'row')
+                    ->order(4)
+                    ->config('class', 'row')
                     ->addContainer()
-                        ->setOrder(1)
-                        ->setConfig('class', 'xsmall-12 columns')
+                        ->order(1)
+                        ->config('class', 'xsmall-12 columns')
                         ->addSection($process_timeline)
-                            ->setOrder(1)
-                            ->setContent($getPageContent('process', 'process_timeline'))
+                            ->order(1)
+                            ->content($getPageContent('process', 'process_timeline'))
             ->getParent(3)
                 ->addSection($process_maintenance_details)
-                    ->setOrder(4)
-                    ->setContent($getPageContent('process', 'process_maintenance_details'));
+                    ->order(4)
+                    ->content($getPageContent('process', 'process_maintenance_details'));
 
             // Projects Page Layout and Content
             $projects_container = $createHeaderFooterStructure($projects)
                 ->addSection($thick_page_banner)
-                    ->setOrder(1)
-                    ->setContent($getPageContent('projects', 'thick_page_banner'))
+                    ->order(1)
+                    ->content($getPageContent('projects', 'thick_page_banner'))
                 ->addSection($white_break_w_section_links)
-                    ->setOrder(2)
-                    ->setContent($getPageContent('projects', 'thick_page_banner'))
+                    ->order(2)
+                    ->content($getPageContent('projects', 'thick_page_banner'))
                 ->addSection($project_list)
-                    ->setOrder(3)
-                    ->setContent($getPageContent('projects', 'thick_page_banner'))
+                    ->order(3)
+                    ->content($getPageContent('projects', 'thick_page_banner'))
                 ->addContainer()
-                    ->setOrder(4)
-                    ->setConfig('elm', 'section')
-                    ->setConfig('class', 'section-module section-clients')
+                    ->order(4)
+                    ->config('elm', 'section')
+                    ->config('class', 'section-module section-clients')
                     ->addSection($section_heading, 1, [
                         'content' => [
                         ]
                     ])
                     ->addContainer()
-                        ->setOrder(2)
-                        ->setConfig('class', 'row')
+                        ->order(2)
+                        ->config('class', 'row')
                         ->addContainer()
-                            ->setOrder(1)
-                            ->setConfig('class', 'medium-9 medium-centered columns')
+                            ->order(1)
+                            ->config('class', 'medium-9 medium-centered columns')
                             ->addContainer()
-                                ->setOrder(1)
-                                ->setConfig('class', 'row')
+                                ->order(1)
+                                ->config('class', 'row')
                                 ->addSection($more_clients_list)
-                                    ->setOrder(1)
-                                    ->setContent($getPageContent('projects', 'more_clients_list'))
+                                    ->order(1)
+                                    ->content($getPageContent('projects', 'more_clients_list'))
             ->getParent(5)
                 ->addSection($white_break_w_section_links)
-                    ->setOrder(5)
-                    ->setContent($getPageContent('projects', 'white_break_w_section_links'))
+                    ->order(5)
+                    ->content($getPageContent('projects', 'white_break_w_section_links'))
                 ->addSection($blue_break_callout)
-                    ->setOrder(6)
-                    ->setContent($getPageContent('projects', 'blue_break_callout'));
+                    ->order(6)
+                    ->content($getPageContent('projects', 'blue_break_callout'));
 
 
             // Company Page Layout and Content
             $company_container = $createHeaderFooterStructure($company)
                 ->addSection($thick_page_banner)
-                    ->setOrder(1)
-                    ->setContent($getPageContent('company', 'thick_page_banner'))
+                    ->order(1)
+                    ->content($getPageContent('company', 'thick_page_banner'))
                 ->addSection($meet_our_team)
-                    ->setOrder(2)
-                    ->setContent($getPageContent('company', 'meet_our_team'))
+                    ->order(2)
+                    ->content($getPageContent('company', 'meet_our_team'))
                     ->dynamic(Plus3Person::class, function(FieldSource $source) {
                         $source->relatesTo('team')
                             ->where('public', true)
                             ->sort('id', 'ASC');
                     })
                 ->addSection($social_stream)
-                    ->setOrder(3)
-                    ->setContent($getPageContent('company', 'social_stream'));
+                    ->order(3)
+                    ->content($getPageContent('company', 'social_stream'));
 
 
             // Contact Us Page Layout and Content
             $contact_container = $createHeaderFooterStructure($contact)
                 ->addSection($thick_page_banner)
-                    ->setOrder(1)
-                    ->setContent($getPageContent('contact', 'thick_page_banner'))
+                    ->order(1)
+                    ->content($getPageContent('contact', 'thick_page_banner'))
                 ->addSection($contact_form)
-                    ->setOrder(2)
-                    ->setContent($getPageContent('contact', 'contact_form'))
+                    ->order(2)
+                    ->content($getPageContent('contact', 'contact_form'))
                 ->addSection($map_address)
-                    ->setOrder(3)
-                    ->setContent($getPageContent('contact', 'map_address'));
+                    ->order(3)
+                    ->content($getPageContent('contact', 'map_address'));
 
             // Login Page Layout and Content
             $login_container = $createHeaderFooterStructure($login)
                 ->addSection($thick_page_banner)
-                    ->setOrder(1)
-                    ->setContent($getPageContent('login', 'thick_page_banner'))
+                    ->order(1)
+                    ->content($getPageContent('login', 'thick_page_banner'))
                 ->addSection($login_form)
-                    ->setOrder(2)
-                    ->setContent($getPageContent('login', 'login_form'));
+                    ->order(2)
+                    ->content($getPageContent('login', 'login_form'));
 
 
 
             // Terms of Service Page Layout and Content
             $terms_of_service_container = $createHeaderFooterStructure($terms_of_service)
                 ->addSection($block_text)
-                    ->setOrder(1)
-                    ->setContent($getPageContent('terms_of_service', 'block_text'));
+                    ->order(1)
+                    ->content($getPageContent('terms_of_service', 'block_text'));
 
             // Privacy Policy Page Layout and Content
             $privacy_policy_container = $createHeaderFooterStructure($privacy_policy)
                 ->addSection($block_text)
-                    ->setOrder(1)
-                    ->setContent($getPageContent('privacy_policy', 'block_text'));
+                    ->order(1)
+                    ->content($getPageContent('privacy_policy', 'block_text'));
 
             // lets compile all the page templates
             // Note that we always want to do this last to account for any pages
