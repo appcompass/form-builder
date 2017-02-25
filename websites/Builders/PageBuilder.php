@@ -17,8 +17,8 @@ class PageBuilder
      * Page instance
      */
     private $page;
-    private $website; // we need this to know where we store this page's template files.
     private $container;
+    private $section;
     private $template = [];
     private $imports = [];
     private $exports = [];
@@ -102,9 +102,18 @@ class PageBuilder
      * @param array $config Container's attributes
      * @return PageSectionContent
      */
-    public function addContainer(int $order = 0, array $config = null) : PageSectionContent
+    public function addContainer(int $order = 0, array $config = [])
     {
-        return $this->page->addContainer($order, $config);
+        if ($this->container) {
+            $container = $this->container->addContainer($order, $config);
+        }else{
+            $container = $this->page->addContainer($order, $config);
+        }
+
+        $this->container = $container;
+        $this->section = null;
+
+        return $this;
     }
 
     /**
@@ -119,7 +128,7 @@ class PageBuilder
      *
      * @return     PageBuilder
      */
-    public function addSection(Section $section, int $order, array $data = [])
+    public function addSection(Section $section, int $order = 0, array $data = [])
     {
         if (!$this->container) {
 
@@ -127,9 +136,53 @@ class PageBuilder
 
         }
 
-        $this->container->addSection($section, $order, $data);
+        $this->section = $this->container->addSection($section, $order, $data);
 
         return $this;
+    }
+
+    public function cloneTo(&$variable)
+    {
+        $variable = clone $this;
+
+        return $this;
+    }
+
+    public function getParent($ancestors = 1)
+    {
+        // Lots of overhead here but it does validate each step.
+        for ($i=0; $i < $ancestors; $i++) {
+            $child = $this->getContext();
+
+            if (is_null($parent = $child->parent)) {
+                throw new Exception("this instance of {get_class($child)} doesn't have a parent");
+            }
+
+            if ($parent instanceof PageSectionContent) {
+                $this->container = $parent;
+                $this->section = null;
+            }elseif($parent instanceof Page) {
+                $this->page = $parent;
+            }else{
+                throw new Exception("{get_class($parent)} not usable here");
+            }
+
+        }
+
+        return $this;
+    }
+
+    private function getContext()
+    {
+        if ($this->section) {
+            return $this->section;
+        }elseif($this->container){
+            return $this->container;
+        }elseif($this->page){
+            return $this->page;
+        }else{
+            throw new Exception('Must set a page, container, or section.');
+        }
     }
 
     /**
@@ -198,12 +251,12 @@ class PageBuilder
      *
      * @return     <type>  ( description_of_the_return_value )
      */
-    public function setMeta($key, $val)
-    {
-        $this->page->setMeta($key, $val);
+    // public function setMeta($key, $val)
+    // {
+    //     $this->page->setMeta($key, $val);
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     /**
      * { function_description }
@@ -328,5 +381,16 @@ class PageBuilder
     public function makeMenuItem($order)
     {
         return $this->page->makeMenuItem($order);
+    }
+
+    public function __call($method, $args)
+    {
+        if (method_exists($this->getContext(), $method)) {
+
+            call_user_func_array([$this->getContext(), $method], $args);
+
+        }
+
+        return $this;
     }
 }

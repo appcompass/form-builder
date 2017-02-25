@@ -76,6 +76,24 @@ class PageSectionContent extends Model
         return $this->morphOne(\P3in\Models\FieldSource::class, 'linked');
     }
 
+
+    public function setOrder(int $val)
+    {
+        $this->update(['order' => $val]);
+    }
+
+    public function setProps(array $val)
+    {
+        return $this->setConfig('props', $val);
+    }
+
+    public function setContent(array $val)
+    {
+        $this->update(['content' => $val]);
+    }
+
+
+
     /**
      * Gets the content attribute.
      *
@@ -144,7 +162,7 @@ class PageSectionContent extends Model
      * @param array $config
      * @return Model PageSectionContent
      */
-    public function addContainer(int $order, array $config = null)
+    public function addContainer(int $order = 0, array $config = null)
     {
         $container = Section::getContainer();
 
@@ -166,7 +184,7 @@ class PageSectionContent extends Model
      *
      * @return     Model      PageSectionContent
      */
-    public function addSection(Section $section, int $order, array $data = [], $returnChild = false)
+    public function addSection(Section $section, int $order = 0, array $data = [])
     {
         if (!$this->isContainer()) {
 
@@ -194,13 +212,13 @@ class PageSectionContent extends Model
 
         $this->children()->save($child);
 
-        if ($returnChild) {
+        // if ($returnChild) {
 
-            return $child;
+        return $child;
 
-        }
+        // }
 
-        return $this;
+        // return $this;
     }
 
     /**

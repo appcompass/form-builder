@@ -35,9 +35,10 @@ class ValidateWebsite
         // $host = 'k1cc0.me:8080';
 
         try {
-            // $website = Website::where('host', $host)->firstOrFail();
+            $request->website = Website::where('host', 'www.plus3interactive.com')->firstOrFail();
 
-            $request->website = Website::first();
+            // This broke public site.
+            // $request->website = Website::first();
 
             return $next($request);
         } catch (NotFoundException $e) {

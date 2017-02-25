@@ -85,6 +85,8 @@ class FieldSource extends Model
         return $this;
     }
 
+    // @TODO: we should prob use the same structure as Eloquent or QueryBuilder,
+    // i.e. allow inclusion of the operator and boolean.
     public function where($key, $value = null)
     {
         $criteria = $this->criteria;

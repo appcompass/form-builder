@@ -114,7 +114,7 @@ class Page extends Model implements Linkable
      *
      * @return     Model  PageComponentContent
      */
-    public function addContainer(int $order, array $config = null)
+    public function addContainer(int $order = 0, array $config = null)
     {
         //I have no idea why they don't have a ->new() method...
         $container = $this->contents()->findOrNew(null);

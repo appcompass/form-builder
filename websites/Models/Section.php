@@ -47,9 +47,24 @@ class Section extends Model
      *
      * @return     <type>  ( description_of_the_return_value )
      */
-    public function scopeGetType($query, $type)
+    public function scopeByType($query, $type)
     {
         return $query->where('type', $type);
+    }
+
+    public static function getType($type)
+    {
+        return static::byType($type)->firstOrFail();
+    }
+
+    public function scopeByTemplate($query, $template)
+    {
+        return $query->where('template', $template);
+    }
+
+    public static function getTemplate($name)
+    {
+        return static::byTemplate($name)->firstOrFail();
     }
 
     /**
@@ -59,7 +74,7 @@ class Section extends Model
      */
     public static function getContainer()
     {
-        return static::getType('container')->firstOrFail();
+        return static::getType('container');
     }
 
     // @TODO we need to be able to return the full (empty) form structure.
