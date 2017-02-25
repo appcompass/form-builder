@@ -12,6 +12,7 @@ use P3in\Models\Plus3Person;
 use P3in\Models\Section;
 use P3in\Models\Website;
 use P3in\Seeders\Plus3PeopleSeeder;
+use P3in\Seeders\Plus3websiteSectionsAndFormsSeeder;
 use P3in\Seeders\Plus3websiteStoragesSeeder;
 
 class Plus3websiteModuleDatabaseSeeder extends Seeder
@@ -28,52 +29,44 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
 
         $this->call(Plus3websiteStoragesSeeder::class);
         $this->call(Plus3PeopleSeeder::class);
-
-        // @TODO: for santiy sake, lets break up this file.
-        DB::statement('TRUNCATE TABLE sections RESTART IDENTITY CASCADE');
-
-        DB::table('forms')->whereIn('name', [
-            'SiteHeader',
-            'SiteFooter',
-            'ProposalModal',
-            'SliderBanner',
-            'SectionHeading',
-            'BoxCallouts',
-            'OurProcess',
-            'MeetOurTeam',
-            'SocialStream',
-            'CustomerTestimonials',
-            'ThickPageBanner',
-            'WhiteBreakCalloutSectionLinks',
-            'ProvidedSolution',
-            'BlueBreakCallout',
-            'BreadCrumbRightSideLink',
-            'ProcessTimeline',
-            'MaintenanceDetails',
-            'ProjectList',
-            'MoreClientsList',
-            'ContactUs',
-            'MapAddress',
-            'CustomerLogin',
-            'BlockText',
-        ])->delete();
-
-
-        // $form = FormBuilder::edit('websites', function (FormBuilder $builder) {
-        //     $builder->string('Website Name', 'name')->list()->required()->sortable()->searchable();
-        //     $builder->string('Url', 'url')->list()->required()->sortable()->searchable();
-        // });
+        $this->call(Plus3websiteSectionsAndFormsSeeder::class);
 
         $website = WebsiteBuilder::new('Plus 3 Interactive, LLC', 'https', 'www.plus3interactive.com', function ($wsb) {
 
+            // Get the sections used by this website.
+            $site_header = Section::getTemplate('SiteHeader');
+            $site_footer = Section::getTemplate('SiteFooter');
+            $site_proposal_modal = Section::getTemplate('ProposalModal');
+            $slider_banner = Section::getTemplate('SliderBanner');
+            $section_heading = Section::getTemplate('SectionHeading');
+            $box_callouts = Section::getTemplate('BoxCallouts');
+            $our_proccess = Section::getTemplate('OurProcess');
+            $meet_our_team = Section::getTemplate('MeetOurTeam');
+            $social_stream = Section::getTemplate('SocialStream');
+            $customer_testimonials = Section::getTemplate('CustomerTestimonials');
+            $thick_page_banner = Section::getTemplate('ThickPageBanner');
+            $white_break_w_section_links = Section::getTemplate('WhiteBreakCalloutSectionLinks');
+            $provided_solution = Section::getTemplate('ProvidedSolution');
+            $blue_break_callout = Section::getTemplate('BlueBreakCallout');
+            $breadcrumb_with_right_link = Section::getTemplate('BreadCrumbRightSideLink');
+            $process_timeline = Section::getTemplate('ProcessTimeline');
+            $process_maintenance_details = Section::getTemplate('MaintenanceDetails');
+            $project_list = Section::getTemplate('ProjectList');
+            $more_clients_list = Section::getTemplate('MoreClientsList');
+            $contact_form = Section::getTemplate('ContactUs');
+            $map_address = Section::getTemplate('MapAddress');
+            $login_form = Section::getTemplate('CustomerLogin');
+            $block_text = Section::getTemplate('BlockText');
+
+            // set the website storage name.
             $wsb->setStorage('plus3website');
 
             $site = $wsb->getWebsite();
             $publishFrom = realpath(__DIR__.'/../../Public');
 
             $wsb
-                ->setHeader(1) //@TODO: may not be needed here anymore
-                ->setFooter(2) //@TODO: may not be needed here anymore
+                ->setHeader($site_header->id)
+                ->setFooter($site_footer->id)
                 ->setMetaData([
                     'title' => '',
                     'description' => '',
@@ -202,369 +195,6 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                         'color' => '#0ab7f9'
                     ]
                 ]);
-            // Build the components.
-
-            // @TODO: Unless I am missing something, we now have to set the
-            // global elements on the pages them selves because of the way the route
-            // doesn't hit the layout file (hell not much hits that thing it seems!)
-            // so doing logic there is tough (like fetching and injecting menus)
-            $site_header = Section::create([
-                'name' => 'Site Header',
-                'template' => 'SiteHeader',
-                'type' => 'header'
-            ]);
-            $site_footer = Section::create([
-                'name' => 'Site Footer',
-                'template' => 'SiteFooter',
-                'type' => 'footer'
-            ]);
-            $site_proposal_modal = Section::create([
-                'name' => 'Proposal Modal',
-                'template' => 'ProposalModal',
-                'type' => 'section'
-            ]);
-
-            // This one should prob be build with websites module load.
-            Section::create([
-                'name' => 'Container',
-                'template' => 'container', //@TODO: not sure about this, do containers need templates? I feel there are good arguments for both yes and no.
-                'type' => 'container',
-            ]);
-
-            $slider_banner = Section::create([
-                'name' => 'Slider Banner',
-                'template' => 'SliderBanner',
-                'type' => 'section'
-            ]);
-
-            $form = FormBuilder::new('SliderBanner', function (FormBuilder $fb) {
-                $fb->string('Title', 'title')->validation(['required']);
-
-                $fb->fieldset('Slides', 'slides', function (FormBuilder $slide) {
-                    $slide->file('Banner Image', 'banner_image')->validation(['required']);
-                    $slide->string('Title', 'title')->validation(['required']);
-                    $slide->wysiwyg('Description', 'description')->validation(['required']);
-                    $slide->string('Link Text', 'link_text')->validation(['required']);
-                    $slide->link('Link Destination', 'link_href')->validation(['required']);
-                })->repeatable();
-            })->setOwner($slider_banner)
-            ->getForm();
-
-            $section_heading = Section::create([
-                'name' => 'Section Heading',
-                'template' => 'SectionHeading',
-                'type' => 'section'
-            ]);
-
-            FormBuilder::new('SectionHeading', function (FormBuilder $fb) {
-                $fb->string('Title', 'title')->validation(['required']);
-                $fb->wysiwyg('Description', 'description')->validation(['required']);
-            })->setOwner($section_heading);
-
-            $box_callouts = Section::create([
-                'name' => 'Box Callouts',
-                'template' => 'BoxCallouts',
-                'type' => 'section'
-            ]);
-
-            FormBuilder::new('BoxCallouts', function (FormBuilder $fb) {
-                $fb->fieldset('Boxes', 'boxes', function (FormBuilder $box) {
-                    $box->string('Title', 'title')->validation(['required']);
-                    $box->file('Image', 'image')->validation(['required']);
-                    $box->string('Points', 'points')->repeatable();
-                    $box->string('Link Text', 'link_text')->validation(['required']);
-                    $box->link('Link Destination', 'link_href')->validation(['required']);
-                })->repeatable();
-            })->setOwner($box_callouts);
-
-            $our_proccess = Section::create([
-                'name' => 'Our Process',
-                'template' => 'OurProcess',
-                'type' => 'section'
-            ]);
-
-            FormBuilder::new('OurProcess', function (FormBuilder $fb) {
-                $fb->string('Title', 'title')->validation(['required']);
-                $fb->wysiwyg('Description', 'description')->validation(['required']);
-                $fb->string('Link Text', 'link_text')->validation(['required']);
-                $fb->link('Link Destination', 'link_href')->validation(['required']);
-                // SVG Animation is static, editable in code only.
-            })->setOwner($our_proccess);
-
-            $meet_our_team = Section::create([
-                'name' => 'Meet Our Team',
-                'template' => 'MeetOurTeam',
-                'type' => 'section'
-            ]);
-
-            FormBuilder::new('MeetOurTeam', function (FormBuilder $fb) {
-                $fb->string('Title', 'title')->validation(['required']);
-                $fb->wysiwyg('Description', 'description')->validation(['required']);
-                $fb->string('Link Text', 'link_text')->validation(['required']);
-                $fb->link('Link Destination', 'link_href')->validation(['required']);
-                // this is a Dynamic field type
-                // @TODO we want a cleaner way to link it to the actual PageSectionContent
-                $fb->dynamic('The Team', 'team');
-            })->setOwner($meet_our_team);
-
-            $social_stream = Section::create([
-                'name' => 'Social Stream',
-                'template' => 'SocialStream',
-                'type' => 'section'
-            ]);
-
-            FormBuilder::new('SocialStream', function ($fb) {
-                $fb->string('Title', 'title')->validation(['required']);
-                // Fields
-            })->setOwner($social_stream);
-
-            $customer_testimonials = Section::create([
-                'name' => 'Customer Testimonials',
-                'template' => 'CustomerTestimonials',
-                'type' => 'section'
-            ]);
-
-            FormBuilder::new('CustomerTestimonials', function (FormBuilder $fb) {
-                $fb->fieldset('Testimonials', 'testimonials', function (FormBuilder $testimonial) {
-                    $testimonial->string('Author', 'author')->validation(['required']);
-                    $testimonial->wysiwyg('Content', 'content')->validation(['required']);
-                })->repeatable();
-            })->setOwner($customer_testimonials);
-
-            $thick_page_banner = Section::create([
-                'name' => 'Thick Page Banner',
-                'template' => 'ThickPageBanner',
-                'type' => 'section'
-            ]);
-
-            FormBuilder::new('ThickPageBanner', function (FormBuilder $fb) {
-                $fb->file('Background Image', 'background_image');
-                $fb->string('Title', 'title')->validation(['required']);
-                $fb->wysiwyg('Description', 'description')->validation(['required']);
-            })->setOwner($thick_page_banner);
-
-            $white_break_w_section_links = Section::create([
-                'name' => 'White Break Callout Section Links',
-                'template' => 'WhiteBreakCalloutSectionLinks',
-                'type' => 'section'
-            ]);
-
-            FormBuilder::new('WhiteBreakCalloutSectionLinks', function (FormBuilder $fb) {
-                $fb->string('Title', 'title')->validation(['required']);
-                $fb->wysiwyg('Description', 'description')->validation(['required']);
-                // do we really need a fieldset here? fieldsets means the frontend adds a depth to the object, i.e: data.quick_links.format instead of simply data.format
-                // $fb->fieldset('Page Section Quick Links', 'quick_links', function (FormBuilder $quickLinks) {
-                $fb->radio('Link Format', 'format')->validation(['required'])->dynamic(['ol' => 'Ordered List', 'ul' => 'Un Ordered List', 'arrow' => 'Link with Arrow', ]);
-                $fb->pageSectionSelect('Page Section Quick Links', 'links')->repeatable();
-                // });
-            })->setOwner($white_break_w_section_links);
-
-            $provided_solution = Section::create([
-                'name' => 'Provided Solution',
-                'template' => 'ProvidedSolution',
-                'type' => 'section'
-            ]);
-
-            FormBuilder::new('ProvidedSolution', function (FormBuilder $fb) {
-                $fb->fieldset('Solution', 'solutions', function (FormBuilder $solution) {
-                    $solution->radio('Layout', 'layout')->validation(['required']); // @TODO DataSource , ['left' => 'Left', 'right' => 'Right']
-                    $solution->string('Title', 'title')->validation(['required']);
-                    $solution->file('Solution Photo', 'solution_photo');
-                    $solution->string('Solution Photo Width', 'photo_width');
-                    $solution->string('Solution Photo Height', 'photo_height');
-                    $solution->wysiwyg('Description', 'description')->validation(['required'])->validation(['required']);
-                    $solution->pageSectionSelect('Projects Using Solution', 'projects_using_solution')->repeatable();
-                    $solution->text('Link Description', 'link_description')->validation(['required']);
-                    $solution->string('Link Title', 'link_title')->validation(['required']);
-                    $solution->link('Link Destination', 'link_href')->validation(['required']);
-                })->repeatable();
-            })->setOwner($provided_solution);
-
-            $blue_break_callout = Section::create([
-                'name' => 'Blue Break Callout',
-                'template' => 'BlueBreakCallout',
-                'type' => 'section'
-            ]);
-
-            FormBuilder::new('BlueBreakCallout', function (FormBuilder $fb) {
-                $fb->string('Link Title', 'link_title')->validation(['required']);
-                $fb->link('Link Destination', 'link_href')->validation(['required']);
-            })->setOwner($blue_break_callout);
-
-            $breadcrumb_with_right_link = Section::create([
-                'name' => 'BreadCrumb With Right Side Link',
-                'template' => 'BreadCrumbRightSideLink',
-                'type' => 'section'
-            ]);
-
-            FormBuilder::new('BreadCrumbRightSideLink', function (FormBuilder $fb) {
-                $fb->string('Link Title', 'link_title')->validation(['required']);
-                $fb->link('Link Destination', 'link_href')->validation(['required']);
-            })->setOwner($breadcrumb_with_right_link);
-
-            $process_timeline = Section::create([
-                'name' => 'Process Timeline',
-                'template' => 'ProcessTimeline',
-                'type' => 'section'
-            ]);
-
-            FormBuilder::new('ProcessTimeline', function (FormBuilder $fb) {
-                $fb->fieldset('Process Steps', 'process_steps', function (FormBuilder $process) {
-                    $process->file('Image File', 'image')->validation(['type:svg']);
-                    $process->string('Image width', 'image_width');
-                    $process->string('Image Height', 'image_height');
-                    $process->string('Title', 'title')->validation(['required']);
-                    $process->wysiwyg('Description', 'description')->validation(['required']);
-                })->repeatable();
-            })->setOwner($process_timeline);
-
-            $process_maintenance_details = Section::create([
-                'name' => 'Maintenance Details',
-                'template' => 'MaintenanceDetails',
-                'type' => 'section'
-            ]);
-
-            FormBuilder::new('MaintenanceDetails', function (FormBuilder $fb) {
-                $fb->string('Title', 'title')->validation(['required']);
-                $fb->wysiwyg('Description', 'description')->validation(['required']);
-                $fb->file('Image File', 'image', ['type:svg']);
-                $fb->string('Image width', 'image_width');
-                $fb->string('Image Height', 'image_height');
-                $fb->string('Link Title', 'link_title')->validation(['required']);
-                $fb->link('Link Destination', 'link_href')->validation(['required']);
-            })->setOwner($process_maintenance_details);
-
-            $project_list = Section::create([
-                'name' => 'Project List',
-                'template' => 'ProjectList',
-                'type' => 'section'
-            ]);
-
-            FormBuilder::new('ProjectList', function (FormBuilder $fb) {
-                $fb->fieldset('Projects', 'projects', function (FormBuilder $project) {
-                    $project->file('Background Image', 'background_image')->validation(['required']);
-                    $project->file('White Logo', 'white_logo')->validation(['required']);
-                    $project->file('Logo', 'logo')->validation(['required']);
-                    $project->string('Logo Link', 'logo_link');
-                    $project->string('Name', 'name')->validation(['required']);
-                    $project->string('Business Area', 'business_area')->validation(['required']);
-                    $project->wysiwyg('Description', 'description')->validation(['required']);
-                    $project->pageSectionSelect('Page Section Quick Links', 'services_provided');
-                    $project->string('Link Title', 'link_title');
-                    $project->link('Link Destination', 'link_href');
-                })->repeatable();
-            })->setOwner($project_list);
-
-            $more_clients_list = Section::create([
-                'name' => 'More Clients List',
-                'template' => 'MoreClientsList',
-                'type' => 'section'
-            ]);
-
-            FormBuilder::new('MoreClientsList', function (FormBuilder $fb) {
-                $fb->fieldset('Clients', 'clients', function (FormBuilder $project) {
-                    $project->file('Logo', 'logo')->validation(['required']);
-                    $project->file('Logo', 'logo')->validation(['required']);
-                    $project->string('Logo Link', 'logo_link');
-                    $project->string('Name', 'name')->validation(['required']);
-                    $project->string('Business Area', 'business_area')->validation(['required']);
-                    $project->wysiwyg('Description', 'description')->validation(['required']);
-                })->repeatable();
-            })->setOwner($more_clients_list);
-
-            $contact_form = Section::create([
-                'name' => 'Contact Us',
-                'template' => 'ContactUs',
-                'type' => 'section'
-            ]);
-
-            FormBuilder::new('ContactUs', function (FormBuilder $fb) {
-                $fb->formBuilder('Contact Form', 'contact_form');
-            })->setOwner($contact_form);
-
-            $map_address = Section::create([
-                'name' => 'Map Address',
-                'template' => 'MapAddress',
-                'type' => 'section'
-            ]);
-
-            FormBuilder::new('MapAddress', function (FormBuilder $fb) {
-                $fb->string('Title', 'title');
-                $fb->string('Phone Number', 'phone');
-                $fb->string('Address Line 1', 'address_1');
-                $fb->string('Address Line 2', 'address_2');
-                $fb->string('City', 'city');
-                $fb->string('State', 'state');
-                $fb->string('Zip', 'zip');
-                $fb->map('Map', 'map'); // @TODO What is this ['address_1', 'address_2', 'city', 'state', 'zip']);
-            })->setOwner($map_address);
-
-            // We might want to consider having this section be dynamic rather than set a field to be the dynamic piece?
-            // Fields: Email, Password, Remember Me
-            // Links: Forgot Password
-            $login_form = Section::create([
-                'name' => 'Customer Login',
-                'template' => 'CustomerLogin',
-                'type' => 'section'
-            ]);
-
-            FormBuilder::new('CustomerLogin', function (FormBuilder $fb) {
-                $fb->loginForm('Customer Login', 'customer_login');
-            })->setOwner($login_form);
-
-
-            $block_text = Section::create([
-                'name' => 'Block Text',
-                'template' => 'BlockText',
-                'type' => 'section'
-            ]);
-
-            FormBuilder::new('BlockText', function (FormBuilder $fb) {
-                $fb->wysiwyg('Content', 'content')->validation(['required']);
-            })->setOwner($block_text);
-
-            // we should always (but only(?)) have one container component.
-            // prob something we seed when loading websites module.
-
-
-            // header and footer are same on every page site wide.
-            $createHeaderFooterStructure = function ($page) use ($site_header, $site_footer, $site_proposal_modal) {
-                $page_container = $page
-                    ->addContainer(1);
-
-                $wrapper_container = $page_container->addContainer(1, [
-                        'class' => 'wrapper',
-                    ]);
-                $wrapper_container->addSection($site_header, 1, [
-                        // @TODO: meh...
-                        'config' => [
-                            'props' => [
-                                'menus' => 'menus',
-                                'meta' => 'site_meta',
-                                'current_url' => 'current_url',
-                            ]
-                        ]
-                    ]);
-
-                $main_container = $wrapper_container->addContainer(2, [
-                        'elm' => 'main',
-                        'class' => 'main',
-                    ]);
-
-                $wrapper_container->addSection($site_footer, 3, [
-                        // @TODO: meh...
-                        'config' => [
-                            'props' => [
-                                'menus' => 'menus',
-                                'meta' => 'site_meta',
-                                'current_url' => 'current_url',
-                            ]
-                        ]
-                    ]);
-                $page_container->addSection($site_proposal_modal, 2);
-
-                return $main_container;
-            };
 
             // Build Pages
             $homepage = $wsb
@@ -574,329 +204,12 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->setPriority('1.0')
                 ->setUpdatedFrequency('always');
 
-            $home_container = $createHeaderFooterStructure($homepage)
-                    ->addSection($slider_banner, 1, [
-                        'content' => [
-                            'title' => 'Our Work',
-                            'slides' => [
-                                [
-                                    'banner_image' => '/assets/images/content/bg_project_atmgurus.jpg',
-                                    'title' => 'ATM Gurus',
-                                    'description' => '<p>We developed a flexible, modern eCommerce platform for ATM Gurus and integrated it with the client’s Oracle based ERP and CRM.</p>',
-                                    'link_text' => 'See More',
-                                    'link_href' => '/projects#atm-gurus', //@TODO: this is a string right now but we need to make this a dynamic object.
-                                ],[
-                                    'banner_image' => '/assets/images/content/bg_project_bostonpads.jpg',
-                                    'title' => 'Boston Pads',
-                                    'description' => '<p>For Boston Pads we implemented our content management system for creation and management of multiple real estate Web sites.</p>',
-                                    'link_text' => 'See More',
-                                    'link_href' => '/projects#boston-pads',
-                                ],[
-                                    'banner_image' => '/assets/images/content/bg_project_pronto.jpg',
-                                    'title' => 'Pronto',
-                                    'description' => '<p>We built an expandable prototype for Equinox02 to manage all medical device inventory and delivery services via computer or smart phone.</p>',
-                                    'link_text' => 'See More',
-                                    'link_href' => '/projects#pronto',
-                                ]
-                            ]
-                        ]
-                    ]);
-
-            $home_box_callout_container = $home_container
-                ->addContainer(2, [
-                    'elm' => 'section',
-                    'class' => 'section-module section-solutions',
-                ])
-                ->addSection($section_heading, 1, [
-                    'content' => [
-                        'title' => 'Targeted Web Solutions',
-                        'description' => '<p>Plus 3 Interactive develops custom web applications that meet the unique needs of your business. We can help your company meet its strategic goals:</p>',
-                    ]
-                ])
-                ->addContainer(2, [
-                     'class' => 'row',
-                ]);
-
-            $home_box_callout_container
-                ->addContainer(1, [
-                     'class' => 'medium-6 columns',
-                ])
-                ->addContainer(1, [
-                     'class' => 'row',
-                ])
-                ->addSection($box_callouts, 1, [
-                    'content' => [
-                        'boxes' => [
-                            [
-                                'title' => 'Custom Web Applications',
-                                'image' => '/assets/images/content/solution_web_apps.svg',
-                                'image_width' => 164,
-                                'image_height' => 130,
-                                'points' => [
-                                    'Web development tailored to your business',
-                                    'Web apps for your operations or customers',
-                                    'Onshore Web developers you can talk to',
-                                ],
-                                'link_text' => 'See More',
-                                'link_href' => '/solutions#custom-web-applications',
-                            ],[
-                                'title' => 'Middleware Development',
-                                'image' => '/assets/images/content/solution_middleware.svg',
-                                'image_width' => 146,
-                                'image_height' => 130,
-                                'points' => [
-                                    'Middleware designed for your requirements',
-                                    'Integrated with legacy & proprietary systems',
-                                    'Web 2.0 standards',
-                                ],
-                                'link_text' => 'See More',
-                                'link_href' => '/solutions#middleware-development',
-                            ]
-                        ]
-                    ]
-                ]);
-
-            $home_box_callout_container
-                ->addContainer(2, [
-                     'class' => 'medium-6 columns',
-                ])
-                ->addContainer(1, [
-                     'class' => 'row',
-                ])
-                ->addSection($box_callouts, 1, [
-                    'content' => [
-                        'boxes' => [
-                            [
-                                'title' => 'Device Communications',
-                                'image' => '/assets/images/content/solution_device_comm.svg',
-                                'image_width' => 132,
-                                'image_height' => 130,
-                                'points' => [
-                                    'Internet of Things for your proprietary devices',
-                                    'Monitor and manage devices',
-                                    'Banking, medical, vending devices',
-                                ],
-                                'link_text' => 'See More',
-                                'link_href' => '/solutions#device-communications',
-                            ],[
-                                'title' => 'Web Application Management Systems',
-                                'image' => '/assets/images/content/solution_app_management.svg',
-                                'image_width' => 170,
-                                'image_height' => 130,
-                                'points' => [
-                                    'Manage multiple web apps & sites',
-                                    'Easily modify web page design',
-                                    'Customized, modular system',
-                                ],
-                                'link_text' => 'See More',
-                                'link_href' => '/solutions#web-application-management-systems',
-                            ]
-                        ]
-                    ]
-                ]);
-
-            $home_container
-                ->addSection($our_proccess, 3, [
-                    'content' => [
-                        'title' => 'Our Process',
-                        'description' => '<p>Check the SVG animation! cool isn\'t it?</p>',
-                        'link_text' => 'Check out the people who make our company work',
-                        'link_href' => '/solutions/our-process',
-                    ]
-                ])
-                ->addSection($meet_our_team, 4, [
-                    'content' => [
-                        'title' => 'The Team',
-                        'description' => '<p>Plus 3 Interactive is a customer-focused business.  Our team finds  the right solutions to our customers’ unique challenges. Check out the people who make our company work.</p>',
-                        'link_text' => 'Check out the people who make our company work',
-                        'link_href' => '/company#meet-our-team',
-                    ]
-                ], true)->dynamic(Plus3Person::class, function(FieldSource $source) {
-                    $source->relatesTo('team');
-                    $source->sort('id', 'ASC');
-                });
-
-            $home_container->addSection($social_stream, 5, [
-                    'content' => [
-                        'title' => 'Plus 3 Interactive <span class="color-blue">-</span> Active!',
-                    ]
-                ])
-                ->addSection($customer_testimonials, 6, [
-                    'content' => [
-                        'testimonials' => [
-                            [
-                                'author' => 'Chris Vallely, Christian Brands',
-                                'content' => '<p>Plus 3 Interactive helped us build out 2 new sites for our most popular brands, integrated our existing ERP, and seamlessly migrated over 45,000 products to the new sites.</p>',
-                            ], [
-                                'author' => 'Renato Matos, Partner, Capell Barnett Matalon & Schoenfeld LLP',
-                                'content' => '<p>It was a pleasure working with Plus 3 Interactive on redesigning our firm’s website. The developers diligently and successfully implemented our goals in a professional and timely manner. Moreover, Plus 3 continues to seamlessly assist us with continued updates and modifications. We highly recommend Plus 3 and their great staff.</p>',
-                            ], [
-                                'author' => 'Calvin P. Goetz, Managing Partner, Strategy Financial Group',
-                                'content' => '<p>If you are considering a new website project, look no further than Plus 3 Interactive. Their knowledgeable and competent staff helped my company build a fantastic new site with lots of features in a very short period of time. I couldn’t be happier with their work and ongoing support.</p>',
-                            ]
-                        ]
-                    ]
-                ]);
-
             $solutions = $wsb
                 ->addPage('Solutions', 'solutions')
                 ->setAuthor('Aisha Saidi')
                 ->setDescription('This is where we would put the Plus 3 Interactive description')
                 ->setPriority('0.9')
                 ->setUpdatedFrequency('yearly');
-
-            $solutions_container = $createHeaderFooterStructure($solutions)
-                ->addSection($thick_page_banner, 1, [
-                    'content' => [
-                        'background_image' => '',
-                        'title' => 'Solutions',
-                        'description' => '',
-                    ]
-                ])
-                ->addSection($white_break_w_section_links, 2, [
-                    'content' => [
-                        'title' => 'Targeted Web Solutions',
-                        'description' => '<p>We  find optimal solutions for your unique business challenges, including</p>',
-                        'format' => 'ul',
-                        'links' => [
-                            [
-                                'text' => 'Web applications for online businesses',
-                                'href' => '',
-                                //@TODO: Concept.
-                                'page_section' => [
-                                    'page_id' => 1,
-                                    'section_id' => 3
-                                ]
-                            ], [
-                                'text' => 'Middleware for integration of legacy systems',
-                                'href' => '',
-                                'page_section' => [
-                                    'page_id' => 1,
-                                    'section_id' => 3
-                                ]
-                            ], [
-                                'text' => 'Software for connected devices',
-                                'href' => '',
-                                'page_section' => [
-                                    'page_id' => 1,
-                                    'section_id' => 3
-                                ]
-                            ], [
-                                'text' => 'Customized application management systems',
-                                'href' => '',
-                                'page_section' => [
-                                    'page_id' => 1,
-                                    'section_id' => 3
-                                ]
-                            ],
-                        ]
-                    ]
-                ])
-                ->addSection($provided_solution, 3, [
-                    'content' => [
-                        'solutions' => [
-                            [
-                                'layout' => 'left',
-                                'title' => 'Custom Web Applications',
-                                'solution_photo' => '/assets/images/content/custom_web_applications.svg',
-                                'photo_width' => 380,
-                                'photo_height' => 320,
-                                'description' => '<p>Web development is our core competency, with expertise in eCommerce sites, intranet portals, and other Web apps that require custom integration with client systems.</p>
-<p>We’ve built Web applications for a range of business needs:
-    <ul>
-        <li>Streamlining, automating, and tracking client business data and information</li>
-        <li>Facilitating networked B2B relationships</li>
-        <li>Improving distributor interactions, sales, and maintenance workflows</li>
-        <li>Designing remote device networking and management, with increased performance and visibility</li>
-    </ul>
-</p>',
-                                'projects_using_solution' => [],
-                                'link_description' => 'Want to know more? Please contact us.',
-                                'link_title' => 'Learn More',
-                                'link_href' => '',
-                            ], [
-                                'layout' => 'right',
-                                'title' => 'Middleware Development',
-                                'solution_photo' => '/assets/images/content/middleware_development.svg',
-                                'photo_width' => 362,
-                                'photo_height' => 300,
-                                'description' => '<p>Are you using legacy CRM or ERP applications that hold you back in the modern Web landscape? We integrate your legacy backend systems with modern web applications.</p>
-
-<p>Our middleware work meets diverse client requirements, such as:
-    <ul>
-        <li>Integrating multiple sources of data into a modern web application</li>
-        <li>Upgrading legacy data architecture to enhance performance</li>
-        <li>Real time integration with improved performance and user experience</li>
-    </ul>
-</p>',
-                                'projects_using_solution' => [],
-                                'link_description' => 'Need to integrate legacy system with modern apps? Please contact us.',
-                                'link_title' => 'Contact Us',
-                                'link_href' => '',
-                            ], [
-                                'layout' => 'left',
-                                'title' => 'Device Communications',
-                                'solution_photo' => '/assets/images/content/device_communications.svg',
-                                'photo_width' => 324,
-                                'photo_height' => 290,
-                                'description' => '<p>We develop systems for efficient, remote management of numerous commercial devices. These systems are designed for scalability, performance, usability, and security.</p>
-<p>We have developed or consulted on such diverse areas as medical devices and banking machines, including:
-    <ul>
-        <li>Management of device configurations, upgrades, and repairs</li>
-        <li>Device monitoring and notifications</li>
-        <li>Trending and data analytics on device performance,  users, system resources, and more</li>
-    </ul>
-</p>',
-                                'projects_using_solution' => [],
-                                'link_description' => 'Do you want your devices connected? Contact us.',
-                                'link_title' => 'Contact Us',
-                                'link_href' => '',
-                            ], [
-                                'layout' => 'right',
-                                'title' => 'Modular Application Management System',
-                                'solution_photo' => '/assets/images/content/modular_application_management.svg',
-                                'photo_width' => 370,
-                                'photo_height' => 300,
-                                'description' => '<p>To facilitate our clients’ management of their Web applications, we developed a modular application management system (AMS). We customize the AMS so clients may build, modify, and manage one or many Web sites through one system.</p>
-
-<p>Benefits of the system:
-    <ul>
-        <li>Accessible from range of mobile devices or computer</li>
-        <li>Flexible design of Web pages, colors, images, content</li>
-        <li>Modifications of Web site easily implemented</li>
-        <li>Range of user permissions controlled by administrator</li>
-        <li>Bank-level security for eCommerce, banking, or medical sites</li>
-        <li>Regular updates of AMS provided by Plus 3 Interactive</li>
-    </ul>
-</p>',
-                                'projects_using_solution' => [],
-                                'link_description' => 'Looking for comprehensive app management? Contact us.',
-                                'link_title' => 'Contact Us',
-                                'link_href' => '',
-                            ], [
-                                'layout' => 'left',
-                                'title' => 'The Development Process',
-                                'solution_photo' => '/assets/images/content/development_process.svg',
-                                'photo_width' => 324,
-                                'photo_height' => 290,
-                                'description' => '<p>In big projects and small, Plus 3 Interactive builds value and well-crafted solutions through our defined development process. Before beginning work on a project, we gather information from the client and tailor an end-to-end project plan based on the client’s requirements.</p>
-
-<p>The project plan is a deliverable that we present to the client at the start of the project. It details information architecture, design, and development steps, including schedules, deliverables for each phase, responsibilities, and much more...</p>',
-                                'projects_using_solution' => [],
-                                'link_description' => 'Learn more about our process.',
-                                'link_title' => 'Our Process',
-                                'link_href' => '',
-                            ],
-                        ]
-                    ]
-                ])
-                ->addSection($blue_break_callout, 4, [
-                    'content' => [
-                        'link_title' => 'Interested in what we can do for you? Please submit an RFP.',
-                        'link_href' => ''
-                    ]
-                ]);
-
 
             $process = $solutions
                 ->addChild('Our Process', 'our-process')
@@ -905,268 +218,12 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->setPriority('0.8')
                 ->setUpdatedFrequency('yearly');
 
-            $process_container = $createHeaderFooterStructure($process)
-                ->addSection($thick_page_banner, 1, [
-                    'content' => [
-                        'background_image' => '',
-                        'title' => 'Our Process',
-                        'description' => '',
-                    ]
-                ])
-                ->addSection($breadcrumb_with_right_link, 2, [
-                    'content' => [
-                        'link_title' => 'Learn more about Plus 3 Interactive',
-                        'link_href' => '',
-                    ]
-                    ])
-                    ->addSection($white_break_w_section_links, 3, [
-                        'content' => [
-                            'title' => 'Steps to Software Success',
-                            'description' => '<p>From our first meeting with you, through each stage of product development, we follow a clear process to deliver quality and keep you informed.</p>',
-                            'format' => '',
-                            'links' => []
-                        ]
-                    ]);
-
-            $process_timeline_section = $process_container
-                ->addContainer(4, [
-                    'class' => 'row',
-                ])
-                ->addContainer(1, [
-                    'class' => 'xsmall-12 columns',
-                ]);
-
-            $process_timeline_section
-                ->addSection($process_timeline, 1, [
-                    'content' => [
-                        'process_steps' => [
-                            [
-                                'image' => '/assets/images/content/icon_discovery.svg',
-                                'image_width' => 86,
-                                'image_height' => 40,
-                                'title' => 'Discovery',
-                                'description' => '<p>You tell us about your project and we develop a proposal of responsibilities, budget, and timeline.</p>',
-                            ],[
-                                'image' => '/assets/images/content/icon_client_consultation.svg',
-                                'image_width' => 134,
-                                'image_height' => 143,
-                                'title' => 'Client Consultation',
-                                'description' => '<p>From your requirements, users, content, branding, and features, we begin developing the project plan.</p>',
-                            ],[
-                                'image' => '/assets/images/content/icon_kick_off.svg',
-                                'image_width' => 203,
-                                'image_height' => 126,
-                                'title' => 'Kick Off Meeting',
-                                'description' => '<p>We meet with you to discuss the project plan, including timeline, milestones, training, meeting schedule, risk management, and next steps.</p>',
-                            ],[
-                                'image' => '/assets/images/content/icon_info_architecture.svg',
-                                'image_width' => 140,
-                                'image_height' => 198,
-                                'title' => 'Information Architecture',
-                                'description' => '<p>Our information architect analyzes users; develops content outline for web pages;  and creates keywords, navigation, and site map.</p>',
-                            ],[
-                                'image' => '/assets/images/content/icon_design.svg',
-                                'image_width' => 174,
-                                'image_height' => 174,
-                                'title' => 'Design',
-                                'description' => '<p>Our designer provides a complete design consultation; creates wireframes; and implements design of pages and UI components.</p>',
-                            ],[
-                                'image' => '/assets/images/content/icon_frontend_dev.svg',
-                                'image_width' => 210,
-                                'image_height' => 132,
-                                'title' => 'Front-end Development',
-                                'description' => '<p>Upon your approval of the Web design, our front-end developer converts it into a responsive, accessible, and user-friendly Web experience.</p>',
-                            ],[
-                                'image' => '/assets/images/content/icon_middleware_dev.svg',
-                                'image_width' => 210,
-                                'image_height' => 132,
-                                'title' => 'Back-end & Middleware Development',
-                                'description' => '<p>Using modern technologies, our developers plan, build, and test the secure Web application, integrating it with your systems as required.</p>',
-                            ],[
-                                'image' => '/assets/images/content/icon_quality_assurance.svg',
-                                'image_width' => 225,
-                                'image_height' => 120,
-                                'title' => 'Quality Assurance Testing',
-                                'description' => '<p>We implement our standard processes to uncover issues to be corrected and features that require additional development.</p>',
-                            ],[
-                                'image' => '/assets/images/content/icon_launch.svg',
-                                'image_width' => 226,
-                                'image_height' => 210,
-                                'title' => 'Launch',
-                                'description' => '<p>Your Web application goes live! But our role isn’t done yet – we’ll resolve any post-launch bugs and help you plan for future phases of your project.</p>',
-                            ]
-                        ],
-                    ]
-                ]);
-
-            $process_container
-                ->addSection($process_maintenance_details, 4, [
-                    'content' => [
-                        'title' => 'What about Maintenance?',
-                        'description' => '<p>We take a phased approach to roll out.  After launch of your Web application, we can customize a maintenance plan that could include:
-    <ul>
-        <li>Ongoing application design or development</li>
-        <li>Ongoing content development</li>
-        <li>Research and planning consultations</li>
-    </ul>
-</p>
-<p>Please ask us about our maintenance plans.</p>',
-                        'image' => '/assets/images/content/icon_maintenance.svg',
-                        'image_width' => '152',
-                        'image_height' => '152',
-                        'link_title' => 'Contact Us',
-                        'link_href' => '',
-                    ]
-                ]);
-
             $projects = $wsb
                 ->addPage('Projects', 'projects')
                 ->setAuthor('Aisha Saidi')
                 ->setDescription('This is where we would put the Plus 3 Interactive description')
                 ->setPriority('0.9')
                 ->setUpdatedFrequency('monthly');
-
-            $projects_container = $createHeaderFooterStructure($projects)
-                ->addSection($thick_page_banner, 1, [
-                    'content' => [
-                        'background_image' => '',
-                        'title' => 'Projects',
-                        'description' => '<p>We find unique solutions to our clients’ unique problems through developing custom web applications, integrating proprietary systems with the modern web, and turning business ideas into web solutions. See some of our projects.</p>',
-                    ]
-                ])
-                ->addSection($white_break_w_section_links, 2, [
-                    'content' => [
-                        'title' => 'Our Work',
-                        'description' => '<p>We turn your business ideas into web solutions. Read about some of our clients:</p>',
-                        'format' => '',
-                        'links' => []
-                    ]
-                ])
-                ->addSection($project_list, 3, [
-                    'content' => [
-                        'projects' => [
-                            [
-                                'background_image' => '/assets/images/content/bg_project_atmgurus.jpg',
-                                'white_logo' => '/assets/images/content/logo_atmgurus.svg',
-                                'logo' => '/assets/images/content/logo_atmgurus_color.svg',
-                                'logo_link' => 'https://www.atmgurus.com/',
-                                'name' => 'ATM Gurus',
-                                'business_area' => 'Banking Device Repair & Training',
-                                'description' => '<p>We built a responsive e-commerce web application for ATM Gurus, helping their online customers easily order parts and services.</p><p>Our team integrated the web app with ATM Gurus’ backend to provide real time updates of inventory.  We also customized our proprietary application management system to allow the client to manage Web content and customer accounts.</p>',
-                                'services_provided' => [], // Custom Web application, Application management system, Middleware development
-                                'link_title' => 'For information on how we can help you, please contact us.',
-                                'link_href' => '/contact',
-                            ],[
-                                'background_image' => '/assets/images/content/bg_project_bostonpads.jpg',
-                                'white_logo' => '/assets/images/content/logo_bostonpads.svg',
-                                'logo' => '/assets/images/content/logo_bostonpads_color.svg',
-                                'logo_link' => 'http://www.bostonpads.com',
-                                'name' => 'BostonPads',
-                                'business_area' => 'Real Estate Management, Sales and Rentals',
-                                'description' => '<p>Boston Pads asked us to integrate their property listings data with a new, expandable web application for management of several business Web sites.</p><p>We customized our responsive, secure AMS for administration, data uploads, and editing of Web sites, as well as creation of new sites. Custom middleware populates the AMS from multiple data sources.</p>',
-                                'services_provided' => [], // Custom Web application, Application management system, Middleware development
-                                'link_title' => 'Are multiple data sources a problem for you? Please submit an RFP.',
-                                'link_href' => '/rfp-form',
-                            ],[
-                                'background_image' => '/assets/images/content/bg_project_versalink.jpg',
-                                'white_logo' => '/assets/images/content/logo_versalink.svg',
-                                'logo' => '/assets/images/content/logo_versalink_color.svg',
-                                'logo_link' => 'https://www.versasafe.com/versalink-info',
-                                'name' => 'VersaLink',
-                                'business_area' => 'Banking Devices Management and Reporting',
-                                'description' => '<p>VersaLink Communication System is Triton’s proprietary application for monitoring data and health of their smart safes and ATMs, via smart phone or computer.</p><p>We rebuilt VersaLink for efficiency, scalability, performance, and management of multiple devices. We also improved usability while maintaining full compatibility with previous versions.</p>',
-                                'services_provided' => [], // Custom Web application, Application management system, Middleware development, Device communication
-                                'link_title' => 'Are you juggling multiple devices? Please submit an RFP.',
-                                'link_href' => '/rfp-form',
-                            ],[
-                                'background_image' => '/assets/images/content/bg_project_pronto.jpg',
-                                'white_logo' => '/assets/images/content/logo_pronto.svg',
-                                'logo' => '/assets/images/content/logo_pronto_color.svg',
-                                'logo_link' => 'https://www.youtube.com/watch?v=INpGZPwkya4',
-                                'name' => 'Pronto',
-                                'business_area' => 'Banking Devices Management and Reporting',
-                                'description' => '<p>Equinox02 needed a system to manage distributors and deliveries of supplies to medical facilities. We designed an application to track deliveries, orders, refills, and cancellations. It sends status messages to facilities so patient needs are met without interruption.</p><p>We also consulted for Equinox02 on medical device communications protocols.</p>',
-                                'services_provided' => [], // Custom Web application, Device communication
-                                'link_title' => 'Do you need to communicate with your devices? Contact us.',
-                                'link_href' => '/contact',
-                            ]
-                        ]
-                    ]
-                ]);
-
-
-
-
-            $projects_more_clients_container = $projects_container
-                ->addContainer(4, [
-                    'elm' => 'section',
-                    'class' => 'section-module section-clients',
-                ])
-                ->addSection($section_heading, 1, [
-                    'content' => [
-                        'title' => 'More Clients',
-                        'description' => '<p>text about this next section being about some of our other clients:</p>',
-                    ]
-                ])
-                ->addContainer(2, [
-                    'class' => 'row',
-                ])
-                ->addContainer(1, [
-                    'class' => 'medium-9 medium-centered columns',
-                ])
-                ->addContainer(1, [
-                    'class' => 'row',
-                ])
-                ->addSection($more_clients_list, 1, [
-                    'content' => [
-                        [
-                            'logo' => '/assets/images/content/logo_level_headed.svg',
-                            'logo_link' => '',
-                            'name' => 'Level Headed Prep',
-                            'business_area' => 'Online education',
-                            // CALL TO ACTION:  [“Custom Web Application”  is link]
-                            // LINK:               O Solutions page and sub section
-                            'description' => '<p>Custom Web Application to demo viability of online student test prep, including practice tests, test results, & analytics.</p>',
-                        ],[
-                            'logo' => '/assets/images/content/logo_gpg.svg',
-                            'logo_link' => 'https://www.globalprofessorgroup.com',
-                            'name' => 'Global Professor Group',
-                            'business_area' => 'Online education',
-                            // CALL TO ACTION:  [“Custom Web Application” is link]
-                            // LINK:               TO Solutions page and sub section
-                            // CALL TO ACTION:  [“Application Management System” is link]
-                            // LINK:               O Solutions page and sub section
-                            'description' => '<p>Custom Web Application and Application Management System for online Akkadian language courses - student resources, registration, and live conference.</p>',
-                        ]
-                    ],
-                ]);
-
-
-            $projects_container
-                ->addSection($white_break_w_section_links, 5, [
-                    'content' => [
-                        'title' => 'What is Plus 3 Interactive?',
-                        'description' => '<p>We are a small, innovative web development company that specializes in Web applications, middleware, and device communication. We also offer customization of our proprietary application management system.</p>',
-                        'format' => 'arrow',
-                        'links' => [
-                            [
-                                'text' => 'Please learn more about Plus 3 Interactive',
-                                'href' => '',
-                                //@TODO: Concept.
-                                'page_section' => [
-                                    'page_id' => 1,
-                                    'section_id' => 3
-                                ]
-                            ]
-                        ]
-                    ]
-                ])
-                ->addSection($blue_break_callout, 6, [
-                    'content' => [
-                        'link_title' => 'For information on how we can help you, please contact us',
-                        'link_href' => '/contact'
-                    ]
-                ]);
 
             $company = $wsb
                 ->addPage('Company', 'company')
@@ -1175,48 +232,12 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->setPriority('0.8')
                 ->setUpdatedFrequency('monthly');
 
-            $company_container = $createHeaderFooterStructure($company)
-                ->addSection($thick_page_banner, 1, [
-                    'content' => [
-                        'background_image' => '',
-                        'title' => 'Company',
-                        'description' => '<p>We love connecting with clients, learning about their business objectives, and building well-crafted web applications for them. As if this weren’t enough, we also get to work with bright, inventive, and fun teammates. We at Plus 3 Interactive are dedicated to creating quality Web solutions, and we have the experience to turn ideas into reality.</p>',
-                    ]
-                ])
-                ->addSection($social_stream, 3, [
-                    'content' => [
-                        'title' => 'Plus 3 Interactive <span class="color-blue">-</span> Active!',
-                    ]
-                ])
-                ->addSection($meet_our_team, 2, [
-                    'content' => [
-                        'title' => 'Meet our Team!',
-                        'description' => '',
-                        'link_text' => '',
-                        'link_href' => '',
-                    ]
-                ], true)->dynamic(Plus3Person::class, function(FieldSource $source) {
-                    $source->relatesTo('team');
-                    $source->sort('id', 'ASC');
-                });
-
             $contact = $wsb
                 ->addPage('Contact Us', 'contact')
                 ->setAuthor('Aisha Saidi')
                 ->setDescription('This is where we would put the Plus 3 Interactive description')
                 ->setPriority('0.7')
                 ->setUpdatedFrequency('yearly');
-
-            $contact_container = $createHeaderFooterStructure($contact)
-                ->addSection($thick_page_banner, 1, [
-                    'content' => [
-                        'background_image' => '',
-                        'title' => 'Contact Us',
-                        'description' => '<p>Are you interested in design and development of a business Web site or Web application? Are you looking for web marketing services to get the most out of your current Web site?</p><p>Please let us know how we can help your business grow.</p>',
-                    ]
-                ])
-                ->addSection($contact_form, 2)
-                ->addSection($map_address, 3);
 
             $login = $wsb
                 ->addPage('Customer Login', 'customer-login')
@@ -1225,66 +246,12 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->setPriority('0.6')
                 ->setUpdatedFrequency('never');
 
-            $login_container = $createHeaderFooterStructure($login)
-                ->addSection($thick_page_banner, 1, [
-                    'content' => [
-                        'background_image' => '',
-                        'title' => 'Customer Login',
-                        'description' => '',
-                    ]
-                ])
-                ->addSection($login_form, 2);
-
-
             $terms_of_service = $wsb
                 ->addPage('Terms of Service', 'terms-of-service')
                 ->setAuthor('Jubair Saidi')
                 ->setDescription('Plus 3 Interactive\'s Terms of Service')
                 ->setPriority('0.5')
                 ->setUpdatedFrequency('yearly');
-
-            $terms_of_service_container = $createHeaderFooterStructure($terms_of_service)
-                ->addSection($block_text, 1, [
-                    'content' => [
-                        'content' => '<h1>Terms of Service</h1>
-<p>Last updated: January 31, 2017</p>
-<p>Please read these Terms of Service ("Terms", "Terms of Service") carefully before using the https://www.plus3interactive.com website (the "Service") operated by Plus 3 Interactive, LLC ("us", "we", or "our").</p>
-<p>Your access to and use of the Service is conditioned upon your acceptance of and compliance with these Terms. These Terms apply to all visitors, users and others who wish to access or use the Service.</p>
-<p>By accessing or using the Service you agree to be bound by these Terms. If you disagree with any part of the terms then you do not have permission to access the Service.</p>
-<p><h2>Accounts</h2></p>
-<p>When you create an account with us, you guarantee that you are above the age of 18, and that the information you provide us is accurate, complete, and current at all times. Inaccurate, incomplete, or obsolete information may result in the immediate termination of your account on the Service.</p>
-<p>You are responsible for maintaining the confidentiality of your account and password, including but not limited to the restriction of access to your computer and/or account. You agree to accept responsibility for any and all activities or actions that occur under your account and/or password, whether your password is with our Service or a third-party service. You must notify us immediately upon becoming aware of any breach of security or unauthorized use of your account.</p>
-<p>You may not use as a username the name of another person or entity or that is not lawfully available for use, a name or trademark that is subject to any rights of another person or entity other than you, without appropriate authorization. You may not use as a username any name that is offensive, vulgar or obscene.</p>
-<p><h2>Intellectual Property</h2>
-The Service and its original content, features and functionality are and will remain the exclusive property of Plus 3 Interactive, LLC and its licensors. The Service is protected by copyright, trademark, and other laws of both the United States and foreign countries. Our trademarks and trade dress may not be used in connection with any product or service without the prior written consent of Plus 3 Interactive, LLC.</p>
-<p><h2>Links To Other Web Sites</h2></p>
-<p>Our Service may contain links to third party web sites or services that are not owned or controlled by Plus 3 Interactive, LLC.</p>
-<p>Plus 3 Interactive, LLC has no control over, and assumes no responsibility for the content, privacy policies, or practices of any third party web sites or services. We do not warrant the offerings of any of these entities/individuals or their websites.</p>
-<p>You acknowledge and agree that Plus 3 Interactive, LLC shall not be responsible or liable, directly or indirectly, for any damage or loss caused or alleged to be caused by or in connection with use of or reliance on any such content, goods or services available on or through any such third party web sites or services.</p>
-<p>We h2ly advise you to read the terms and conditions and privacy policies of any third party web sites or services that you visit.</p>
-<p><h2>Termination</h2></p>
-<p>We may terminate or suspend your account and bar access to the Service immediately, without prior notice or liability, under our sole discretion, for any reason whatsoever and without limitation, including but not limited to a breach of the Terms.</p>
-<p>If you wish to terminate your account, you may simply discontinue using the Service.</p>
-<p>All provisions of the Terms which by their nature should survive termination shall survive termination, including, without limitation, ownership provisions, warranty disclaimers, indemnity and limitations of liability.</p>
-<p><h2>Indemnification</h2></p>
-<p>You agree to defend, indemnify and hold harmless Plus 3 Interactive, LLC and its licensee and licensors, and their employees, contractors, agents, officers and directors, from and against any and all claims, damages, obligations, losses, liabilities, costs or debt, and expenses (including but not limited to attorney\'s fees), resulting from or arising out of a) your use and access of the Service, by you or any person using your account and password, or b) a breach of these Terms.</p>
-<p><h2>Limitation Of Liability</h2></p>
-<p>In no event shall Plus 3 Interactive, LLC, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from (i) your access to or use of or inability to access or use the Service; (ii) any conduct or content of any third party on the Service; (iii) any content obtained from the Service; and (iv) unauthorized access, use or alteration of your transmissions or content, whether based on warranty, contract, tort (including negligence) or any other legal theory, whether or not we have been informed of the possibility of such damage, and even if a remedy set forth herein is found to have failed of its essential purpose.</p>
-<p><h2>Disclaimer</h2></p>
-<p>Your use of the Service is at your sole risk. The Service is provided on an "AS IS" and "AS AVAILABLE" basis. The Service is provided without warranties of any kind, whether express or implied, including, but not limited to, implied warranties of merchantability, fitness for a particular purpose, non-infringement or course of performance.</p>
-<p>Plus 3 Interactive, LLC its subsidiaries, affiliates, and its licensors do not warrant that a) the Service will function uninterrupted, secure or available at any particular time or location; b) any errors or defects will be corrected; c) the Service is free of viruses or other harmful components; or d) the results of using the Service will meet your requirements.</p>
-<p><h2>Exclusions</h2></p>
-<p>Some jurisdictions do not allow the exclusion of certain warranties or the exclusion or limitation of liability for consequential or incidental damages, so the limitations above may not apply to you.</p>
-<p><h2>Governing Law</h2></p>
-<p>These Terms shall be governed and construed in accordance with the laws of Massachusetts, United States, without regard to its conflict of law provisions.</p>
-<p>Our failure to enforce any right or provision of these Terms will not be considered a waiver of those rights. If any provision of these Terms is held to be invalid or unenforceable by a court, the remaining provisions of these Terms will remain in effect. These Terms constitute the entire agreement between us regarding our Service, and supersede and replace any prior agreements we might have had between us regarding the Service.</p>
-<p><h2>Changes</h2></p>
-<p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material we will provide at least 30 days notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion.</p>
-<p>By continuing to access or use our Service after any revisions become effective, you agree to be bound by the revised terms. If you do not agree to the new terms, you are no longer authorized to use the Service.</p>
-<p><h2>Contact Us</h2></p>
-<p>If you have any questions about these Terms, please contact us.</p>'
-                    ]
-                ]);
 
             $privacy_policy = $wsb
                 ->addPage('Privacy Policy', 'privacy-policy')
@@ -1293,56 +260,268 @@ The Service and its original content, features and functionality are and will re
                 ->setPriority('0.5')
                 ->setUpdatedFrequency('yearly');
 
+            $getPageContent = function($file, $path)
+            {
+                $config = require(__DIR__."/content/{$file}.php");
+                return array_get($config, $path);
+            };
+
+
+            // header and footer are same on every page site wide.
+            $createHeaderFooterStructure = function ($page) use ($site_header, $site_footer, $site_proposal_modal, $getPageContent) {
+                $page_container = $page
+                    ->addContainer()->setOrder(1)
+                        ->addContainer()
+                            ->setOrder(1)
+                            ->setConfig([
+                                'class' => 'wrapper',
+                            ])
+                            ->addSection($site_header)
+                                ->setOrder(1)
+                                ->setProps([
+                                    'menus' => 'menus',
+                                    'meta' => 'site_meta',
+                                    'current_url' => 'current_url',
+                                ])
+                        ->getParent()
+                            ->addContainer()
+                                ->setOrder(2)
+                                ->setConfig([
+                                    'elm' => 'main',
+                                    'class' => 'main',
+                                ])
+                            ->cloneTo($main_container)
+                        ->getParent()
+                            ->addSection($site_footer)
+                                ->setOrder(3)
+                                ->setProps([
+                                    'menus' => 'menus',
+                                    'meta' => 'site_meta',
+                                    'current_url' => 'current_url',
+                                ])
+                    ->getParent(2)
+                        ->addSection($site_proposal_modal)
+                            ->setOrder(2)
+                            ->setContent($getPageContent('global', 'site_proposal_modal'));
+
+                return $main_container;
+            };
+
+            // Home Page Layout and Content
+            $createHeaderFooterStructure($homepage)
+                ->addSection($slider_banner)
+                    ->setOrder(1)
+                    ->setContent($getPageContent('homepage', 'slider_banner'))
+            ->getParent()
+                ->addContainer()
+                    ->setOrder(2)
+                    ->setConfig([
+                        'elm' => 'section',
+                        'class' => 'section-module section-solutions',
+                    ])
+                    ->addSection($section_heading)
+                        ->setOrder(1)
+                        ->setContent($getPageContent('homepage', 'section_heading'))
+                    ->addContainer()
+                        ->setOrder(2)
+                        ->setConfig([
+                             'class' => 'row',
+                        ])
+                        ->addContainer()
+                            ->setOrder(1)
+                            ->setConfig([
+                                 'class' => 'medium-6 columns',
+                            ])
+                            ->addContainer()
+                                ->setOrder(1)
+                                ->setConfig([
+                                    'class' => 'row',
+                                ])
+                                ->addSection($box_callouts)
+                                    ->setOrder(1)
+                                    ->setContent($getPageContent('homepage', 'box_callouts_1'))
+                    ->getParent(3)
+                        ->addContainer()
+                            ->setOrder(2)
+                            ->setConfig([
+                                 'class' => 'medium-6 columns',
+                            ])
+                            ->addContainer()
+                                ->setOrder(1)
+                                ->setConfig([
+                                     'class' => 'row',
+                                ])
+                                ->addSection($box_callouts)
+                                    ->setOrder(1)
+                                    ->setContent($getPageContent('homepage', 'box_callouts_2'))
+            ->getParent(5)
+                ->addSection($our_proccess)
+                    ->setOrder(3)
+                    ->setContent($getPageContent('homepage', 'our_proccess'))
+                ->addSection($meet_our_team)
+                    ->setOrder(4)
+                    ->setContent($getPageContent('homepage', 'meet_our_team'))
+                    ->dynamic(Plus3Person::class, function(FieldSource $source) {
+                        $source->relatesTo('team')
+                            ->where('public', true)
+                            ->sort('id', 'ASC');
+                    })
+            ->getParent()
+                ->addSection($social_stream)
+                    ->setOrder(5)
+                    ->setContent($getPageContent('homepage', 'social_stream'))
+            ->getParent()
+                ->addSection($customer_testimonials)
+                    ->setOrder(6)
+                    ->setContent($getPageContent('homepage', 'customer_testimonials'));
+
+
+            // Solutions Page Layout and Content
+            $createHeaderFooterStructure($solutions)
+                ->addSection($thick_page_banner)
+                    ->setOrder(1)
+                    ->setContent($getPageContent('solutions', 'thick_page_banner'))
+                ->addSection($white_break_w_section_links)
+                    ->setOrder(2)
+                    ->setContent($getPageContent('solutions', 'white_break_w_section_links'))
+                ->addSection($provided_solution)
+                    ->setOrder(3)
+                    ->setContent($getPageContent('solutions', 'provided_solution'))
+                ->addSection($blue_break_callout)
+                    ->setOrder(4)
+                    ->setContent($getPageContent('solutions', 'blue_break_callout'));
+
+
+            // Process Page Layout and Content
+            $createHeaderFooterStructure($process)
+                ->addSection($thick_page_banner)
+                    ->setOrder(1)
+                    ->setContent($getPageContent('process', 'thick_page_banner'))
+                ->addSection($breadcrumb_with_right_link)
+                    ->setOrder(2)
+                    ->setContent($getPageContent('process', 'breadcrumb_with_right_link'))
+                ->addSection($white_break_w_section_links)
+                    ->setOrder(3)
+                    ->setContent($getPageContent('process', 'white_break_w_section_links'))
+            ->getParent()
+                ->addContainer()
+                    ->setOrder(4)
+                    ->setConfig([
+                        'class' => 'row',
+                    ])
+                    ->addContainer()
+                        ->setOrder(1)
+                        ->setConfig([
+                            'class' => 'xsmall-12 columns',
+                        ])
+                        ->addSection($process_timeline)
+                            ->setOrder(1)
+                            ->setContent($getPageContent('process', 'process_timeline'))
+            ->getParent(3)
+                ->addSection($process_maintenance_details)
+                    ->setOrder(4)
+                    ->setContent($getPageContent('process', 'process_maintenance_details'));
+
+            // Projects Page Layout and Content
+            $projects_container = $createHeaderFooterStructure($projects)
+                ->addSection($thick_page_banner)
+                    ->setOrder(1)
+                    ->setContent($getPageContent('projects', 'thick_page_banner'))
+                ->addSection($white_break_w_section_links)
+                    ->setOrder(2)
+                    ->setContent($getPageContent('projects', 'thick_page_banner'))
+                ->addSection($project_list)
+                    ->setOrder(3)
+                    ->setContent($getPageContent('projects', 'thick_page_banner'))
+                ->addContainer()
+                    ->setOrder(4)
+                    ->setConfig([
+                        'elm' => 'section',
+                        'class' => 'section-module section-clients',
+                    ])
+                    ->addSection($section_heading, 1, [
+                        'content' => [
+                        ]
+                    ])
+                    ->addContainer()
+                        ->setOrder(2)
+                        ->setConfig([
+                            'class' => 'row',
+                        ])
+                        ->addContainer()
+                            ->setOrder(1)
+                            ->setConfig([
+                                'class' => 'medium-9 medium-centered columns',
+                            ])
+                            ->addContainer()
+                                ->setOrder(1)
+                                ->setConfig([
+                                    'class' => 'row',
+                                ])
+                                ->addSection($more_clients_list)
+                                    ->setOrder(1)
+                                    ->setContent($getPageContent('projects', 'more_clients_list'))
+            ->getParent(5)
+                ->addSection($white_break_w_section_links)
+                    ->setOrder(5)
+                    ->setContent($getPageContent('projects', 'white_break_w_section_links'))
+                ->addSection($blue_break_callout)
+                    ->setOrder(6)
+                    ->setContent($getPageContent('projects', 'blue_break_callout'));
+
+
+            // Company Page Layout and Content
+            $company_container = $createHeaderFooterStructure($company)
+                ->addSection($thick_page_banner)
+                    ->setOrder(1)
+                    ->setContent($getPageContent('company', 'thick_page_banner'))
+                ->addSection($meet_our_team)
+                    ->setOrder(2)
+                    ->setContent($getPageContent('company', 'meet_our_team'))
+                    ->dynamic(Plus3Person::class, function(FieldSource $source) {
+                        $source->relatesTo('team')
+                            ->where('public', true)
+                            ->sort('id', 'ASC');
+                    })
+                ->addSection($social_stream)
+                    ->setOrder(3)
+                    ->setContent($getPageContent('company', 'social_stream'));
+
+
+            // Contact Us Page Layout and Content
+            $contact_container = $createHeaderFooterStructure($contact)
+                ->addSection($thick_page_banner)
+                    ->setOrder(1)
+                    ->setContent($getPageContent('contact', 'thick_page_banner'))
+                ->addSection($contact_form)
+                    ->setOrder(2)
+                    ->setContent($getPageContent('contact', 'contact_form'))
+                ->addSection($map_address)
+                    ->setOrder(3)
+                    ->setContent($getPageContent('contact', 'map_address'));
+
+            // Login Page Layout and Content
+            $login_container = $createHeaderFooterStructure($login)
+                ->addSection($thick_page_banner)
+                    ->setOrder(1)
+                    ->setContent($getPageContent('login', 'thick_page_banner'))
+                ->addSection($login_form)
+                    ->setOrder(2)
+                    ->setContent($getPageContent('login', 'login_form'));
+
+
+
+            // Terms of Service Page Layout and Content
+            $terms_of_service_container = $createHeaderFooterStructure($terms_of_service)
+                ->addSection($block_text)
+                    ->setOrder(1)
+                    ->setContent($getPageContent('terms_of_service', 'block_text'));
+
+            // Privacy Policy Page Layout and Content
             $privacy_policy_container = $createHeaderFooterStructure($privacy_policy)
-                ->addSection($block_text, 1, [
-                    'content' => [
-                        'content' => '<h1>Privacy Policy</h1>
-<p>Last updated: January 31, 2017</p>
-<p>Plus 3 Interactive, LLC (&quot;us&quot;, &quot;we&quot;, or &quot;our&quot;) operates the https://www.plus3interactive.com website (the &quot;Service&quot;).</p>
-<p>This page informs you of our policies regarding the collection, use and disclosure of Personal Information when you use our Service.</p>
-<p>We will not use or share your information with anyone except as described in this Privacy Policy.</p>
-<p>We use your Personal Information for providing and improving the Service. By using the Service, you agree to the collection and use of information in accordance with this policy. Unless otherwise defined in this Privacy Policy, terms used in this Privacy Policy have the same meanings as in our Terms and Conditions, accessible at https://www.plus3interactive.com</p>
-<p><h2>Information Collection And Use</h2></p>
-<p>While using our Service, we may ask you to provide us with certain personally identifiable information that can be used to contact or identify you. Personally identifiable information may include, but is not limited to, your email address, name, phone number, postal address, other information (&quot;Personal Information&quot;).
-We collect this information for the purpose of providing the Service, identifying and communicating with you, responding to your requests/inquiries, servicing your purchase orders, and improving our services.</p>
-<p><h2>Log Data</h2></p>
-<p>We may also collect information that your browser sends whenever you visit our Service (&quot;Log Data&quot;). This Log Data may include information such as your computer\'s Internet Protocol (&quot;IP&quot;) address, browser type, browser version, the pages of our Service that you visit, the time and date of your visit, the time spent on those pages and other statistics.</p>
-<p>In addition, we may use third party services such as Google Analytics that collect, monitor and analyze this type of information in order to increase our Service\'s functionality. These third party service providers have their own privacy policies addressing how they use such information.</p>
-<p><h2>Cookies</h2></p>
-<p>Cookies are files with a small amount of data, which may include an anonymous unique identifier. Cookies are sent to your browser from a web site and transferred to your device. We use cookies to collect information in order to improve our services for you.</p>
-<p>You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent. The Help feature on most browsers provide information on how to accept cookies, disable cookies or to notify you when receiving a new cookie.</p>
-<p>If you do not accept cookies, you may not be able to use some features of our Service and we recommend that you leave them turned on.</p>
-<p><h2>Do Not Track Disclosure</h2></p>
-<p>We do not support Do Not Track (&quot;DNT&quot;). Do Not Track is a preference you can set in your web browser to inform websites that you do not want to be tracked.</p>
-<p>You can enable or disable Do Not Track by visiting the Preferences or Settings page of your web browser.</p>
-<p><h2>Service Providers</h2></p>
-<p>We may employ third party companies and individuals to facilitate our Service, to provide the Service on our behalf, to perform Service-related services and/or to assist us in analyzing how our Service is used.</p>
-<p>These third parties have access to your Personal Information only to perform specific tasks on our behalf and are obligated not to disclose or use your information for any other purpose.</p>
-<p><h2>Communications</h2></p>
-<p>We may use your Personal Information to contact you with newsletters, marketing or promotional materials and other information that may be of interest to you. You may opt out of receiving any, or all, of these communications from us by following the unsubscribe link or instructions provided in any email we send.</p>
-<p><h2>Compliance With Laws</h2></p>
-<p>We will disclose your Personal Information where required to do so by law or subpoena or if we believe that such action is necessary to comply with the law and the reasonable requests of law enforcement or to protect the security or integrity of our Service.</p>
-<p><h2>Security</h2></p>
-<p>The security of your Personal Information is important to us, and we strive to implement and maintain reasonable, commercially acceptable security procedures and practices appropriate to the nature of the information we store, in order to protect it from unauthorized access, destruction, use, modification, or disclosure.</p>
-<p>However, please be aware that no method of transmission over the internet, or method of electronic storage is 100% secure and we are unable to guarantee the absolute security of the Personal Information we have collected from you.</p>
-<p><h2>International Transfer</h2></p>
-<p>Your information, including Personal Information, may be transferred to — and maintained on — computers located outside of your state, province, country or other governmental jurisdiction where the data protection laws may differ than those from your jurisdiction.</p>
-<p>If you are located outside United States and choose to provide information to us, please note that we transfer the information, including Personal Information, to United States and process it there.</p>
-<p>Your consent to this Privacy Policy followed by your submission of such information represents your agreement to that transfer.</p>
-<p><h2>Links To Other Sites</h2></p>
-<p>Our Service may contain links to other sites that are not operated by us. If you click on a third party link, you will be directed to that third party\'s site. We h2ly advise you to review the Privacy Policy of every site you visit.</p>
-<p>We have no control over, and assume no responsibility for the content, privacy policies or practices of any third party sites or services.</p>
-<p><h2>Children\'s Privacy</h2></p>
-<p>Only persons age 18 or older have permission to access our Service. Our Service does not address anyone under the age of 13 (&quot;Children&quot;).</p>
-<p>We do not knowingly collect personally identifiable information from children under 13. If you are a parent or guardian and you learn that your Children have provided us with Personal Information, please contact us. If we become aware that we have collected Personal Information from a children under age 13 without verification of parental consent, we take steps to remove that information from our servers.</p>
-<p><h2>Changes To This Privacy Policy</h2></p>
-<p>This Privacy Policy is effective as of January 31, 2017 and will remain in effect except with respect to any changes in its provisions in the future, which will be in effect immediately after being posted on this page.</p>
-<p>We reserve the right to update or change our Privacy Policy at any time and you should check this Privacy Policy periodically. Your continued use of the Service after we post any modifications to the Privacy Policy on this page will constitute your acknowledgment of the modifications and your consent to abide and be bound by the modified Privacy Policy.</p>
-<p>If we make any material changes to this Privacy Policy, we will notify you either through the email address you have provided us, or by placing a prominent notice on our website.</p>
-<p><h2>Contact Us</h2></p>
-<p>If you have any questions about this Privacy Policy, please contact us.</p>'
-                    ]
-                ]);
+                ->addSection($block_text)
+                    ->setOrder(1)
+                    ->setContent($getPageContent('privacy_policy', 'block_text'));
 
             // lets compile all the page templates
             // Note that we always want to do this last to account for any pages
@@ -1366,7 +545,8 @@ We collect this information for the purpose of providing the Service, identifyin
                 ->add($projects, 2)->icon('icon-company')
                 ->add($company, 3)->icon('icon-company')
                 ->add($contact, 4)->icon('icon-contact')
-                ->add($login, 5)->icon('icon-login');
+                ->add($login, 5)->icon('icon-login')
+                ;
 
             $wsb->addMenu('main_footer_menu')
                 ->add($solutions, 1)
@@ -1376,7 +556,8 @@ We collect this information for the purpose of providing the Service, identifyin
                 ->add($contact, 5)
                 ->add($login, 6)
                 ->add($terms_of_service, 7)
-                ->add($privacy_policy, 8);
+                ->add($privacy_policy, 8)
+                ;
 
             $wsb->deploy();
         })->getWebsite();

@@ -127,6 +127,7 @@ class Plus3PeopleSeeder extends Seeder
             'twitter' => '',
             'facebook' => '',
             'linkedin' => '',
+            'public' => false,
         ]))
             ->user()
             ->associate($federico)
@@ -156,6 +157,7 @@ class Plus3PeopleSeeder extends Seeder
             'twitter' => '',
             'facebook' => '',
             'linkedin' => '',
+            'public' => false,
         ]))
             ->user()
             ->associate($michael)

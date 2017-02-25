@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Phaza\LaravelPostgis\Schema\Blueprint;
 
-class Addresses extends Migration
+class CreateLocationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -18,20 +18,10 @@ class Addresses extends Migration
             DB::connection('pgsql')->statement('CREATE EXTENSION postgis;');
         }
 
-        Schema::connection('pgsql')->create('addresses', function (Blueprint $table) {
+        Schema::connection('pgsql')->create('locations', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('number');
-            $table->string('street');
-            $table->string('suffix');
-            $table->string('city');
-            $table->string('state');
-            $table->string('zip', 5);
-            $table->point('location');
-
-            // to use with polymorphic relationships
-            $table->integer('addressable_id')->unsigned()->nullable();
-            $table->string('addressable_type')->nullable();
-
+            $table->morphs('locationable');
+            $table->point('lat_lng');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -44,6 +34,6 @@ class Addresses extends Migration
      */
     public function down()
     {
-        Schema::connection('pgsql')->drop('addresses');
+        Schema::connection('pgsql')->drop('locations');
     }
 }
