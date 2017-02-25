@@ -20,23 +20,30 @@ class ValidateWebsite
      */
     public function handle(Request $request, Closure $next)
     {
-        $host = $request->header('host');
+        $origin = $request->header('origin');
 
-        $origin = $request->header('origin'); // what is this?
         $parts = explode('://', $origin);
 
         if (count($parts) == 2) {
+
             list($scheme, $host) = $parts;
+
         }
 
         try {
-            $request->website = Website::whereHost(env('ADMIN_WEBSITE_HOST'))->firstOrFail();
+
+            $request->website = Website::whereHost($host)->firstOrFail();
 
             return $next($request);
+
         } catch (NotFoundException $e) {
+
             App::abort(401, $host.' Not Authorized');
+
         } catch (ModelNotFoundException $e) {
+
             App::abort(401, $host.' Not Authorized');
+
         }
 
         // before
