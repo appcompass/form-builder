@@ -22,6 +22,8 @@ class FormRequest extends BaseFormRequest
 
         if ($form) {
 
+            \Log::info($form->rules());
+
             return $form->rules();
 
         } else {

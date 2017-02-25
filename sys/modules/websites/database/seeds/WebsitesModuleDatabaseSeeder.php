@@ -73,25 +73,26 @@ class WebsitesModuleDatabaseSeeder extends Seeder
         $form = FormBuilder::new('websites', function (FormBuilder $builder) {
             $builder->string('Website Name', 'name')->list()->validation(['required'])->sortable()->searchable();
             $builder->select('Scheme', 'scheme')->list()->validation(['required'])->sortable()->searchable()->dynamic([
-                    ['id' => 'http', 'label' => 'Plain (HTTP)'],
-                    ['id' => 'https', 'label' => 'Secure (HTTPS)']
-                ]);
+                ['id' => 'http', 'label' => 'Plain (HTTP)'],
+                ['id' => 'https', 'label' => 'Secure (HTTPS)']
+            ]);
             $builder->string('Host', 'host')->list()->validation(['required'])->sortable()->searchable();
-            $builder->fieldset('Configuration', 'config', function(FormBuilder $confBuilder){
-                $confBuilder->select('Header', 'header')->dynamic(Section::class, function(FieldSource $source) {
+            $builder->fieldset('Configuration', 'config', function(FormBuilder $builder) {
+                $builder->config('Meta', 'meta');
+                $builder->select('Header', 'header')->dynamic(Section::class, function(FieldSource $source) {
                     $source->where('type', 'header');
                     $source->select(['id', 'name AS label']);
                 })->validation(['required']);
-                $confBuilder->select('Footer', 'footer')->dynamic(Section::class, function(FieldSource $source) {
+                $builder->select('Footer', 'footer')->dynamic(Section::class, function(FieldSource $source) {
                     $source->where('type', 'footer');
                     $source->select(['id', 'name AS label']);
                 })->validation(['required']);
-                $confBuilder->codeeditor('Layouts', 'layouts')->keyedRepeatable();
-                $confBuilder->fieldset('Deployment', 'deployment', function (FormBuilder $depBuilder) {
+                $builder->code('Layouts', 'layouts');
+                $builder->fieldset('Deployment', 'deployment', function (FormBuilder $depBuilder) {
                     $depBuilder->string('Publish From Path', 'publish_from')->validation(['required']);
                 });
             });
-        })->linkToResources(['websites.index', 'websites.show', 'websites.create'])
+        })->linkToResources(['websites.index', 'websites.show', 'websites.create', 'websites.store', 'websites.update'])
         ->getForm();
 
         WebsiteBuilder::edit($cp->id)->linkForm($form);
