@@ -273,9 +273,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                     ->addContainer()->setOrder(1)
                         ->addContainer()
                             ->setOrder(1)
-                            ->setConfig([
-                                'class' => 'wrapper',
-                            ])
+                            ->setConfig('class', 'wrapper')
                             ->addSection($site_header)
                                 ->setOrder(1)
                                 ->setProps([
@@ -286,10 +284,8 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                         ->getParent()
                             ->addContainer()
                                 ->setOrder(2)
-                                ->setConfig([
-                                    'elm' => 'main',
-                                    'class' => 'main',
-                                ])
+                                ->setConfig('elm', 'main')
+                                ->setConfig('class', 'main')
                             ->cloneTo($main_container)
                         ->getParent()
                             ->addSection($site_footer)
@@ -315,42 +311,30 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             ->getParent()
                 ->addContainer()
                     ->setOrder(2)
-                    ->setConfig([
-                        'elm' => 'section',
-                        'class' => 'section-module section-solutions',
-                    ])
+                    ->setConfig('elm', 'section')
+                    ->setConfig('class', 'section-module section-solutions')
                     ->addSection($section_heading)
                         ->setOrder(1)
                         ->setContent($getPageContent('homepage', 'section_heading'))
                     ->addContainer()
                         ->setOrder(2)
-                        ->setConfig([
-                             'class' => 'row',
-                        ])
+                        ->setConfig('class', 'row')
                         ->addContainer()
                             ->setOrder(1)
-                            ->setConfig([
-                                 'class' => 'medium-6 columns',
-                            ])
+                            ->setConfig('class', 'medium-6 columns')
                             ->addContainer()
                                 ->setOrder(1)
-                                ->setConfig([
-                                    'class' => 'row',
-                                ])
+                                ->setConfig('class', 'row')
                                 ->addSection($box_callouts)
                                     ->setOrder(1)
                                     ->setContent($getPageContent('homepage', 'box_callouts_1'))
                     ->getParent(3)
                         ->addContainer()
                             ->setOrder(2)
-                            ->setConfig([
-                                 'class' => 'medium-6 columns',
-                            ])
+                            ->setConfig('class', 'medium-6 columns')
                             ->addContainer()
                                 ->setOrder(1)
-                                ->setConfig([
-                                     'class' => 'row',
-                                ])
+                                ->setConfig('class', 'row')
                                 ->addSection($box_callouts)
                                     ->setOrder(1)
                                     ->setContent($getPageContent('homepage', 'box_callouts_2'))
@@ -406,14 +390,10 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             ->getParent()
                 ->addContainer()
                     ->setOrder(4)
-                    ->setConfig([
-                        'class' => 'row',
-                    ])
+                    ->setConfig('class', 'row')
                     ->addContainer()
                         ->setOrder(1)
-                        ->setConfig([
-                            'class' => 'xsmall-12 columns',
-                        ])
+                        ->setConfig('class', 'xsmall-12 columns')
                         ->addSection($process_timeline)
                             ->setOrder(1)
                             ->setContent($getPageContent('process', 'process_timeline'))
@@ -435,29 +415,21 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                     ->setContent($getPageContent('projects', 'thick_page_banner'))
                 ->addContainer()
                     ->setOrder(4)
-                    ->setConfig([
-                        'elm' => 'section',
-                        'class' => 'section-module section-clients',
-                    ])
+                    ->setConfig('elm', 'section')
+                    ->setConfig('class', 'section-module section-clients')
                     ->addSection($section_heading, 1, [
                         'content' => [
                         ]
                     ])
                     ->addContainer()
                         ->setOrder(2)
-                        ->setConfig([
-                            'class' => 'row',
-                        ])
+                        ->setConfig('class', 'row')
                         ->addContainer()
                             ->setOrder(1)
-                            ->setConfig([
-                                'class' => 'medium-9 medium-centered columns',
-                            ])
+                            ->setConfig('class', 'medium-9 medium-centered columns')
                             ->addContainer()
                                 ->setOrder(1)
-                                ->setConfig([
-                                    'class' => 'row',
-                                ])
+                                ->setConfig('class', 'row')
                                 ->addSection($more_clients_list)
                                     ->setOrder(1)
                                     ->setContent($getPageContent('projects', 'more_clients_list'))
