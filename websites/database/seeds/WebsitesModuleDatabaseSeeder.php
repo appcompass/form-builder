@@ -78,7 +78,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             ]);
             $builder->string('Host', 'host')->list()->validation(['required'])->sortable()->searchable();
             $builder->fieldset('Configuration', 'config', function(FormBuilder $builder) {
-                $builder->config('Meta', 'meta');
+                $builder->config('Meta', 'meta')->dynamic(['title', 'description', 'keywords']);
                 $builder->select('Header', 'header')->dynamic(Section::class, function(FieldSource $source) {
                     $source->where('type', 'header');
                     $source->select(['id', 'name AS label']);
@@ -87,7 +87,7 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                     $source->where('type', 'footer');
                     $source->select(['id', 'name AS label']);
                 })->validation(['required']);
-                $builder->code('Layouts', 'layouts');
+                $builder->code('Layouts', 'layouts')->dynamic(['public', 'errors']);
                 $builder->fieldset('Deployment', 'deployment', function (FormBuilder $depBuilder) {
                     $depBuilder->string('Publish From Path', 'publish_from')->validation(['required']);
                 });

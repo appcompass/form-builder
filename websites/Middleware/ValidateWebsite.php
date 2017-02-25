@@ -34,6 +34,10 @@ class ValidateWebsite
 
         } catch (ModelNotFoundException $e) {
 
+            $request->website = Website::whereHost(env('ADMIN_WEBSITE_HOST'))->firstOrFail();
+
+            return $next($request);
+
             App::abort(401, $host.' Not Authorized');
 
         }
