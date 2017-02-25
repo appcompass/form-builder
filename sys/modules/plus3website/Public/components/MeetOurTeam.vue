@@ -7,11 +7,10 @@
             h2.section-heading {{data.title}}
             .section-desc(v-if="data.description || data.link_href")
               div(v-html='data.description')
-              p
+              p(v-if="data.link_text")
                 nuxt-link(:to='data.link_href')
                   | {{data.link_text}}
                   span.icon-arrow
-      // @TODO: create a component for Plus3Person Model that this data is provided from
       .section-team-members
         //
           @TODO: make /company page dynamic so it can render a page via /company/:person_slug
