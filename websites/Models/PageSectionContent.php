@@ -77,21 +77,27 @@ class PageSectionContent extends Model
     }
 
 
-    public function setOrder(int $val)
+    // @TODO: these are mainly used by the PageBUilder, but puting them here
+    // is too generic, which is why we had them originally as setOrder etc.
+    public function order(int $val)
     {
         $this->update(['order' => $val]);
     }
 
-    public function setProps(array $val)
+    public function props(array $val)
     {
         return $this->setConfig('props', $val);
     }
 
-    public function setContent(array $val)
+    public function content(array $val)
     {
         $this->update(['content' => $val]);
     }
 
+    public function config($key, $val = null)
+    {
+        return $this->setConfig($key, $val);
+    }
 
 
     /**
