@@ -81,15 +81,14 @@ class WebsitesModuleDatabaseSeeder extends Seeder
                 $confBuilder->select('Header', 'header')->dynamic(Section::class, function(FieldSource $source) {
                     $source->where('type', 'header');
                     $source->select(['id', 'name AS label']);
-                });
+                })->validation(['required']);
                 $confBuilder->select('Footer', 'footer')->dynamic(Section::class, function(FieldSource $source) {
                     $source->where('type', 'footer');
                     $source->select(['id', 'name AS label']);
-                });
+                })->validation(['required']);
                 $confBuilder->codeeditor('Layouts', 'layouts')->keyedRepeatable();
                 $confBuilder->fieldset('Deployment', 'deployment', function (FormBuilder $depBuilder) {
-                    $depBuilder->string('Publish From Path', 'publish_from')
-                        ->validation(['required']);
+                    $depBuilder->string('Publish From Path', 'publish_from')->validation(['required']);
                 });
             });
         })->linkToResources(['websites.index', 'websites.show', 'websites.create'])
@@ -103,10 +102,10 @@ class WebsitesModuleDatabaseSeeder extends Seeder
             $builder->string('Page Title', 'title')->list()->validation(['required'])->sortable()->searchable();
             $builder->string('Slug', 'slug')->list(false)->validation(['required']);
             $builder->select('Parent', 'parent_id')->list(false)->dynamic(\P3in\Models\Page::class, function(FieldSource $source) {
-                    $source->limit(4);
-                    $source->where('website_id', \P3in\Models\Website::whereHost(env('ADMIN_WEBSITE_HOST'))->first()->id);
-                });
-            // $builder->string('Website', 'website_id')->list(false)->validation(['required']);
+                $source->limit(4);
+                $source->where('website_id', \P3in\Models\Website::whereHost(env('ADMIN_WEBSITE_HOST'))->first()->id);
+                $source->select(['id', 'title AS label']);
+            });
         })->linkToResources(['pages.show', 'websites.pages.index', 'websites.pages.create', 'websites.pages.show'])
             ->getForm();
 
