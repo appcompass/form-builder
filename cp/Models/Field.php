@@ -165,14 +165,14 @@ class Field extends Model
         return $this;
     }
 
-    // This is a repeatable field that you must specify the key for each item.
-    // i.e. an associative array rather than indexed one.
-    public function keyedRepeatable($keyedRepeatable = true)
+    /**
+     * Keys
+     */
+    public function keys()
     {
-        $this->setConfig('keyed_repeatable', $keyedRepeatable);
-
-        return $this;
+        // setting the allowed keys allows adding
     }
+
     /**
      *  Sortable
      */

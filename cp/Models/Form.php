@@ -51,16 +51,20 @@ class Form extends Model
     }
 
     /**
-     * { function_description }
+     * Render form, build fields hierarchy
      *
      * @return     <type>  ( description_of_the_return_value )
      */
     public function render()
     {
-        // return array_merge($this->toArray(), $this->buildTree($this->fields));
         return $this->buildTree($this->fields);
     }
 
+    /**
+     * Returns a array representation of the object.
+     *
+     * @return     <type>  String representation of the object.
+     */
     public function toArray()
     {
         $form = $this->attributes;
@@ -184,13 +188,36 @@ class Form extends Model
 
             if (!is_null($field->validation)) {
 
-                $rules[$field->name] = $field->validation;
+                $rules[$this->getParentsChain($field)] = $field->validation;
 
             }
 
         }
 
         return $rules;
+    }
+
+    /**
+     * Gets the dot separated field's parents chain.
+     *
+     * @param      Field   $field  The field
+     *
+     * @return     string  The parents chain.
+     */
+    private function getParentsChain(Field $field)
+    {
+        $parents = [];
+
+        while(!is_null($field)) {
+
+            $parents[] = $field->name;
+
+            $field = $field->parent;
+
+        }
+
+        return implode('.', array_reverse($parents));
+
     }
 
     /**

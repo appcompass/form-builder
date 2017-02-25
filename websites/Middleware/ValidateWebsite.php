@@ -29,16 +29,8 @@ class ValidateWebsite
             list($scheme, $host) = $parts;
         }
 
-        // \Log::info($host);
-
-        // temporary ofcourse so we can work locally with properly seeded data.
-        // $host = 'k1cc0.me:8080';
-
         try {
-            $request->website = Website::where('host', 'www.plus3interactive.com')->firstOrFail();
-
-            // This broke public site.
-            // $request->website = Website::first();
+            $request->website = Website::whereHost(env('ADMIN_WEBSITE_HOST'))->firstOrFail();
 
             return $next($request);
         } catch (NotFoundException $e) {
