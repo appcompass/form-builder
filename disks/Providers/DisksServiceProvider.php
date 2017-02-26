@@ -6,6 +6,8 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Storage;
 use League\Flysystem\Sftp\SftpAdapter;
 use League\Flysystem\Filesystem;
+use P3in\Models\StorageConfig;
+use Route;
 
 class DisksServiceProvider extends ServiceProvider
 {
@@ -20,6 +22,10 @@ class DisksServiceProvider extends ServiceProvider
 
     public function register()
     {
+        Route::bind('storage', function ($value) {
+            return StorageConfig::findOrFail($value);
+        });
+
         $this->app->bind(
             \P3in\Interfaces\DisksRepositoryInterface::class, \P3in\Repositories\DisksRepository::class
         );
