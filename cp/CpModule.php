@@ -11,8 +11,8 @@ class CpModule extends BaseModule
 
     protected $publishes = [
         // publishes to disk instances by name.
-//        'Public/' => 'cp_root',
-//        'Models/FieldTypes/templates/' => 'cp_form_fields',
+        // Public/' => 'cp_root',
+        //'Models/FieldTypes/templates/' => 'cp_form_fields',
     ];
 
     public function __construct()
@@ -20,13 +20,7 @@ class CpModule extends BaseModule
         // \Log::info('Loading <Cp> Module');
     }
 
-    public function bootstrap()
-    {
-        \Log::info('Bootstrapping <Cp> Module');
-    }
+    public function bootstrap() {}
 
-    public function register()
-    {
-        \Log::info('Registering <Cp> Module');
-    }
+    public function register() {}
 }

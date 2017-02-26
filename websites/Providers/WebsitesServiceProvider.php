@@ -5,14 +5,11 @@ namespace P3in\Providers;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use P3in\Interfaces\WebsiteSettingsRepositoryInterface;
-use P3in\Interfaces\WebsitesRepositoryInterface;
 use P3in\Middleware\ValidateWebsite;
 use P3in\Models\Menu;
 use P3in\Models\Page;
 use P3in\Models\PageSectionContent;
 use P3in\Models\Redirect;
-// use P3in\Models\Setting;
 use P3in\Models\Website;
 use Roumen\Sitemap\SitemapServiceProvider;
 use Roumen\Feed\FeedServiceProvider;
@@ -36,7 +33,6 @@ class WebsitesServiceProvider extends ServiceProvider
             'P3in\Interfaces\WebsitesRepositoryInterface' => 'P3in\Repositories\WebsitesRepository',
             'P3in\Interfaces\WebsitePagesRepositoryInterface' => 'P3in\Repositories\WebsitePagesRepository',
             'P3in\Interfaces\WebsiteRedirectsRepositoryInterface' => 'P3in\Repositories\WebsiteRedirectsRepository',
-            // 'P3in\Interfaces\WebsiteSettingsRepositoryInterface' => 'P3in\Repositories\WebsiteSettingsRepository',
             'P3in\Interfaces\PageContentRepositoryInterface' => 'P3in\Repositories\PageContentRepository',
             'P3in\Interfaces\PagesRepositoryInterface' => 'P3in\Repositories\PagesRepository',
             'P3in\Interfaces\MenusRepositoryInterface' => 'P3in\Repositories\MenusRepository',

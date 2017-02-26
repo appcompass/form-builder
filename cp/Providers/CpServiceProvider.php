@@ -13,8 +13,6 @@ class CpServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        \Log::info('Booting CP Module');
-
         Storage::extend('sftp', function ($app, $config) {
             $adapter = new SftpAdapter($config);
 

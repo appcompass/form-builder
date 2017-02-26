@@ -56,6 +56,13 @@ class FieldSource extends Model
         return $this;
     }
 
+    /**
+     * adds a sub select
+     *
+     * @param      array   $fields  The fields
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
     public function select(array $fields)
     {
         $criteria = $this->criteria;
@@ -67,6 +74,15 @@ class FieldSource extends Model
         return $this;
     }
 
+    /**
+     * { function_description }
+     *
+     * @param      <type>  $destination_table  The destination table
+     * @param      <type>  $origin_field       The origin field
+     * @param      <type>  $destination_field  The destination field
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
     public function join($destination_table, $origin_field, $destination_field)
     {
         $criteria = $this->criteria;
