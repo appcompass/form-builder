@@ -41,6 +41,7 @@ class CreateFormBuilderTables extends Migration
             $table->string('name')->index();
             $table->string('label');
             $table->string('type');
+            $table->string('help')->nullable(); // help text
             $table->json('config')->nullable();
             $table->text('content')->nullable();
             $table->string('validation')->nullable();
