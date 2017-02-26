@@ -71,22 +71,22 @@ class WebsitesModuleDatabaseSeeder extends Seeder
         DB::statement("DELETE FROM forms WHERE name = 'websites'");
 
         $form = FormBuilder::new('websites', function (FormBuilder $builder) {
-            $builder->string('Website Name', 'name')->list()->validation(['required'])->sortable()->searchable();
+            $builder->string('Website Name', 'name')->list()->validation(['required'])->sortable()->searchable()->help('The Human Readable website name');
             $builder->select('Scheme', 'scheme')->list()->validation(['required'])->sortable()->searchable()->dynamic([
                 ['id' => 'http', 'label' => 'Plain (HTTP)'],
                 ['id' => 'https', 'label' => 'Secure (HTTPS)']
-            ]);
-            $builder->string('Host', 'host')->list()->validation(['required'])->sortable()->searchable();
+            ])->help('Website Schema. We recommend website to be served using HTTPS');
+            $builder->string('Host', 'host')->list()->validation(['required'])->sortable()->searchable()->help('Just the fully qualified hostname (FQDN)');
             $builder->fieldset('Configuration', 'config', function(FormBuilder $builder) {
-                $builder->config('Meta', 'meta')->dynamic(['title', 'description', 'keywords']);
+                $builder->config('Meta', 'meta')->dynamic(['title', 'description', 'keywords'])->help('Meta keywords for the page');
                 $builder->select('Header', 'header')->dynamic(Section::class, function(FieldSource $source) {
                     $source->where('type', 'header');
                     $source->select(['id', 'name AS label']);
-                })->validation(['required']);
+                })->validation(['required'])->help('Please select a Header');
                 $builder->select('Footer', 'footer')->dynamic(Section::class, function(FieldSource $source) {
                     $source->where('type', 'footer');
                     $source->select(['id', 'name AS label']);
-                })->validation(['required']);
+                })->validation(['required'])->help('Please select a Footer');
                 $builder->code('Layouts', 'layouts')->dynamic(['public', 'errors']);
                 $builder->fieldset('Deployment', 'deployment', function (FormBuilder $depBuilder) {
                     $depBuilder->string('Publish From Path', 'publish_from')->validation(['required']);

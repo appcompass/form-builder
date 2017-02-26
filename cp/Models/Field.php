@@ -21,7 +21,8 @@ class Field extends Model
         'config',
         'validation',
         'dynamic',
-        'form_id'
+        'form_id',
+        'help'
     ];
 
     protected $casts = [
@@ -192,6 +193,22 @@ class Field extends Model
 
         return $this;
     }
+
+    /**
+     * Set helper message
+     *
+     * @param      <type>  $help   The help
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
+    public function help($help = null)
+    {
+        $this->update(['help' => $help]);
+
+        return $this;
+    }
+
+
 
     /**
      *  Validation
