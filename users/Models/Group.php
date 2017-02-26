@@ -10,29 +10,12 @@ use Illuminate\Database\Eloquent\Collection;
 
 class Group extends Model
 {
-
-    /**
-     * The database table used by the model.
-     *
-     * @var string
-     */
-    protected $table = 'groups';
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = ['name', 'label', 'description', 'active'];
-
-    /**
-     * Validation rules
-     */
-    public static $rules = [
-        'name' => 'required',
-        'label' => 'required'
+    protected $fillable = [
+      'name',
+      'label',
+      'description',
+      'active'
     ];
-
 
     /**
      * Get a group by name
