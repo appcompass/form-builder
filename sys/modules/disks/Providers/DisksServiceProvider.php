@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Storage;
 use League\Flysystem\Sftp\SftpAdapter;
 use League\Flysystem\Filesystem;
 
-class StorageServiceProvider extends ServiceProvider
+class DisksServiceProvider extends ServiceProvider
 {
     public function boot()
     {
@@ -20,8 +20,8 @@ class StorageServiceProvider extends ServiceProvider
 
     public function register()
     {
-        // $this->app->bind(
-            // \P3in\Interfaces\StorageRepositoryInterface::class, \P3in\Repositories\StorageRepository::class
-        // );
+        $this->app->bind(
+            \P3in\Interfaces\DisksRepositoryInterface::class, \P3in\Repositories\DisksRepository::class
+        );
     }
 }
