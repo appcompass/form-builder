@@ -143,7 +143,10 @@ class Field extends Model
      */
     public function required($required = true)
     {
-        $exploded = explode(' | ', $this->validation);
+
+        $attrs = $this->getAttributes();
+
+        $exploded = isset($attrs['validation']) ? explode(' | ', $attrs['validation']) : [];
 
         if (isset($exploded['required'])) {
 
@@ -151,9 +154,9 @@ class Field extends Model
 
         }
 
-        $exploded['required'] = $required;
+        $exploded[] = $required ? 'required' : null;
 
-        return $this->validation(implode(' | ', $exploded));
+        return $this->validation($exploded);
     }
 
     /**
@@ -171,6 +174,7 @@ class Field extends Model
      */
     public function keys()
     {
+        // @NOTE rethink this, we are using dynamic to initialize Config fields
         // setting the allowed keys allows adding
     }
 
@@ -207,8 +211,6 @@ class Field extends Model
 
         return $this;
     }
-
-
 
     /**
      *  Validation

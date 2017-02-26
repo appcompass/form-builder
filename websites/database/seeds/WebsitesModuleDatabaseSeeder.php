@@ -175,13 +175,19 @@ class WebsitesModuleDatabaseSeeder extends Seeder
         DB::statement("DELETE FROM forms WHERE name = 'storage'");
 
         Formbuilder::new('storage', function(FormBuilder $builder) {
-            $builder->string('Name', 'name')->list()->sortable()->searchable();
-            $builder->string('Type', 'type.name')->list()->edit(false)->sortable()->searchable();
-            $builder->select('Disk Instance', 'type_id')->list(false)->sortable()->searchable()->dynamic(\P3in\Models\StorageType::class, function(FieldSource $source) {
+            $builder->string('Name', 'name')->list()->sortable()->searchable()->required();
+            $builder->string('Type', 'type.name')->list()->edit(false)->sortable()->searchable()->required();
+            $builder->select('Disk Instance', 'type_id')->list(false)->dynamic(\P3in\Models\StorageType::class, function(FieldSource $source) {
                 $source->select(['id', 'name AS label']);
-            });
-            $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
-        })->linkToResources(['storage.index', 'storage.show']);
+            })->required();
+            // @TODO this is one way, but validation has issues (too long to explain here)
+            // $builder->string('Root', 'config.root')->list()->sortable()->searchable()->required();
+            $builder->fieldset('Configuration', 'config', function(FormBuilder $builder) {
+                $builder->string('Root', 'root')->list()->sortable()->searchable()->required();
+            })->list(false)->required();
+
+            $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable()->required();
+        })->linkToResources(['storage.index', 'storage.show', 'storage.create', 'storage.store', 'storage.update']);
 
 
     }
