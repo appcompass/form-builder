@@ -1,6 +1,6 @@
 <?php
 
-namespace P3in\Models\Oberservers;
+namespace P3in\Observers;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
