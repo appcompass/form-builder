@@ -2,15 +2,16 @@
 
 namespace P3in\Models;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use P3in\Interfaces\Linkable;
 use P3in\Models\Layout;
+use P3in\Models\Oberservers\PageObserver;
 use P3in\Models\PageSectionContent;
 use P3in\Models\Section;
 use P3in\Models\Website;
-use Exception;
 
 class Page extends Model implements Linkable
 {
@@ -34,6 +35,13 @@ class Page extends Model implements Linkable
     protected $casts = [
         'meta' => 'object',
     ];
+
+
+    protected static function boot()
+    {
+        static::observe(new PageObserver);
+        parent::boot();
+    }
 
     /**
      * website
@@ -122,24 +130,6 @@ class Page extends Model implements Linkable
         $container->saveAsContainer($order, $config);
 
         return $container;
-    }
-
-    /**
-     * Sets the url based on slug
-     *
-     * @param      <type>  $slug   The slug
-     */
-    public function setSlugAttribute($slug)
-    {
-        $this->attributes['slug'] = $slug;
-
-        $this->attributes['url'] = $this->buildUrl();
-
-        if ($this->exists) {
-            $this->save();
-
-            $this->updateChildrenUrl();
-        }
     }
 
     /**
@@ -274,7 +264,7 @@ class Page extends Model implements Linkable
      *
      * @return     string   Full Url, including parents
      */
-    private function buildUrl()
+    public function buildUrl()
     {
         $page = $this;
 
