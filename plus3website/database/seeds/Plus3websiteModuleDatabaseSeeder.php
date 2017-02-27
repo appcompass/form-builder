@@ -281,13 +281,13 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                                     'meta' => 'site_meta',
                                     'current_url' => 'current_url',
                                 ])
-                        ->getParent()
+                        ->parent()
                             ->addContainer()
                                 ->order(2)
                                 ->config('elm', 'main')
                                 ->config('class', 'main')
                             ->cloneTo($main_container)
-                        ->getParent()
+                        ->parent()
                             ->addSection($site_footer)
                                 ->order(3)
                                 ->props([
@@ -295,7 +295,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                                     'meta' => 'site_meta',
                                     'current_url' => 'current_url',
                                 ])
-                    ->getParent(2)
+                    ->parent(2)
                         ->addSection($site_proposal_modal)
                             ->order(2)
                             ->content($getPageContent('global', 'site_proposal_modal'));
@@ -308,7 +308,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->addSection($slider_banner)
                     ->order(1)
                     ->content($getPageContent('homepage', 'slider_banner'))
-            ->getParent()
+            ->parent()
                 ->addContainer()
                     ->order(2)
                     ->config('elm', 'section')
@@ -328,7 +328,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                                 ->addSection($box_callouts)
                                     ->order(1)
                                     ->content($getPageContent('homepage', 'box_callouts_1'))
-                    ->getParent(3)
+                    ->parent(3)
                         ->addContainer()
                             ->order(2)
                             ->config('class', 'medium-6 columns')
@@ -338,7 +338,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                                 ->addSection($box_callouts)
                                     ->order(1)
                                     ->content($getPageContent('homepage', 'box_callouts_2'))
-            ->getParent(5)
+            ->parent(5)
                 ->addSection($our_proccess)
                     ->order(3)
                     ->content($getPageContent('homepage', 'our_proccess'))
@@ -350,11 +350,11 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                             ->where('public', true)
                             ->sort('id', 'ASC');
                     })
-            ->getParent()
+            ->parent()
                 ->addSection($social_stream)
                     ->order(5)
                     ->content($getPageContent('homepage', 'social_stream'))
-            ->getParent()
+            ->parent()
                 ->addSection($customer_testimonials)
                     ->order(6)
                     ->content($getPageContent('homepage', 'customer_testimonials'));
@@ -387,7 +387,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->addSection($white_break_w_section_links)
                     ->order(3)
                     ->content($getPageContent('process', 'white_break_w_section_links'))
-            ->getParent()
+            ->parent()
                 ->addContainer()
                     ->order(4)
                     ->config('class', 'row')
@@ -397,7 +397,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                         ->addSection($process_timeline)
                             ->order(1)
                             ->content($getPageContent('process', 'process_timeline'))
-            ->getParent(3)
+            ->parent(3)
                 ->addSection($process_maintenance_details)
                     ->order(4)
                     ->content($getPageContent('process', 'process_maintenance_details'));
@@ -433,7 +433,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                                 ->addSection($more_clients_list)
                                     ->order(1)
                                     ->content($getPageContent('projects', 'more_clients_list'))
-            ->getParent(5)
+            ->parent(5)
                 ->addSection($white_break_w_section_links)
                     ->order(5)
                     ->content($getPageContent('projects', 'white_break_w_section_links'))
