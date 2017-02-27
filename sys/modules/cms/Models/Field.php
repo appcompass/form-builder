@@ -4,6 +4,8 @@ namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use P3in\Models\FieldSource;
+use P3in\Models\Scopes\OrderScope;
+use P3in\Observers\FieldObserver;
 use P3in\Traits\HasDynamicContent;
 use P3in\Traits\HasJsonConfigFieldTrait;
 
@@ -42,6 +44,7 @@ class Field extends Model
     protected static function boot()
     {
         static::addGlobalScope(new OrderScope('id', 'asc'));
+        static::observe(FieldObserver::class);
 
         parent::boot();
     }

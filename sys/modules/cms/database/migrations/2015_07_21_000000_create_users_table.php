@@ -28,38 +28,7 @@ class CreateUsersTable extends Migration
             $table->timestamps();
         });
 
-        # link user to his profiles
-        // Schema::create('profile_user', function (Blueprint $table) {
-        //  $table->increments('id');
 
-        //  $table->integer('user_id')->unsigned();
-        //  $table->foreign('user_id')
-        //      ->references('id')
-        //      ->on('users')
-        //      ->onDelete('cascade');
-
-        //  $table->integer('profilable_id')->unsigned();
-        //  $table->integer('profilable_type');
-        // });
-
-        # link permissions to user
-        // Schema::create('permission_user', function(Blueprint $table) {
-        //     $table->integer('permission_id')->unsigned()->index();
-        //     $table->foreign('permission_id')
-        //             ->references('id')
-        //             ->on('permissions')
-        //             ->onDelete('cascade');
-
-        //     $table->integer('user_id')->unsigned()->index();
-        //     $table->foreign('user_id')
-        //             ->references('id')
-        //             ->on('users')
-        //             ->onDelete('cascade');
-
-        //     // $table->unique(['permission_id', 'user_id']);
-        //     $table->primary(['permission_id', 'user_id']);
-        //     $table->timestamps();
-        // });
     }
 
     /**
@@ -69,8 +38,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        // Schema::dropIfExists('permission_user');
-        // Schema::dropIfExists('profile_users');
-        Schema::dropIfExists('users');
+        Schema::drop('users');
     }
 }
