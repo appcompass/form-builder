@@ -42,9 +42,6 @@ class CmsServiceProvider extends ServiceProvider
             return new Filesystem($adapter);
         });
 
-        Field::observe(FieldObserver::class);
-
-
         Route::bind('user', function ($value) {
             return \P3in\Models\User::findOrFail($value);
         });

@@ -67,7 +67,6 @@ class WebsitesSeeder extends Seeder
                     ->add($forms, 2)->icon('file-text-o');
         })->getWebsite();
 
-
         // DB::statement("DELETE FROM forms WHERE name = 'websites'");
 
         $form = FormBuilder::new('websites', function (FormBuilder $builder) {

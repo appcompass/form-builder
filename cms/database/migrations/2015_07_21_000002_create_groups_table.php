@@ -72,10 +72,10 @@ class CreateGroupsTable extends Migration
         // });
         // Schema::drop('group_permission');
 
-        Schema::table('group_user', function ($table) {
-            $table->dropForeign('group_user_group_id_foreign');
-            $table->dropForeign('group_user_user_id_foreign');
-        });
+        // Schema::table('group_user', function ($table) {
+        //     $table->dropForeign('group_user_group_id_foreign');
+        //     $table->dropForeign('group_user_user_id_foreign');
+        // });
 
         Schema::drop('group_user');
 
