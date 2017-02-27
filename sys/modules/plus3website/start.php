@@ -2,7 +2,7 @@
 
 $module_class_name = "\P3in\Plus3websiteModule";
 
-$dependencies = ['websites', 'users'];
+$dependencies = ['cms'];
 
 if (isset($path)) {
     require_once($path . '/Plus3websiteModule.php');
