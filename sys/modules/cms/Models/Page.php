@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use P3in\Interfaces\Linkable;
 use P3in\Models\Layout;
-use P3in\Models\Oberservers\PageObserver;
+use P3in\Observers\PageObserver;
 use P3in\Models\PageSectionContent;
 use P3in\Models\Section;
 use P3in\Models\Website;
