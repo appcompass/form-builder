@@ -51,10 +51,11 @@ class PublicWebsiteController extends BaseController
     {
         $site = $request->website;
         // return response()->json(
+
         return array_merge([
             'name' => $site->name,
             'url' => $site->url,
-        ], (array) $site->config->meta);
+        ], !empty($site->config) ? (array) $site->config->meta : []);
     }
 
     public function renderSitemap(Request $request, $type = 'xml')

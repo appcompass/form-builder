@@ -153,7 +153,8 @@ class CmsServiceProvider extends ServiceProvider
 
         $this->app['router']->middleware('validateWebsite', ValidateWebsite::class);
 
-        $this->app['view']->addNamespace('websites', realpath(__DIR__.'/../Templates'));
+        // @TODO: currently a mix of views and stubs. should be better organized/split.
+        $this->app['view']->addNamespace('cms', realpath(__DIR__.'/../Templates'));
 
         $this->app->register(SitemapServiceProvider::class);
         // $this->app->register(FeedServiceProvider::class);
