@@ -10,6 +10,7 @@ use P3in\Models\Page;
 use P3in\Models\PageSectionContent;
 use P3in\Models\Section;
 use P3in\PublishFiles;
+use P3in\Renderers\TemplateRenderer;
 
 class PageBuilder
 {
@@ -19,9 +20,6 @@ class PageBuilder
     private $page;
     private $container;
     private $section;
-    private $template = [];
-    private $imports = [];
-    private $exports = [];
 
     public function __construct(Page $page = null)
     {
@@ -204,6 +202,7 @@ class PageBuilder
      */
     public function author($val = '')
     {
+        // @NOTE: calls this->page->setMeta('head->author', $val);
         return $this->setMeta('head->author', $val);
     }
 
@@ -258,120 +257,16 @@ class PageBuilder
     //     return $this;
     // }
 
-    /**
-     * { function_description }
-     *
-     * @param      <type>  $conf   The conf
-     *
-     * @return     <type>  ( description_of_the_return_value )
-     */
-    private function compileElement($conf)
+    public function renderTemplate(string $layout)
     {
-        $elm = !empty($conf->elm) ? $conf->elm : 'div';
+        $renderer = new TemplateRenderer($this->page);
 
-        if (!empty($conf->class)) {
-            $elm .= '.'.str_replace(' ', '.', $conf->class);
-        }
-        return $elm;
+        $renderer->layout($layout)->render();
+
+
+        return $this;
     }
 
-    /**
-     * Gets the element data.
-     *
-     * @param      <type>  $depth  The depth
-     * @param      <type>  $name   The name
-     *
-     * @return     array   The element data.
-     */
-    private function getElementData($depth, $name)
-    {
-        return [
-            'depth' => $depth,
-            'value' => $name,
-        ];
-    }
-
-    /**
-     * Builds a page template tree.
-     *
-     * @param      <type>   $parts  The parts
-     * @param      integer  $depth  The depth
-     */
-    private function buildPageTemplateTree($parts, int $pos = 0)
-    {
-        $depth = $pos*2;
-
-        foreach ($parts as $part) {
-            if ($part->children->count() > 0) {
-                // build the element name for this container.
-                $name = $this->compileElement($part->config);
-
-                $this->template[] = $this->getElementData($depth, $name);
-                // add the container's children.
-                $this->buildPageTemplateTree($part->children, $pos+1);
-            } else {
-                $name = $part->section->template;
-                $props = $part->buildProps();
-                $props[] = ':data="content['.$part->id.']"';
-                $dataAppend = '('.implode(', ', $props).')';
-                $this->template[] = $this->getElementData($depth, $name.$dataAppend);
-
-                if (!in_array($name, $this->imports)) {
-                    $this->imports[] = $name;
-                }
-            }
-        }
-    }
-    /**
-     * Render website page template.
-     * @param string $layout
-     * @param array $sections
-     * @param array|array $imports
-     * @return string
-     */
-    public static function buildTemplate(string $layout, array $sections, array $imports = [])
-    {
-        return view('websites::page', [
-            'layout' => $layout,
-            'sections' => $sections,
-            'imports' => $imports,
-        ])->render();
-    }
-
-    /**
-     * Exports Page Template
-     */
-    // @TODO: refactorrrr needs to be abstracted.
-    public function compilePageTemplate($layout)
-    {
-        $page = $this->page;
-
-        $disk = $page->website->storage->getDisk();
-
-        $manager = new PublishFiles('stubs', realpath(__DIR__.'/../Templates/stubs'));
-
-        $name = $page->url == '/' ? '/index' : $page->url;
-
-        // //@TODO: On delete or parent change of a page (we use the url as the unique name for a page),
-        // //we need to delete it's template file as to clean up junk.
-
-        if ($page->children->count()) {
-            $sections = [$this->getElementData(0, '<nuxt-child/>')];
-
-            $parent_template = static::buildTemplate($layout, $sections);
-
-            $manager->publishFile($disk, "/pages{$name}.vue", $parent_template, true);
-            $name = $name.'/index';
-        }
-        $pageStructure = $page->buildContentTree();
-
-        $this->buildPageTemplateTree($pageStructure);
-
-        // handling child page structures.
-        $contents = static::buildTemplate($layout, $this->template, $this->imports);
-
-        $manager->publishFile($disk, "/pages{$name}.vue", $contents, true);
-    }
 
     /**
      * Passthrough for building a MenuItem from the page

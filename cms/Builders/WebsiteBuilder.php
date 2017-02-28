@@ -291,7 +291,7 @@ class WebsiteBuilder
                     $components[] = $file['filename'];
                 }
             }
-            $components_import_file = view('websites::components', [
+            $components_import_file = view('cms::components', [
                 'components' => $components,
             ])->render();
 

@@ -279,22 +279,6 @@ class PageSectionContent extends Model
     }
 
     /**
-     * Builds the props for an element
-     * @return array of strings
-     */
-    public function buildProps()
-    {
-        $props = [];
-        $conf = $this->config;
-        if (!empty($conf->props) && is_object($conf->props)) {
-            foreach ($conf->props as $key => $val) {
-                // creates this: :to="from"
-                $props[] = ':'.$key.'="'.$val.'"';
-            }
-        }
-        return $props;
-    }
-    /**
      * Determines if container.
      *
      * @return     boolean  True if container, False otherwise.

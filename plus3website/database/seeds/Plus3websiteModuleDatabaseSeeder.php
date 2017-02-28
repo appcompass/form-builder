@@ -498,15 +498,15 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
             // lets compile all the page templates
             // Note that we always want to do this last to account for any pages
             // that have children as they get generated a bit differently than normal pages.
-            $homepage->compilePageTemplate('public');
-            $solutions->compilePageTemplate('public');
-            $process->compilePageTemplate('public');
-            $projects->compilePageTemplate('public');
-            $company->compilePageTemplate('public');
-            $contact->compilePageTemplate('public');
-            $login->compilePageTemplate('public');
-            $terms_of_service->compilePageTemplate('public');
-            $privacy_policy->compilePageTemplate('public');
+            $homepage->renderTemplate('public');
+            $solutions->renderTemplate('public');
+            $process->renderTemplate('public');
+            $projects->renderTemplate('public');
+            $company->renderTemplate('public');
+            $contact->renderTemplate('public');
+            $login->renderTemplate('public');
+            $terms_of_service->renderTemplate('public');
+            $privacy_policy->renderTemplate('public');
 
 
             // Create the nav menus and add the items.
