@@ -514,7 +514,7 @@ class Plus3websiteModuleDatabaseSeeder extends Seeder
                 ->add($solutions, 1)->icon('icon-solutions')->sub()
                     ->add($process, 1)->icon('icon-solutions')
                     ->parent()
-                ->add($projects, 2)->icon('icon-company')
+                ->add($projects, 2)->icon('icon-projects')
                 ->add($company, 3)->icon('icon-company')
                 ->add($contact, 4)->icon('icon-contact')
                 ->add($login, 5)->icon('icon-login')
