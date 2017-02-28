@@ -55,7 +55,7 @@ class PublicWebsiteController extends BaseController
         return array_merge([
             'name' => $site->name,
             'url' => $site->url,
-        ], !empty($site->config) ? (array) $site->config->meta : []);
+        ], !is_null($site->config) ? (array) $site->config->meta : []);
     }
 
     public function renderSitemap(Request $request, $type = 'xml')
