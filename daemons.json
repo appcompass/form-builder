@@ -1,0 +1,42 @@
+{
+  "apps": [{
+    // Application #1
+    "name": "plus3-website",
+    "script": "npm",
+    "args": ["run", "start"],
+    "watch": false,
+    "node_args": "--harmony",
+    "merge_logs": true,
+    "cwd": "/usr/share/nginx/api/websites/plus3website/",
+    "env": {
+      "NODE_ENV": "development"
+    },
+    "env_production": {
+      "NODE_ENV": "production",
+      "BASE_URL": "https://www.plus3interactive.com/api"
+    },
+    "env_staging": {
+      "NODE_ENV": "staging",
+      "TEST": true
+    },
+    "env_js" : {
+      "NODE_ENV": "development",
+      "BASE_URL" : "http://api.p3in.com.dev"
+    },
+    "env_ff" : {
+      "NODE_ENV": "development",
+      "BASE_URL" : "https://api.k1cc0.me"
+    }
+  },{
+    // Application #2
+    "name": "artisan-queue-listen",
+    "script": "artisan",
+    "args": ["queue:listen", "--tries=1", "--sleep=1", "--timeout=120"],
+    "exec_interpreter": "php",
+    "exec_mode"  : "fork_mode",
+    "max_memory_restart" : "1G",
+    "watch": false,
+    "merge_logs": true,
+    "cwd": "/usr/share/nginx/api/sys/",
+  }]
+}
