@@ -7,10 +7,8 @@ use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\ServiceProvider;
 use Intervention\Image\Facades\Image;
 use Intervention\Image\ImageServiceProvider;
-use P3in\Middleware\ValidateWebsite;
 use P3in\Models\Field;
 use P3in\Models\Gallery;
 use P3in\Models\GalleryItem;
@@ -27,12 +25,82 @@ use P3in\Models\Website;
 use P3in\Observers\FieldObserver;
 use P3in\Observers\GalleryItemObserver;
 use P3in\Observers\PageObserver;
+use P3in\Providers\BaseServiceProvider;
 use Roumen\Sitemap\SitemapServiceProvider;
-// use Roumen\Feed\FeedServiceProvider;
 use Tymon\JWTAuth\Providers\LaravelServiceProvider;
 
-class PilotIoServiceProvider extends ServiceProvider
+class PilotIoServiceProvider extends BaseServiceProvider
 {
+    // @TODO: Implement the other middleware types commented out here.
+    /**
+     * The application's global HTTP middleware stack.
+     *
+     * These middleware are run during every request to your application.
+     *
+     * @var array
+     */
+    // protected $middleware = [
+    // ];
+
+    /**
+     * The application's route middleware groups.
+     *
+     * @var array
+     */
+    protected $middlewareGroups = [
+        'web' => [
+            \P3in\Middleware\ValidateWebsite::class,
+        ],
+        'auth' => [
+            \Illuminate\Auth\Middleware\Authenticate::class,
+            // 'jwt.refresh',
+        ],
+        'api' => [
+            \P3in\Middleware\AfterRoute::class,
+        ]
+    ];
+
+    // /**
+    //  * The application's route middleware.
+    //  *
+    //  * These middleware may be assigned to groups or used individually.
+    //  *
+    //  * @var array
+    //  */
+    // protected $routeMiddleware = [
+    //     // 'jwt.auth' => Tymon\JWTAuth\Middleware\GetUserFromToken::class,
+    //     // 'jwt.refresh' => Tymon\JWTAuth\Middleware\RefreshToken::class,
+
+    // ];
+
+    protected $observe = [
+        FieldObserver::class => Field::class,
+        GalleryItemObserver::class => [
+            Photo::class,
+            Video::class
+        ],
+        // PhotoObserver::class => Photo::class, //@TODO: old but possibly needed for Alerts? look into it when we get to Alerts.
+        PageObserver::class => Page::class,
+    ];
+
+    protected $bind = [
+        \P3in\Interfaces\UsersRepositoryInterface::class => \P3in\Repositories\UsersRepository::class,
+        \P3in\Interfaces\UserPermissionsRepositoryInterface::class => \P3in\Repositories\UserPermissionsRepository::class,
+        \P3in\Interfaces\PermissionsRepositoryInterface::class => \P3in\Repositories\PermissionsRepository::class,
+        \P3in\Interfaces\GroupsRepositoryInterface::class => \P3in\Repositories\GroupsRepository::class,
+        \P3in\Interfaces\UserGroupsRepositoryInterface::class => \P3in\Repositories\UserGroupsRepository::class,
+        \P3in\Interfaces\GalleriesRepositoryInterface::class => \P3in\Repositories\GalleriesRepository::class,
+        \P3in\Interfaces\GalleryPhotosRepositoryInterface::class => \P3in\Repositories\GalleryPhotosRepository::class,
+        \P3in\Interfaces\GalleryVideosRepositoryInterface::class => \P3in\Repositories\GalleryVideosRepository::class,
+        \P3in\Interfaces\MenusRepositoryInterface::class => \P3in\Repositories\MenusRepository::class,
+        \P3in\Interfaces\WebsitesRepositoryInterface::class => \P3in\Repositories\WebsitesRepository::class,
+        \P3in\Interfaces\WebsiteRedirectsRepositoryInterface::class => \P3in\Repositories\WebsiteRedirectsRepository::class,
+        \P3in\Interfaces\PagesRepositoryInterface::class => \P3in\Repositories\PagesRepository::class,
+        \P3in\Interfaces\WebsitePagesRepositoryInterface::class => \P3in\Repositories\WebsitePagesRepository::class,
+        \P3in\Interfaces\PageContentRepositoryInterface::class => \P3in\Repositories\PageContentRepository::class,
+        \P3in\Interfaces\WebsiteMenusRepositoryInterface::class => \P3in\Repositories\WebsiteMenusRepository::class,
+    ];
+
     public function boot()
     {
         $this->bindToRoute();
@@ -42,16 +110,10 @@ class PilotIoServiceProvider extends ServiceProvider
     {
         \Log::info('Running CMS provider');
 
-        $this->app['router']->middleware('ValidateWebsite', ValidateWebsite::class);
-
         $this->registerDependentPackages();
 
-        $this->registerObservers();
-
-        $this->bindInterfacesToRepos();
-
         // @TODO: currently a mix of views and stubs. should be better organized/split.
-        $this->app['view']->addNamespace('cms', realpath(__DIR__.'/../Templates'));
+        $this->app['view']->addNamespace('pilot-io', realpath(__DIR__.'/../Templates'));
 
 
     }
@@ -74,51 +136,8 @@ class PilotIoServiceProvider extends ServiceProvider
         Config::set(['image' => ['driver' => 'imagick']]);
     }
 
-    private function registerObservers()
-    {
-
-        foreach ([
-            Field::class => FieldObserver::class,
-            // GalleryItem::class => GalleryItemObserver::class, // @TODO: "Cannot instantiate abstract class P3in\Models\GalleryItem" but we can register this on boot of that class.
-            Photo::class => GalleryItemObserver::class,
-            Video::class => GalleryItemObserver::class,
-            // Photo::class => PhotoObserver::class, //@TODO: old but possibly needed for Alerts? look into it when we get to Alerts.
-            Page::class => PageObserver::class,
-        ] as $model => $obersver) {
-            $model::observe($obersver);
-        }
-
-    }
-
-    private function bindInterfacesToRepos()
-    {
-        $models = [
-            \P3in\Interfaces\UsersRepositoryInterface::class => \P3in\Repositories\UsersRepository::class,
-            \P3in\Interfaces\UserPermissionsRepositoryInterface::class => \P3in\Repositories\UserPermissionsRepository::class,
-            \P3in\Interfaces\PermissionsRepositoryInterface::class => \P3in\Repositories\PermissionsRepository::class,
-            \P3in\Interfaces\GroupsRepositoryInterface::class => \P3in\Repositories\GroupsRepository::class,
-            \P3in\Interfaces\UserGroupsRepositoryInterface::class => \P3in\Repositories\UserGroupsRepository::class,
-            \P3in\Interfaces\GalleriesRepositoryInterface::class => \P3in\Repositories\GalleriesRepository::class,
-            \P3in\Interfaces\GalleryPhotosRepositoryInterface::class => \P3in\Repositories\GalleryPhotosRepository::class,
-            \P3in\Interfaces\GalleryVideosRepositoryInterface::class => \P3in\Repositories\GalleryVideosRepository::class,
-            \P3in\Interfaces\MenusRepositoryInterface::class => \P3in\Repositories\MenusRepository::class,
-            \P3in\Interfaces\WebsitesRepositoryInterface::class => \P3in\Repositories\WebsitesRepository::class,
-            \P3in\Interfaces\WebsiteRedirectsRepositoryInterface::class => \P3in\Repositories\WebsiteRedirectsRepository::class,
-            \P3in\Interfaces\PagesRepositoryInterface::class => \P3in\Repositories\PagesRepository::class,
-            \P3in\Interfaces\WebsitePagesRepositoryInterface::class => \P3in\Repositories\WebsitePagesRepository::class,
-            \P3in\Interfaces\PageContentRepositoryInterface::class => \P3in\Repositories\PageContentRepository::class,
-            \P3in\Interfaces\WebsiteMenusRepositoryInterface::class => \P3in\Repositories\WebsiteMenusRepository::class,
-        ];
-
-        foreach ($models as $interface => $repo) {
-            $this->app->bind(
-                $interface, $repo
-            );
-        }
-
-    }
-
-    private function bindToRoute()
+    // @TODO: once we figure out this functionality once and for all, we can move the method into BaseServiceProvider and just store the array here.
+    public function bindToRoute()
     {
         // @TODO: sort out Route::bind vs. Route::model.
         foreach ([

@@ -63,7 +63,7 @@ class AddDebug
 
         $this->logged['queries'] = \DB::getQueryLog();
 
-        // $content['debug'] = $this->logged;
+        $content['debug'] = $this->logged;
 
         return $response->$rtn_method($content);
     }

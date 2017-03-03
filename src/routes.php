@@ -46,7 +46,7 @@ Route::group([
 // Public Front-end website endpoints
 Route::group([
     'namespace' => 'P3in\Controllers',
-    'middleware' => ['web', 'ValidateWebsite'],
+    'middleware' => ['web'],
 ], function ($router) {
     $router->group([
         'prefix' => 'content',
