@@ -42,13 +42,13 @@ class PilotIoServiceProvider extends ServiceProvider
     {
         \Log::info('Running CMS provider');
 
+        $this->app['router']->middleware('ValidateWebsite', ValidateWebsite::class);
+
         $this->registerDependentPackages();
 
         $this->registerObservers();
 
         $this->bindInterfacesToRepos();
-
-        $this->app['router']->middleware('validateWebsite', ValidateWebsite::class);
 
         // @TODO: currently a mix of views and stubs. should be better organized/split.
         $this->app['view']->addNamespace('cms', realpath(__DIR__.'/../Templates'));
