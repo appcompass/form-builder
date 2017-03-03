@@ -5,7 +5,7 @@ namespace P3in\Models;
 use Cache;
 use Exception;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Tymon\JWTAuth\Contracts\JWTSubject as AuthenticatableUserContract;
+// use Tymon\JWTAuth\Contracts\JWTSubject as AuthenticatableUserContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Auth\Authenticatable;
@@ -25,7 +25,7 @@ use P3in\Traits\HasProfileTrait;
 
 class User extends ModularBaseModel implements
     AuthenticatableContract,
-    AuthenticatableUserContract,
+    // AuthenticatableUserContract,
     AuthorizableContract,
     CanResetPasswordContract
 {
@@ -238,20 +238,20 @@ class User extends ModularBaseModel implements
         return $this->system_user;
     }
 
-    public function getJWTIdentifier()
-    {
-        return $this->getKey();
-    }
+    // public function getJWTIdentifier()
+    // {
+    //     return $this->getKey();
+    // }
 
-    public function getJWTCustomClaims()
-    {
-        return [
-             'user' => [
-                'id' => $this->id,
-                'name' => $this->full_name,
-             ]
-        ];
-    }
+    // public function getJWTCustomClaims()
+    // {
+    //     return [
+    //          'user' => [
+    //             'id' => $this->id,
+    //             'name' => $this->full_name,
+    //          ]
+    //     ];
+    // }
 
     /**
      *  Get/Set user's Avatar
