@@ -16,6 +16,7 @@ class PilotIoModule extends BaseModule
         'Public/components/FormBuilder' => 'cp_form_fields',
     ];
 
+    // @TODO: programatically run: php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\JWTAuthServiceProvider"
     public function __construct()
     {
         // \Log::info('Loading <Cp> Module');

@@ -17,13 +17,14 @@
         "pusher/pusher-php-server": "~2.0",
         "league/flysystem-sftp": "~1.0",
         "guzzlehttp/guzzle": "~6.0",
-        "tymon/jwt-auth": "0.5.*",
+        "tymon/jwt-auth": "dev-develop",
         "laravel/passport": "^1.0",
         "intervention/image": "^2.3",
         "facebook/graph-sdk": "^5.4",
         "herzult/php-ssh": "^1.1",
         "p3in/modular": "2.*"
     },
+    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
       "P3in\\": "src/modules"
