@@ -8,7 +8,7 @@
         }
     ],
     "require": {
-        "php": ">=7.1.0",
+        "php": ">=7.0.0",
         "laravelcollective/remote": "5.*",
         "langemike/laravel5-less": "~1.0",
         "chumper/zipper": "0.6.x",
