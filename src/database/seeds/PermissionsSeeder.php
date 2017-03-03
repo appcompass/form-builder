@@ -16,8 +16,8 @@ class PermissionsSeeder extends Seeder
      */
     public function run()
     {
-        // DB::statement('TRUNCATE permissions CASCADE');
-        // DB::statement("DELETE FROM forms WHERE name = 'groups'");
+        DB::statement('TRUNCATE permissions CASCADE');
+        DB::statement("DELETE FROM forms WHERE name = 'groups'");
 
         FormBuilder::new('groups', function (FormBuilder $builder) {
             $builder->string('Group Name', 'name')->list()->validation(['required'])->sortable()->searchable();

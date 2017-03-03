@@ -3,50 +3,49 @@
 namespace P3in\Requests;
 
 use Illuminate\Foundation\Http\FormRequest as BaseFormRequest;
-use Illuminate\Http\Request;
 use \Illuminate\Validation\Validator;
+use Illuminate\Http\Request;
 use P3in\Models\Form;
 use Route;
 
 class FormRequest extends BaseFormRequest
 {
 
+
     public function authorize()
     {
         return true;
     }
 
+    /**
+     * Fetch form rules based on resource name
+     *
+     * @param      \Illuminate\Http\Request  $request  The request
+     *
+     * @return     array                     ( description_of_the_return_value )
+     */
     public function rules(Request $request)
     {
         $form = Form::byResource(Route::current()->getName())->first();
 
-        if ($form) {
+        if (count($request->allFiles())) {
 
-            \Log::info($form->rules());
+            // @TODO this would be the ideal spot to
+            //   - upload a file
+            //   - append file path to the request
+
+        }
+
+        if ($form && in_array($request->getMethod(), ['POST', 'PUT'])) {
 
             return $form->rules();
 
         } else {
 
-            \Log::info('No validation found for resource ' . Route::current()->getName());
-
             return [];
 
         }
 
-    }
-
-    public function withValidator(Validator $validator)
-    {
-        // return $validator->errors();
-
-        // dd($validator->fails());
-
-        if ($validator->fails()) {
-
-            return ['errors' => $validator->errors()->all()];
-
-        }
     }
 
 }

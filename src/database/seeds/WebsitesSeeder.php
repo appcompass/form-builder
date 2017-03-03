@@ -59,7 +59,7 @@ class WebsitesSeeder extends Seeder
                     ->parent()
                 ->add(['title' => 'Media Management', 'alt' => 'Media Management'], 3)->sub()
                     ->add($galleries, 1)->icon('camera')->sub()
-                        ->add(['url' => '/photos', 'title' => 'Photos', 'alt' => 'Photos'])
+                        // ->add(['url' => '/photos', 'title' => 'Photos', 'alt' => 'Photos'])
                         ->parent()
                     ->parent()
                 ->add(['title' => 'Settings', 'alt' => 'Settings'], 4)->sub()
@@ -82,8 +82,8 @@ class WebsitesSeeder extends Seeder
                 ->sortable()
                 ->searchable()
                 ->dynamic([
-                    ['id' => 'http', 'label' => 'Plain (HTTP)'],
-                    ['id' => 'https', 'label' => 'Secure (HTTPS)']
+                    ['index' => 'http', 'label' => 'Plain (HTTP)'],
+                    ['index' => 'https', 'label' => 'Secure (HTTPS)']
                 ])
                 ->help('Website Schema. We recommend website to be served using HTTPS');
             $builder->string('Host', 'host')
@@ -97,14 +97,14 @@ class WebsitesSeeder extends Seeder
                 $builder->select('Header', 'header')
                     ->dynamic(Section::class, function(FieldSource $source) {
                         $source->where('type', 'header');
-                        $source->select(['id', 'name AS label']);
+                        $source->select(['id AS index', 'name AS label']);
                     })
                     ->validation(['required'])
                     ->help('Please select a Header');
                 $builder->select('Footer', 'footer')
                     ->dynamic(Section::class, function(FieldSource $source) {
                         $source->where('type', 'footer');
-                        $source->select(['id', 'name AS label']);
+                        $source->select(['id AS index', 'name AS label']);
                     })
                     ->validation(['required'])
                     ->help('Please select a Footer');
@@ -115,6 +115,10 @@ class WebsitesSeeder extends Seeder
                         ->validation(['required']);
                 });
             });
+
+            // @NOTE another valid approach is
+            // $builder->string('Title', 'config.meta.title')
+
             $builder->fieldset('Meta Data', 'config.meta', function(FormBuilder $builder) {
                 $builder->string('Title', 'title')
                     ->validation(['required'])
@@ -163,6 +167,7 @@ class WebsitesSeeder extends Seeder
         // DB::statement("DELETE FROM forms WHERE name = 'pages'");
 
         $form = FormBuilder::new('pages', function (FormBuilder $builder) {
+            $builder->editor('Page');
             $builder->string('Page Title', 'title')
                 ->list()
                 ->validation(['required'])
@@ -175,19 +180,10 @@ class WebsitesSeeder extends Seeder
                 ->dynamic(\P3in\Models\Page::class, function(FieldSource $source) {
                     $source->limit(4);
                     $source->where('website_id', \P3in\Models\Website::whereHost(env('ADMIN_WEBSITE_HOST'))->first()->id);
-                    $source->select(['id', 'title AS label']);
+                    $source->select(['id AS index', 'title AS label']);
                 });
         })->linkToResources(['pages.show', 'websites.pages.index', 'websites.pages.create', 'websites.pages.show'])
             ->getForm();
-
-        WebsiteBuilder::edit($cp->id)->linkForm($form);
-
-        // DB::statement("DELETE FROM forms WHERE name = 'page-content-editor'");
-
-        $form = FormBuilder::new('page-content-editor', function (FormBuilder $builder) {
-            $builder->pageEditor('Page Editor', 'page-editor')->list(false);
-        })->linkToResources(['pages.contents.index'])
-        ->getForm();
 
         WebsiteBuilder::edit($cp->id)->linkForm($form);
 
@@ -258,7 +254,7 @@ class WebsitesSeeder extends Seeder
             $builder->select('Disk Instance', 'type_id')
                 ->list(false)
                 ->dynamic(\P3in\Models\StorageType::class, function(FieldSource $source) {
-                    $source->select(['id', 'name AS label']);
+                    $source->select(['id AS index', 'name AS label']);
                 })->required();
             // @TODO this is one way, but validation has issues (too long to explain here)
             // $builder->string('Root', 'config.root')->list()->sortable()->searchable()->required();

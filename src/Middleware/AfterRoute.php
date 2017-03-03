@@ -25,7 +25,7 @@ class AfterRoute
         $methods = ['GET'];
 
         // resolve form by uri
-        $form = Form::byResource($route->getName());
+        $form = Form::byResource($route->getName())->first();
 
         // get response
         $response = $next($request);
@@ -34,8 +34,8 @@ class AfterRoute
 
             $response->setContent([
                 'collection' => $response->getOriginalContent(),
-                'edit' => $form->toEdit()->first(),
-                'list' => $form->toList()->first()
+                'edit' => $form ? $form->render('edit') : null,
+                'list' => $form ? $form->render('list') : null
             ]);
         }
 

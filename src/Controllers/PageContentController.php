@@ -3,7 +3,7 @@
 namespace P3in\Controllers;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
+use P3in\Requests\FormRequest;
 use P3in\Interfaces\PageContentRepositoryInterface;
 // use P3in\Models\Page;
 // use P3in\Models\PageSectionContent;
@@ -16,7 +16,7 @@ class PageContentController extends AbstractChildController
         $this->repo = $repo;
     }
 
-    public function index(Request $request, Model $parent)
+    public function index(FormRequest $request, Model $parent)
     {
         return [
             'data' => $parent->buildContentTree(true),
@@ -24,7 +24,7 @@ class PageContentController extends AbstractChildController
         ];
     }
 
-    public function update(Request $request, Model $parent, Model $model)
+    public function update(FormRequest $request, Model $parent, Model $model)
     {
         if ($model->source) {
 
@@ -53,7 +53,7 @@ class PageContentController extends AbstractChildController
      *
      * @return     array   ( description_of_the_return_value )
      */
-    public function show(Request $request, Model $parent, Model $model)
+    public function show(FormRequest $request, Model $parent, Model $model)
     {
         return $model->edit();
     }

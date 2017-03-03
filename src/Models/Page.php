@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use P3in\Interfaces\Linkable;
 use P3in\Models\Layout;
-use P3in\Observers\PageObserver;
 use P3in\Models\PageSectionContent;
 use P3in\Models\Section;
 use P3in\Models\Website;
@@ -35,13 +34,6 @@ class Page extends Model implements Linkable
     protected $casts = [
         'meta' => 'object',
     ];
-
-
-    protected static function boot()
-    {
-        static::observe(new PageObserver);
-        parent::boot();
-    }
 
     /**
      * website
@@ -180,7 +172,7 @@ class Page extends Model implements Linkable
      */
     public function getFullUrlAttribute()
     {
-        return $this->website->url.$this->url;
+        return $this->website->url . $this->url;
     }
 
     /**
@@ -256,6 +248,26 @@ class Page extends Model implements Linkable
             $child->url = $child->buildUrl();
 
             $child->save();
+        }
+    }
+
+    /**
+     * Delete this and i'll fucking kill you
+     *
+     * @param      <type>  $slug   The slug
+     */
+    public function setSlugAttribute($slug)
+    {
+        $this->attributes['slug'] = $slug;
+
+        $this->attributes['url'] = $this->buildUrl();
+
+        if ($this->exists) {
+
+            $this->save();
+
+            $this->updateChildrenUrl();
+
         }
     }
 

@@ -9,7 +9,7 @@ use P3in\Models\StorageType;
 use P3in\Models\Form;
 use DB;
 
-class CmsModuleDatabaseSeeder extends Seeder
+class PilotIoModuleDatabaseSeeder extends Seeder
 {
     /**
      * Run the database seeds.

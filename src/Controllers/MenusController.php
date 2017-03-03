@@ -2,12 +2,12 @@
 
 namespace P3in\Controllers;
 
-use Illuminate\Http\Request;
 use P3in\Interfaces\MenusRepositoryInterface;
-use P3in\Models\Link;
-use P3in\Models\Form;
+use Illuminate\Database\Eloquent\Model;
 use P3in\Requests\FormRequest;
 use P3in\Models\MenuItem;
+use P3in\Models\Link;
+use P3in\Models\Form;
 
 class MenusController extends AbstractController
 {
@@ -16,7 +16,7 @@ class MenusController extends AbstractController
         $this->repo = $repo;
     }
 
-    public function show($model)
+    public function show(FormRequest $request, Model $model)
     {
         return $model->render();
     }
@@ -46,7 +46,7 @@ class MenusController extends AbstractController
      *
      * @return     <type>                    The form.
      */
-    public function getForm(Request $request, $form)
+    public function getForm(FormRequest $request, $form)
     {
         return \P3in\Models\FormButler::get($form);
     }
@@ -56,7 +56,7 @@ class MenusController extends AbstractController
      *
      * @param      \Illuminate\Http\Request  $request  The request
      */
-    public function storeForm(Request $request, $form_name)
+    public function storeForm(FormRequest $request, $form_name)
     {
         return \P3in\Models\FormButler::store($form_name, $request->all());
     }
@@ -65,7 +65,7 @@ class MenusController extends AbstractController
      * @TODO Deletes a Link, not a menu! (those are deleted via websiteMenusController)
      * prob having a MenuLinks Controller would be more appropriate
      */
-    public function deleteLink(Request $request, $id)
+    public function deleteLink(FormRequest $request, $id)
     {
         $link = Link::findOrFail($id);
 

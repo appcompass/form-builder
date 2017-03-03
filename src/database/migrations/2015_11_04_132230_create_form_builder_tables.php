@@ -3,8 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use P3in\Models\StorageType;
-use P3in\Models\StorageConfig;
 
 class CreateFormBuilderTables extends Migration
 {
@@ -41,6 +39,8 @@ class CreateFormBuilderTables extends Migration
             $table->string('name')->index();
             $table->string('label');
             $table->string('type');
+            $table->boolean('to_list')->default(false); // should field show up in list view?
+            $table->boolean('to_edit')->default(true); // should the field show up in edit view? default true
             $table->string('help')->nullable(); // help text
             $table->json('config')->nullable();
             $table->text('content')->nullable();

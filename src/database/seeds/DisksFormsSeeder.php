@@ -24,6 +24,7 @@ class DisksFormsSeeder extends Seeder
         FormBuilder::new('LocalStorage', function (FormBuilder $fb) {
             $fb->string('Name', 'name')->validation(['required']);
             $fb->string('Path', 'root')->validation(['required']);
+            $fb->string('Public URL', 'url')->validation(['required']);
         })->setOwner(StorageType::whereName('local')->first());
 
         FormBuilder::new('SftpStorage', function (FormBuilder $fb) {
@@ -34,6 +35,7 @@ class DisksFormsSeeder extends Seeder
             $fb->string('Password', 'password')->validation(['required_without:privateKey']);
             $fb->string('Private Key', 'privateKey')->validation(['required_without:password']);
             $fb->string('Path', 'root')->validation(['required']);
+            $fb->string('Public URL', 'url')->validation(['required']);
             $fb->boolean('Directory Permissions', 'directoryPerm');
             $fb->string('Timeout', 'timeout');
         })->setOwner(StorageType::whereName('sftp')->first());

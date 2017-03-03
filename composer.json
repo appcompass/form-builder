@@ -14,15 +14,20 @@
         }
     ],
     "require": {
-        "php": ">=5.5.9",
-        "laravelcollective/html": "5.*",
+        "php": ">=7.1.0",
         "laravelcollective/remote": "5.*",
         "langemike/laravel5-less": "~1.0",
         "chumper/zipper": "0.6.x",
         "google/recaptcha": "~1.1",
         "roumen/sitemap": "2.6.*",
         "pusher/pusher-php-server": "~2.0",
-        "p3in/modular": "dev-master"
+        "guzzlehttp/guzzle": "~6.0",
+        "tymon/jwt-auth": "dev-develop",
+        "laravel/passport": "^1.0",
+        "intervention/image": "^2.3",
+        "facebook/graph-sdk": "^5.4",
+        "herzult/php-ssh": "^1.1",
+        "p3in/modular": "dev-develop"
     },
     "autoload": {
         "psr-4": {
