@@ -22,7 +22,7 @@
         "intervention/image": "^2.3",
         "facebook/graph-sdk": "^5.4",
         "herzult/php-ssh": "^1.1",
-        "p3in/modular": "dev-develop"
+        "p3in/modular": "2.*"
     },
     "autoload": {
         "psr-4": {
