@@ -93,26 +93,26 @@ class PilotIoServiceProvider extends ServiceProvider
     private function bindInterfacesToRepos()
     {
         $models = [
-            'Users',
-            'UserPermissions',
-            'Permissions',
-            'Groups',
-            'UserGroups',
-            'Galleries',
-            'GalleryPhotos',
-            'GalleryVideos',
-            'Menus',
-            'Websites',
-            'WebsiteRedirects',
-            'Pages',
-            'WebsitePages',
-            'PageContent',
-            'WebsiteMenus'
+            \P3in\Interfaces\UsersRepositoryInterface::class => \P3in\Repositories\UsersRepository::class,
+            \P3in\Interfaces\UserPermissionsRepositoryInterface::class => \P3in\Repositories\UserPermissionsRepository::class,
+            \P3in\Interfaces\PermissionsRepositoryInterface::class => \P3in\Repositories\PermissionsRepository::class,
+            \P3in\Interfaces\GroupsRepositoryInterface::class => \P3in\Repositories\GroupsRepository::class,
+            \P3in\Interfaces\UserGroupsRepositoryInterface::class => \P3in\Repositories\UserGroupsRepository::class,
+            \P3in\Interfaces\GalleriesRepositoryInterface::class => \P3in\Repositories\GalleriesRepository::class,
+            \P3in\Interfaces\GalleryPhotosRepositoryInterface::class => \P3in\Repositories\GalleryPhotosRepository::class,
+            \P3in\Interfaces\GalleryVideosRepositoryInterface::class => \P3in\Repositories\GalleryVideosRepository::class,
+            \P3in\Interfaces\MenusRepositoryInterface::class => \P3in\Repositories\MenusRepository::class,
+            \P3in\Interfaces\WebsitesRepositoryInterface::class => \P3in\Repositories\WebsitesRepository::class,
+            \P3in\Interfaces\WebsiteRedirectsRepositoryInterface::class => \P3in\Repositories\WebsiteRedirectsRepository::class,
+            \P3in\Interfaces\PagesRepositoryInterface::class => \P3in\Repositories\PagesRepository::class,
+            \P3in\Interfaces\WebsitePagesRepositoryInterface::class => \P3in\Repositories\WebsitePagesRepository::class,
+            \P3in\Interfaces\PageContentRepositoryInterface::class => \P3in\Repositories\PageContentRepository::class,
+            \P3in\Interfaces\WebsiteMenusRepositoryInterface::class => \P3in\Repositories\WebsiteMenusRepository::class,
         ];
 
-        foreach ($models as $model) {
+        foreach ($models as $interface => $repo) {
             $this->app->bind(
-                '\\P3in\\Interfaces\\' . $model . 'RepositoryInterface', '\\P3in\\Repositories\\' . $model . 'Repository'
+                $interface, $repo
             );
         }
 
