@@ -291,7 +291,7 @@ class WebsiteBuilder
                     $components[] = $file['filename'];
                 }
             }
-            $components_import_file = view('cms::components', [
+            $components_import_file = view('pilot-io::components', [
                 'components' => $components,
             ])->render();
 

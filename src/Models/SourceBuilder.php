@@ -42,6 +42,7 @@ class SourceBuilder
             // build the actual query
             $builder = $instance->parseCriteria($field_data->criteria);
 
+            // looks like toArray screws it up if you're not using a numeric id
             return $builder->get()->toArray();
 
         }
@@ -92,9 +93,9 @@ class SourceBuilder
      *
      * @return     <type>  ( description_of_the_return_value )
      */
-    public function select()
+    public function select($what)
     {
-        return $this->builder->select(func_get_args());
+        return $this->builder->select(array_values(func_get_args()));
     }
 
     /**

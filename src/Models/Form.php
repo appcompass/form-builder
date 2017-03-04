@@ -55,21 +55,28 @@ class Form extends Model
      *
      * @return     <type>  ( description_of_the_return_value )
      */
-    public function render()
-    {
-        return $this->buildTree($this->fields);
-    }
-
-    /**
-     * Returns a array representation of the object.
-     *
-     * @return     <type>  String representation of the object.
-     */
-    public function toArray()
+    public function render($mode = null)
     {
         $form = $this->attributes;
 
-        $form['fields'] = $this->render();
+        $fields = null;
+
+        if ($mode == 'edit') {
+
+            $fields = $this->fields()->where('to_edit', true)->get();
+
+
+        } else if ($mode == 'list') {
+
+            $fields = $this->fields()->where('to_list', true)->get();
+
+        } else {
+
+            $fields = $this->fields;
+
+        }
+
+        $form['fields'] = $this->buildTree($fields);
 
         return $form;
     }
@@ -108,34 +115,6 @@ class Form extends Model
         return $query->whereHas('resources', function (Builder $query) use ($resource_name) {
             return $query->where('resource', $resource_name);
         });
-    }
-
-    /**
-     *
-     */
-    public function scopeToList(Builder $query)
-    {
-        if (isset($this->id)) {
-            $query->where('id', $this->id);
-        }
-        return $query->with(['fields' => function($q){
-            $q->byConfig('to_list', true);
-        }]);
-    }
-
-    /**
-     *
-     */
-    public function scopeToEdit(Builder $query)
-    {
-        // we often wanna call that on an instanced model
-        if (isset($this->id)) {
-            $query->where('id', $this->id);
-        }
-
-        return $query->with(['fields' => function($q){
-            $q->byConfig('to_edit', true);
-        }]);
     }
 
     /**
@@ -184,7 +163,7 @@ class Form extends Model
         $rules = [];
 
         // we only care about to_edit rules
-        foreach($this->toEdit()->first()->fields as $field) {
+        foreach($this->fields()->where('to_edit', true)->get() as $field) {
 
             if (!is_null($field->validation)) {
 

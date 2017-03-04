@@ -7,34 +7,22 @@
             "email": "support@p3in.com"
         }
     ],
-    "repositories": [
-        {
-            "type": "git",
-            "url": "git@github.com:plus3interactive/modular.git"
-        }
-    ],
     "require": {
-        "php": ">=7.1.0",
-        "p3in/modular": "dev-refactor",
-        "league/flysystem-sftp": "~1.0",
-        "guzzlehttp/guzzle": "~6.0",
-        
+        "php": ">=7.0.0",
         "laravelcollective/remote": "5.*",
         "langemike/laravel5-less": "~1.0",
         "chumper/zipper": "0.6.x",
         "google/recaptcha": "~1.1",
         "roumen/sitemap": "2.6.*",
-        "tymon/jwt-auth": "dev-develop",
         "pusher/pusher-php-server": "~2.0",
+        "league/flysystem-sftp": "~1.0",
+        "guzzlehttp/guzzle": "~6.0",
+        "tymon/jwt-auth": "dev-develop",
         "laravel/passport": "^1.0",
         "intervention/image": "^2.3",
         "facebook/graph-sdk": "^5.4",
-        "deployer/deployer": "^4.1",
-        "herzult/php-ssh": "^1.1"
+        "herzult/php-ssh": "^1.1",
+        "p3in/modular": "2.*"
     },
-    "autoload": {
-        "psr-4": {
-      "P3in\\": "src/modules"
-        }
-    }
+    "minimum-stability": "dev"
 }

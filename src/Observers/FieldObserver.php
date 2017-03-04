@@ -8,12 +8,8 @@ use Illuminate\Database\Eloquent\Scope;
 
 class FieldObserver
 {
-    public function creating(Model $model)
+    public function saving(Model $model)
     {
-        // Most fields are editable.
-        $model->config = [
-            'to_edit' => true
-        ];
     }
 
 }

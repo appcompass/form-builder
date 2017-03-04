@@ -36,7 +36,7 @@ class TemplateRenderer
      */
     public function buildTemplate(array $sections = null, array $imports = null)
     {
-        return view('cms::page', [
+        return view('pilot-io::page', [
             'layout' => $this->layout,
             'sections' => $sections ?? $this->sections,
             'imports' => $imports ?? $this->imports,

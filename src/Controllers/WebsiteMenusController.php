@@ -3,7 +3,7 @@
 namespace P3in\Controllers;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
+use P3in\Requests\FormRequest;
 use P3in\Interfaces\WebsiteMenusRepositoryInterface;
 use P3in\Models\Link;
 use P3in\Models\MenuItem;
@@ -17,7 +17,7 @@ class WebsiteMenusController extends AbstractChildController
         $this->repo = $repo;
     }
 
-    public function update(Request $request, Model $parent, Model $menu)
+    public function update(FormRequest $request, Model $parent, Model $menu)
     {
         return MenuBuilder::update($menu, $request->all());
     }

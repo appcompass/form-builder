@@ -5,7 +5,6 @@ namespace P3in\Models;
 use Illuminate\Database\Eloquent\Model;
 use P3in\Models\FieldSource;
 use P3in\Models\Scopes\OrderScope;
-use P3in\Observers\FieldObserver;
 use P3in\Traits\HasDynamicContent;
 use P3in\Traits\HasJsonConfigFieldTrait;
 
@@ -44,7 +43,6 @@ class Field extends Model
     protected static function boot()
     {
         static::addGlobalScope(new OrderScope('id', 'asc'));
-        static::observe(FieldObserver::class);
 
         parent::boot();
     }
@@ -112,6 +110,16 @@ class Field extends Model
     }
 
     /**
+     * Make sure config doesn't return empty
+     *
+     * @return     array  The configuration attribute.
+     */
+    public function getConfigAttribute($value)
+    {
+        return $value ?? [];
+    }
+
+    /**
      * Sets the parent.
      *
      * @param      Field  $field  The field
@@ -126,7 +134,7 @@ class Field extends Model
      */
     public function edit($show = true)
     {
-        $this->setConfig('to_edit', $show);
+        $this->update(['to_edit' => $show]);
 
         return $this;
     }
@@ -136,7 +144,7 @@ class Field extends Model
      */
     public function list($show = true)
     {
-        $this->setConfig('to_list', $show);
+        $this->update(['to_list' => $show]);
 
         return $this;
     }

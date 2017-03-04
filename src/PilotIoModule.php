@@ -5,9 +5,9 @@ namespace P3in;
 use P3in\BaseModule;
 use P3in\PublishFiles;
 
-class CmsModule extends BaseModule
+class PilotIoModule extends BaseModule
 {
-    public $module_name = 'cms';
+    public $module_name = 'pilot-io';
 
     protected $publishes = [
         // publishes to disk instances by name.
@@ -16,6 +16,7 @@ class CmsModule extends BaseModule
         'Public/components/FormBuilder' => 'cp_form_fields',
     ];
 
+    // @TODO: programatically run: php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\JWTAuthServiceProvider"
     public function __construct()
     {
         // \Log::info('Loading <Cp> Module');

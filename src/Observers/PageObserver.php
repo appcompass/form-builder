@@ -10,7 +10,8 @@ class PageObserver
 {
     public function saving(Model $model)
     {
-        $model->url = $model->buildUrl();
+        // @NOTE url is protected (and it has to be) so it doesn't allow us to edit it here
+        // $model->url = $model->buildUrl();
     }
 
     public function saved(Model $model)

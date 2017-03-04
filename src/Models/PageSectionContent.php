@@ -272,8 +272,12 @@ class PageSectionContent extends Model
 
         }
 
+        $website = $this->page->website;
+
         return [
             'form' => $this->section->form ? $this->section->form->render() : null,
+            'gallery' => $website->gallery,
+            'storage' => $website->storage,
             'content' => $content
         ];
     }

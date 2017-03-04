@@ -3,6 +3,7 @@
 namespace P3in\Repositories;
 
 use P3in\Interfaces\GalleryPhotosRepositoryInterface;
+use P3in\Requests\FormRequest;
 use P3in\Models\Gallery;
 use P3in\Models\Photo;
 use P3in\Models\User;
@@ -12,7 +13,7 @@ class GalleryPhotosRepository extends AbstractChildRepository implements Gallery
 
     // protected $view = 'Card';
 
-    // protected $with = ['user'];
+    protected $with = ['user'];
 
     // models required in order to persist
     protected $requires = [

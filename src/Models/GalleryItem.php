@@ -5,7 +5,6 @@ namespace P3in\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use P3in\Models\Gallery;
-use P3in\Observers\GalleryItemObserver;
 use P3in\Models\Scopes\GalleryItemScope;
 use P3in\Models\User;
 use P3in\Traits\HasPermissions;
@@ -47,7 +46,6 @@ abstract class GalleryItem extends Model
     protected static function boot()
     {
         static::addGlobalScope(new GalleryItemScope);
-        static::observe(new GalleryItemObserver);
         parent::boot();
     }
 

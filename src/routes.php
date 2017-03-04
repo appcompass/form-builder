@@ -24,6 +24,7 @@ Route::group([
     $router->resource('users.permissions', UserPermissionsController::class);
     $router->resource('galleries', GalleriesController::class);
     $router->resource('galleries.photos', GalleryPhotosController::class);
+    $router->post('galleries/{gallery}/photos/sort', 'GalleryPhotosController@sort');
     $router->resource('galleries.videos', GalleryVideosController::class);
 
     $router->delete('menus/links/{link_id}', 'MenusController@deleteLink');
@@ -45,7 +46,7 @@ Route::group([
 // Public Front-end website endpoints
 Route::group([
     'namespace' => 'P3in\Controllers',
-    'middleware' => ['web', 'validateWebsite'],
+    'middleware' => ['web'],
 ], function ($router) {
     $router->group([
         'prefix' => 'content',

@@ -7,6 +7,7 @@ use P3in\Builders\FormBuilder;
 use P3in\Builders\MenuBuilder;
 use P3in\Models\Website;
 use P3in\Builders\WebsiteBuilder;
+use P3in\Models\FieldSource;
 
 use P3in\Models\User;
 
@@ -22,14 +23,17 @@ class GalleriesSeeder extends Seeder
             $builder->editor('Gallery');
             $builder->setListLayout('Card'); // @TODO options are currently hard coded in the UI, this defines the default view
             $builder->string('Gallery Name', 'name')->list()->validation(['required'])->sortable()->searchable();
-            $builder->file('Photo', 'photo')->list(false);
+            $builder->select('Disk Instance', 'galleryable.storage.name')->dynamic(\P3in\Models\StorageConfig::class, function(FieldSource $source) {
+                $source->select(['name AS index', 'name AS label']);
+            });
+            $builder->photo('Photo', 'photo')->list(false);
             $builder->string('Owner', 'user.email')->list()->edit(false);
         })->linkToResources(['galleries.index', 'galleries.show', 'galleries.create']);
 
         $form = FormBuilder::new('photos', function (FormBuilder $builder) {
             $builder->setListLayout('Card');
             $builder->string('Path', 'path')->list();
-            $builder->file('Photo', 'photo')->list(false);
+            $builder->photo('Photo', 'photo')->list(false)->validation(['image', 'required']);
             $builder->string('Photo Name', 'title')->list()->validation(['required'])->sortable()->searchable();
         })->linkToResources(['galleries.photos.index', 'galleries.photos.create', 'galleries.photos.show']);
             // ->getForm();

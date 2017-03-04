@@ -7,6 +7,7 @@ use Illuminate\Http\UploadedFile;
 use Intervention\Image\Facades\Image;
 use P3in\Interfaces\GalleryItemInterface;
 use P3in\Models\GalleryItem;
+use P3in\Models\User;
 
 class Photo extends GalleryItem implements GalleryItemInterface
 {
@@ -19,9 +20,9 @@ class Photo extends GalleryItem implements GalleryItemInterface
     /**
      * Attributes appendend by default
      */
-    protected $appends = ['dimensions', 'resolution'];
+    protected $appends = ['dimensions', 'resolution', 'url'];
 
-    protected $hidden = ['user'];
+    // protected $hidden = ['user'];
 
     public function getType()
     {
@@ -30,6 +31,17 @@ class Photo extends GalleryItem implements GalleryItemInterface
 
     public function apendStoragePath() {
         return date('m-y');
+    }
+
+    /**
+     * Gets the url attribute.
+     *
+     * @return     <type>  The url attribute.
+     */
+     // @NOTE: We must ALWAYS get Photo::with('storage') to avoid 1 query per record.  meaning, this is a @TODO: refactor.
+    public function getUrlAttribute()
+    {
+        return $this->getDisk()->url($this->path);
     }
 
     public function afterStorage()
