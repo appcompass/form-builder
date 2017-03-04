@@ -108,14 +108,10 @@ class PilotIoServiceProvider extends BaseServiceProvider
 
     public function register()
     {
-        \Log::info('Running CMS provider');
-
         $this->registerDependentPackages();
 
         // @TODO: currently a mix of views and stubs. should be better organized/split.
         $this->app['view']->addNamespace('pilot-io', realpath(__DIR__.'/../Templates'));
-
-
     }
 
     /**
@@ -131,6 +127,9 @@ class PilotIoServiceProvider extends BaseServiceProvider
         $loader = AliasLoader::getInstance();
 
         $loader->alias('Image', Image::class);
+        $loader->alias('User', User::class);
+        $loader->alias('Menu', Menu::class);
+        $loader->alias('Gallery', Gallery::class);
 
         //@TODO: we require the use of imagick, not sure we should force this though.
         Config::set(['image' => ['driver' => 'imagick']]);

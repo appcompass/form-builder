@@ -24,10 +24,5 @@
         "herzult/php-ssh": "^1.1",
         "p3in/modular": "2.*"
     },
-    "minimum-stability": "dev",
-    "autoload": {
-        "psr-4": {
-      "P3in\\": "src/modules"
-        }
-    }
+    "minimum-stability": "dev"
 }
