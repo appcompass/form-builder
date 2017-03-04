@@ -25,5 +25,10 @@
         "p3in/modular": "dev-develop",
         "p3in/disks-module": "dev-develop"
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "P3in\\": "src/"
+        }
+    }
 }
