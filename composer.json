@@ -23,7 +23,7 @@
         "facebook/graph-sdk": "^5.4",
         "herzult/php-ssh": "^1.1",
         "p3in/modular": "dev-develop",
-        "p3in/disk-module": "dev-develop"
+        "p3in/disks-module": "dev-develop"
     },
     "minimum-stability": "dev"
 }
