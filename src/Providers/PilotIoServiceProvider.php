@@ -39,8 +39,8 @@ class PilotIoServiceProvider extends BaseServiceProvider
      *
      * @var array
      */
-    // protected $middleware = [
-    // ];
+    protected $middleware = [
+    ];
 
     /**
      * The application's route middleware groups.
@@ -53,25 +53,25 @@ class PilotIoServiceProvider extends BaseServiceProvider
         ],
         'auth' => [
             \Illuminate\Auth\Middleware\Authenticate::class,
-            // 'jwt.refresh',
+            'jwt.refresh',
         ],
         'api' => [
             \P3in\Middleware\AfterRoute::class,
         ]
     ];
 
-    // /**
-    //  * The application's route middleware.
-    //  *
-    //  * These middleware may be assigned to groups or used individually.
-    //  *
-    //  * @var array
-    //  */
-    // protected $routeMiddleware = [
-    //     // 'jwt.auth' => Tymon\JWTAuth\Middleware\GetUserFromToken::class,
-    //     // 'jwt.refresh' => Tymon\JWTAuth\Middleware\RefreshToken::class,
+    /**
+     * The application's route middleware.
+     *
+     * These middleware may be assigned to groups or used individually.
+     *
+     * @var array
+     */
+    protected $routeMiddleware = [
+        'jwt.auth' => Tymon\JWTAuth\Middleware\GetUserFromToken::class,
+        'jwt.refresh' => Tymon\JWTAuth\Middleware\RefreshToken::class,
 
-    // ];
+    ];
 
     protected $observe = [
         FieldObserver::class => Field::class,
@@ -83,7 +83,7 @@ class PilotIoServiceProvider extends BaseServiceProvider
         PageObserver::class => Page::class,
     ];
 
-    protected $bind = [
+    protected $appBindings = [
         \P3in\Interfaces\UsersRepositoryInterface::class => \P3in\Repositories\UsersRepository::class,
         \P3in\Interfaces\UserPermissionsRepositoryInterface::class => \P3in\Repositories\UserPermissionsRepository::class,
         \P3in\Interfaces\PermissionsRepositoryInterface::class => \P3in\Repositories\PermissionsRepository::class,
@@ -101,9 +101,24 @@ class PilotIoServiceProvider extends BaseServiceProvider
         \P3in\Interfaces\WebsiteMenusRepositoryInterface::class => \P3in\Repositories\WebsiteMenusRepository::class,
     ];
 
+    protected $routeBindings = [
+        'user' => User::class,
+        'permission' => Permission::class,
+        'group' => Group::class,
+        'gallery' => Gallery::class,
+        'photo' => Photo::class,
+        'video' => Video::class,
+        'website' => Website::class,
+        'redirect' => Redirect::class,
+        'page' => Page::class,
+        'content' => PageSectionContent::class,
+        'section' => Section::class,
+        'menu' => Menu::class,
+    ];
+
     public function boot()
     {
-        $this->bindToRoute();
+
     }
 
     public function register()
@@ -126,38 +141,12 @@ class PilotIoServiceProvider extends BaseServiceProvider
 
         $loader = AliasLoader::getInstance();
 
-        $loader->alias('Image', Image::class);
-        $loader->alias('User', User::class);
-        $loader->alias('Menu', Menu::class);
-        $loader->alias('Gallery', Gallery::class);
+        // $loader->alias('Image', Image::class);
+        // $loader->alias('User', User::class);
+        // $loader->alias('Menu', Menu::class);
+        // $loader->alias('Gallery', Gallery::class);
 
         //@TODO: we require the use of imagick, not sure we should force this though.
         Config::set(['image' => ['driver' => 'imagick']]);
-    }
-
-    // @TODO: once we figure out this functionality once and for all, we can move the method into BaseServiceProvider and just store the array here.
-    public function bindToRoute()
-    {
-        // @TODO: sort out Route::bind vs. Route::model.
-        foreach ([
-            'user' => User::class,
-            'permission' => Permission::class,
-            'group' => Group::class,
-            'gallery' => Gallery::class,
-            'photo' => Photo::class,
-            'video' => Video::class,
-            'website' => Website::class,
-            'redirect' => Redirect::class,
-            'page' => Page::class,
-            'content' => PageSectionContent::class,
-            'section' => Section::class,
-            'menu' => Menu::class,
-        ] as $key => $model) {
-            Route::bind($key, function ($value) use ($model) {
-                return $model::findOrFail($value);
-            });
-
-            Route::model($key, $model);
-        }
     }
 }
