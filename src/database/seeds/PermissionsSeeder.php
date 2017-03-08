@@ -39,5 +39,19 @@ class PermissionsSeeder extends Seeder
             'description' => 'Guest Permission',
             'locked' => true,
         ]);
+
+        Permission::create([
+            'type' => 'media',
+            'label' => 'Media Editor',
+            'description' => 'Media Editor Permission',
+            'locked' => true // @TODO what's locked?
+        ]);
+
+        Permission::create([
+            'type' => 'content',
+            'label' => 'Content Creator/Editor',
+            'description' => 'Content Creator/Editor',
+            'locked' => true // @TODO what's locked?
+        ]);
     }
 }

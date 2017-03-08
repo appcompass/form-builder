@@ -35,7 +35,8 @@ class AfterRoute
             $response->setContent([
                 'collection' => $response->getOriginalContent(),
                 'edit' => $form ? $form->render('edit') : null,
-                'list' => $form ? $form->render('list') : null
+                'list' => $form ? $form->render('list') : null,
+                'abilities' => ['create', 'edit', 'destroy', 'index', 'show'] // @TODO show is per-item in the collection
             ]);
         }
 

@@ -30,8 +30,9 @@ class GroupsSeeder extends Seeder
             $builder->string('Created', 'created_at')->list()->edit(false)->validation(['required'])->sortable()->searchable();
         })->linkToResources(['permissions.index', 'permissions.show', 'permissions.create', 'permissions.store', 'permissions.update']);
 
-        Group::create(['name' => 'users', 'label' => 'users', 'description' => 'remove description, who cares', 'active' => true]);
-        Group::create(['name' => 'admins', 'label' => 'admins', 'description' => 'remove description, who cares', 'active' => true]);
+        Group::create(['name' => 'user', 'label' => 'User', 'description' => 'User exists', 'active' => true]);
+        Group::create(['name' => 'admin', 'label' => 'Admin', 'description' => 'Administrators', 'active' => true]);
+        Group::create(['name' => 'system', 'label' => 'System', 'description' => 'System users', 'active' => true]);
 
         //
         //  CP ADMINISTRATOR

@@ -18,7 +18,15 @@ class MenusController extends AbstractController
 
     public function show(FormRequest $request, Model $model)
     {
-        return $model->render();
+        $permisions = [];
+
+        if (\Auth::check()) {
+
+            $permissions = \Auth::user()->allPermissions();
+
+        }
+
+        return $model->render(false, $permissions);
     }
 
     // @TODO we only hit this on Link creation, menu creation must go through websites->menu

@@ -33,9 +33,9 @@ class User extends ModularBaseModel implements
         Authenticatable,
         Authorizable,
         CanResetPassword,
-        Notifiable,
-        HasPermissions,
-        HasProfileTrait
+        Notifiable
+        // HasPermissions
+        // HasProfileTrait
         ;
 
     /**
@@ -212,37 +212,20 @@ class User extends ModularBaseModel implements
     }
 
     /**
-     *  Is user root
+     * Gets the jwt identifier.
+     *
+     * @return     <type>  The jwt identifier.
      */
-    public function isRoot()
-    {
-        return Group::administrators()->users
-            ->contains($this->id);
-    }
-
-    /**
-     *  Is user a manager
-     *  @TODO isn't manager a bit too specific? maybe not
-     */
-    public function isManager()
-    {
-        return Group::managers()->users
-            ->contains($this->id);
-    }
-
-    /**
-     *  Whether current user a system user
-     */
-    public function isSystem()
-    {
-        return $this->system_user;
-    }
-
     public function getJWTIdentifier()
     {
         return $this->getKey();
     }
 
+    /**
+     * Gets the jwt custom claims.
+     *
+     * @return     array  The jwt custom claims.
+     */
     public function getJWTCustomClaims()
     {
         return [
@@ -253,113 +236,199 @@ class User extends ModularBaseModel implements
         ];
     }
 
-    /**
-     *  Get/Set user's Avatar
-     *
-     */
-    public function avatar(Photo $photo = null, $size = 48)
-    {
-        if (is_null($photo)) {
-            return "//www.gravatar.com/avatar/" . md5($this->email) . "?d=identicon&s={$size}";
-        }
-
-        // if (! Modular::isDef('photos')) {
-
-        //     $userEmail = \Auth::user()->email;
-
-        // }
-
-        // if (! is_null($photo)) {
-
-        //     if (! is_null($this->avatar)) {
-
-        //         $this->avatar()
-        //             ->first()
-        //             ->unlink();
-
-        //     }
-
-        //     $this->avatar()->save($photo);
-
-        // }
-
-        // return $this->morphOne(Photo::class, 'photoable');
-    }
-
     public static function scopeSystemUsers($query)
     {
         return $query->where('system', true)->orderBy('id', 'asc');
     }
+
     /**
       * Add current user to a group
+      *
+      * @param      mixed $group  The group
+      *
+      * @return     <type>  ( description_of_the_return_value )
       */
-    // public function addToGroup(Group $group)
-    // {
-    //     return $group->addUser($this);
-    // }
+    public function addToGroup($group)
+    {
+        if (is_int($group)) {
+
+            $group = Group::findOrFail($group);
+
+        } elseif (is_string($group)) {
+
+            $group = Group::whereName($group)->firstOrFail();
+
+        }
+
+        return $group->addUser($this);
+    }
 
     /**
       *  Remove current user from a group
       */
-    // public function removeFromGroup(Group $group)
-    // {
-    //     return $group->removeUser($this);
-    // }
+    public function removeFromGroup(Group $group)
+    {
+        return $group->removeUser($this);
+    }
+
+    /**
+     * Adds a permission to the user
+     */
+    // @TODO static methods on permission to avoid lookup here
+    public function grant($permission)
+    {
+        if (is_array($permission)) {
+
+            foreach($permission as $single_permission) {
+
+                $this->grant($single_permission);
+
+            }
+
+            return true;
+
+        } elseif (is_string($permission)) {
+
+            $permission = Permission::whereType($permission)->firstOrFail();
+
+        } elseif (is_int($permission)) {
+
+            $permission = Permission::findOrFail($permission);
+
+        }
+
+        return $permission->assignTo($this);
+    }
+
+    /**
+     * Revokes a user's permission
+     */
+    // @TODO static methods on permission to avoid lookup here
+    public function revoke($permission)
+    {
+        if (is_array($permission)) {
+
+            foreach($permission as $single_permission) {
+
+                $this->revoke($single_permission);
+
+            }
+
+            return true;
+
+        } elseif (is_string($permission)) {
+
+            $permission = Permission::whereType($permission)->firstOrFail();
+
+        } elseif (is_int($permission)) {
+
+            $permission = Permission::findOrFail($permission);
+
+        }
+
+        return $permission->revokeFrom($this);
+        // return $this->permissions()->detach($perm);
+    }
+
+    /**
+     * Determines if it has group.
+     *
+     * @param      <type>   $group  The group
+     *
+     * @return     boolean  True if has group, False otherwise.
+     */
+    public function hasGroup($group)
+    {
+        info('Checking for: ' . $group);
+
+        try {
+
+            if ($group instanceof Group) {
+
+                $group = $group->name;
+
+            } elseif (is_string($group)) {
+
+                $group = Group::whereName($group)->firstOrFail();
+
+            }
+
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
+            return false;
+
+        }
+
+        return $group->hasUser($this);
+
+    }
+
+    /**
+     * Allows for role/group matching using  is[name] pattern
+     *
+     * @param      <type>  $method  The method
+     * @param      <type>  $args    The arguments
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
+    public function __call($method, $args)
+    {
+
+        if (preg_match('/^is/', $method)) {
+
+
+            return $this->hasGroup(lcfirst(substr($method, 2)));
+
+        }
+
+        return parent::__call($method, $args);
+
+    }
 
     /**
      * Return all the permissions of the user
      *
      * @return array permission owned by the user
      */
-    // public function allPermissions()
-    // {
-
+    public function allPermissions()
+    {
         // @TODO  add getCacheKey or something, the id is overly non-specific. should return class_name . id . updated_at_timestamp
 
-        // return Cache::tags('user_permissions')->remember('user_'.$this->id.'_'.$this->updated_at, 1, function() {
+        return Cache::tags('user_permissions')->remember('user_'.$this->id.'_'.$this->updated_at, 1, function() {
+        // return Cache::remember('user_'.$this->id.'_'.$this->updated_at, 1, function() {
 
-            // $this->load(['groups.permissions' => function($query) { $query->where('active', true); }])
-            // $this->load('groups.permissions')
-            //     ->load('permissions');
+            $directly_owned = $this->permissions->pluck('id')->toArray();
 
-    //         $perms = collect($this->permissions->lists('type', 'id'));
+            // $all_permissions = array_unique(array_merge($this->getGroupsPermissions(), $directly_owned));
 
-    //         $this->groups
-    //             ->each(function($group) use($perms) {
-    //                 $group->permissions
-    //                     ->lists('type', 'id')
-    //                     ->each(function($perm, $key) use($perms) {
-    //                         $perms->push($perm);
-    //                     });
-    //         });
+            return array_unique(array_merge($this->getGroupsPermissions(), $directly_owned));
 
-    //         return $perms->unique();
+            // return Permission::whereIn('id', $all_permissions)->get()->toArray();
 
-    //     });
-
-    // }
+        });
+    }
 
     /**
-     * Adds a permission to the user
+     * Gets the groups permissions.
      */
-    // public function grantPermission(Permission $perm)
-    // {
-    //     if (!$this->permissions->contains($perm->id)) {
+    public function getGroupsPermissions()
+    {
+        // $this->load('groups.permissions');
 
-    //         return $this->permissions()->attach($perm);
+        $groups_permissions = [];
 
-    //     }
+        foreach($this->groups as $group) {
 
-    //     return false;
-    // }
+            $group_permissions = $group->permissions()
+                ->allRelatedIds()
+                ->toArray();
 
-    /**
-     * Revokes a user's permission
-     */
-    // public function revokePermission(Permission $perm)
-    // {
-    //     return $this->permissions()->detach($perm);
-    // }
+            $groups_permissions = array_merge($groups_permissions, $group_permissions);
+
+        }
+
+        return array_unique($groups_permissions);
+    }
 
     /**
      *  Check if user has a single permission

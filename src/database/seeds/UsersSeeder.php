@@ -36,6 +36,6 @@ class UsersSeeder extends Seeder
             'phone' => '',
             'password' => '',
             'system' => true,
-        ]);
+        ])->addToGroup('system');
     }
 }

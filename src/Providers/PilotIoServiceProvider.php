@@ -79,7 +79,7 @@ class PilotIoServiceProvider extends BaseServiceProvider
             Photo::class,
             Video::class
         ],
-        // PhotoObserver::class => Photo::class, //@TODO: old but possibly needed for Alerts? look into it when we get to Alerts.
+        PhotoObserver::class => Photo::class, //@TODO: old but possibly needed for Alerts? look into it when we get to Alerts.
         PageObserver::class => Page::class,
     ];
 
@@ -101,9 +101,18 @@ class PilotIoServiceProvider extends BaseServiceProvider
         \P3in\Interfaces\WebsiteMenusRepositoryInterface::class => \P3in\Repositories\WebsiteMenusRepository::class,
     ];
 
+    /**
+     * List of policies to bind
+     */
+    // protected $policies = [
+    //     GalleryItem::class => \P3in\Policies\PhotosPolicy::class
+    // ];
+
     public function boot()
     {
         $this->bindToRoute();
+
+        $this->registerPolicies();
     }
 
     public function register()
@@ -129,7 +138,10 @@ class PilotIoServiceProvider extends BaseServiceProvider
         $loader->alias('Image', Image::class);
         $loader->alias('User', User::class);
         $loader->alias('Menu', Menu::class);
+        $loader->alias('Group', Group::class);
+        $loader->alias('Perm', Permission::class);
         $loader->alias('Gallery', Gallery::class);
+        $loader->alias('Photo', Photo::class);
 
         //@TODO: we require the use of imagick, not sure we should force this though.
         Config::set(['image' => ['driver' => 'imagick']]);

@@ -112,66 +112,18 @@ class Menu extends Model
     /**
      * render
      */
-    public function render($clean = false)
+    public function render($clean = false, array $permissions = [])
     {
         if ($clean) {
-            $this
-                ->makeHidden('id')
-                ->makeHidden('website_id')
-                ->makeHidden('created_at');
+            $this->makeHidden(['id', 'website_id', 'crated_at']);
 
             $this->items->each(function ($item) {
-                $item
-                    ->makeHidden('id')
-                    ->makeHidden('menu_id')
-                    ->makeHidden('parent_id')
-                    ->makeHidden('req_perm')
-                    ->makeHidden('navigatable_id')
-                    ->makeHidden('navigatable_type')
-                    ->makeHidden('created_at')
-                    ;
+                $item->makeHidden(['id', 'menu_id', 'parent_id', 'req_perm', 'navigatable_id', 'navigatable_type', 'created_at']);
             });
         }
-        // return $this->mapTree($items);
-        return $this->buildTree($this->items);
+
+        return $this->buildTree($this->items, null, $permissions);
     }
-
-    /**
-     * Single-pass Tree Mapping from flat array
-     *
-     * @param      array  $dataset  The dataset
-     *
-     * @return     array  Nested Tree structure
-     */
-    // @TODO: Delete this, other method works just fine :)
-    // public function mapTree(array $dataset)
-    // {
-    //     $map = [];
-    //     $tree = [];
-
-    //     foreach ($dataset as $id => &$node) {
-    //         $current =& $map[$node['id']];
-
-    //         // @TODO better way to assign this? intersect_keys(array_flip) didn't work as expected
-    //         $current['id'] = $node['id'];
-    //         $current['parent_id'] = $node['parent_id'];
-    //         $current['title'] = $node['title'];
-    //         $current['url'] = $node['url'];
-    //         $current['new_tab'] = $node['new_tab'];
-    //         $current['clickable'] = $node['clickable'];
-    //         $current['icon'] = $node['icon'];
-
-    //         if ($node['parent_id'] == null) {
-    //             $tree[$node['id']] =& $current;
-    //         } else {
-    //             $map[$node['parent_id']]['children'][$node['id']] =& $current;
-    //         }
-    //     }
-
-    //     // dd(array_values_recursive($tree));
-
-    //     return $tree;
-    // }
 
     /**
      * Builds a menu tree recursively.
@@ -181,23 +133,37 @@ class Menu extends Model
      *
      * @return     array   The tree.
      */
-    private function buildTree(Collection &$items, $parent_id = null)
+    private function buildTree(Collection &$items, $parent_id = null, array $permissions = [])
     {
         $tree = [];
 
-        foreach ($items as &$node) {
-            if ($node->parent_id === $parent_id) {
-                $children = $this->buildTree($items, $node->id);
+        foreach ($items as $key => &$node) {
 
-                if ($children) {
-                    $node->children = $children;
+            if ($node->parent_id === $parent_id) {
+
+                $children = $this->buildTree($items, $node->id, $permissions);
+
+                $node->children = $children ?? [];
+
+                if ($node['req_perm']) {
+
+                    if (isset($permissions[0]) && $permissions[0] == '*') {
+
+                        $tree[] = $node;
+
+                    } elseif (in_array($node['req_perm'], $permissions)) {
+
+                        $tree[] = $node;
+
+                    }
+
                 } else {
-                    $node->children = [];
+
+                    $tree[] = $node;
+
                 }
 
-                $tree[] = $node;
-
-                unset($node); // mmm doesn't actually unset
+                unset($items[$key]);
             }
         }
 

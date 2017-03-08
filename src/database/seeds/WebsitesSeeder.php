@@ -37,7 +37,7 @@ class WebsitesSeeder extends Seeder
             $forms = $websiteBuilder->addPage('Forms', 'forms');
 
             $websiteBuilder->addMenu('main_nav')
-                ->add(['title' => 'Dashboard', 'url' => '/', 'alt' => ''], 0)
+                ->add(['title' => 'Dashboard', 'url' => '/', 'alt' => 'dashboard'], 0)
                 ->add(['title' => 'Users Management', 'alt' => 'Users Management'], 1)->sub()
                     ->add($users, 1)->icon('user')->sub()
                         ->add($users_permissions, 1)
@@ -218,6 +218,9 @@ class WebsitesSeeder extends Seeder
             $builder->string('Label', 'title');
             $builder->string('Alt', 'alt');
             $builder->string('Icon', 'icon');
+            $builder->select('Permission Required', 'req_perm')->dynamic(\P3in\Models\Permission::class, function(FieldSource $source) {
+                $source->select(['id AS index', 'label']);
+            });
             $builder->boolean('New Tab', 'new_tab');
             $builder->boolean('Clickable', 'clickable');
         })->getForm();
@@ -231,6 +234,9 @@ class WebsitesSeeder extends Seeder
             $builder->string('Url', 'url');
             $builder->string('Alt', 'alt');
             $builder->string('Icon', 'icon');
+            $builder->select('Permission Required', 'req_perm')->dynamic(\P3in\Models\Permission::class, function(FieldSource $source) {
+                $source->select(['id AS index', 'label']);
+            });
             $builder->boolean('New Tab', 'new_tab');
             $builder->boolean('Clickable', 'clickable');
             $builder->wysiwyg('Content', 'content');

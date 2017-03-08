@@ -30,6 +30,15 @@ class CreatePermissionsTable extends Migration
             $table->foreign('permission_id')->references('id')->on('permissions')->onDelete('cascade');
             $table->timestamps();
         });
+
+        Schema::create('group_permission', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('group_id')->unsigned();
+            $table->foreign('group_id')->references('id')->on('groups')->onDelete('cascade');
+            $table->integer('permission_id')->unsigned();
+            $table->foreign('permission_id')->references('id')->on('permissions')->onDelete('cascade');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -39,6 +48,7 @@ class CreatePermissionsTable extends Migration
      */
     public function down()
     {
+        Schema::drop('group_permission');
         Schema::drop('permission_user');
         Schema::drop('permissions');
     }

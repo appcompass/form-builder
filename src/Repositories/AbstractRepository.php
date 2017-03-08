@@ -18,12 +18,13 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
     protected $with = [];
 
     // eager relations we wanna paginate
-    protected $paginatedWith = [];
+    // @NOTE we refer to childRepos for that
+    // protected $paginatedWith = [];
 
     // @TODO it works well and it's simple but not enough. maybe.
     // list of items that must be defined when persising the repo
     // ['user' => ['from' => 'id', 'to' => 'user_id'], [...]]
-    protected $requires;
+    protected $requires = [];
 
     /**
      * { function_description }
@@ -37,6 +38,8 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         }
 
         $this->loadRelations();
+
+        $this->checkPermissions();
 
         $this->sort();
 
@@ -61,6 +64,27 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         return $this->builder;
     }
 
+    public function checkPermissions()
+    {
+        // depending on what we're doing we check permissions
+        // permissions are required at single element level
+        // req_perms should always be the field name (maybe make it configurable)
+        // so for exaple if we are getting a list of items we add the req_perm to the
+        // query builder
+        // if we're on single mode we just check if it requires a permission and if the
+        // current user matches it
+        if (\Auth::check()) {
+
+            // $this->builder->where('req_perm', \Auth::user()->allPermissions())->orWhereNull('req_perm');
+
+        } else {
+
+            // $this->builder->whereNull('req_perm');
+
+        }
+
+    }
+
     /**
      * Loads relations.
      */
@@ -70,19 +94,20 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
 
         foreach($this->with as $relation) {
 
-            if (in_array($relation, $this->paginatedWith)) {
+            // if (in_array($relation, $this->paginatedWith)) {
 
-                $this->builder->with([$relation => function($q) {
+            //     $this->builder->with([$relation => function($q) {
 
-                    $q->paginate(10, ['*'], 'page', \Request::get('page'));
+            //         // @TODO
+            //         $q->paginate(25, ['*'], 'page', \Request::get('page'));
 
-                }]);
+            //     }]);
 
-            } else {
+            // } else {
 
                 $this->builder->with($relation);
 
-            }
+            // }
 
         }
 

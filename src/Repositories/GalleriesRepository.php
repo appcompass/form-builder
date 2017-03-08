@@ -11,7 +11,7 @@ class GalleriesRepository extends AbstractRepository implements GalleriesReposit
     // protected $with = ['user', 'videos.user', 'galleryable.storage', 'photos.user', 'photos'];
     protected $with = ['user', 'videos.user', 'galleryable.storage'];
 
-    protected $paginatedWith = ['photos'];
+    // protected $paginatedWith = ['photos'];
 
     protected $view = 'Card';
 

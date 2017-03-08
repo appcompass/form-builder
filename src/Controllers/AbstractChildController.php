@@ -21,6 +21,8 @@ abstract class AbstractChildController extends Controller
 
     public function store(FormRequest $request, Model $parent)
     {
+        abort_unless(Gate::allows('store', $parent), 403);
+
         $this->repo->setParent($parent);
 
         return $this->repo->create($request);

@@ -99,7 +99,8 @@ class Group extends Model
      */
     public function hasUser(User $user)
     {
-        return $this->users()->has($user->id);
+      return !!$this->users()->whereId($user->id)->first();
+        // return $this->users()->has('user', $user->id);
     }
 
     /**

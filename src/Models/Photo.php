@@ -14,7 +14,8 @@ class Photo extends GalleryItem implements GalleryItemInterface
     protected $fillable = [
         'user_id',
         'name',
-        'path'
+        'path',
+        'order'
     ];
 
     /**
@@ -22,13 +23,21 @@ class Photo extends GalleryItem implements GalleryItemInterface
      */
     protected $appends = ['dimensions', 'resolution', 'url'];
 
-    // protected $hidden = ['user'];
-
+    /**
+     * Gets the type.
+     *
+     * @return     <type>  The type.
+     */
     public function getType()
     {
         return 'photo';
     }
 
+    /**
+     * { function_description }
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
     public function apendStoragePath() {
         return date('m-y');
     }
@@ -44,6 +53,9 @@ class Photo extends GalleryItem implements GalleryItemInterface
         return $this->getDisk()->url($this->path);
     }
 
+    /**
+     * { function_description }
+     */
     public function afterStorage()
     {
         if (\Auth::check()) {
@@ -52,6 +64,9 @@ class Photo extends GalleryItem implements GalleryItemInterface
         $this->setMetaFromExif();
     }
 
+    /**
+     * Sets the meta from exif.
+     */
     public function setMetaFromExif()
     {
         $meta = [];
@@ -83,18 +98,18 @@ class Photo extends GalleryItem implements GalleryItemInterface
     }
 
     /**
-    *
-    *
-    */
+     * Gets the name attribute.
+     */
     public function getNameAttribute()
     {
         $res = $this->getMeta('FileName', $this->attributes['path']);
     }
 
     /**
-    *
-    *
-    */
+     * Gets the x resolution attribute.
+     *
+     * @return     <type>  The x resolution attribute.
+     */
     public function getXResolutionAttribute()
     {
         $res = $this->getMeta('XResolution');
@@ -102,15 +117,23 @@ class Photo extends GalleryItem implements GalleryItemInterface
     }
 
     /**
-    *
-    *
-    */
+     * Gets the y resolution attribute.
+     *
+     * @return     <type>  The y resolution attribute.
+     */
     public function getYResolutionAttribute()
     {
         $res = $this->getMeta('YResolution');
         return $this->formatResolution($res);
     }
 
+    /**
+     * { function_description }
+     *
+     * @param      integer  $res    The resource
+     *
+     * @return     <type>   ( description_of_the_return_value )
+     */
     private function formatResolution($res)
     {
         if ($res) {
@@ -123,40 +146,49 @@ class Photo extends GalleryItem implements GalleryItemInterface
     }
 
     /**
-    *
-    *
-    */
+     * Gets the resolution attribute.
+     *
+     * @return     <type>  The resolution attribute.
+     */
     public function getResolutionAttribute()
     {
         return $this->x_resolution && $this->y_resolution ? $this->x_resolution.'x'.$this->y_resolution : null;
     }
 
     /**
-    *
-    *
-    */
+     * Gets the height attribute.
+     *
+     * @return     <type>  The height attribute.
+     */
     public function getHeightAttribute()
     {
         return $this->getMeta('height');
     }
 
     /**
-    *
-    *
-    */
+     * Gets the width attribute.
+     *
+     * @return     <type>  The width attribute.
+     */
     public function getWidthAttribute()
     {
         return $this->getMeta('width');
     }
 
+    /**
+     * Gets the dimensions attribute.
+     *
+     * @return     <type>  The dimensions attribute.
+     */
     public function getDimensionsAttribute()
     {
         return $this->width && $this->height ? $this->width.'x'.$this->height : null;
     }
     /**
-    *
-    *
-    */
+     * Gets the mime type attribute.
+     *
+     * @return     <type>  The mime type attribute.
+     */
     public function getMimeTypeAttribute()
     {
         return $this->getMeta('MimeType');
