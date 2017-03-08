@@ -25,6 +25,7 @@ use P3in\Models\Website;
 use P3in\Observers\FieldObserver;
 use P3in\Observers\GalleryItemObserver;
 use P3in\Observers\PageObserver;
+use P3in\Observers\WebsiteObserver;
 use P3in\Providers\BaseServiceProvider;
 use Roumen\Sitemap\SitemapServiceProvider;
 use Tymon\JWTAuth\Providers\LaravelServiceProvider;
@@ -81,6 +82,7 @@ class PilotIoServiceProvider extends BaseServiceProvider
         ],
         // PhotoObserver::class => Photo::class, //@TODO: old but possibly needed for Alerts? look into it when we get to Alerts.
         PageObserver::class => Page::class,
+        WebsiteObserver::class => Website::class,
     ];
 
     protected $appBindings = [
