@@ -14,7 +14,7 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Modular;
+use P3in\Facades\Modules as Modular;
 use P3in\Models\Gallery;
 use P3in\Models\Group;
 use P3in\Models\Permission;
