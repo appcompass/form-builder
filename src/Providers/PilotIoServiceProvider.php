@@ -118,13 +118,10 @@ class PilotIoServiceProvider extends BaseServiceProvider
         'menu' => Menu::class,
     ];
 
-    public function boot()
-    {
-
-    }
-
     public function register()
     {
+        parent::register();
+
         $this->registerDependentPackages();
 
         // @TODO: currently a mix of views and stubs. should be better organized/split.
@@ -140,13 +137,6 @@ class PilotIoServiceProvider extends BaseServiceProvider
         // $this->app->register(FeedServiceProvider::class);
         $this->app->register(ImageServiceProvider::class);
         $this->app->register(LaravelServiceProvider::class);
-
-        $loader = AliasLoader::getInstance();
-
-        // $loader->alias('Image', Image::class);
-        // $loader->alias('User', User::class);
-        // $loader->alias('Menu', Menu::class);
-        // $loader->alias('Gallery', Gallery::class);
 
         //@TODO: we require the use of imagick, not sure we should force this though.
         Config::set(['image' => ['driver' => 'imagick']]);

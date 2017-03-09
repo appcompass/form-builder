@@ -5,7 +5,7 @@ Route::group([
     'namespace' => 'P3in\Controllers',
 ], function ($router) {
     $router->post('login', 'AuthController@login');
-    $router->get('logout', 'AuthController@logout')->middleware('auth:api');
+    $router->get('logout', 'AuthController@logout')->middleware(['auth']);
     $router->get('user', 'AuthController@user')->middleware('auth');
 });
 
