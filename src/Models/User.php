@@ -339,8 +339,6 @@ class User extends ModularBaseModel implements
      */
     public function hasGroup($group)
     {
-        info('Checking for: ' . $group);
-
         try {
 
             if ($group instanceof Group) {

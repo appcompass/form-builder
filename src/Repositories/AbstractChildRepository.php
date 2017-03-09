@@ -40,6 +40,16 @@ class AbstractChildRepository extends AbstractRepository
     }
 
     /**
+     * Gets the parent.
+     *
+     * @return     <type>  The parent.
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
      * Gets the relation.
      */
     private function getRelation()

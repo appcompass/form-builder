@@ -28,7 +28,7 @@ class GalleriesSeeder extends Seeder
             });
             $builder->photo('Photo', 'photo')->list(false);
             $builder->string('Owner', 'user.email')->list()->edit(false);
-        })->linkToResources(['galleries.index', 'galleries.show', 'galleries.create']);
+        })->linkToResources(['galleries.index', 'galleries.show', 'galleries.store']);
 
         $form = FormBuilder::new('photos', function (FormBuilder $builder) {
             $builder->setListLayout('Card');

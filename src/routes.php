@@ -16,15 +16,15 @@ Route::group([
 ], function ($router) {
     // $router->get('notification-center', 'CpController@getNotificationCenter');
     // $router->get('dashboard', 'CpController@getDashboard');
-    // $router->resource('storage', StorageController::class);
     $router->resource('users', UsersController::class);
     $router->resource('groups', GroupsController::class);
     $router->resource('permissions', PermissionsController::class);
     $router->resource('users.groups', UserGroupsController::class);
     $router->resource('users.permissions', UserPermissionsController::class);
+
     $router->resource('galleries', GalleriesController::class);
     $router->resource('galleries.photos', GalleryPhotosController::class);
-    $router->post('galleries/{gallery}/photos/sort', 'GalleryPhotosController@sort');
+    $router->post('galleries/{gallery}/photos/sort', 'GalleryPhotosController@sort'); // @TODO see about this
     $router->resource('galleries.videos', GalleryVideosController::class);
 
     $router->delete('menus/links/{link_id}', 'MenusController@deleteLink');

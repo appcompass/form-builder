@@ -2,11 +2,12 @@
 
 namespace P3in\Controllers;
 
+use Gate;
 use Illuminate\Database\Eloquent\Model;
 use P3in\Controllers\BaseController;
-use P3in\Requests\FormRequest;
-use Illuminate\Http\Request;
 use P3in\Models\Form;
+use P3in\Policies\ResourcesPolicy;
+use P3in\Requests\FormRequest;
 use Route;
 
 abstract class AbstractController extends BaseController
@@ -14,14 +15,37 @@ abstract class AbstractController extends BaseController
 
     protected $repo;
 
-    public function index(Request $request)
+    /**
+     * Resolves a policy for the repo or defaults to ResourcesPolicy
+     */
+    private function checkPolicy()
     {
+        if (!Gate::getPolicyFor($this->repo)) {
+
+            Gate::policy(get_class($this->repo), ResourcesPolicy::class);
+
+        }
+
+        return;
+    }
+
+    public function index(FormRequest $request)
+    {
+        $this->checkPolicy();
+
+        Gate::authorize('index', $this->repo);
 
         return $this->repo->get();
     }
 
     public function show(FormRequest $request, Model $model)
     {
+        $this->repo->setModel($model);
+
+        $this->checkPolicy();
+
+        Gate::authorize('show', $this->repo);
+
         return $this->repo->findByPrimaryKey($model->id);
     }
 
@@ -32,7 +56,7 @@ abstract class AbstractController extends BaseController
         return response()->json(['message' => 'Model updated.']);
     }
 
-    public function create(Request $request)
+    public function create(FormRequest $request)
     {
         return;
     }

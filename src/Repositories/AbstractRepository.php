@@ -94,20 +94,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
 
         foreach($this->with as $relation) {
 
-            // if (in_array($relation, $this->paginatedWith)) {
-
-            //     $this->builder->with([$relation => function($q) {
-
-            //         // @TODO
-            //         $q->paginate(25, ['*'], 'page', \Request::get('page'));
-
-            //     }]);
-
-            // } else {
-
-                $this->builder->with($relation);
-
-            // }
+            $this->builder->with($relation);
 
         }
 
@@ -123,7 +110,6 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
 
         $this->setModel($model);
 
-        // @TODO should this go here? relations are loaded when actually executing something i guess? -f
         $this->loadRelations();
 
         return $this;
@@ -141,6 +127,14 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         $this->model = $model;
 
         return $this;
+    }
+
+    /**
+     * Gets the model.
+     */
+    public function getModel()
+    {
+        return $this->model;
     }
 
     /**
@@ -201,7 +195,6 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
      *
      * @param      <type>  $attributes  The attributes
      */
-    // @TODO inject FormRequest
     public function create($request)
     {
         $request = $this->checkRequirements($request);
@@ -229,6 +222,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
      */
     public function reorder($order, $field = 'order')
     {
+        // @TODO this depends on relation, delegate, refactor this into absChild
         $rel = $this->model->{$this->relationName};
 
         // get the whole list of stuff we're sorting

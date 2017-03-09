@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use P3in\Requests\FormRequest;
 use P3in\Models\Gallery;
 use Auth;
+use Gate;
 
 class GalleryPhotosController extends AbstractChildController
 {
@@ -15,37 +16,53 @@ class GalleryPhotosController extends AbstractChildController
         $this->repo = $repo;
     }
 
+    // public function index(FormRequest $request, Model $parent)
+    // {
+    //     $this->repo->setParent($parent);
+
+    //     Gate::authorize('index', $this->repo);
+
+    //     return parent::index($request, $parent);
+    // }
+
     public function store(FormRequest $request, Model $parent)
     {
+        $this->repo->setParent($parent);
 
-        if (Auth::check()) {
+        info(get_class(Gate::getPolicyFor($this->repo)));
 
-            $request->user = Auth::user();
+        Gate::authorize('store', $this->repo);
 
-            return parent::store($request, $parent);
+        $request->user = Auth::user();
 
-        }
+        $parent->touch();
+
+        return parent::store($request, $parent);
 
         throw new \Exception('Not logged, or whatever we should do here.');
     }
 
+    public function destroy(FormRequest $request, Model $parent, Model $model)
+    {
+        $this->repo->setParent($parent);
+
+        $this->repo->setModel($model);
+
+        Gate::authorize('destroy', $this->repo);
+
+        return parent::destroy($request, $parent, $model);
+    }
+
     public function sort(FormRequest $request, Gallery $gallery)
     {
+        // @TODO swap that out once sorting is differentiated between absrtact/abstractChild
         $this->repo->setModel($gallery);
 
+        // Gate::authorize('store', $this->repo);
+
+        // @TODO take a look at how generic reordering is
+        //  -- not THAT many cases for this kind of reordering yet: the other one -menu- sorts in place and the pushes the whole thing. for photos we are properly using parent/child relations, thus we push every time we sort. where else is this gonna happen?
         $this->repo->reorder($request->order, 'order');
-
-        // info($request->order);
-
-        // $items = Photo::whereIn('id', $request->order)->get();
-
-        // dd($items);
-
-        // for ($i = 0; $i <= count($items); $i++) {
-
-        //     $items[$i]->update(['order' => $i]);
-
-        // }
 
     }
 

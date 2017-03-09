@@ -22,7 +22,6 @@ class Gallery extends Model
         'user_id'
     ];
 
-    // protected $hidden = ['user']; // @TODO user is hidden here but required on the repo -f
     protected $dates = [];
 
     protected $appends = ['photoCount', 'videoCount'];

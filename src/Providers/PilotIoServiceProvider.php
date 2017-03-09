@@ -104,9 +104,10 @@ class PilotIoServiceProvider extends BaseServiceProvider
     /**
      * List of policies to bind
      */
-    // protected $policies = [
-    //     GalleryItem::class => \P3in\Policies\PhotosPolicy::class
-    // ];
+    protected $policies = [
+        \P3in\Repositories\GalleriesRepository::class => \P3in\Policies\GalleriesRepositoryPolicy::class,
+        \P3in\Repositories\GalleryPhotosRepository::class => \P3in\Policies\GalleryPhotosRepositoryPolicy::class
+    ];
 
     public function boot()
     {
