@@ -66,9 +66,7 @@ Route::group([
     $router->group([
         'prefix' => 'forms',
     ], function ($router) {
-        $router->get('token', function () {
-            return csrf_token();
-        });
+        $router->get('token', 'PublicWebsiteController@getToken');
         $router->post('{path?}', 'PublicWebsiteController@submitForm')->where('path', '(.*)');
     });
 });
