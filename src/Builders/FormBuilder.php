@@ -126,20 +126,6 @@ class FormBuilder
     }
 
     /**
-     * Sets the list layout.
-     *
-     * @param      <type>  $list_layout  The list layout
-     *
-     * @return     <type>  ( description_of_the_return_value )
-     */
-    public function setListLayout($list_layout)
-    {
-        $this->form->setListLayout($list_layout);
-
-        return $this;
-    }
-
-    /**
      * sets the editor view
      *
      * @param      <type>  $editor  The editor

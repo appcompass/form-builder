@@ -118,20 +118,6 @@ class Form extends Model
     }
 
     /**
-     * Sets the layout type for list view.
-     *
-     * @param      <type>  $type   The layout
-     */
-    public function setListLayout($list_layout)
-    {
-        $this->list_layout = $list_layout;
-
-        if ($this->save()) {
-            return $this;
-        }
-    }
-
-    /**
      * Sets the editor
      *
      * @param      <type>  $editor  The editor

@@ -26,6 +26,9 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
     // ['user' => ['from' => 'id', 'to' => 'user_id'], [...]]
     protected $requires = [];
 
+    // model's default list view
+    protected $view = 'Table';
+
     /**
      * { function_description }
      */
@@ -386,7 +389,8 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         }
 
         return [
-            'data' => $this->make()->builder->paginate($per_page, ['*'], 'page', $page)
+            'data' => $this->make()->builder->paginate($per_page, ['*'], 'page', $page),
+            'view' => $this->view
         ];
     }
 

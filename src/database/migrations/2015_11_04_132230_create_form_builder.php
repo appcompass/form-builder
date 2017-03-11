@@ -24,7 +24,6 @@ class CreateFormBuilder extends Migration
             $table->increments('id');
             $table->string('name')->unique();
             $table->nullableMorphs('formable');
-            $table->string('list_layout')->default('Table');
             $table->string('editor')->default('Form'); // editors: ['Menu', 'Gallery', 'Page'] specific components we can publish from modules
             $table->timestamps();
 

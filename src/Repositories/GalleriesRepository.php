@@ -10,6 +10,7 @@ class GalleriesRepository extends AbstractRepository implements GalleriesReposit
     // protected $with = ['user', 'videos.user', 'galleryable.storage', 'photos.user', 'photos'];
     protected $with = ['user', 'videos.user', 'galleryable.storage'];
 
+    // List view
     protected $view = 'Card';
 
     protected $requires = [
