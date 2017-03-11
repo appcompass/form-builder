@@ -57,6 +57,8 @@ class UsersSeeder extends Seeder
         // @TODO there is no mention of 'locked' in the entire codebase. removing.
         Permission::create(['type' => 'logged-user', 'label' => 'User', 'description' => 'The user can log into the application frontend (websites)']);
         Permission::create(['type' => 'guest', 'label' => 'Guest', 'description' => 'Guest Permission']);
+        Permission::create(['type' => 'media', 'label' => 'Media Editor', 'description' => 'Media Editor Permission' ]); // 'locked' => true // @TODO what's locked? ]);
+        Permission::create(['type' => 'content', 'label' => 'Content Creator/Editor', 'description' => 'Content Creator/Editor' ]); // 'locked' => true // @TODO what's locked? ]); }
 
         Role::create(['name' => 'user', 'label' => 'User', 'description' => 'User exists', 'active' => true]);
         Role::create(['name' => 'admin', 'label' => 'Admin', 'description' => 'Administrators', 'active' => true]);
