@@ -16,15 +16,6 @@ class GalleryPhotosController extends AbstractChildController
         $this->repo = $repo;
     }
 
-    // public function index(FormRequest $request, Model $parent)
-    // {
-    //     $this->repo->setParent($parent);
-
-    //     Gate::authorize('index', $this->repo);
-
-    //     return parent::index($request, $parent);
-    // }
-
     public function store(FormRequest $request, Model $parent)
     {
         $this->repo->setParent($parent);

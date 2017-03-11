@@ -45,7 +45,6 @@ class GalleriesRepositoryPolicy
         return true;
 
         return $this->deny('Nup');
-        // return $user->hasPermissions($this->create_perms);
     }
 
     public function show(User $user, GalleriesRepository $repo)
@@ -60,19 +59,13 @@ class GalleriesRepositoryPolicy
 
     public function update(User $user, GalleriesRepository $repo)
     {
-        if ($repo->getModel()->gallery->user->id !== $user->id) {
+        if ($repo->getModel()->user->id !== $user->id) {
 
             return $this->deny('You cannot update a gallery if you\'re not the owner.');
 
         }
 
         return true;
-    }
-
-    public function edit(User $user, $ability)
-    {
-        return $this->deny('Nuuuup.');
-        // return $this->show($user, $ability);
     }
 
     public function destroy(User $user, $ability)

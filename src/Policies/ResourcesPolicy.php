@@ -45,4 +45,18 @@ class ResourcesPolicy
         return true;
     }
 
+    public function update(User $user)
+    {
+        info('Hit Update');
+
+        return true;
+    }
+
+    public function destroy(User $user)
+    {
+        info('Hit Destroy');
+
+        return true;
+    }
+
 }

@@ -29,6 +29,9 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
     // model's default list view
     protected $view = 'Table';
 
+    // @TODO limits list view, including abilities for each record
+    protected $limitsList = false;
+
     /**
      * { function_description }
      */
@@ -231,7 +234,6 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         // get the whole list of stuff we're sorting
         $items = $rel->whereIn('id', $order);
 
-
         foreach($order as $single) {
 
             $coll[] = $items->find($single);
@@ -386,6 +388,10 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         // @TODO per_page sometimes comes through null
         if (!$per_page) {
             $per_page = 25;
+        }
+
+        if ($this->limitsList) {
+
         }
 
         return [
