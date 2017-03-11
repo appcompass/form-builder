@@ -41,6 +41,8 @@ Route::group([
     // $router->resource('pages.contents', PageContentsController::class); // @TODO: websites.pages.contents
     // $router->resource('pages.sections', PageSectionsController::class); // @TODO: websites.pages.sections
     $router->resource('websites.redirects', WebsiteRedirectsController::class);
+
+    $router->resource('resources', ResourcesController::class);
 });
 
 // Public Front-end website endpoints

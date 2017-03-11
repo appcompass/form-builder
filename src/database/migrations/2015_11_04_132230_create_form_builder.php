@@ -66,6 +66,7 @@ class CreateFormBuilder extends Migration
             $table->string('resource');
             $table->integer('form_id')->unsigned();
             $table->foreign('form_id')->references('id')->on('forms')->onDelete('cascade');
+            $table->integer('req_role')->unsigned()->nullable();
             $table->timestamps();
 
             $table->index('resource');

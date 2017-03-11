@@ -15,6 +15,7 @@ use P3in\Models\GalleryItem;
 use P3in\Models\Role;
 use P3in\Models\Menu;
 use P3in\Models\Page;
+use P3in\Models\Resource;
 use P3in\Models\PageSectionContent;
 use P3in\Models\Permission;
 use P3in\Models\Photo;
@@ -99,6 +100,7 @@ class PilotIoServiceProvider extends BaseServiceProvider
         \P3in\Interfaces\WebsitePagesRepositoryInterface::class => \P3in\Repositories\WebsitePagesRepository::class,
         \P3in\Interfaces\PageContentRepositoryInterface::class => \P3in\Repositories\PageContentRepository::class,
         \P3in\Interfaces\WebsiteMenusRepositoryInterface::class => \P3in\Repositories\WebsiteMenusRepository::class,
+        \P3in\Interfaces\ResourcesRepositoryInterface::class => \P3in\Repositories\ResourcesRepository::class
     ];
 
     /**
@@ -165,6 +167,7 @@ class PilotIoServiceProvider extends BaseServiceProvider
             'content' => PageSectionContent::class,
             'section' => Section::class,
             'menu' => Menu::class,
+            'resource' => Resource::class
         ] as $key => $model) {
             Route::bind($key, function ($value) use ($model) {
                 return $model::findOrFail($value);

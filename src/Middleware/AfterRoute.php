@@ -2,11 +2,11 @@
 
 namespace P3in\Middleware;
 
-use Closure;
-use Illuminate\Http\Request;
-use P3in\Models\Form;
-use P3in\Models\FormAlias;
 use P3in\Models\PageComponentContent;
+use Illuminate\Http\Request;
+use P3in\Models\FormAlias;
+use P3in\Models\Form;
+use Closure;
 use Route;
 
 class AfterRoute
@@ -20,12 +20,10 @@ class AfterRoute
      */
     public function handle(Request $request, Closure $next)
     {
-        $route = Route::current();
-
         $methods = ['GET'];
 
         // resolve form by uri
-        $form = Form::byResource($route->getName())->first();
+        $form = Form::byResource(Route::currentRouteName())->first();
 
         // get response
         $response = $next($request);

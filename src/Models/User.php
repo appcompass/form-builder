@@ -2,27 +2,20 @@
 
 namespace P3in\Models;
 
-use Cache;
-use Exception;
-use Illuminate\Auth\Authenticatable;
-use Illuminate\Auth\Passwords\CanResetPassword;
+use Tymon\JWTAuth\Contracts\JWTSubject as AuthenticatableUserContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Auth\Access\Authorizable;
+use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Collection;
-use Modular;
+use Illuminate\Auth\Authenticatable;
+use P3in\ModularBaseModel;
 use P3in\Models\Gallery;
-use P3in\Models\Permission;
 use P3in\Models\Photo;
 use P3in\Models\Role;
-use P3in\ModularBaseModel;
-use P3in\Traits\HasPermissions;
-use P3in\Traits\HasProfileTrait;
-use Tymon\JWTAuth\Contracts\JWTSubject as AuthenticatableUserContract;
+use Exception;
+// use P3in\Traits\HasProfileTrait;
 
 class User extends ModularBaseModel implements
     AuthenticatableContract,
@@ -62,8 +55,7 @@ class User extends ModularBaseModel implements
         'phone',
         'email',
         'password',
-        'active',
-        // 'system_user',
+        'active'
     ];
 
     /**
@@ -74,7 +66,6 @@ class User extends ModularBaseModel implements
     protected $hidden = [
         'password',
         'remember_token',
-        // 'system',
         'activated_at',
         'activation_code'
     ];
@@ -246,6 +237,10 @@ class User extends ModularBaseModel implements
 
                 $role = Role::whereName($role)->firstOrFail();
 
+            } elseif (is_int($role)) {
+
+                $role = Role::findOrFail($role);
+
             }
 
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
@@ -255,27 +250,6 @@ class User extends ModularBaseModel implements
         }
 
         return $role->hasUser($this);
-
-    }
-
-    /**
-     * Allows for role/group matching using  is[name] pattern
-     *
-     * @param      <type>  $method  The method
-     * @param      <type>  $args    The arguments
-     *
-     * @return     <type>  ( description_of_the_return_value )
-     */
-    public function __call($method, $args)
-    {
-
-        if (preg_match('/^is/', $method)) {
-
-            return $this->hasRole(lcfirst(substr($method, 2)));
-
-        }
-
-        return parent::__call($method, $args);
 
     }
 
@@ -301,6 +275,27 @@ class User extends ModularBaseModel implements
         }
 
         return array_unique($roles_permissions);
+    }
+
+    /**
+     * Allows for role/group matching using  is[name] pattern
+     *
+     * @param      <type>  $method  The method
+     * @param      <type>  $args    The arguments
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
+    public function __call($method, $args)
+    {
+
+        if (preg_match('/^is/', $method)) {
+
+            return $this->hasRole(lcfirst(substr($method, 2)));
+
+        }
+
+        return parent::__call($method, $args);
+
     }
 
     /**
