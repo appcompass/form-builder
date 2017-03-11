@@ -27,6 +27,7 @@ use P3in\Observers\GalleryItemObserver;
 use P3in\Observers\PageObserver;
 use P3in\Observers\WebsiteObserver;
 use P3in\Providers\BaseServiceProvider;
+use P3in\Providers\EventServiceProvider;
 use Roumen\Sitemap\SitemapServiceProvider;
 use Tymon\JWTAuth\Providers\LaravelServiceProvider;
 
@@ -133,6 +134,7 @@ class PilotIoServiceProvider extends BaseServiceProvider
      */
     private function registerDependentPackages()
     {
+        $this->app->register(EventServiceProvider::class);
         $this->app->register(SitemapServiceProvider::class);
         // $this->app->register(FeedServiceProvider::class);
         $this->app->register(ImageServiceProvider::class);
