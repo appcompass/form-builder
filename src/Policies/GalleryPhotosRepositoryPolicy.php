@@ -23,6 +23,11 @@ class GalleryPhotosRepositoryPolicy
         }
     }
 
+    public function index(User $user)
+    {
+        return true;
+    }
+
     public function store(User $user, GalleryPhotosRepository $repo)
     {
         $gallery = $repo->getParent();

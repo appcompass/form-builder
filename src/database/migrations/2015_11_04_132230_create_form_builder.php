@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFormBuilderTables extends Migration
+class CreateFormBuilder extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,6 @@ class CreateFormBuilderTables extends Migration
     public function up()
     {
         // This only provides constraints and easy Vue components matching
-        // @TODO this will be components, merge with existing one
         Schema::create('fieldtypes', function (Blueprint $table) {
             $table->string('name');
             $table->string('template'); // reference component path
@@ -26,9 +25,7 @@ class CreateFormBuilderTables extends Migration
             $table->string('name')->unique();
             $table->nullableMorphs('formable');
             $table->string('list_layout')->default('Table');
-            $table->string('editor')->default('Form'); // editors: ['Menu', 'Gallery'] specific components we can publish from modules
-            // @NOTE we use resources table fo'dat -f
-            // $table->string('resource')->nullable(); // point to base resource url
+            $table->string('editor')->default('Form'); // editors: ['Menu', 'Gallery', 'Page'] specific components we can publish from modules
             $table->timestamps();
 
             $table->index('name');
@@ -49,7 +46,6 @@ class CreateFormBuilderTables extends Migration
             $table->foreign('parent_id')->references('id')->on('fields')->onDelete('cascade');
             $table->integer('form_id')->unsigned();
             $table->foreign('form_id')->references('id')->on('forms')->onDelete('cascade');
-
             $table->boolean('dynamic')->default(false);
         });
 

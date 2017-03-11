@@ -4,24 +4,25 @@ namespace P3in\Models;
 
 use Cache;
 use Exception;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Tymon\JWTAuth\Contracts\JWTSubject as AuthenticatableUserContract;
-use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
-use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Auth\Authenticatable;
-use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Modular;
 use P3in\Models\Gallery;
-use P3in\Models\Group;
 use P3in\Models\Permission;
 use P3in\Models\Photo;
+use P3in\Models\Role;
 use P3in\ModularBaseModel;
 use P3in\Traits\HasPermissions;
 use P3in\Traits\HasProfileTrait;
+use Tymon\JWTAuth\Contracts\JWTSubject as AuthenticatableUserContract;
 
 class User extends ModularBaseModel implements
     AuthenticatableContract,
@@ -62,7 +63,7 @@ class User extends ModularBaseModel implements
         'email',
         'password',
         'active',
-        'system_user',
+        // 'system_user',
     ];
 
     /**
@@ -73,7 +74,7 @@ class User extends ModularBaseModel implements
     protected $hidden = [
         'password',
         'remember_token',
-        'system',
+        // 'system',
         'activated_at',
         'activation_code'
     ];
@@ -94,13 +95,13 @@ class User extends ModularBaseModel implements
     ];
 
     /**
-     *  Get all the groups this user belongs to
+     *  Get all the roles this user belongs to
      *
      *
      */
-    public function groups()
+    public function roles()
     {
-        return $this->belongsToMany(Group::class)->withTimestamps();
+        return $this->belongsToMany(Role::class)->withTimestamps();
     }
 
     /**
@@ -134,60 +135,11 @@ class User extends ModularBaseModel implements
     }
 
     /**
-     *  Get either all or a specific profile type of a user
-     *
-     *
-     *  TODO: this needs to be refactored a little
-     */
-    public function linkProfile(Model $model)
-    {
-        $profile = $this->profiles()->firstOrNew([
-            'profileable_id' => $model->getKey(),
-            'profileable_type' => get_class($model),
-        ]);
-        $profile->save();
-    }
-
-    /**
-     * { function_description }
-     *
-     * @param      <type>  $model_name  The model name
-     *
-     * @return     <type>  ( description_of_the_return_value )
-     */
-    public function profile($model_name)
-    {
-        $base_profile = $this->profiles()->where('profileable_type', $model_name)->first();
-
-        return $base_profile ? $base_profile->profileable : null;
-    }
-
-    /**
-     * { function_description }
-     *
-     * @param      <type>  $field_name  The field name
-     *
-     * @return     array   ( description_of_the_return_value )
-     */
-    public function populateField($field_name)
-    {
-        switch ($field_name) {
-            case 'users_list':
-                $users = User::select(\DB::raw("concat(first_name,' ',last_name) as name"), 'id')->get();
-
-                return $users->pluck('name', 'id');
-                break;
-            default:
-                return [];
-                break;
-        }
-    }
-
-    /**
      * Sets the password attribute.
      *
      * @param      <type>  $value  The value
      */
+    // @TODO doesn't laravel do this automagically? investigate
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = bcrypt($value);
@@ -236,118 +188,63 @@ class User extends ModularBaseModel implements
         ];
     }
 
-    public static function scopeSystemUsers($query)
+    /**
+     * Get users having a specific rol e
+     *
+     * @param      <type>  $query  The query
+     * @param      <type>  $role   The role
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
+    public static function scopeHavingRole($query, $role)
     {
-        return $query->where('system', true)->orderBy('id', 'asc');
+        return Role::whereName($role)->firstOrFail()->users();
     }
 
     /**
       * Add current user to a group
       *
-      * @param      mixed $group  The group
+      * @param      mixed $role  The role
       *
       * @return     <type>  ( description_of_the_return_value )
       */
-    public function addToGroup($group)
+    public function assignRole($role)
     {
-        if (is_int($group)) {
+        if (is_int($role)) {
 
-            $group = Group::findOrFail($group);
+            $role = Role::findOrFail($role);
 
-        } elseif (is_string($group)) {
+        } elseif (is_string($role)) {
 
-            $group = Group::whereName($group)->firstOrFail();
+            $role = Role::whereName($role)->firstOrFail();
 
         }
 
-        return $group->addUser($this);
+        return $role->addUser($this);
     }
 
     /**
       *  Remove current user from a group
       */
-    public function removeFromGroup(Group $group)
+    public function revokeRole(Role $role)
     {
-        return $group->removeUser($this);
+        return $role->removeUser($this);
     }
 
     /**
-     * Adds a permission to the user
-     */
-    // @TODO static methods on permission to avoid lookup here
-    public function grant($permission)
-    {
-        if (is_array($permission)) {
-
-            foreach($permission as $single_permission) {
-
-                $this->grant($single_permission);
-
-            }
-
-            return true;
-
-        } elseif (is_string($permission)) {
-
-            $permission = Permission::whereType($permission)->firstOrFail();
-
-        } elseif (is_int($permission)) {
-
-            $permission = Permission::findOrFail($permission);
-
-        }
-
-        return $permission->assignTo($this);
-    }
-
-    /**
-     * Revokes a user's permission
-     */
-    // @TODO static methods on permission to avoid lookup here
-    public function revoke($permission)
-    {
-        if (is_array($permission)) {
-
-            foreach($permission as $single_permission) {
-
-                $this->revoke($single_permission);
-
-            }
-
-            return true;
-
-        } elseif (is_string($permission)) {
-
-            $permission = Permission::whereType($permission)->firstOrFail();
-
-        } elseif (is_int($permission)) {
-
-            $permission = Permission::findOrFail($permission);
-
-        }
-
-        return $permission->revokeFrom($this);
-        // return $this->permissions()->detach($perm);
-    }
-
-    /**
-     * Determines if it has group.
+     * Determines if it has role.
      *
-     * @param      <type>   $group  The group
+     * @param      <type>   $role  The role
      *
-     * @return     boolean  True if has group, False otherwise.
+     * @return     boolean  True if has role, False otherwise.
      */
-    public function hasGroup($group)
+    public function hasRole($role)
     {
         try {
 
-            if ($group instanceof Group) {
+            if (is_string($role)) {
 
-                $group = $group->name;
-
-            } elseif (is_string($group)) {
-
-                $group = Group::whereName($group)->firstOrFail();
+                $role = Role::whereName($role)->firstOrFail();
 
             }
 
@@ -357,7 +254,7 @@ class User extends ModularBaseModel implements
 
         }
 
-        return $group->hasUser($this);
+        return $role->hasUser($this);
 
     }
 
@@ -374,8 +271,7 @@ class User extends ModularBaseModel implements
 
         if (preg_match('/^is/', $method)) {
 
-
-            return $this->hasGroup(lcfirst(substr($method, 2)));
+            return $this->hasRole(lcfirst(substr($method, 2)));
 
         }
 
@@ -384,87 +280,80 @@ class User extends ModularBaseModel implements
     }
 
     /**
-     * Return all the permissions of the user
+     * keep this to avoid breaking the api. consider removal. maybe. i'm def in a remove-it-all mood
      *
-     * @return array permission owned by the user
+     * @return     <type>  ( description_of_the_return_value )
      */
     public function allPermissions()
     {
-        // @TODO  add getCacheKey or something, the id is overly non-specific. should return class_name . id . updated_at_timestamp
+        $this->load('roles.permissions');
 
-        return Cache::tags('user_permissions')->remember('user_'.$this->id.'_'.$this->updated_at, 1, function() {
-        // return Cache::remember('user_'.$this->id.'_'.$this->updated_at, 1, function() {
+        $roles_permissions = [];
 
-            $directly_owned = $this->permissions->pluck('id')->toArray();
+        foreach($this->roles as $role) {
 
-            // $all_permissions = array_unique(array_merge($this->getGroupsPermissions(), $directly_owned));
-
-            return array_unique(array_merge($this->getGroupsPermissions(), $directly_owned));
-
-            // return Permission::whereIn('id', $all_permissions)->get()->toArray();
-
-        });
-    }
-
-    /**
-     * Gets the groups permissions.
-     */
-    public function getGroupsPermissions()
-    {
-        // $this->load('groups.permissions');
-
-        $groups_permissions = [];
-
-        foreach($this->groups as $group) {
-
-            $group_permissions = $group->permissions()
+            $role_permissions = $role->permissions()
                 ->allRelatedIds()
                 ->toArray();
 
-            $groups_permissions = array_merge($groups_permissions, $group_permissions);
+            $roles_permissions = array_merge($roles_permissions, $role_permissions);
 
         }
 
-        return array_unique($groups_permissions);
+        return array_unique($roles_permissions);
     }
 
     /**
-     *  Check if user has a single permission
+     *  Get either all or a specific profile type of a user
      *
-     *  @param string $permission Permission type.
-     *  @return bool
+     *
+     *  TODO: this needs to be refactored a little
+     *   -- in pause until we get there
      */
-    // public function hasPermission($permission)
+    // public function linkProfile(Model $model)
     // {
-
-    //     if (is_array($permission)) {
-
-    //         return $this->hasPermissions($permission);
-
-    //     }
-
-    //     return in_array($permission, $this->allPermissions()->toArray());
-
+    //     $profile = $this->profiles()->firstOrNew([
+    //         'profileable_id' => $model->getKey(),
+    //         'profileable_type' => get_class($model),
+    //     ]);
+    //     $profile->save();
     // }
 
     /**
-     *  Check if user has a group of permissions
+     * { function_description }
      *
-     *  @param array permissions
-     *  @return bool
+     * @param      <type>  $model_name  The model name
+     *
+     * @return     <type>  ( description_of_the_return_value )
      */
-    // public function hasPermissions($permissions)
+    // @TODO on a break until we get there
+    // public function profile($model_name)
     // {
-    //     if (is_string($permissions)) {
-    //         $permissions = explode(",", $permissions);
+    //     $base_profile = $this->profiles()->where('profileable_type', $model_name)->first();
+
+    //     return $base_profile ? $base_profile->profileable : null;
+    // }
+
+    /**
+     * { function_description }
+     *
+     * @param      <type>  $field_name  The field name
+     *
+     * @return     array   ( description_of_the_return_value )
+     */
+    // @TODO this is not being called from codebase
+    // public function populateField($field_name)
+    // {
+    //     switch ($field_name) {
+    //         case 'users_list':
+    //             $users = User::select(\DB::raw("concat(first_name,' ',last_name) as name"), 'id')->get();
+
+    //             return $users->pluck('name', 'id');
+    //             break;
+    //         default:
+    //             return [];
+    //             break;
     //     }
-
-    //     if (count($permissions) == 0) {
-    //         return true;
-    //     }
-
-    //     return (bool)count(array_intersect($this->allPermissions()->toArray(), $permissions)) == count($permissions);
-
     // }
 
 }

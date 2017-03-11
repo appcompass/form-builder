@@ -38,7 +38,16 @@ class FormBuilder
      */
     public static function new($name, Closure $closure = null): FormBuilder
     {
-        $form = Form::firstOrCreate([
+
+        // @TODO NEVER. FUCKING. DO. THAT. JEEEEEZ
+        // $form = Form::firstOrCreate([
+            // 'name' => $name,
+        // ]);
+
+        // @NOTE new form means new form. old is deleted.
+        FormBuilder::seekAndDestroy($name);
+
+        $form = Form::create([
             'name' => $name,
         ]);
 
@@ -293,5 +302,23 @@ class FormBuilder
         }
 
         return $field_type->field;
+    }
+
+    /**
+     *
+     */
+    private static function seekAndDestroy($name)
+    {
+        try {
+
+            $form = Form::whereName($name)->first();
+
+            info('Deleting Form: ' . $name);
+
+        } catch (ModelNotFoundException $e) {
+
+            return;
+
+        }
     }
 }

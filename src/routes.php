@@ -17,9 +17,9 @@ Route::group([
     // $router->get('notification-center', 'CpController@getNotificationCenter');
     // $router->get('dashboard', 'CpController@getDashboard');
     $router->resource('users', UsersController::class);
-    $router->resource('groups', GroupsController::class);
+    $router->resource('roles', RolesController::class);
     $router->resource('permissions', PermissionsController::class);
-    $router->resource('users.groups', UserGroupsController::class);
+    $router->resource('users.roles', UserRolesController::class);
     $router->resource('users.permissions', UserPermissionsController::class);
 
     $router->resource('galleries', GalleriesController::class);

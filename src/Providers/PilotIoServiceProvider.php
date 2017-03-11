@@ -12,7 +12,7 @@ use Intervention\Image\ImageServiceProvider;
 use P3in\Models\Field;
 use P3in\Models\Gallery;
 use P3in\Models\GalleryItem;
-use P3in\Models\Group;
+use P3in\Models\Role;
 use P3in\Models\Menu;
 use P3in\Models\Page;
 use P3in\Models\PageSectionContent;
@@ -87,8 +87,8 @@ class PilotIoServiceProvider extends BaseServiceProvider
         \P3in\Interfaces\UsersRepositoryInterface::class => \P3in\Repositories\UsersRepository::class,
         \P3in\Interfaces\UserPermissionsRepositoryInterface::class => \P3in\Repositories\UserPermissionsRepository::class,
         \P3in\Interfaces\PermissionsRepositoryInterface::class => \P3in\Repositories\PermissionsRepository::class,
-        \P3in\Interfaces\GroupsRepositoryInterface::class => \P3in\Repositories\GroupsRepository::class,
-        \P3in\Interfaces\UserGroupsRepositoryInterface::class => \P3in\Repositories\UserGroupsRepository::class,
+        \P3in\Interfaces\RolesRepositoryInterface::class => \P3in\Repositories\RolesRepository::class,
+        \P3in\Interfaces\UserRolesRepositoryInterface::class => \P3in\Repositories\UserRolesRepository::class,
         \P3in\Interfaces\GalleriesRepositoryInterface::class => \P3in\Repositories\GalleriesRepository::class,
         \P3in\Interfaces\GalleryPhotosRepositoryInterface::class => \P3in\Repositories\GalleryPhotosRepository::class,
         \P3in\Interfaces\GalleryVideosRepositoryInterface::class => \P3in\Repositories\GalleryVideosRepository::class,
@@ -139,7 +139,7 @@ class PilotIoServiceProvider extends BaseServiceProvider
         $loader->alias('Image', Image::class);
         $loader->alias('User', User::class);
         $loader->alias('Menu', Menu::class);
-        $loader->alias('Group', Group::class);
+        $loader->alias('Role', Role::class);
         $loader->alias('Perm', Permission::class);
         $loader->alias('Gallery', Gallery::class);
         $loader->alias('Photo', Photo::class);
@@ -155,7 +155,7 @@ class PilotIoServiceProvider extends BaseServiceProvider
         foreach ([
             'user' => User::class,
             'permission' => Permission::class,
-            'group' => Group::class,
+            'role' => Role::class,
             'gallery' => Gallery::class,
             'photo' => Photo::class,
             'video' => Video::class,

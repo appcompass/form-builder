@@ -147,7 +147,6 @@ class MenuBuilder
 
         }
 
-
         if ($this->hasParent()) {
 
             // we are pointing the last inserted menu_item aka the parent -f

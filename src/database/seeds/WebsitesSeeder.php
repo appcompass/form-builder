@@ -21,8 +21,8 @@ class WebsitesSeeder extends Seeder
             $websiteBuilder->setStorage('cp_root');
 
             $users = $websiteBuilder->addPage('Users', 'users');
-            $users_permissions = $users->addChild('User Permissions', 'permissions');
-            $groups = $websiteBuilder->addPage('Groups', 'groups');
+            $user_roles = $users->addChild('User Roles', 'roles');
+            $roles = $websiteBuilder->addPage('Roles', 'roles');
             $permissions = $websiteBuilder->addPage('Permissions', 'permissions');
             $websites = $websiteBuilder->addPage('Websites', 'websites');
             $navigation = $websites->addChild('Navigation', 'menus');
@@ -40,9 +40,9 @@ class WebsitesSeeder extends Seeder
                 ->add(['title' => 'Dashboard', 'url' => '/', 'alt' => 'dashboard'], 0)
                 ->add(['title' => 'Users Management', 'alt' => 'Users Management'], 1)->sub()
                     ->add($users, 1)->icon('user')->sub()
-                        ->add($users_permissions, 1)
+                        ->add($user_roles, 1)
                         ->parent()
-                    ->add($groups, 2)->icon('users')
+                    ->add($roles, 2)->icon('users')
                     ->add($permissions, 3)->icon('lock')->parent()
                 ->add(['title' => 'Web Properties', 'alt' => 'Web Properties'], 2)->sub()
                     ->add($websites, 1)->icon('globe')->sub()
