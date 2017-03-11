@@ -29,6 +29,7 @@ class Field extends Model
     protected $casts = [
         'config' => 'object',
     ];
+
     protected $hidden = [];
 
     protected $appends = [];
@@ -116,7 +117,7 @@ class Field extends Model
      */
     public function getConfigAttribute($value)
     {
-        return $value ?? [];
+        return json_decode($value) ?? [];
     }
 
     /**
