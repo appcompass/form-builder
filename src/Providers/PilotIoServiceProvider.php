@@ -56,7 +56,7 @@ class PilotIoServiceProvider extends BaseServiceProvider
         ],
         'auth' => [
             \Illuminate\Auth\Middleware\Authenticate::class,
-            'jwt.refresh',
+            // 'jwt.refresh',
         ],
         'api' => [
             \P3in\Middleware\AfterRoute::class,
@@ -82,7 +82,7 @@ class PilotIoServiceProvider extends BaseServiceProvider
             Photo::class,
             Video::class
         ],
-        PhotoObserver::class => Photo::class, //@TODO: old but possibly needed for Alerts? look into it when we get to Alerts.
+        // PhotoObserver::class => Photo::class, //@TODO: old but possibly needed for Alerts? look into it when we get to Alerts.
         PageObserver::class => Page::class,
         WebsiteObserver::class => Website::class,
     ];
@@ -103,7 +103,8 @@ class PilotIoServiceProvider extends BaseServiceProvider
         \P3in\Interfaces\WebsitePagesRepositoryInterface::class => \P3in\Repositories\WebsitePagesRepository::class,
         \P3in\Interfaces\PageContentRepositoryInterface::class => \P3in\Repositories\PageContentRepository::class,
         \P3in\Interfaces\WebsiteMenusRepositoryInterface::class => \P3in\Repositories\WebsiteMenusRepository::class,
-        \P3in\Interfaces\ResourcesRepositoryInterface::class => \P3in\Repositories\ResourcesRepository::class
+        \P3in\Interfaces\ResourcesRepositoryInterface::class => \P3in\Repositories\ResourcesRepository::class,
+        \P3in\Interfaces\Plus3PeopleRepositoryInterface::class => \P3in\Repositories\Plus3PeopleRepository::class
     ];
 
     /**
