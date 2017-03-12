@@ -20,8 +20,6 @@ class GalleryPhotosController extends AbstractChildController
     {
         $this->repo->setParent($parent);
 
-        info(get_class(Gate::getPolicyFor($this->repo)));
-
         Gate::authorize('store', $this->repo);
 
         $request->user = Auth::user();
