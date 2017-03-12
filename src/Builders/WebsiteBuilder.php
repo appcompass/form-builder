@@ -108,7 +108,13 @@ class WebsiteBuilder
     public function setGallery()
     {
         $gallery = new Gallery(['name' => $this->website->host]);
-        $sysUser = User::SystemUsers()->firstOrFail();
+
+        // @TODO Jubair vvv role based makes more syntax and unifies the syntax throughtout the whole app
+        // thoughts? take a look at new user __call -> if you call $user->isRole() it checks if the user
+        // has that specific role, making the api smooth -f
+        // $sysUser = User::SystemUsers()->firstOrFail();
+
+        $sysUser = User::havingRole('system')->firstOrFail();
 
         $gallery->user()->associate($sysUser);
 

@@ -21,8 +21,6 @@ class PilotIoModuleDatabaseSeeder extends Seeder
         Model::unguard();
 
         $this->call(DisksFormsSeeder::class);
-        $this->call(GroupsSeeder::class);
-        $this->call(PermissionsSeeder::class);
         $this->call(UsersSeeder::class);
         $this->call(GalleriesSeeder::class);
         $this->call(WebsitesSeeder::class);

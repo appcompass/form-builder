@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUsersTable extends Migration
+class CreateUsers extends Migration
 {
     /**
      * Run the migrations.
@@ -20,7 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('phone', 24);
             $table->string('password', 64);
             $table->boolean('active')->default(false);
-            $table->boolean('system')->default(false);
+            // $table->boolean('system')->default(false);  $user->isAdmin() or isSystem() if there's a system role (there is)
             $table->string('activation_code', 64)->nullable();
             $table->timestamp('activated_at', 64)->nullable();
             $table->timestamp('last_login', 64)->nullable();

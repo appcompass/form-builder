@@ -29,7 +29,7 @@ class WebsiteMenusRepository extends AbstractChildRepository implements WebsiteM
         return [
             'id' => $model->id,
             'title' => $model->name, // @TODO rename to title for consistency
-            'menu' => $model->render(),
+            'menu' => $model->render(false, ['*']), // false => frontend rendering, * => do not apply permissions
             'deletions' => [],
             'repo' => [
                 'pages' => $this->parent->pages->each(function ($item) {

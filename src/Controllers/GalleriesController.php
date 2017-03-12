@@ -10,6 +10,7 @@ use P3in\Models\Gallery;
 use P3in\Models\Photo;
 use P3in\Models\User;
 use Auth;
+use Gate;
 
 class GalleriesController extends AbstractController
 {
@@ -30,5 +31,13 @@ class GalleriesController extends AbstractController
 
         throw new \Exception('Not logged, or whatever we should do here.');
     }
+
+    public function update(FormRequest $request, Model $model)
+    {
+        $this->repo->setModel($model);
+
+        return parent::update($request, $model);
+    }
+
 
 }

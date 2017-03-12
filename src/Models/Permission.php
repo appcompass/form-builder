@@ -3,7 +3,7 @@
 namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use P3in\Models\Group;
+use P3in\Models\Role;
 use P3in\Models\User;
 use P3in\ModularBaseModel;
 
@@ -33,22 +33,26 @@ class Permission extends ModularBaseModel
     }
 
     /**
-    *   Get groups having this permission
+    *   Get roles having this permission
     *
     */
-    public function groups()
+    public function roles()
     {
-        return $this->belongsToMany(Group::class);
+        return $this->belongsToMany(Role::class);
     }
-    // public function assign(PermissableInterface $owner)
+
+    /**
+     *
+     *
+     * @param      \Illuminate\Database\Eloquent\Builder  $builder  The builder
+     * @param      \P3in\Models\User                      $user     The user
+     *
+     * @return     <type>                                 ( description_of_the_return_value )
+     */
+    // public function scopeOf(Builder $builder, User $user)
     // {
-
+    //     return $builder->where('user_id', $user->id);
     // }
-
-    public function scopeOf(Builder $builder, User $user)
-    {
-        return $builder->where('user_id', $user->id);
-    }
 
     /**
     *   Get permission by type

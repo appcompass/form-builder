@@ -18,12 +18,19 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
     protected $with = [];
 
     // eager relations we wanna paginate
-    protected $paginatedWith = [];
+    // @NOTE we refer to childRepos for that
+    // protected $paginatedWith = [];
 
     // @TODO it works well and it's simple but not enough. maybe.
     // list of items that must be defined when persising the repo
     // ['user' => ['from' => 'id', 'to' => 'user_id'], [...]]
-    protected $requires;
+    protected $requires = [];
+
+    // model's default list view
+    protected $view = 'Table';
+
+    // @TODO limits list view, including abilities for each record
+    protected $limitsList = false;
 
     /**
      * { function_description }
@@ -37,6 +44,8 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         }
 
         $this->loadRelations();
+
+        $this->checkPermissions();
 
         $this->sort();
 
@@ -61,6 +70,27 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         return $this->builder;
     }
 
+    public function checkPermissions()
+    {
+        // depending on what we're doing we check permissions
+        // permissions are required at single element level
+        // req_perms should always be the field name (maybe make it configurable)
+        // so for exaple if we are getting a list of items we add the req_perm to the
+        // query builder
+        // if we're on single mode we just check if it requires a permission and if the
+        // current user matches it
+        if (\Auth::check()) {
+
+            // $this->builder->where('req_perm', \Auth::user()->allPermissions())->orWhereNull('req_perm');
+
+        } else {
+
+            // $this->builder->whereNull('req_perm');
+
+        }
+
+    }
+
     /**
      * Loads relations.
      */
@@ -70,19 +100,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
 
         foreach($this->with as $relation) {
 
-            if (in_array($relation, $this->paginatedWith)) {
-
-                $this->builder->with([$relation => function($q) {
-
-                    $q->paginate(10, ['*'], 'page', \Request::get('page'));
-
-                }]);
-
-            } else {
-
-                $this->builder->with($relation);
-
-            }
+            $this->builder->with($relation);
 
         }
 
@@ -98,7 +116,6 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
 
         $this->setModel($model);
 
-        // @TODO should this go here? relations are loaded when actually executing something i guess? -f
         $this->loadRelations();
 
         return $this;
@@ -116,6 +133,14 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         $this->model = $model;
 
         return $this;
+    }
+
+    /**
+     * Gets the model.
+     */
+    public function getModel()
+    {
+        return $this->model;
     }
 
     /**
@@ -176,7 +201,6 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
      *
      * @param      <type>  $attributes  The attributes
      */
-    // @TODO inject FormRequest
     public function create($request)
     {
         $request = $this->checkRequirements($request);
@@ -204,11 +228,11 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
      */
     public function reorder($order, $field = 'order')
     {
+        // @TODO this depends on relation, delegate, refactor this into absChild
         $rel = $this->model->{$this->relationName};
 
         // get the whole list of stuff we're sorting
         $items = $rel->whereIn('id', $order);
-
 
         foreach($order as $single) {
 
@@ -366,8 +390,14 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
             $per_page = 25;
         }
 
+        // @TODO pick from here. idea is filter the builder via the eprmissions, or add allowd actions based on those
+        if ($this->limitsList) {
+
+        }
+
         return [
-            'data' => $this->make()->builder->paginate($per_page, ['*'], 'page', $page)
+            'data' => $this->make()->builder->paginate($per_page, ['*'], 'page', $page),
+            'view' => $this->view
         ];
     }
 

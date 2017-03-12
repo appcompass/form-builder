@@ -5,6 +5,7 @@ namespace P3in\Observers;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
+use P3in\Models\MenuItem;
 
 class PageObserver
 {
@@ -25,6 +26,7 @@ class PageObserver
 
     public function deleted(Model $model)
     {
-
+        // Cleanup menu items that may target this page.
+        MenuItem::where(['navigatable_id' => $model->id, 'navigatable_type' => get_class($model)])->forceDelete();
     }
 }

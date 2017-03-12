@@ -27,6 +27,20 @@ class CreateWebsites extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
+
+        Schema::create('website_redirects', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('type');
+            $table->integer('website_id')->unsigned();
+            $table->string('from');
+            $table->string('to');
+            $table->timestamps();
+
+            $table->foreign('website_id')
+                ->references('id')
+                ->on('websites')
+                ->onDelete('cascade');
+        });
     }
 
     /**
@@ -36,6 +50,7 @@ class CreateWebsites extends Migration
      */
     public function down()
     {
+        Schema::drop('website_redirects');
         Schema::drop('websites');
     }
 }

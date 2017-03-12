@@ -87,4 +87,12 @@ class PublicWebsiteController extends BaseController
     }
 
     // @TODO Form submission moved into it's own class FormButler
+    public function submitForm(Request $request, $uri = '')
+    {
+
+    }
+    public function getToken(Request $request)
+    {
+        return csrf_token();
+    }
 }

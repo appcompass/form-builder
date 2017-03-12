@@ -7,12 +7,9 @@ use P3in\Models\Gallery;
 
 class GalleriesRepository extends AbstractRepository implements GalleriesRepositoryInterface
 {
-    // @TODO not sure about the 'paginatedWith'
-    // protected $with = ['user', 'videos.user', 'galleryable.storage', 'photos.user', 'photos'];
     protected $with = ['user', 'videos.user', 'galleryable.storage'];
 
-    protected $paginatedWith = ['photos'];
-
+    // List view
     protected $view = 'Card';
 
     protected $requires = [

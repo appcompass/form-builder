@@ -3,7 +3,7 @@
 namespace P3in\Commands;
 
 use Illuminate\Console\Command;
-use P3in\Models\Group;
+use P3in\Models\Role;
 use P3in\Models\Permission;
 use P3in\Models\User;
 
@@ -64,7 +64,7 @@ class AddUserCommand extends Command
         $user->permissions()
             ->attach(Permission::firstOrFail()->id);
 
-        $user->addToGroup(Group::where('name', 'cp-admin')->firstOrFail());
+        $user->assignRole('admin');
         $this->info('User created successfully!');
     }
     private function fetchEmail()

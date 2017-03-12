@@ -17,7 +17,8 @@ class MenuItem extends Model
         'clickable',
         'order',
         'icon',
-        'url'
+        'url',
+        'req_perm'
     ];
 
     protected $hidden = [

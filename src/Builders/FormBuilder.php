@@ -4,10 +4,11 @@ namespace P3in\Builders;
 
 use Closure;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use P3in\Models\Field;
+use P3in\Models\FieldTypes\BaseField;
 use P3in\Models\Form;
 use P3in\Models\Resource;
-use P3in\Models\FieldTypes\BaseField;
 
 class FormBuilder
 {
@@ -38,7 +39,10 @@ class FormBuilder
      */
     public static function new($name, Closure $closure = null): FormBuilder
     {
-        $form = Form::firstOrCreate([
+        // @NOTE new form means new form. old is deleted.
+        FormBuilder::seekAndDestroy($name);
+
+        $form = Form::create([
             'name' => $name,
         ]);
 
@@ -112,20 +116,6 @@ class FormBuilder
                 'form_id' => $this->form->id
             ]);
         }
-
-        return $this;
-    }
-
-    /**
-     * Sets the list layout.
-     *
-     * @param      <type>  $list_layout  The list layout
-     *
-     * @return     <type>  ( description_of_the_return_value )
-     */
-    public function setListLayout($list_layout)
-    {
-        $this->form->setListLayout($list_layout);
 
         return $this;
     }
@@ -293,5 +283,23 @@ class FormBuilder
         }
 
         return $field_type->field;
+    }
+
+    /**
+     *
+     */
+    private static function seekAndDestroy($name)
+    {
+        try {
+
+            $form = Form::whereName($name)->firstOrFail();
+
+            $form->delete();
+
+        } catch (ModelNotFoundException $e) {
+
+            return;
+
+        }
     }
 }

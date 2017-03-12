@@ -40,6 +40,16 @@ class AbstractChildRepository extends AbstractRepository
     }
 
     /**
+     * Gets the parent.
+     *
+     * @return     <type>  The parent.
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
      * Gets the relation.
      */
     private function getRelation()
@@ -133,15 +143,10 @@ class AbstractChildRepository extends AbstractRepository
                 break;
 
             case 'BelongsTo':
-                // @JTODO: needs testing, seems wrong.
                 $this->parent->{$this->parentToChild}()->save($attributes);
                 break;
 
             case 'HasMany':
-                // @JTODO: discuss creation workflow. There are isntances that we
-                // can't simply save a relationship but rather do stuff like
-                // additionalal relationship setting, file uploads, etc
-
                 $this->model = new $this->model($attributes);
 
                 // if there is a file in the attributes, lets store it.

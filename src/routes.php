@@ -5,7 +5,7 @@ Route::group([
     'namespace' => 'P3in\Controllers',
 ], function ($router) {
     $router->post('login', 'AuthController@login');
-    $router->get('logout', 'AuthController@logout')->middleware('auth:api');
+    $router->get('logout', 'AuthController@logout')->middleware(['auth']);
     $router->get('user', 'AuthController@user')->middleware('auth');
 });
 
@@ -16,15 +16,15 @@ Route::group([
 ], function ($router) {
     // $router->get('notification-center', 'CpController@getNotificationCenter');
     // $router->get('dashboard', 'CpController@getDashboard');
-    // $router->resource('storage', StorageController::class);
     $router->resource('users', UsersController::class);
-    $router->resource('groups', GroupsController::class);
+    $router->resource('roles', RolesController::class);
     $router->resource('permissions', PermissionsController::class);
-    $router->resource('users.groups', UserGroupsController::class);
+    $router->resource('users.roles', UserRolesController::class);
     $router->resource('users.permissions', UserPermissionsController::class);
+
     $router->resource('galleries', GalleriesController::class);
     $router->resource('galleries.photos', GalleryPhotosController::class);
-    $router->post('galleries/{gallery}/photos/sort', 'GalleryPhotosController@sort');
+    $router->post('galleries/{gallery}/photos/sort', 'GalleryPhotosController@sort'); // @TODO see about this
     $router->resource('galleries.videos', GalleryVideosController::class);
 
     $router->delete('menus/links/{link_id}', 'MenusController@deleteLink');
@@ -41,6 +41,8 @@ Route::group([
     // $router->resource('pages.contents', PageContentsController::class); // @TODO: websites.pages.contents
     // $router->resource('pages.sections', PageSectionsController::class); // @TODO: websites.pages.sections
     $router->resource('websites.redirects', WebsiteRedirectsController::class);
+
+    $router->resource('resources', ResourcesController::class);
 });
 
 // Public Front-end website endpoints
@@ -66,9 +68,7 @@ Route::group([
     $router->group([
         'prefix' => 'forms',
     ], function ($router) {
-        $router->get('token', function () {
-            return csrf_token();
-        });
+        $router->get('token', 'PublicWebsiteController@getToken');
         $router->post('{path?}', 'PublicWebsiteController@submitForm')->where('path', '(.*)');
     });
 });
