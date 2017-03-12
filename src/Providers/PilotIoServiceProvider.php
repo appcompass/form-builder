@@ -15,6 +15,7 @@ use P3in\Models\GalleryItem;
 use P3in\Models\Role;
 use P3in\Models\Menu;
 use P3in\Models\Page;
+use P3in\Models\Resource;
 use P3in\Models\PageSectionContent;
 use P3in\Models\Permission;
 use P3in\Models\Photo;
@@ -25,7 +26,9 @@ use P3in\Models\Website;
 use P3in\Observers\FieldObserver;
 use P3in\Observers\GalleryItemObserver;
 use P3in\Observers\PageObserver;
+use P3in\Observers\WebsiteObserver;
 use P3in\Providers\BaseServiceProvider;
+use P3in\Providers\EventServiceProvider;
 use Roumen\Sitemap\SitemapServiceProvider;
 use Tymon\JWTAuth\Providers\LaravelServiceProvider;
 
@@ -39,8 +42,8 @@ class PilotIoServiceProvider extends BaseServiceProvider
      *
      * @var array
      */
-    // protected $middleware = [
-    // ];
+    protected $middleware = [
+    ];
 
     /**
      * The application's route middleware groups.
@@ -53,25 +56,25 @@ class PilotIoServiceProvider extends BaseServiceProvider
         ],
         'auth' => [
             \Illuminate\Auth\Middleware\Authenticate::class,
-            // 'jwt.refresh',
+            'jwt.refresh',
         ],
         'api' => [
             \P3in\Middleware\AfterRoute::class,
         ]
     ];
 
-    // /**
-    //  * The application's route middleware.
-    //  *
-    //  * These middleware may be assigned to groups or used individually.
-    //  *
-    //  * @var array
-    //  */
-    // protected $routeMiddleware = [
-    //     // 'jwt.auth' => Tymon\JWTAuth\Middleware\GetUserFromToken::class,
-    //     // 'jwt.refresh' => Tymon\JWTAuth\Middleware\RefreshToken::class,
+    /**
+     * The application's route middleware.
+     *
+     * These middleware may be assigned to groups or used individually.
+     *
+     * @var array
+     */
+    protected $routeMiddleware = [
+        'jwt.auth' => Tymon\JWTAuth\Middleware\GetUserFromToken::class,
+        'jwt.refresh' => Tymon\JWTAuth\Middleware\RefreshToken::class,
 
-    // ];
+    ];
 
     protected $observe = [
         FieldObserver::class => Field::class,
@@ -81,9 +84,10 @@ class PilotIoServiceProvider extends BaseServiceProvider
         ],
         PhotoObserver::class => Photo::class, //@TODO: old but possibly needed for Alerts? look into it when we get to Alerts.
         PageObserver::class => Page::class,
+        WebsiteObserver::class => Website::class,
     ];
 
-    protected $bind = [
+    protected $appBindings = [
         \P3in\Interfaces\UsersRepositoryInterface::class => \P3in\Repositories\UsersRepository::class,
         \P3in\Interfaces\UserPermissionsRepositoryInterface::class => \P3in\Repositories\UserPermissionsRepository::class,
         \P3in\Interfaces\PermissionsRepositoryInterface::class => \P3in\Repositories\PermissionsRepository::class,
@@ -99,6 +103,7 @@ class PilotIoServiceProvider extends BaseServiceProvider
         \P3in\Interfaces\WebsitePagesRepositoryInterface::class => \P3in\Repositories\WebsitePagesRepository::class,
         \P3in\Interfaces\PageContentRepositoryInterface::class => \P3in\Repositories\PageContentRepository::class,
         \P3in\Interfaces\WebsiteMenusRepositoryInterface::class => \P3in\Repositories\WebsiteMenusRepository::class,
+        \P3in\Interfaces\ResourcesRepositoryInterface::class => \P3in\Repositories\ResourcesRepository::class
     ];
 
     /**
@@ -109,15 +114,13 @@ class PilotIoServiceProvider extends BaseServiceProvider
         \P3in\Repositories\GalleryPhotosRepository::class => \P3in\Policies\GalleryPhotosRepositoryPolicy::class
     ];
 
-    public function boot()
-    {
-        $this->bindToRoute();
-
-        $this->registerPolicies();
-    }
-
+    /**
+     * Register
+     */
     public function register()
     {
+        parent::register();
+
         $this->registerDependentPackages();
 
         // @TODO: currently a mix of views and stubs. should be better organized/split.
@@ -125,10 +128,21 @@ class PilotIoServiceProvider extends BaseServiceProvider
     }
 
     /**
+     * Boot
+     */
+    public function boot()
+    {
+        parent::boot();
+
+        $this->bindToRoute();
+    }
+
+    /**
      * Load Intervention for images handling
      */
-    private function registerDependentPackages()
+    protected function registerDependentPackages()
     {
+        $this->app->register(EventServiceProvider::class);
         $this->app->register(SitemapServiceProvider::class);
         // $this->app->register(FeedServiceProvider::class);
         $this->app->register(ImageServiceProvider::class);
@@ -165,11 +179,11 @@ class PilotIoServiceProvider extends BaseServiceProvider
             'content' => PageSectionContent::class,
             'section' => Section::class,
             'menu' => Menu::class,
+            'resource' => Resource::class
         ] as $key => $model) {
             Route::bind($key, function ($value) use ($model) {
                 return $model::findOrFail($value);
             });
-
             Route::model($key, $model);
         }
     }

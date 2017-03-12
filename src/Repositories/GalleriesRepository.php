@@ -7,7 +7,6 @@ use P3in\Models\Gallery;
 
 class GalleriesRepository extends AbstractRepository implements GalleriesRepositoryInterface
 {
-    // protected $with = ['user', 'videos.user', 'galleryable.storage', 'photos.user', 'photos'];
     protected $with = ['user', 'videos.user', 'galleryable.storage'];
 
     // List view

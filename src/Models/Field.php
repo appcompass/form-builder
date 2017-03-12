@@ -29,6 +29,7 @@ class Field extends Model
     protected $casts = [
         'config' => 'object',
     ];
+
     protected $hidden = [];
 
     protected $appends = [];
@@ -110,13 +111,23 @@ class Field extends Model
     }
 
     /**
+     * { function_description }
+     *
+     * @param      boolean  $nullable  The nullable
+     */
+    public function nullable($nullable = true)
+    {
+        $this->setConfig('nullable', $nullable);
+    }
+
+    /**
      * Make sure config doesn't return empty
      *
      * @return     array  The configuration attribute.
      */
     public function getConfigAttribute($value)
     {
-        return $value ?? [];
+        return json_decode($value) ?? [];
     }
 
     /**

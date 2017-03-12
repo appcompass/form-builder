@@ -24,6 +24,7 @@ class WebsitesSeeder extends Seeder
             $user_roles = $users->addChild('User Roles', 'roles');
             $roles = $websiteBuilder->addPage('Roles', 'roles');
             $permissions = $websiteBuilder->addPage('Permissions', 'permissions');
+            $resources = $websiteBuilder->addPage('Resources', 'resources');
             $websites = $websiteBuilder->addPage('Websites', 'websites');
             $navigation = $websites->addChild('Navigation', 'menus');
             $pages = $websites->addChild('Pages', 'pages');
@@ -43,7 +44,8 @@ class WebsitesSeeder extends Seeder
                         ->add($user_roles, 1)
                         ->parent()
                     ->add($roles, 2)->icon('users')
-                    ->add($permissions, 3)->icon('lock')->parent()
+                    ->add($permissions, 3)->icon('lock')
+                    ->add($resources, 4)->icon('diamond')->parent()
                 ->add(['title' => 'Web Properties', 'alt' => 'Web Properties'], 2)->sub()
                     ->add($websites, 1)->icon('globe')->sub()
                         ->add($navigation, 1)
@@ -59,7 +61,6 @@ class WebsitesSeeder extends Seeder
                     ->parent()
                 ->add(['title' => 'Media Management', 'alt' => 'Media Management'], 3)->sub()
                     ->add($galleries, 1)->icon('camera')->sub()
-                        // ->add(['url' => '/photos', 'title' => 'Photos', 'alt' => 'Photos'])
                         ->parent()
                     ->parent()
                 ->add(['title' => 'Settings', 'alt' => 'Settings'], 4)->sub()
@@ -72,13 +73,13 @@ class WebsitesSeeder extends Seeder
         $form = FormBuilder::new('websites', function (FormBuilder $builder) {
             $builder->string('Website Name', 'name')
                 ->list()
-                ->validation(['required'])
+                ->required()
                 ->sortable()
                 ->searchable()
                 ->help('The Human Readable website name');
             $builder->select('Scheme', 'scheme')
                 ->list()
-                ->validation(['required'])
+                ->required()
                 ->sortable()
                 ->searchable()
                 ->dynamic([
@@ -88,7 +89,7 @@ class WebsitesSeeder extends Seeder
                 ->help('Website Schema. We recommend website to be served using HTTPS');
             $builder->string('Host', 'host')
                 ->list()
-                ->validation(['required'])
+                ->required()
                 ->sortable()
                 ->searchable()
                 ->help('Just the fully qualified hostname (FQDN)');
@@ -99,20 +100,20 @@ class WebsitesSeeder extends Seeder
                         $source->where('type', 'header');
                         $source->select(['id AS index', 'name AS label']);
                     })
-                    ->validation(['required'])
+                    ->required()
                     ->help('Please select a Header');
                 $builder->select('Footer', 'footer')
                     ->dynamic(Section::class, function(FieldSource $source) {
                         $source->where('type', 'footer');
                         $source->select(['id AS index', 'name AS label']);
                     })
-                    ->validation(['required'])
+                    ->required()
                     ->help('Please select a Footer');
                 $builder->code('Layouts', 'layouts')
                     ->dynamic(['public', 'errors']);
                 $builder->fieldset('Deployment', 'deployment', function (FormBuilder $depBuilder) {
                     $depBuilder->string('Publish From Path', 'publish_from')
-                        ->validation(['required']);
+                        ->required();
                 });
             });
 
@@ -121,10 +122,10 @@ class WebsitesSeeder extends Seeder
 
             $builder->fieldset('Meta Data', 'config.meta', function(FormBuilder $builder) {
                 $builder->string('Title', 'title')
-                    ->validation(['required'])
+                    ->required()
                     ->help('The title of the website as it apears in header');
                 $builder->text('Description', 'description')
-                    ->validation(['required'])
+                    ->required()
                     ->help('The website desscription');
                 $builder->text('Keywords', 'keywords')
                     ->help('The website keywords, though this is no longer used by many Search Engines');
@@ -137,28 +138,24 @@ class WebsitesSeeder extends Seeder
                 $builder->text('Robots.txt Contents', 'robots_txt')
                     ->help('The Contents of the robots.txt file for search engines.');
                 $builder->string('Facebook Url', 'facebook_url')
-                    ->validation(['required'])
+                    ->required()
                     ->help('The title of the website as it apears in header');
                 $builder->string('Instagram Url', 'instagram_url')
-                    ->validation(['required'])
+                    ->required()
                     ->help('The title of the website as it apears in header');
                 $builder->string('Twitter Url', 'twitter_url')
-                    ->validation(['required'])
+                    ->required()
                     ->help('The title of the website as it apears in header');
                 $builder->string('Google Plus Url', 'google_plus_url')
-                    ->validation(['required'])
+                    ->required()
                     ->help('The title of the website as it apears in header');
                 $builder->string('LinkedIn Url', 'linkedin_url')
-                    ->validation(['required'])
+                    ->required()
                     ->help('The title of the website as it apears in header');
                 $builder->config('Addtional Header Tags', 'custom')
                     // ->dynamic(['title', 'description', 'keywords'])
                     ->help('Additional meta tags to be added.');
             });
-
-
-
-
         })->linkToResources(['websites.index', 'websites.show', 'websites.create', 'websites.store', 'websites.update'])
         ->getForm();
 
@@ -170,12 +167,12 @@ class WebsitesSeeder extends Seeder
             $builder->editor('Page');
             $builder->string('Page Title', 'title')
                 ->list()
-                ->validation(['required'])
+                ->required()
                 ->sortable()
                 ->searchable();
             $builder->string('Slug', 'slug')
                 ->list(false)
-                ->validation(['required']);
+                ->required();
             $builder->select('Parent', 'parent_id')->list(false)
                 ->dynamic(\P3in\Models\Page::class, function(FieldSource $source) {
                     $source->limit(4);
@@ -190,7 +187,7 @@ class WebsitesSeeder extends Seeder
         // DB::statement("DELETE FROM forms WHERE name = 'menus'");
 
         FormBuilder::new('menus', function (FormBuilder $builder) {
-            $builder->string('Name', 'name')->list()->validation(['required'])->sortable()->searchable();
+            $builder->string('Name', 'name')->list()->required()->sortable()->searchable();
         })->linkToResources(['websites.menus.index', 'websites.menus.create']);
 
         // DB::statement("DELETE FROM forms WHERE name = 'menus-editor'");
@@ -270,12 +267,20 @@ class WebsitesSeeder extends Seeder
                     ->sortable()
                     ->searchable()
                     ->required();
-            })
-                ->list(false)
-                ->required();
+            })->list(false)->required();
 
         })->linkToResources(['storage.index', 'storage.show', 'storage.create', 'storage.store', 'storage.update']);
 
+        FormBuilder::new('resources', function(FormBuilder $builder) {
+            $builder->string('Resource', 'resource')->list()->sortable()->searchable()->required();
+            $builder->string('Created', 'created_at')->list()->edit(false);
+            $builder->select('Role required', 'req_role')->dynamic(\P3in\Models\Role::class, function(FieldSource $source) {
+                $source->select(['id As index', 'label']);
+            })->nullable();
+        })->linkToResources(['resources.index', 'resources.show', 'resources.create']);
 
+        FormBuilder::new('permissions-resource', function(FormBuilder $builder) {
+
+        });
     }
 }

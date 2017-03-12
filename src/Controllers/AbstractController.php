@@ -51,6 +51,12 @@ abstract class AbstractController extends BaseController
 
     public function update(FormRequest $request, Model $model)
     {
+        $this->repo->setModel($model);
+
+        $this->checkPolicy();
+
+        Gate::authorize('update', $this->repo);
+
         $model->update($request->all());
 
         return response()->json(['message' => 'Model updated.']);
@@ -63,6 +69,12 @@ abstract class AbstractController extends BaseController
 
     public function destroy(Model $model)
     {
+        $this->repo->setModel($model);
+
+        $this->checkPolicy();
+
+        Gate::authorize('destroy', $this->repo);
+
         if ($model->delete()) {
 
             return response()->json(['message' => 'Model deleted.']);
