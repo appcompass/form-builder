@@ -5,7 +5,7 @@ Route::group([
     'namespace' => 'P3in\Controllers',
 ], function ($router) {
     $router->post('login', 'AuthController@login');
-    $router->get('logout', 'AuthController@logout')->middleware('auth:api');
+    $router->get('logout', 'AuthController@logout')->middleware(['auth']);
     $router->get('user', 'AuthController@user')->middleware('auth');
 });
 
@@ -68,9 +68,7 @@ Route::group([
     $router->group([
         'prefix' => 'forms',
     ], function ($router) {
-        $router->get('token', function () {
-            return csrf_token();
-        });
+        $router->get('token', 'PublicWebsiteController@getToken');
         $router->post('{path?}', 'PublicWebsiteController@submitForm')->where('path', '(.*)');
     });
 });

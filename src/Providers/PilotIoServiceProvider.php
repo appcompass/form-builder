@@ -26,7 +26,9 @@ use P3in\Models\Website;
 use P3in\Observers\FieldObserver;
 use P3in\Observers\GalleryItemObserver;
 use P3in\Observers\PageObserver;
+use P3in\Observers\WebsiteObserver;
 use P3in\Providers\BaseServiceProvider;
+use P3in\Providers\EventServiceProvider;
 use Roumen\Sitemap\SitemapServiceProvider;
 use Tymon\JWTAuth\Providers\LaravelServiceProvider;
 
@@ -40,8 +42,8 @@ class PilotIoServiceProvider extends BaseServiceProvider
      *
      * @var array
      */
-    // protected $middleware = [
-    // ];
+    protected $middleware = [
+    ];
 
     /**
      * The application's route middleware groups.
@@ -54,25 +56,25 @@ class PilotIoServiceProvider extends BaseServiceProvider
         ],
         'auth' => [
             \Illuminate\Auth\Middleware\Authenticate::class,
-            // 'jwt.refresh',
+            'jwt.refresh',
         ],
         'api' => [
             \P3in\Middleware\AfterRoute::class,
         ]
     ];
 
-    // /**
-    //  * The application's route middleware.
-    //  *
-    //  * These middleware may be assigned to groups or used individually.
-    //  *
-    //  * @var array
-    //  */
-    // protected $routeMiddleware = [
-    //     // 'jwt.auth' => Tymon\JWTAuth\Middleware\GetUserFromToken::class,
-    //     // 'jwt.refresh' => Tymon\JWTAuth\Middleware\RefreshToken::class,
+    /**
+     * The application's route middleware.
+     *
+     * These middleware may be assigned to groups or used individually.
+     *
+     * @var array
+     */
+    protected $routeMiddleware = [
+        'jwt.auth' => Tymon\JWTAuth\Middleware\GetUserFromToken::class,
+        'jwt.refresh' => Tymon\JWTAuth\Middleware\RefreshToken::class,
 
-    // ];
+    ];
 
     protected $observe = [
         FieldObserver::class => Field::class,
@@ -82,9 +84,10 @@ class PilotIoServiceProvider extends BaseServiceProvider
         ],
         PhotoObserver::class => Photo::class, //@TODO: old but possibly needed for Alerts? look into it when we get to Alerts.
         PageObserver::class => Page::class,
+        WebsiteObserver::class => Website::class,
     ];
 
-    protected $bind = [
+    protected $appBindings = [
         \P3in\Interfaces\UsersRepositoryInterface::class => \P3in\Repositories\UsersRepository::class,
         \P3in\Interfaces\UserPermissionsRepositoryInterface::class => \P3in\Repositories\UserPermissionsRepository::class,
         \P3in\Interfaces\PermissionsRepositoryInterface::class => \P3in\Repositories\PermissionsRepository::class,
@@ -118,8 +121,25 @@ class PilotIoServiceProvider extends BaseServiceProvider
         $this->registerPolicies();
     }
 
+    protected $routeBindings = [
+        'user' => User::class,
+        'permission' => Permission::class,
+        'group' => Group::class,
+        'gallery' => Gallery::class,
+        'photo' => Photo::class,
+        'video' => Video::class,
+        'website' => Website::class,
+        'redirect' => Redirect::class,
+        'page' => Page::class,
+        'content' => PageSectionContent::class,
+        'section' => Section::class,
+        'menu' => Menu::class,
+    ];
+
     public function register()
     {
+        parent::register();
+
         $this->registerDependentPackages();
 
         // @TODO: currently a mix of views and stubs. should be better organized/split.
@@ -131,6 +151,7 @@ class PilotIoServiceProvider extends BaseServiceProvider
      */
     private function registerDependentPackages()
     {
+        $this->app->register(EventServiceProvider::class);
         $this->app->register(SitemapServiceProvider::class);
         // $this->app->register(FeedServiceProvider::class);
         $this->app->register(ImageServiceProvider::class);
@@ -153,6 +174,9 @@ class PilotIoServiceProvider extends BaseServiceProvider
     // @TODO: once we figure out this functionality once and for all, we can move the method into BaseServiceProvider and just store the array here.
     public function bindToRoute()
     {
+        //@TODO: we require the use of imagick, not sure we should force this though.
+        Config::set(['image' => ['driver' => 'imagick']]);
+
         // @TODO: sort out Route::bind vs. Route::model.
         foreach ([
             'user' => User::class,
@@ -172,8 +196,6 @@ class PilotIoServiceProvider extends BaseServiceProvider
             Route::bind($key, function ($value) use ($model) {
                 return $model::findOrFail($value);
             });
-
             Route::model($key, $model);
-        }
     }
 }
