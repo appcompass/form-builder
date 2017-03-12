@@ -11,13 +11,15 @@ use P3in\Models\User;
 class GalleryPhotosRepository extends AbstractChildRepository implements GalleryPhotosRepositoryInterface
 {
 
-    // protected $view = 'Card';
-
     protected $with = ['user'];
 
     // models required in order to persist
     protected $requires = [
-        'user' => ['from' => 'id', 'to' => 'user_id']
+        'methods' => [
+            'user' => ['from' => 'id', 'to' => 'user_id']
+        ],
+        'props' => [
+        ]
     ];
 
     public function __construct(Photo $model, Gallery $parent)
@@ -27,8 +29,5 @@ class GalleryPhotosRepository extends AbstractChildRepository implements Gallery
         $this->parent = $parent;
 
         $this->relationName = 'photos';
-
-        // relation from parent to child
-        // $this->parentToChild = 'pages';
     }
 }

@@ -45,7 +45,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
 
         $this->loadRelations();
 
-        $this->checkPermissions();
+        // $this->checkPermissions();
 
         $this->sort();
 
@@ -273,7 +273,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         // respectively from -> field in the source object, to -> what it matches against in
         // current table i.e. 'user' => ['from' => 'id', 'to' => 'user_id']
         // it's a bit verbose but appears to be very flexible
-        foreach ($this->requires as $requirement => $field)
+        foreach ($this->requires['props'] as $requirement => $field)
         {
             if (!property_exists($request, $requirement)) {
 
@@ -282,6 +282,18 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
             }
 
             $res[$field['to']] = $request->{$requirement}->{$field['from']};
+
+        }
+
+        foreach ($this->requires['methods'] as $requirement => $field)
+        {
+            if (!method_exists($request, $requirement)) {
+
+                throw new \Exception('Requirement not satisfied: ' . $requirement);
+
+            }
+
+            $res[$field['to']] = $request->{$requirement}()->{$field['from']};
 
         }
 

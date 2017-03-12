@@ -56,7 +56,7 @@ class PilotIoServiceProvider extends BaseServiceProvider
         ],
         'auth' => [
             \Illuminate\Auth\Middleware\Authenticate::class,
-            // 'jwt.refresh',
+            // 'jwt.refresh'
         ],
         'api' => [
             \P3in\Middleware\AfterRoute::class,
