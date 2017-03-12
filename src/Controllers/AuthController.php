@@ -11,7 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
-use P3in\Models\User;
+use P3in\Events\Login;
+use P3in\Events\Logout;
 
 class AuthController extends Controller
 {
@@ -32,7 +33,12 @@ class AuthController extends Controller
             'active' => 1,
         ];
         if ($token = $this->guard()->attempt($credentials)) {
-            return $this->sendLoginResponse($request, $token);
+            $user = $this->guard()->user();
+
+            // jwt auth does not use events.
+            event(new Login($user, $token));
+
+            return $this->sendLoginResponse($request, $user, $token);
         }
 
         $this->incrementLoginAttempts($request);
@@ -42,7 +48,11 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        $this->guard()->logout();
+        $user = $this->guard()->user();
+
+        $this->guard()->logout(true);
+
+        event(new Logout($user));
 
         return response()->json([
             'message' => 'Logged out',
@@ -56,14 +66,9 @@ class AuthController extends Controller
         ]);
     }
 
-    protected function sendLoginResponse(Request $request, string $token)
+    protected function sendLoginResponse(Request $request, $user, string $token)
     {
         $this->clearLoginAttempts($request);
-
-        $user = $this->guard()->user();
-        // lets save the last_login timestamp.
-        $user->last_login = Carbon::now();
-        $user->save();
 
         return $this->authenticated($request, $user, $token);
     }

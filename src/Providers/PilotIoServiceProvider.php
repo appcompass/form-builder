@@ -127,6 +127,13 @@ class PilotIoServiceProvider extends BaseServiceProvider
         $this->app['view']->addNamespace('pilot-io', realpath(__DIR__.'/../Templates'));
     }
 
+    public function boot()
+    {
+        $this->bindToRoute();
+
+        $this->registerPolicies(App('Gate'));
+    }
+
     /**
      * Boot
      */
