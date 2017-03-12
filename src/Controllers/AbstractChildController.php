@@ -48,6 +48,10 @@ abstract class AbstractChildController extends Controller
 
     public function show(FormRequest $request, Model $parent, Model $model)
     {
+        $this->repo->setParent($parent);
+
+        $this->repo->setModel($model);
+
         return $this->repo
             ->setParent($parent)
             ->findByPrimaryKey($model->id);
@@ -55,6 +59,10 @@ abstract class AbstractChildController extends Controller
 
     public function update(FormRequest $request, Model $parent, Model $model)
     {
+        $this->repo->setParent($parent);
+
+        $this->repo->setModel($model);
+
         $this->repo
             ->setParent($parent)
             ->fromModel($model)
@@ -70,6 +78,10 @@ abstract class AbstractChildController extends Controller
 
     public function destroy(FormRequest $request, Model $parent, Model $model)
     {
+        $this->repo->setParent($parent);
+
+        $this->repo->setModel($model);
+
         $success = $this->repo
             ->fromModel($model)
             ->destroy();

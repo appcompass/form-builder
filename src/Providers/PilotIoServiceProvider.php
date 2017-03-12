@@ -103,8 +103,7 @@ class PilotIoServiceProvider extends BaseServiceProvider
         \P3in\Interfaces\WebsitePagesRepositoryInterface::class => \P3in\Repositories\WebsitePagesRepository::class,
         \P3in\Interfaces\PageContentRepositoryInterface::class => \P3in\Repositories\PageContentRepository::class,
         \P3in\Interfaces\WebsiteMenusRepositoryInterface::class => \P3in\Repositories\WebsiteMenusRepository::class,
-        \P3in\Interfaces\ResourcesRepositoryInterface::class => \P3in\Repositories\ResourcesRepository::class,
-        \P3in\Interfaces\Plus3PeopleRepositoryInterface::class => \P3in\Repositories\Plus3PeopleRepository::class
+        \P3in\Interfaces\ResourcesRepositoryInterface::class => \P3in\Repositories\ResourcesRepository::class
     ];
 
     /**

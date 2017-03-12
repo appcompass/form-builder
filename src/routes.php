@@ -11,7 +11,6 @@ Route::group([
 
 Route::group([
     'namespace' => 'P3in\Controllers',
-    // 'middleware' => 'auth:api',
     'middleware' => ['auth', 'api']
 ], function ($router) {
     // $router->get('notification-center', 'CpController@getNotificationCenter');

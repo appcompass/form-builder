@@ -18,15 +18,20 @@ class GalleryPhotosController extends AbstractChildController
 
     public function store(FormRequest $request, Model $parent)
     {
+        // @TODO: have validation check the request->user() instead of $request->user
+        // request->user() is always set when a user is authenticated,
+        // and this end point requires auth via middleware.
+        // So this method should be removed if we can get validation to use the ->user() method instead.
+        //  -- this is the path i was going down but for some reason i didn't yet have time to investigate the user is not being resolved here -f
         $this->repo->setParent($parent);
 
         Gate::authorize('store', $this->repo);
 
+        $request->user = Auth::user();
+
         $parent->touch();
 
         return parent::store($request, $parent);
-
-        throw new \Exception('Not logged, or whatever we should do here.');
     }
 
     public function destroy(FormRequest $request, Model $parent, Model $model)
