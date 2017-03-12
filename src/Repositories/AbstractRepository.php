@@ -24,7 +24,10 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
     // @TODO it works well and it's simple but not enough. maybe.
     // list of items that must be defined when persising the repo
     // ['user' => ['from' => 'id', 'to' => 'user_id'], [...]]
-    protected $requires = [];
+    protected $requires = [
+        'methods' => [],
+        'props' => []
+    ];
 
     // model's default list view
     protected $view = 'Table';
