@@ -17,6 +17,7 @@ Route::group([
     // $router->get('dashboard', 'CpController@getDashboard');
     $router->resource('users', UsersController::class);
     $router->resource('roles', RolesController::class);
+    $router->resource('roles.permissions', RolePermissionsController::class);
     $router->resource('permissions', PermissionsController::class);
     $router->resource('users.roles', UserRolesController::class);
     $router->resource('users.permissions', UserPermissionsController::class);

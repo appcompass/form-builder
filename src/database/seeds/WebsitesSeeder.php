@@ -23,6 +23,7 @@ class WebsitesSeeder extends Seeder
             $users = $websiteBuilder->addPage('Users', 'users');
             $user_roles = $users->addChild('User Roles', 'roles');
             $roles = $websiteBuilder->addPage('Roles', 'roles');
+            $role_permissions = $roles->addChild('Role Permissions', 'permissions');
             $permissions = $websiteBuilder->addPage('Permissions', 'permissions');
             $resources = $websiteBuilder->addPage('Resources', 'resources');
             $websites = $websiteBuilder->addPage('Websites', 'websites');
@@ -43,9 +44,12 @@ class WebsitesSeeder extends Seeder
                     ->add($users, 1)->icon('user')->sub()
                         ->add($user_roles, 1)
                         ->parent()
-                    ->add($roles, 2)->icon('users')
+                    ->add($roles, 2)->icon('id-card-o')->sub()
+                        ->add($role_permissions, 1)
+                        ->parent()
                     ->add($permissions, 3)->icon('lock')
-                    ->add($resources, 4)->icon('diamond')->parent()
+                    ->add($resources, 4)->icon('diamond')
+                    ->parent()
                 ->add(['title' => 'Web Properties', 'alt' => 'Web Properties'], 2)->sub()
                     ->add($websites, 1)->icon('globe')->sub()
                         ->add($navigation, 1)
