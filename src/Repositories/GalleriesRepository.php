@@ -13,7 +13,10 @@ class GalleriesRepository extends AbstractRepository implements GalleriesReposit
     protected $view = 'Card';
 
     protected $requires = [
-        'user' => ['from' => 'id', 'to' => 'user_id']
+        'methods' => [
+            'user' => ['from' => 'id', 'to' => 'user_id']
+        ],
+        'props' => []
     ];
 
     public function __construct(Gallery $model)
