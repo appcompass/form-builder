@@ -114,28 +114,6 @@ class PilotIoServiceProvider extends BaseServiceProvider
         \P3in\Repositories\GalleryPhotosRepository::class => \P3in\Policies\GalleryPhotosRepositoryPolicy::class
     ];
 
-    public function boot()
-    {
-        $this->bindToRoute();
-
-        $this->registerPolicies();
-    }
-
-    protected $routeBindings = [
-        'user' => User::class,
-        'permission' => Permission::class,
-        'group' => Group::class,
-        'gallery' => Gallery::class,
-        'photo' => Photo::class,
-        'video' => Video::class,
-        'website' => Website::class,
-        'redirect' => Redirect::class,
-        'page' => Page::class,
-        'content' => PageSectionContent::class,
-        'section' => Section::class,
-        'menu' => Menu::class,
-    ];
-
     public function register()
     {
         parent::register();
@@ -146,10 +124,17 @@ class PilotIoServiceProvider extends BaseServiceProvider
         $this->app['view']->addNamespace('pilot-io', realpath(__DIR__.'/../Templates'));
     }
 
+    public function boot()
+    {
+        $this->bindToRoute();
+
+        $this->registerPolicies(App('Gate'));
+    }
+
     /**
      * Load Intervention for images handling
      */
-    private function registerDependentPackages()
+    protected function registerDependentPackages()
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(SitemapServiceProvider::class);
@@ -174,9 +159,6 @@ class PilotIoServiceProvider extends BaseServiceProvider
     // @TODO: once we figure out this functionality once and for all, we can move the method into BaseServiceProvider and just store the array here.
     public function bindToRoute()
     {
-        //@TODO: we require the use of imagick, not sure we should force this though.
-        Config::set(['image' => ['driver' => 'imagick']]);
-
         // @TODO: sort out Route::bind vs. Route::model.
         foreach ([
             'user' => User::class,
@@ -197,5 +179,6 @@ class PilotIoServiceProvider extends BaseServiceProvider
                 return $model::findOrFail($value);
             });
             Route::model($key, $model);
+        }
     }
 }
