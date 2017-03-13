@@ -7,6 +7,8 @@ use P3in\Models\Gallery;
 
 class GalleriesRepository extends AbstractRepository implements GalleriesRepositoryInterface
 {
+    const EDIT_OWNED = 1;
+
     protected $with = ['user', 'videos.user', 'galleryable.storage'];
 
     // List view

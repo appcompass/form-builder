@@ -133,6 +133,7 @@ class PilotIoServiceProvider extends BaseServiceProvider
      */
     protected function registerDependentPackages()
     {
+        // @TODO check how making those deferred plays out
         $this->app->register(EventServiceProvider::class);
         $this->app->register(SitemapServiceProvider::class);
         // $this->app->register(FeedServiceProvider::class);

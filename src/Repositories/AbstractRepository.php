@@ -2,12 +2,28 @@
 
 namespace P3in\Repositories;
 
+use P3in\Interfaces\AbstractRepositoryInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
-use P3in\Interfaces\AbstractRepositoryInterface;
+use Auth;
 
 abstract class AbstractRepository implements AbstractRepositoryInterface
 {
+
+    // @TODO PHP 7.1 allows for public/private constants. consider
+    // logged user only can see owned items
+    const SEE_OWNED = 0;
+
+    // looged user sees any, edits owned
+    const EDIT_OWNED = 0;
+
+    // key on the model representing relation
+    // @TODO explored dot.separation (maybe after loading relations)
+    protected $owned_key = 'user_id';
+
+    // repo locks if use doesn't have permissions
+    private $locked = false;
+
     // Builder
     protected $builder;
 
@@ -33,7 +49,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
     protected $view = 'Table';
 
     // @TODO limits list view, including abilities for each record
-    protected $limitsList = false;
+    protected $list_req = false; // [EDIT_OWNED]
 
     /**
      * { function_description }
@@ -46,9 +62,26 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
 
         }
 
-        $this->loadRelations();
+        // @TODO consider how to work with relations, it could happen the Model doesn't have a user_id directly (we prob should avoid that to keep it simpler)
+        // SEE_OWNED has the highest priority
+        if (static::SEE_OWNED) {
 
-        // $this->checkPermissions();
+            if (!Auth::check()) {
+
+                $this->locked = true;
+
+            }
+
+            if (!Auth::user()->isAdmin()) {
+
+
+                $this->builder->where($this->owned_key, \Auth::user()->id);
+
+            }
+
+        }
+
+        $this->loadRelations();
 
         $this->sort();
 
@@ -71,27 +104,6 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         }
 
         return $this->builder;
-    }
-
-    public function checkPermissions()
-    {
-        // depending on what we're doing we check permissions
-        // permissions are required at single element level
-        // req_perms should always be the field name (maybe make it configurable)
-        // so for exaple if we are getting a list of items we add the req_perm to the
-        // query builder
-        // if we're on single mode we just check if it requires a permission and if the
-        // current user matches it
-        if (\Auth::check()) {
-
-            // $this->builder->where('req_perm', \Auth::user()->allPermissions())->orWhereNull('req_perm');
-
-        } else {
-
-            // $this->builder->whereNull('req_perm');
-
-        }
-
     }
 
     /**
@@ -267,6 +279,8 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
     protected function checkRequirements($request)
     {
 
+        // @TODO make this look like code
+
         // so we kwow it's a request instance
 
         // we can fetch all the attributes and add to that
@@ -372,6 +386,14 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
      */
     public function get()
     {
+
+        // repo locks if use doesn't have permissions
+        if ($this->locked) {
+
+            return;
+
+        }
+
         // for show() if a model has been set we only wanna load rels
         if ($this->model->id) {
 
@@ -405,13 +427,39 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
             $per_page = 25;
         }
 
-        // @TODO pick from here. idea is filter the builder via the eprmissions, or add allowd actions based on those
-        if ($this->limitsList) {
+        // when paginating evaluate EDIT_OWNED, if true get the results and loop through them
+        // attach `abilities` to the resulting data
+        // abilities = [create, edit, destoy, index, show]
+        $data = $this->make()->builder->paginate($per_page, ['*'], 'page', $page);
+
+        if (static::EDIT_OWNED && !Auth::user()->isAdmin()) {
+
+            foreach ($data as $record) {
+
+                if (Auth::user()->id === $record[$this->owned_key]) {
+
+                    $record['abilities'] = ['edit', 'view', 'create', 'destroy'];
+
+                } else {
+
+                    $record['abilities'] = ['view', 'create'];
+
+                }
+
+            }
+
+        } else {
+
+            foreach ($data as $record) {
+
+                $record['abilities'] = ['edit', 'view', 'create', 'destroy'];
+
+            }
 
         }
 
         return [
-            'data' => $this->make()->builder->paginate($per_page, ['*'], 'page', $page),
+            'data' => $data,
             'view' => $this->view
         ];
     }

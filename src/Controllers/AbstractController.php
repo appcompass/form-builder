@@ -29,6 +29,9 @@ abstract class AbstractController extends BaseController
         return;
     }
 
+    // @TODO generalize and refactor (don't make it crazy, it just looks like there's too much repetition)
+    // IDEA __call()  $method in_array [crud methods] ? set parent/child using ...args -> gate authorize(method checkPolicy()) -> call specialised method
+
     public function index(FormRequest $request)
     {
         $this->checkPolicy();
