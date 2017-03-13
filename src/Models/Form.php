@@ -20,6 +20,8 @@ class Form extends Model
 
     protected $with = ['fields'];
 
+    protected $appends = ['fieldsCount'];
+
     /**
      * Links to models
      *
@@ -160,6 +162,16 @@ class Form extends Model
         }
 
         return $rules;
+    }
+
+    /**
+     * Gets the fields count attribute.
+     *
+     * @return     <type>  The fields count attribute.
+     */
+    public function getFieldsCountAttribute()
+    {
+        return $this->fields->count();
     }
 
     /**

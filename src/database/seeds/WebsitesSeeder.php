@@ -283,8 +283,12 @@ class WebsitesSeeder extends Seeder
             })->nullable();
         })->linkToResources(['resources.index', 'resources.show', 'resources.create']);
 
-        FormBuilder::new('permissions-resource', function(FormBuilder $builder) {
-
-        });
+        FormBuilder::new('forms', function(FormBuilder $builder) {
+            $builder->string('Name', 'name')->list(true)->sortable()->searchable();
+            $builder->string('Editor', 'editor');
+            $builder->string('Fields', 'fieldsCount')->edit(false)->list();
+            $builder->string('Created', 'created_at')->edit(false);
+            $builder->string('Ureated', 'updated_at')->edit(false);
+        })->linkToResources(['forms.index', 'forms.show']);
     }
 }

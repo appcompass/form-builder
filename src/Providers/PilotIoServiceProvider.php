@@ -104,7 +104,8 @@ class PilotIoServiceProvider extends BaseServiceProvider
         \P3in\Interfaces\WebsitePagesRepositoryInterface::class => \P3in\Repositories\WebsitePagesRepository::class,
         \P3in\Interfaces\PageContentRepositoryInterface::class => \P3in\Repositories\PageContentRepository::class,
         \P3in\Interfaces\WebsiteMenusRepositoryInterface::class => \P3in\Repositories\WebsiteMenusRepository::class,
-        \P3in\Interfaces\ResourcesRepositoryInterface::class => \P3in\Repositories\ResourcesRepository::class
+        \P3in\Interfaces\ResourcesRepositoryInterface::class => \P3in\Repositories\ResourcesRepository::class,
+        \P3in\Interfaces\FormsRepositoryInterface::class => \P3in\Repositories\FormsRepository::class
     ];
 
     /**
@@ -171,7 +172,8 @@ class PilotIoServiceProvider extends BaseServiceProvider
             'content' => PageSectionContent::class,
             'section' => Section::class,
             'menu' => Menu::class,
-            'resource' => Resource::class
+            'resource' => Resource::class,
+            'form' => \P3in\Models\Form::class
         ] as $key => $model) {
             Route::bind($key, function ($value) use ($model) {
                 return $model::findOrFail($value);

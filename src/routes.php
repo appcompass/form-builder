@@ -43,6 +43,7 @@ Route::group([
     $router->resource('websites.redirects', WebsiteRedirectsController::class);
 
     $router->resource('resources', ResourcesController::class);
+    $router->resource('forms', FormsController::class);
 });
 
 // Public Front-end website endpoints

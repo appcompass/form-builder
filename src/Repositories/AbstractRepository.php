@@ -18,7 +18,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
     const EDIT_OWNED = 0;
 
     // key on the model representing relation
-    // @TODO explored dot.separation (maybe after loading relations)
+    // @TODO explore dot.separation (maybe after loading relations)
     protected $owned_key = 'user_id';
 
     // repo locks if use doesn't have permissions
@@ -33,13 +33,9 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
      // Link parent/children
     protected $with = [];
 
-    // eager relations we wanna paginate
-    // @NOTE we refer to childRepos for that
-    // protected $paginatedWith = [];
-
     // @TODO it works well and it's simple but not enough. maybe.
     // list of items that must be defined when persising the repo
-    // ['user' => ['from' => 'id', 'to' => 'user_id'], [...]]
+    // ['user' => ['from' => 'id', 'to' => 'user_id']]
     protected $requires = [
         'methods' => [],
         'props' => []
@@ -47,9 +43,6 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
 
     // model's default list view
     protected $view = 'Table';
-
-    // @TODO limits list view, including abilities for each record
-    protected $list_req = false; // [EDIT_OWNED]
 
     /**
      * { function_description }
