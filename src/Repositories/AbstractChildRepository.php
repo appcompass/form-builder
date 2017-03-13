@@ -194,6 +194,32 @@ class AbstractChildRepository extends AbstractRepository
 
         $this->populateOwned();
 
+        if (static::EDIT_OWNED && !Auth::user()->isAdmin()) {
+
+            foreach ($data as $record) {
+
+                if (Auth::user()->id === $record[$this->owned_key]) {
+
+                    $record['abilities'] = ['edit', 'view', 'create', 'destroy'];
+
+                } else {
+
+                    $record['abilities'] = ['view', 'create'];
+
+                }
+
+            }
+
+        } else {
+
+            foreach ($data as $record) {
+
+                $record['abilities'] = ['edit', 'view', 'create', 'destroy'];
+
+            }
+
+        }
+
         return [
             'data' => $data,
             'owned' => $this->owned,
