@@ -20,7 +20,6 @@ class CreateUsers extends Migration
             $table->string('phone', 24);
             $table->string('password', 64);
             $table->boolean('active')->default(false);
-            // $table->boolean('system')->default(false);  $user->isAdmin() or isSystem() if there's a system role (there is)
             $table->string('activation_code', 64)->nullable();
             $table->timestamp('activated_at', 64)->nullable();
             $table->timestamp('last_login', 64)->nullable();
@@ -28,6 +27,11 @@ class CreateUsers extends Migration
             $table->timestamps();
         });
 
+        Schema::create('password_resets', function (Blueprint $table) {
+            $table->string('email')->index();
+            $table->string('token')->index();
+            $table->timestamp('created_at')->nullable();
+        });
 
     }
 
@@ -38,6 +42,7 @@ class CreateUsers extends Migration
      */
     public function down()
     {
-        Schema::drop('users');
+        Schema::dropIfExists('password_resets');
+        Schema::dropIfExists('users');
     }
 }

@@ -3,9 +3,12 @@
 namespace P3in\Models;
 
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Intervention\Image\Exception\NotFoundException;
 use P3in\Models\Page;
 use P3in\Models\Redirect;
 use P3in\Traits\HasGallery;
@@ -226,6 +229,28 @@ class Website extends Model
             throw new Exception('There is no page by that URL.');
         }
     }
+
+    public static function fromRequest(Request $request)
+    {
+        try {
+            $host = $request->header('host');
+
+            return Website::whereHost($host)->firstOrFail();
+
+        } catch (NotFoundException $e) {
+
+            App::abort(401, $host.' Not Authorized');
+
+        } catch (ModelNotFoundException $e) {
+
+            // @TODO: remove, it's temporary
+            return Website::whereHost(env('ADMIN_WEBSITE_HOST'))->firstOrFail();
+
+            App::abort(401, $host.' Not Authorized');
+
+        }
+    }
+
     // public function populateField($field_name)
     // {
     //     switch ($field_name) {

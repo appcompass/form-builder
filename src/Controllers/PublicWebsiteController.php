@@ -91,6 +91,7 @@ class PublicWebsiteController extends BaseController
     {
 
     }
+
     public function getToken(Request $request)
     {
         return csrf_token();
