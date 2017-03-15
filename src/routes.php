@@ -2,11 +2,22 @@
 
 Route::group([
     'prefix' => 'auth',
+    'middleware' => ['web'],
     'namespace' => 'P3in\Controllers',
 ], function ($router) {
+    // login and auth check
     $router->post('login', 'AuthController@login');
     $router->get('logout', 'AuthController@logout')->middleware(['auth']);
     $router->get('user', 'AuthController@user')->middleware('auth');
+
+    // registration
+    $router->post('register', 'AuthController@register');
+    $router->get('activate/{token}', 'AuthController@activate');
+
+    // password reset
+    $router->post('password/email', 'PasswordController@sendResetLinkEmail');
+    $router->post('password/reset', 'PasswordController@reset');
+
 });
 
 Route::group([
@@ -51,11 +62,10 @@ Route::group([
     'middleware' => ['web'],
 ], function ($router) {
     $router->group([
-        'prefix' => 'content',
+        'prefix' => 'web-forms',
     ], function ($router) {
-        $router->get('menus', 'PublicWebsiteController@getSiteMenus');
-        $router->get('site-meta', 'PublicWebsiteController@getSiteMeta');
-        $router->get('{path?}', 'PublicWebsiteController@getPageData')->where('path', '(.*)');
+        $router->get('token', 'PublicWebsiteController@getToken');
+        $router->post('{path?}', 'PublicWebsiteController@submitForm')->where('path', '(.*)');
     });
 
     $router->group([
@@ -66,9 +76,10 @@ Route::group([
     });
 
     $router->group([
-        'prefix' => 'forms',
+        'prefix' => 'content',
     ], function ($router) {
-        $router->get('token', 'PublicWebsiteController@getToken');
-        $router->post('{path?}', 'PublicWebsiteController@submitForm')->where('path', '(.*)');
+        $router->get('menus', 'PublicWebsiteController@getSiteMenus');
+        $router->get('site-meta', 'PublicWebsiteController@getSiteMeta');
+        $router->get('{path?}', 'PublicWebsiteController@getPageData')->where('path', '(.*)');
     });
 });

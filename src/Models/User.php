@@ -2,19 +2,20 @@
 
 namespace P3in\Models;
 
-use Tymon\JWTAuth\Contracts\JWTSubject as AuthenticatableUserContract;
+use Exception;
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Foundation\Auth\Access\Authorizable;
-use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Auth\Authenticatable;
-use P3in\ModularBaseModel;
 use P3in\Models\Gallery;
 use P3in\Models\Photo;
 use P3in\Models\Role;
-use Exception;
+use P3in\ModularBaseModel;
+use P3in\Notifications\ResetPassword;
+use Tymon\JWTAuth\Contracts\JWTSubject as AuthenticatableUserContract;
 // use P3in\Traits\HasProfileTrait;
 
 class User extends ModularBaseModel implements
@@ -123,17 +124,6 @@ class User extends ModularBaseModel implements
     public function galleries()
     {
         return $this->hasMany(Gallery::class);
-    }
-
-    /**
-     * Sets the password attribute.
-     *
-     * @param      <type>  $value  The value
-     */
-    // @TODO doesn't laravel do this automagically? investigate
-    public function setPasswordAttribute($value)
-    {
-        $this->attributes['password'] = bcrypt($value);
     }
 
     /**
@@ -351,4 +341,14 @@ class User extends ModularBaseModel implements
     //     }
     // }
 
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPassword($token));
+    }
 }

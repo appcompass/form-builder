@@ -69,6 +69,6 @@ class UsersSeeder extends Seeder
         Role::create(['name' => 'admin', 'label' => 'Admin', 'description' => 'Administrators', 'active' => true]);
         Role::create(['name' => 'system', 'label' => 'System', 'description' => 'System users', 'active' => true]);
 
-        User::create(['first_name' => 'System', 'last_name' => 'User', 'email' => 'system@p3in.com', 'phone' => '617263526352', 'password' => 'd3velopment'])->assignRole('system');
+        User::create(['first_name' => 'System', 'last_name' => 'User', 'email' => 'system@p3in.com', 'phone' => '617263526352', 'password' => bcrypt('d3velopment')])->assignRole('system');
     }
 }

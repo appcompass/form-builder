@@ -5,46 +5,20 @@ namespace P3in\Controllers;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Foundation\Auth\ThrottlesLogins;
+use Illuminate\Foundation\Auth\ResetsPasswords;
+use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
 use P3in\Events\Login;
 use P3in\Events\Logout;
 
 class AuthController extends Controller
 {
-    use ThrottlesLogins;
-
-    public function login(Request $request)
-    {
-        $this->validateLogin($request);
-
-        if ($this->hasTooManyLoginAttempts($request)) {
-            $this->fireLockoutEvent($request);
-
-            return $this->sendLockoutResponse($request);
-        }
-        $credentials = [
-            'email' => $request->email,
-            'password' => $request->password,
-            'active' => 1,
-        ];
-        if ($token = $this->guard()->attempt($credentials)) {
-            $user = $this->guard()->user();
-
-            // jwt auth does not use events.
-            event(new Login($user, $token));
-
-            return $this->sendLoginResponse($request, $user, $token);
-        }
-
-        $this->incrementLoginAttempts($request);
-
-        return $this->sendFailedLoginResponse($request);
-    }
+    use AuthenticatesUsers;
 
     public function logout(Request $request)
     {
@@ -59,18 +33,56 @@ class AuthController extends Controller
         ]);
     }
 
+    public function user(Request $request)
+    {
+        return $request->user();
+    }
+
+    protected function credentials(Request $request)
+    {
+        $creds = $request->only($this->username(), 'password');
+        $creds['active'] = 1;
+        return $creds;
+    }
+
+    // we need to do things a bit differently using JWTAuth since it doesn't
+    // fire events and the remember.  We also need the token to be setfor later
+    // use in the controller, not sure why JWT doesn't do it internally...
+    protected function attemptLogin(Request $request)
+    {
+        if($token = $this->guard()->attempt($this->credentials($request))) {
+            $this->guard()->setToken($token);
+            $user = $this->guard()->user();
+
+            // jwt auth does not use events.
+            event(new Login($user, $token));
+        }
+        return $token;
+    }
+
     protected function validateLogin(Request $request)
     {
+        // we add remember => true to the request since all token auth are set to remember (no session).
+        $request->merge(array('remember' => true));
         $this->validate($request, [
             $this->username() => 'required', 'password' => 'required',
         ]);
     }
 
-    protected function sendLoginResponse(Request $request, $user, string $token)
+    protected function authenticated(Request $request, $user)
     {
-        $this->clearLoginAttempts($request);
+        if ($token = $this->guard()->getToken()) {
+            $token = $token->get();
+        }else{
+            return $this->sendFailedLoginResponse($request);
+        }
 
-        return $this->authenticated($request, $user, $token);
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'expires_in' => config('jwt.ttl') * 60,
+            'user' => $user
+        ]);
     }
 
     protected function sendFailedLoginResponse(Request $request)
@@ -80,28 +92,4 @@ class AuthController extends Controller
         ], 401);
     }
 
-    protected function authenticated(Request $request, $user, string $token)
-    {
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => config('jwt.ttl') * 60,
-            'user' => $user
-        ]);
-    }
-
-    public function user()
-    {
-        return Auth::user();
-    }
-
-    public function username()
-    {
-        return 'email';
-    }
-
-    protected function guard()
-    {
-        return Auth::guard();
-    }
 }

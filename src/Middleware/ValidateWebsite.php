@@ -3,11 +3,9 @@
 namespace P3in\Middleware;
 
 use Closure;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Config;
 use P3in\Models\Website;
-use Route;
 
 class ValidateWebsite
 {
@@ -20,32 +18,14 @@ class ValidateWebsite
      */
     public function handle(Request $request, Closure $next)
     {
-        $host = $request->header('host');
+        $request->website = $website = Website::fromRequest($request);
 
-        try {
+        Config::set('app.url', $website->url);
+        Config::set('app.name', $website->name);
+        Config::set('mail.from.address', 'website@'.$website->host);
+        Config::set('mail.from.name', $website->name);
 
-            $request->website = Website::whereHost($host)->firstOrFail();
-
-            return $next($request);
-
-        } catch (NotFoundException $e) {
-
-            App::abort(401, $host.' Not Authorized');
-
-        } catch (ModelNotFoundException $e) {
-
-            $request->website = Website::whereHost(env('ADMIN_WEBSITE_HOST'))->firstOrFail();
-
-            return $next($request);
-
-            App::abort(401, $host.' Not Authorized');
-
-        }
-
-        // before
-        $response = $next($request);
-        // after
-        return $response;
+        return $next($request);
     }
 
     public function terminate()
