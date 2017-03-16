@@ -12,7 +12,7 @@ Route::group([
 
     // registration
     $router->post('register', 'AuthController@register');
-    $router->get('activate/{token}', 'AuthController@activate');
+    $router->get('activate/{code}', 'AuthController@activate')->name('activate-account');
 
     // password reset
     $router->post('password/email', 'PasswordController@sendResetLinkEmail');
