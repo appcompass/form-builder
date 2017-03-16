@@ -15,6 +15,7 @@ use P3in\Models\Photo;
 use P3in\Models\Role;
 use P3in\ModularBaseModel;
 use P3in\Notifications\ResetPassword;
+use P3in\Notifications\ConfirmRegistration;
 use Tymon\JWTAuth\Contracts\JWTSubject as AuthenticatableUserContract;
 // use P3in\Traits\HasProfileTrait;
 
@@ -56,7 +57,8 @@ class User extends ModularBaseModel implements
         'phone',
         'email',
         'password',
-        'active'
+        'active',
+        'activation_code'
     ];
 
     /**
@@ -350,5 +352,10 @@ class User extends ModularBaseModel implements
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPassword($token));
+    }
+
+    public function sendRegistrationConfirmationNotification()
+    {
+        $this->notify(new ConfirmRegistration($this->activation_code));
     }
 }
