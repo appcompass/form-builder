@@ -3,10 +3,14 @@
 namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 use P3in\Models\Form;
+use Notification;
+use P3in\Notifications\FormStored;
 
 class FormStorage extends Model
 {
+    use Notifiable;
 
     protected $fillable = [
         'form_id',
@@ -28,11 +32,13 @@ class FormStorage extends Model
     {
         $storage = new static(['content' => $content]);
 
-        // info($content);
-
         $storage->form()->associate($form);
 
-        $storage->save();
+        if ($storage->save()) {
+
+            Notification::send(Role::whereName('admin')->first()->users, new FormStored($storage));
+
+        }
 
         return $storage;
     }
