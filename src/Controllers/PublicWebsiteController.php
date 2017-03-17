@@ -93,9 +93,9 @@ class PublicWebsiteController extends BaseController
         return FormButler::get($name);
     }
 
-    public function submitForm(FormRequest $request, $uri = '')
+    public function submitForm(FormRequest $request, $name)
     {
-        dd($request->all());
+        return FormButler::store($name, $request->all());
     }
 
     public function getToken(Request $request)

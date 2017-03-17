@@ -2,7 +2,7 @@
 
 namespace P3in\Models;
 
-use Iluminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 use P3in\Models\Form;
 
 class FormStorage extends Model
@@ -12,6 +12,8 @@ class FormStorage extends Model
         'form_id',
         'content'
     ];
+
+    public $table = 'form_storage';
 
     protected $casts = [
         'content' => 'object'
@@ -24,7 +26,9 @@ class FormStorage extends Model
 
     public static function store(array $content, Form $form)
     {
-        $storage = new static($content);
+        $storage = new static(['content' => $content]);
+
+        // info($content);
 
         $storage->form()->associate($form);
 
