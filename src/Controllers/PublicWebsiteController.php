@@ -10,6 +10,8 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\URL;
+use P3in\Models\FormButler;
+use P3in\Requests\FormRequest;
 
 class PublicWebsiteController extends BaseController
 {
@@ -86,10 +88,14 @@ class PublicWebsiteController extends BaseController
         return isset($site_meta->robots_txt) ? $site_meta->robots_txt : '';
     }
 
-    // @TODO Form submission moved into it's own class FormButler
-    public function submitForm(Request $request, $uri = '')
+    public function getForm(Request $request, $name)
     {
+        return FormButler::get($name);
+    }
 
+    public function submitForm(FormRequest $request, $uri = '')
+    {
+        dd($request->all());
     }
 
     public function getToken(Request $request)

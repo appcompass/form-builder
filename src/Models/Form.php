@@ -175,6 +175,18 @@ class Form extends Model
     }
 
     /**
+     * store
+     *
+     * @param      <type>  $content  The content
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
+    public function store($content)
+    {
+        return FormStorage::store($content, $this);
+    }
+
+    /**
      * Gets the dot separated field's parents chain.
      *
      * @param      Field   $field  The field

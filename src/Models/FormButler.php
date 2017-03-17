@@ -15,7 +15,9 @@ class FormButler
     private function parseRequest(FormRequest $request)
     {
         if ($request->has('form')) {
+
             return $this->resolveFormFromString($request->form);
+
         }
 
         return;

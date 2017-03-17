@@ -65,6 +65,7 @@ Route::group([
         'prefix' => 'web-forms',
     ], function ($router) {
         $router->get('token', 'PublicWebsiteController@getToken');
+        $router->get('{path}', 'PublicWebsiteController@getForm')->where('path', '(.*)');
         $router->post('{path?}', 'PublicWebsiteController@submitForm')->where('path', '(.*)');
     });
 
