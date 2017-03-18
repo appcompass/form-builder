@@ -165,8 +165,9 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         }
 
         if (is_null($search)) {
-
-            $search = request()->search;
+            // request sometimes sends empty object string '{}' instead of an
+            // actual object, absolute query string values and what not.
+            $search = json_decode(request()->search, true);
 
         }
 
@@ -192,9 +193,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         }
 
         if (is_null($sorters)) {
-
-            $sorters = request()->sorters;
-
+            $sorters = json_decode(request()->sorters, true);
         }
 
         foreach((array) $sorters as $field => $order) {
