@@ -13,6 +13,7 @@ class SourceBuilder
      *
      * @return     array        ( description_of_the_return_value )
      */
+    // @TODO: re-write this, it's a queries in loops nightmare.
     public static function render(FieldSource $field_data)
     {
 

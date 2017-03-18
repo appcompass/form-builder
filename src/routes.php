@@ -9,6 +9,7 @@ Route::group([
     $router->post('login', 'AuthController@login');
     $router->get('logout', 'AuthController@logout')->middleware(['auth']);
     $router->get('user', 'AuthController@user')->middleware('auth');
+    $router->get('resources/{route?}', 'AuthController@resources')->middleware('auth');
 
     // registration
     $router->post('register', 'AuthController@register');
@@ -17,6 +18,7 @@ Route::group([
     // password reset
     $router->post('password/email', 'PasswordController@sendResetLinkEmail');
     $router->post('password/reset', 'PasswordController@reset');
+
 
 });
 

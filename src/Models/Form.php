@@ -18,7 +18,7 @@ class Form extends Model
         'updated_at'
     ];
 
-    protected $with = ['fields'];
+    protected $with = ['fields.source'];
 
     protected $appends = ['fieldsCount'];
 
@@ -39,7 +39,7 @@ class Form extends Model
      */
     public function fields()
     {
-        return $this->hasMany(Field::class)->with('source');
+        return $this->hasMany(Field::class);
     }
 
     /**
@@ -63,19 +63,22 @@ class Form extends Model
 
         $fields = null;
 
-        if ($mode == 'edit') {
-
-            $fields = $this->fields()->where('to_edit', true)->get();
-
-
-        } else if ($mode == 'list') {
-
-            $fields = $this->fields()->where('to_list', true)->get();
-
-        } else {
-
-            $fields = $this->fields;
-
+        switch ($mode) {
+            case 'list': //@TODO: Delete/rename, index is the resource to use.
+            case 'index':
+                $fields = $this->fields->where('to_list', true);
+                break;
+            case 'edit': //@TODO: Delete/rename, show is the resource to use.
+            case 'show': //@TODO: show and update use the same set of fields.
+            case 'update':
+            case 'create': //@TODO: create and store use the same set of fields.
+            case 'store':
+            case 'destroy': //@TODO: add field(s) for validation on delete. for example, "hey this is a related field, first please move or delete xyz".
+                $fields = $this->fields->where('to_edit', true);
+                break;
+            default:
+                $fields = $this->fields;
+                break;
         }
 
         $form['fields'] = $this->buildTree($fields);
