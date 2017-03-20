@@ -75,6 +75,7 @@ class WebsitesSeeder extends Seeder
         // DB::statement("DELETE FROM forms WHERE name = 'websites'");
 
         $form = FormBuilder::new('websites', function (FormBuilder $builder) {
+            $builder->setViewTypes(['list','grid']);
             $builder->string('Website Name', 'name')
                 ->list()
                 ->required()
@@ -169,6 +170,7 @@ class WebsitesSeeder extends Seeder
 
         $form = FormBuilder::new('pages', function (FormBuilder $builder) {
             $builder->editor('Page');
+            $builder->setViewTypes(['list','grid']);
             $builder->string('Page Title', 'title')
                 ->list()
                 ->required()

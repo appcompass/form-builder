@@ -22,6 +22,7 @@ class UsersSeeder extends Seeder
         DB::statement("DELETE FROM forms WHERE name = 'users'");
 
         FormBuilder::new('users', function (FormBuilder $builder) {
+            $builder->setViewTypes(['grid','list']);
             $builder->string('First Name', 'first_name')->list()->required()->sortable()->searchable();
             $builder->string('Last Name', 'last_name')->list()->required()->sortable()->searchable();
             $builder->string('Email', 'email')->list()->validation(['required', 'email'])->sortable()->searchable();
