@@ -233,7 +233,7 @@ class Website extends Model
     public static function fromRequest(Request $request)
     {
         try {
-            $host = $request->header('host');
+            $host = $request->header('Site-Host');
 
             return Website::whereHost($host)->firstOrFail();
 
