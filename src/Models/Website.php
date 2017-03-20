@@ -243,8 +243,8 @@ class Website extends Model
 
         } catch (ModelNotFoundException $e) {
 
-            // @TODO: remove, it's temporary
-            return Website::whereHost(env('ADMIN_WEBSITE_HOST'))->firstOrFail();
+            // // @TODO: remove, it's temporary
+            // return Website::whereHost(env('ADMIN_WEBSITE_HOST'))->firstOrFail();
 
             App::abort(401, $host.' Not Authorized');
 
