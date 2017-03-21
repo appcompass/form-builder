@@ -3,11 +3,12 @@
 namespace P3in\Models;
 
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Intervention\Image\Exception\NotFoundException;
 use P3in\Models\Page;
 use P3in\Models\Redirect;
@@ -233,7 +234,7 @@ class Website extends Model
     public static function fromRequest(Request $request)
     {
         try {
-            $host = $request->header('host');
+            $host = $request->header('Site-Host');
 
             return Website::whereHost($host)->firstOrFail();
 
@@ -243,8 +244,8 @@ class Website extends Model
 
         } catch (ModelNotFoundException $e) {
 
-            // @TODO: remove, it's temporary
-            return Website::whereHost(env('ADMIN_WEBSITE_HOST'))->firstOrFail();
+            // // @TODO: remove, it's temporary
+            // return Website::whereHost(env('ADMIN_WEBSITE_HOST'))->firstOrFail();
 
             App::abort(401, $host.' Not Authorized');
 

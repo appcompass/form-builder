@@ -26,21 +26,34 @@ class FormRequest extends BaseFormRequest
      */
     public function rules(Request $request)
     {
+    	if (!in_array($request->getMethod(), ['POST', 'PUT'])) {
+
+    		return [];
+
+    	}
+
         $form = Form::byResource(Route::current()->getName())->first();
 
-        if (count($request->allFiles())) {
-
-            // @TODO this would be the ideal spot to
-            //   - upload a file
-            //   - append file path to the request
-
-        }
-
-        if ($form && in_array($request->getMethod(), ['POST', 'PUT'])) {
+        if ($form) {
 
             return $form->rules();
 
         } else {
+
+        	// @TODO we hit a route that has a path parameter (not final)
+        	if ($this->route('path')) {
+
+        		$form_name = $this->route('path') . '.store';
+
+        		$form = Form::byResource($form_name)->first();
+
+        		if ($form) {
+
+        			return $form->rules();
+
+        		}
+
+        	}
 
             return [];
 
