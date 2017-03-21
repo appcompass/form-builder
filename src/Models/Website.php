@@ -3,11 +3,12 @@
 namespace P3in\Models;
 
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Intervention\Image\Exception\NotFoundException;
 use P3in\Models\Page;
 use P3in\Models\Redirect;
