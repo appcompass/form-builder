@@ -14,8 +14,9 @@ use P3in\Models\Gallery;
 use P3in\Models\Photo;
 use P3in\Models\Role;
 use P3in\ModularBaseModel;
-use P3in\Notifications\ResetPassword;
 use P3in\Notifications\ConfirmRegistration;
+use P3in\Notifications\ResetPassword;
+use P3in\Traits\HasCardView;
 use Tymon\JWTAuth\Contracts\JWTSubject as AuthenticatableUserContract;
 // use P3in\Traits\HasProfileTrait;
 
@@ -29,7 +30,8 @@ class User extends ModularBaseModel implements
         Authenticatable,
         Authorizable,
         CanResetPassword,
-        Notifiable
+        Notifiable,
+        HasCardView
         // HasPermissions
         // HasProfileTrait
         ;
@@ -143,7 +145,12 @@ class User extends ModularBaseModel implements
      */
     public function getGravatarUrlAttribute()
     {
-        return "https://www.gravatar.com/avatar/" . md5($this->email) . '?d=identicon';
+        return "https://www.gravatar.com/avatar/" . md5($this->email) . '?d=identicon&s=500';
+    }
+
+    public function getCardPhotoUrl()
+    {
+        return $this->gravatar_url;
     }
 
     /**

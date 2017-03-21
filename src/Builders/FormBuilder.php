@@ -103,27 +103,6 @@ class FormBuilder
         return $this;
     }
 
-    public function setViewTypes(array $types)
-    {
-        $this->form->setViewTypes($types);
-
-        return $this;
-    }
-
-    public function setCreateType(string $type)
-    {
-        $this->form->setCreateType($type);
-
-        return $this;
-    }
-
-    public function setUpdateType(string $type)
-    {
-        $this->form->setUpdateType($type);
-
-        return $this;
-    }
-
     /**
      * Links to resources.
      *

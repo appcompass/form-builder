@@ -18,9 +18,6 @@ class AbstractChildRepository extends AbstractRepository
     // @TODO better explanations for this
     protected $parentToChild = null;
 
-    // view gets swapped depending on the relation type
-    protected $view = 'Table';
-
     // depending on the relation we return an array containing the ids
     // owned by the parent
     protected $owned = null;
@@ -219,11 +216,6 @@ class AbstractChildRepository extends AbstractRepository
             }
 
         }
-
-        return [
-            'data' => $data,
-            'owned' => $this->owned,
-            'view' => $this->view
-        ];
+        return $data;
     }
 }

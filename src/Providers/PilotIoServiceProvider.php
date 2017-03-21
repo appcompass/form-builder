@@ -59,7 +59,7 @@ class PilotIoServiceProvider extends BaseServiceProvider
             // 'jwt.refresh'
         ],
         'api' => [
-            \P3in\Middleware\AfterRoute::class,
+            // \P3in\Middleware\AfterRoute::class,
         ]
     ];
 

@@ -21,61 +21,100 @@ class WebsitesSeeder extends Seeder
             $websiteBuilder->setStorage('cp_root');
 
             $users = $websiteBuilder->addPage('Users', 'users');
-            $user_roles = $users->addChild('User Roles', 'roles');
+            $user_profile = $users->addChild('Profile', 'edit');
+            $user_roles = $users->addChild('Roles', 'roles');
+
             $roles = $websiteBuilder->addPage('Roles', 'roles');
-            $role_permissions = $roles->addChild('Role Permissions', 'permissions');
+            $role_info = $roles->addChild('Info', 'edit');
+            $role_permissions = $roles->addChild('Permissions', 'permissions');
+
             $permissions = $websiteBuilder->addPage('Permissions', 'permissions');
+            $permission_info = $permissions->addChild('Info', 'edit');
+
             $resources = $websiteBuilder->addPage('Resources', 'resources');
+            $resource_info = $resources->addChild('Info', 'edit');
+
             $websites = $websiteBuilder->addPage('Websites', 'websites');
+            $website_info = $websites->addChild('Info', 'edit');
             $navigation = $websites->addChild('Navigation', 'menus');
             $pages = $websites->addChild('Pages', 'pages');
-            $contents = $pages->addChild('Content', 'contents');
-            $blogEntries = $websites->addChild('Entries', 'blog-entries');
-            $blogCategories = $websites->addChild('Categories', 'blog-categories');
-            $blogTags = $websites->addChild('Tags', 'blog-tags');
-            $galleries = $websiteBuilder->addPage('Galleries', 'galleries');
+            $page_info = $pages->addChild('Info', 'edit');
+            $page_layouts = $pages->addChild('Layout', 'layout');
+            $page_contents = $pages->addChild('Content', 'contents');
+            $blogEntries = $websites->addChild('Blog Entries', 'blog-entries');
+            $blogCategories = $websites->addChild('Blog Categories', 'blog-categories');
+            $blogTags = $websites->addChild('Blog Tags', 'blog-tags');
 
+            $galleries = $websiteBuilder->addPage('Galleries', 'galleries');
+            $gallery_info = $galleries->addChild('Info', 'edit');
+            $gallery_photos = $galleries->addChild('Photos', 'photos');
+            $gallery_videos = $galleries->addChild('Videos', 'videos');
+
+            // @TODO: storage workflow needs to be looked at a bit.
             $storage = $websiteBuilder->addPage('Storage', 'storage');
+            $storage_info = $storage->addChild('Info', 'edit');
+            $storage_types = $storage->addChild('Types', 'storage-types');
+
             $forms = $websiteBuilder->addPage('Forms', 'forms');
+            $form_info = $forms->addChild('Info', 'edit');
+            // @TODO: form submissions?
 
             $websiteBuilder->addMenu('main_nav')
                 ->add(['title' => 'Dashboard', 'url' => '/', 'alt' => 'dashboard'], 0)
                 ->add(['title' => 'Users Management', 'alt' => 'Users Management'], 1)->sub()
                     ->add($users, 1)->icon('user')->sub()
-                        ->add($user_roles, 1)->icon('lock')
+                        ->add($user_profile, 1)->icon('user')
+                        ->add($user_roles, 2)->icon('group')
                         ->parent()
-                    ->add($roles, 2)->icon('lock')->sub()
-                        ->add($role_permissions, 1)
+                    ->add($roles, 2)->icon('group')->sub()
+                        ->add($role_info, 1)->icon('group')
+                        ->add($role_permissions, 2)->icon('permission')
                         ->parent()
-                    ->add($permissions, 3)->icon('lock')
-                    ->add($resources, 4)->icon('diamond')
+                    ->add($permissions, 3)->icon('permission')->sub()
+                        ->add($permission_info, 1)->icon('permission')
+                        ->parent()
+                    ->add($resources, 4)->icon('diamond')->sub()
+                        ->add($resource_info, 1)->icon('diamond')
+                        ->parent()
                     ->parent()
                 ->add(['title' => 'Web Properties', 'alt' => 'Web Properties'], 2)->sub()
                     ->add($websites, 1)->icon('globe')->sub()
-                        ->add($pages, 1)->icon('pages')->sub()
-                            ->add($contents, 1)
+                        ->add($website_info, 1)->icon('edit')
+                        ->add($pages, 2)->icon('pages')->sub()
+                            ->add($page_info, 1)
+                            ->add($page_layouts, 2)
+                            ->add($page_contents, 3)
                             ->parent()
-                        ->add(['url' => '/blog', 'title' => 'Blog', 'alt' => 'Blog'], 2)->icon('page') ->sub()
+                        // @TODO: blog end point flow needs to be worked out
+                        ->add(['url' => '/blog', 'title' => 'Blog', 'alt' => 'Blog'], 3)->icon('page') ->sub()
                             ->add($blogEntries, 1)
                             ->add($blogCategories, 2)
                             ->add($blogTags, 3)
                             ->parent()
-                        ->add($navigation, 3)->icon('navigation')
+                        ->add($navigation, 4)->icon('navigation')
                         ->parent()
                     ->parent()
                 ->add(['title' => 'Media Management', 'alt' => 'Media Management'], 3)->sub()
                     ->add($galleries, 1)->icon('camera')->sub()
+                            ->add($gallery_info, 1)->icon('gallery')
+                            ->add($gallery_photos, 2)->icon('image')
+                            ->add($gallery_videos, 3)->icon('video')
                         ->parent()
                     ->parent()
                 ->add(['title' => 'Settings', 'alt' => 'Settings'], 4)->sub()
-                    ->add($storage, 1)->icon('gear')
-                    ->add($forms, 2)->icon('file-text-o');
+                    ->add($storage, 1)->icon('gear')->sub()
+                        ->add($storage_info, 1)->icon('gear')
+                        ->add($storage_types, 2)->icon('gear')
+                        ->parent()
+                    ->add($forms, 2)->icon('file-text-o')->sub()
+                        ->add($form_info, 1)->icon('file-text-o')
+                        ;
         })->getWebsite();
 
         // DB::statement("DELETE FROM forms WHERE name = 'websites'");
 
         $form = FormBuilder::new('websites', function (FormBuilder $builder) {
-            $builder->setViewTypes(['list','grid']);
+            // $builder->setViewTypes(['list','grid']);
             $builder->string('Website Name', 'name')
                 ->list()
                 ->required()
@@ -170,7 +209,7 @@ class WebsitesSeeder extends Seeder
 
         $form = FormBuilder::new('pages', function (FormBuilder $builder) {
             $builder->editor('Page');
-            $builder->setViewTypes(['list','grid']);
+            // $builder->setViewTypes(['list','grid']);
             $builder->string('Page Title', 'title')
                 ->list()
                 ->required()

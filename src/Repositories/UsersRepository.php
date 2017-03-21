@@ -13,6 +13,8 @@ class UsersRepository extends AbstractRepository implements UsersRepositoryInter
 
     protected $owned_key = 'id';
 
+    protected $view_types = ['Table', 'Card'];
+
     public function __construct(User $model)
     {
         $this->model = $model;

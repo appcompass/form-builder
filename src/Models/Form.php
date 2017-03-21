@@ -18,9 +18,9 @@ class Form extends Model
         'updated_at'
     ];
 
-    protected $casts = [
-        'view_types' => 'array',
-    ];
+    // protected $casts = [
+    //     'view_types' => 'array',
+    // ];
 
     protected $with = ['fields.source'];
 

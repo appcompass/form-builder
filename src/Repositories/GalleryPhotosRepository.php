@@ -13,6 +13,10 @@ class GalleryPhotosRepository extends AbstractChildRepository implements Gallery
 
     protected $with = ['user'];
 
+    protected $view_types = ['Card', 'Table'];
+    protected $create_type = 'Dropzone';
+    protected $update_type = 'Modal';
+
     // models required in order to persist
     protected $requires = [
         'methods' => [

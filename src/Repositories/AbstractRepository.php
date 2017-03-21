@@ -2,10 +2,13 @@
 
 namespace P3in\Repositories;
 
-use P3in\Interfaces\AbstractRepositoryInterface;
+use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
-use Auth;
+use Illuminate\Support\Facades\Route;
+use P3in\Interfaces\AbstractRepositoryInterface;
+use P3in\Models\Form;
+use P3in\Models\Resource;
 
 abstract class AbstractRepository implements AbstractRepositoryInterface
 {
@@ -24,6 +27,10 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
     // repo locks if use doesn't have permissions
     private $locked = false;
 
+    // always null in normal context, populated in child context.
+    // @TODO: feels off setting this here, but the current alternative is more code.
+    protected $owned = null;
+
     // Builder
     protected $builder;
 
@@ -41,8 +48,16 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         'props' => []
     ];
 
-    // model's default list view
-    protected $view = 'Table';
+    // // model's default list view
+    // protected $view = 'Table';
+    // view types: ['Table','Card','Map', 'Chart', 'etc'] and what ever other types a module in the future may need.
+    // @TODO: consider moving additional ones into the models rather than repositories.
+    // i.e. make use of HasCardView trait for Card layouts, and other traits for other layout types.
+    protected $view_types = ['Table'];
+    //create types: 'page' - 'Add New' button that leads to new create view, 'Dropzone' - Gallery photo upload.
+    protected $create_type = 'Page';
+    //update types: 'page' - normal full page behavior, 'Modal' - modal edit view, like for a photo when clicked on a grid.
+    protected $update_type = 'Page';
 
     /**
      * { function_description }
@@ -176,7 +191,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
 
         foreach((array) $search as $column => $string) {
 
-            $this->builder->where($column, 'like', "%{$string}%");
+            $this->builder->where($column, 'ilike', "%{$string}%");
 
         }
 
@@ -361,10 +376,15 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
      */
     public function findByPrimaryKey($id)
     {
-        return $this->make()
+
+        return $this->output($this->make()
             ->builder
             ->where($this->model->getTable() . '.' . $this->model->getKeyName(), $id)
-            ->firstOrFail();
+            ->firstOrFail());
+        // return $this->make()
+        //     ->builder
+        //     ->where($this->model->getTable() . '.' . $this->model->getKeyName(), $id)
+        //     ->firstOrFail();
     }
 
     /**
@@ -388,26 +408,29 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         // repo locks if use doesn't have permissions
         if ($this->locked) {
 
-            return;
+            // return;
+            return $this->output([], 401);
 
         }
 
         // for show() if a model has been set we only wanna load rels
         if ($this->model->id) {
 
-            return $this->model;
+            $data = $this->model;
 
         }
 
         if (request()->has('page')) {
 
-            return $this->paginate(request()->per_page, request()->page);
+            $data = $this->paginate(request()->per_page, request()->page);
 
         } else {
 
-            return $this->paginate();
+            $data = $this->paginate();
 
         }
+
+        return $this->output($data);
     }
 
     /**
@@ -456,10 +479,12 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
 
         }
 
-        return [
-            'data' => $data,
-            'view' => $this->view
-        ];
+        return $data;
+
+        // return [
+        //     'data' => $data,
+        //     'view' => $this->view
+        // ];
     }
 
     /**
@@ -487,5 +512,44 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
             // $this->model->storeFile($storage, $file, true);
             $this->model->storeFile($storage, $file, true);
         }
+    }
+
+    // @TODO: refactor and split some of this stuff up and do better permission checking and resulting output
+    public function output($data, $code = 200)
+    {
+        $rtn = [
+            'view_types' => $this->view_types,
+            'create_type' => $this->create_type,
+            'update_type' => $this->update_type,
+            'owned' => $this->owned,
+            'abilities' => ['create', 'edit', 'destroy', 'index', 'show'], // @TODO show is per-item in the collection
+            'collection' => $data,
+        ];
+        $resource = Resource::where(function($query){
+            $query->whereNull('req_role')->orWhereHas('role', function ($query) {
+                $query->whereHas('users', function ($query) {
+                    $query->where('id', Auth::user()->id);
+                });
+            });
+        })
+            ->where('resource',  Route::currentRouteName())
+            ->with('form')
+            ->first();
+
+        if (!empty($resource->form)) {
+            $route = $resource->resource;
+            $route_type = substr($route, strrpos($route, '.')+1);
+
+            $rtn['route'] = $route;
+            $rtn['form'] = $resource->form->render($route_type);
+        }
+
+        return response()->json($rtn, $code);
+
+
+
+        // resolve form by uri
+        $form = Form::byResource(Route::currentRouteName())->first();
+
     }
 }
