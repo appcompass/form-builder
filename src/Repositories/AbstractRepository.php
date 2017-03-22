@@ -54,9 +54,11 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
     // @TODO: consider moving additional ones into the models rather than repositories.
     // i.e. make use of HasCardView trait for Card layouts, and other traits for other layout types.
     protected $view_types = ['Table'];
-    //create types: 'page' - 'Add New' button that leads to new create view, 'Dropzone' - Gallery photo upload.
+    // create types: 'Page' - 'Add New' button that leads to new create view,
+    // 'Inline' - instead of taking the user to a page, it renders the form inline
+    // where normally the Add New button would be for Page types.
     protected $create_type = 'Page';
-    //update types: 'page' - normal full page behavior, 'Modal' - modal edit view, like for a photo when clicked on a grid.
+    //update types: 'Page' - normal full page behavior, 'Modal' - modal edit view, like for a photo when clicked on a grid.
     protected $update_type = 'Page';
 
     /**
@@ -229,7 +231,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
      *
      * @param      <type>  $attributes  The attributes
      */
-    public function create($request)
+    public function store($request)
     {
         $request = $this->checkRequirements($request);
 
@@ -514,6 +516,12 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         }
     }
 
+    public function create()
+    {
+        // output already takes care of binding the form for the route.
+        return $this->output([]);
+    }
+
     // @TODO: refactor and split some of this stuff up and do better permission checking and resulting output
     public function output($data, $code = 200)
     {
@@ -545,11 +553,5 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         }
 
         return response()->json($rtn, $code);
-
-
-
-        // resolve form by uri
-        $form = Form::byResource(Route::currentRouteName())->first();
-
     }
 }

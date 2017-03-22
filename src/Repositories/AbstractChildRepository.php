@@ -122,7 +122,7 @@ class AbstractChildRepository extends AbstractRepository
      *
      * @return     array   ( description_of_the_return_value )
      */
-    public function create($attributes)
+    public function store($attributes)
     {
         // @TODO a bit hacky but this allows us to attach `request`-ed models in the controllers
         if ($attributes instanceof Request) {
@@ -175,6 +175,16 @@ class AbstractChildRepository extends AbstractRepository
         return $this->owned;
     }
 
+    public function setDiskConfig()
+    {
+        dd($this->parent);
+        // // not a fan of doing this this way, we should find a better,
+        // // more automatic, way of handling the create config object.
+        // $this->create_config = [
+        //     'disk' =>
+        // ];
+
+    }
     /**
      * { function_description }
      *

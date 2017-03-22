@@ -44,6 +44,7 @@ class WebsitesSeeder extends Seeder
             $blogEntries = $websites->addChild('Blog Entries', 'blog-entries');
             $blogCategories = $websites->addChild('Blog Categories', 'blog-categories');
             $blogTags = $websites->addChild('Blog Tags', 'blog-tags');
+            $redirects = $websites->addChild('Redirects', 'redirects');
 
             $galleries = $websiteBuilder->addPage('Galleries', 'galleries');
             $gallery_info = $galleries->addChild('Info', 'edit');
@@ -81,17 +82,18 @@ class WebsitesSeeder extends Seeder
                     ->add($websites, 1)->icon('globe')->sub()
                         ->add($website_info, 1)->icon('edit')
                         ->add($pages, 2)->icon('pages')->sub()
-                            ->add($page_info, 1)
-                            ->add($page_layouts, 2)
-                            ->add($page_contents, 3)
+                            ->add($page_info, 1)->icon('pages')
+                            ->add($page_layouts, 2)->icon('page')
+                            ->add($page_contents, 3)->icon('page')
                             ->parent()
                         // @TODO: blog end point flow needs to be worked out
                         ->add(['url' => '/blog', 'title' => 'Blog', 'alt' => 'Blog'], 3)->icon('page') ->sub()
-                            ->add($blogEntries, 1)
-                            ->add($blogCategories, 2)
-                            ->add($blogTags, 3)
+                            ->add($blogEntries, 1)->icon('page')
+                            ->add($blogCategories, 2)->icon('page')
+                            ->add($blogTags, 3)->icon('page')
                             ->parent()
                         ->add($navigation, 4)->icon('navigation')
+                        ->add($redirects, 5)->icon('redirect')
                         ->parent()
                     ->parent()
                 ->add(['title' => 'Media Management', 'alt' => 'Media Management'], 3)->sub()
@@ -102,12 +104,12 @@ class WebsitesSeeder extends Seeder
                         ->parent()
                     ->parent()
                 ->add(['title' => 'Settings', 'alt' => 'Settings'], 4)->sub()
-                    ->add($storage, 1)->icon('gear')->sub()
-                        ->add($storage_info, 1)->icon('gear')
-                        ->add($storage_types, 2)->icon('gear')
+                    ->add($storage, 1)->icon('settings')->sub()
+                        ->add($storage_info, 1)->icon('settings')
+                        ->add($storage_types, 2)->icon('settings')
                         ->parent()
-                    ->add($forms, 2)->icon('file-text-o')->sub()
-                        ->add($form_info, 1)->icon('file-text-o')
+                    ->add($forms, 2)->icon('file')->sub()
+                        ->add($form_info, 1)->icon('file')
                         ;
         })->getWebsite();
 
