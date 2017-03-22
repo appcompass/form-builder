@@ -44,8 +44,8 @@ Route::group([
     $router->resource('pages', PagesController::class);
     $router->resource('pages.contents', PageContentController::class);
     // @TODO use generic forms getter once that's done (maybe)
-    $router->get('menus/forms/{form}', 'MenusController@getForm');
-    $router->post('menus/forms/{form}', 'MenusController@storeForm');
+    $router->get('menus/forms/{form_name}', 'MenusController@getForm');
+    $router->post('menus/forms/{form_name}', 'MenusController@storeForm');
     $router->resource('websites', WebsitesController::class);
     $router->resource('websites.menus', WebsiteMenusController::class);
     $router->resource('websites.navigation', WebsiteMenusController::class);
