@@ -501,7 +501,8 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         $file = head(array_where($attributes, function($val){
             return is_a($val, UploadedFile::class);
         }));
-        $storage = head(array_where($attributes, function($val, $key){
+
+        $storage = $this->model->storage ? $this->model->storage->name : head(array_where($attributes, function($val, $key){
             return $key == 'disk';
         }));
 
@@ -522,17 +523,51 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         return $this->output([]);
     }
 
-    // @TODO: refactor and split some of this stuff up and do better permission checking and resulting output
     public function output($data, $code = 200)
     {
+        $route = Route::current();
+        $route_name = $route->getName();
+        $route_params = $route->parameters();
+        // $route->uri()
         $rtn = [
+            'route' => $route_name,
+            'parameters' => $route_params,
+            'api_url' => $this->getApiUrl($route_name, $route_params),
             'view_types' => $this->view_types,
             'create_type' => $this->create_type,
             'update_type' => $this->update_type,
             'owned' => $this->owned,
             'abilities' => ['create', 'edit', 'destroy', 'index', 'show'], // @TODO show is per-item in the collection
+            'form' => $this->getResourceForm($route_name),
             'collection' => $data,
         ];
+
+        return response()->json($rtn, $code);
+    }
+
+    public function getApiUrl($name, $params)
+    {
+        $keys = explode('.', $name);
+        $values = array_values(array_map(function($param){
+            return $param->getKey();
+        }, $params));
+
+        $segments = [''];
+        $route_type = $this->getRouteType($name);
+
+        for ($i=0; $i < count($keys); $i++) {
+            if ($keys[$i] !== $route_type) {
+                $segments[] = $keys[$i];
+                if (isset($values[$i])) {
+                    $segments[] = $values[$i];
+                }
+            }
+        }
+        return implode('/', $segments);
+    }
+
+    public function getResourceForm($route_name)
+    {
         $resource = Resource::where(function($query){
             $query->whereNull('req_role')->orWhereHas('role', function ($query) {
                 $query->whereHas('users', function ($query) {
@@ -540,18 +575,21 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
                 });
             });
         })
-            ->where('resource',  Route::currentRouteName())
+            ->where('resource',  $route_name)
             ->with('form')
             ->first();
 
         if (!empty($resource->form)) {
-            $route = $resource->resource;
-            $route_type = substr($route, strrpos($route, '.')+1);
+            $route_type = $this->getRouteType($route_name);
 
-            $rtn['route'] = $route;
-            $rtn['form'] = $resource->form->render($route_type);
+            return $resource->form->render($route_type);
         }
 
-        return response()->json($rtn, $code);
+    }
+
+    public function getRouteType($route)
+    {
+        return substr($route, strrpos($route, '.')+1);
+
     }
 }
