@@ -528,17 +528,19 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         $route = Route::current();
         $route_name = $route->getName();
         $route_params = $route->parameters();
+        $resource_form = $this->getResourceForm($route_name);
         // $route->uri()
         $rtn = [
             'route' => $route_name,
             'parameters' => $route_params,
-            'api_url' => $this->getApiUrl($route_name, $route_params),
+            'api_url' => $this->getApiUrl($route_name, $resource_form),
+            'breadcrumbs' => $this-getBreadcrumbs($route_name, $route_params),
             'view_types' => $this->view_types,
             'create_type' => $this->create_type,
             'update_type' => $this->update_type,
             'owned' => $this->owned,
             'abilities' => ['create', 'edit', 'destroy', 'index', 'show'], // @TODO show is per-item in the collection
-            'form' => $this->getResourceForm($route_name),
+            'form' => $resource_form,
             'collection' => $data,
         ];
 
@@ -564,6 +566,22 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
             }
         }
         return implode('/', $segments);
+    }
+
+    // @TODO: this is actually a bit more complicated because all our routes are 2 depth max but
+    // there are some chains like:  websites.pages.content.edit or in one of our client's cases
+    // course.class.lesson.students.  I think we'll need to push each step into localStorage
+    // so it persists and then update it on route change.  So leaving this alone for now.
+    public function getBreadcrumbs($name, $form)
+    {
+        $rtn = [
+            [
+                'title' => 'Dashboard',
+                'url' => '/',
+            ]
+        ];
+
+        return $rtn;
     }
 
     public function getResourceForm($route_name)
