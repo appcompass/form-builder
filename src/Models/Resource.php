@@ -4,9 +4,13 @@ namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use P3in\Traits\HasRole;
 
 class Resource extends Model
 {
+
+    use HasRole;
+
     protected $fillable = [
         'form_id',
         'resource',
@@ -21,11 +25,6 @@ class Resource extends Model
     public function form()
     {
         return $this->belongsTo(Form::class);
-    }
-
-    public function role()
-    {
-        return $this->belongsTo(Role::class, 'req_role');
     }
 
     /**

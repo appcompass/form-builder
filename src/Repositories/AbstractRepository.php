@@ -48,6 +48,8 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         'props' => []
     ];
 
+    protected $route_name;
+    protected $route_params;
     // // model's default list view
     // protected $view = 'Table';
     // view types: ['Table','Card','Map', 'Chart', 'etc'] and what ever other types a module in the future may need.
@@ -525,37 +527,32 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
 
     public function output($data, $code = 200)
     {
-        $route = Route::current();
-        $route_name = $route->getName();
-        $route_params = $route->parameters();
-        $resource_form = $this->getResourceForm($route_name);
-        // $route->uri()
+        $this->setRouteInfo();
         $rtn = [
-            'route' => $route_name,
-            'parameters' => $route_params,
-            'api_url' => $this->getApiUrl($route_name, $resource_form),
-            'breadcrumbs' => $this-getBreadcrumbs($route_name, $route_params),
+            'route' => $this->route_name,
+            'parameters' => $this->route_params,
+            'api_url' => $this->getApiUrl(),
             'view_types' => $this->view_types,
             'create_type' => $this->create_type,
             'update_type' => $this->update_type,
             'owned' => $this->owned,
             'abilities' => ['create', 'edit', 'destroy', 'index', 'show'], // @TODO show is per-item in the collection
-            'form' => $resource_form,
+            'form' => $this->getResourceForm(),
             'collection' => $data,
         ];
 
         return response()->json($rtn, $code);
     }
 
-    public function getApiUrl($name, $params)
+    public function getApiUrl()
     {
-        $keys = explode('.', $name);
+        $keys = explode('.', $this->route_name);
         $values = array_values(array_map(function($param){
             return $param->getKey();
-        }, $params));
+        }, $this->route_params));
 
         $segments = [''];
-        $route_type = $this->getRouteType($name);
+        $route_type = $this->getRouteType();
 
         for ($i=0; $i < count($keys); $i++) {
             if ($keys[$i] !== $route_type) {
@@ -568,23 +565,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         return implode('/', $segments);
     }
 
-    // @TODO: this is actually a bit more complicated because all our routes are 2 depth max but
-    // there are some chains like:  websites.pages.content.edit or in one of our client's cases
-    // course.class.lesson.students.  I think we'll need to push each step into localStorage
-    // so it persists and then update it on route change.  So leaving this alone for now.
-    public function getBreadcrumbs($name, $form)
-    {
-        $rtn = [
-            [
-                'title' => 'Dashboard',
-                'url' => '/',
-            ]
-        ];
-
-        return $rtn;
-    }
-
-    public function getResourceForm($route_name)
+    public function getResourceForm()
     {
         $resource = Resource::where(function($query){
             $query->whereNull('req_role')->orWhereHas('role', function ($query) {
@@ -593,21 +574,25 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
                 });
             });
         })
-            ->where('resource',  $route_name)
+            ->where('resource',  $this->route_name)
             ->with('form')
             ->first();
 
         if (!empty($resource->form)) {
-            $route_type = $this->getRouteType($route_name);
-
-            return $resource->form->render($route_type);
+            return $resource->form->render($this->getRouteType());
         }
 
     }
 
-    public function getRouteType($route)
+    public function getRouteType()
     {
-        return substr($route, strrpos($route, '.')+1);
+        return substr($this->route_name, strrpos($this->route_name, '.')+1);
+    }
 
+    public function setRouteInfo()
+    {
+        $route = Route::current();
+        $this->route_name = $route->getName();
+        $this->route_params = $route->parameters();
     }
 }

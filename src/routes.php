@@ -9,7 +9,9 @@ Route::group([
     $router->post('login', 'AuthController@login');
     $router->get('logout', 'AuthController@logout')->middleware(['auth']);
     $router->get('user', 'AuthController@user')->middleware('auth');
-    $router->get('resources/{route?}', 'AuthController@resources')->middleware('auth');
+
+    $router->get('routes', 'AuthController@routes');
+    $router->get('resources/{route?}', 'AuthController@resources');
 
     // registration
     $router->post('register', 'AuthController@register');

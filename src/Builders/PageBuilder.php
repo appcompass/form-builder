@@ -41,7 +41,6 @@ class PageBuilder
         $instance = new static();
 
         $instance->page = $website->pages()->create([
-
             'title' => $title,
         ]);
 
@@ -83,11 +82,12 @@ class PageBuilder
      *
      * @return     <type>  ( description_of_the_return_value )
      */
-    public function addChild($title, $slug)
+    public function addChild($title, $slug, $dynamic = false)
     {
         $page = $this->page->createChild([
             'title' => $title,
             'slug' => $slug,
+            'dynamic_url' => $dynamic,
         ]);
 
         return new static($page);
@@ -128,13 +128,15 @@ class PageBuilder
      */
     public function addSection(Section $section, int $order = 0, array $data = [])
     {
-        if (!$this->container) {
+        if ($this->container) {
 
-            throw new Exception('a Container must be set to add Sections.');
+            $this->section = $this->container->addSection($section, $order, $data);
+
+        }else{
+
+            $this->section = $this->page->addSection($section, $order, $data);
 
         }
-
-        $this->section = $this->container->addSection($section, $order, $data);
 
         return $this;
     }

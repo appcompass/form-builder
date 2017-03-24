@@ -20,44 +20,91 @@ class WebsitesSeeder extends Seeder
 
             $websiteBuilder->setStorage('cp_root');
 
-            $users = $websiteBuilder->addPage('Users', 'users');
-            $user_profile = $users->addChild('Profile', 'edit');
-            $user_roles = $users->addChild('Roles', 'roles');
+            $home = Section::create([
+                'name' => 'Dashboard Template',
+                'template' => 'Home',
+                'type' => 'section'
+            ]);
+            $login = Section::create([
+                'name' => 'Login Template',
+                'template' => 'Login',
+                'type' => 'section'
+            ]);
+            $list = Section::create([
+                'name' => 'List Template',
+                'template' => 'List',
+                'type' => 'section'
+            ]);
+            $create = Section::create([
+                'name' => 'Create Template',
+                'template' => 'Create',
+                'type' => 'section'
+            ]);
+            $edit = Section::create([
+                'name' => 'Edit Template',
+                'template' => 'Edit',
+                'type' => 'section'
+            ]);
+            $show = Section::create([
+                'name' => 'Show Template',
+                'template' => 'Show',
+                'type' => 'section'
+            ]);
 
-            $roles = $websiteBuilder->addPage('Roles', 'roles');
-            $role_info = $roles->addChild('Info', 'edit');
-            $role_permissions = $roles->addChild('Permissions', 'permissions');
+            // ->addContainer()
+        //                  ->addSection($list)
 
-            $permissions = $websiteBuilder->addPage('Permissions', 'permissions');
-            $permission_info = $permissions->addChild('Info', 'edit');
+            $login = $websiteBuilder->addPage('Login', 'login')->addSection($login);
 
-            $resources = $websiteBuilder->addPage('Resources', 'resources');
-            $resource_info = $resources->addChild('Info', 'edit');
+            $users = $websiteBuilder->addPage('Users', 'users')->addSection($list);
+            $user = $websiteBuilder->addPage('User', 'users', true)->addSection($show);
+            $user_profile = $user->addChild('Profile', '')->addSection($edit);
+            $user_roles = $user->addChild('Roles', 'roles')->addSection($list);
 
-            $websites = $websiteBuilder->addPage('Websites', 'websites');
-            $website_info = $websites->addChild('Info', 'edit');
-            $navigation = $websites->addChild('Navigation', 'menus');
-            $pages = $websites->addChild('Pages', 'pages');
-            $page_info = $pages->addChild('Info', 'edit');
-            $page_layouts = $pages->addChild('Layout', 'layout');
-            $page_contents = $pages->addChild('Content', 'contents');
-            $blogEntries = $websites->addChild('Blog Entries', 'blog-entries');
-            $blogCategories = $websites->addChild('Blog Categories', 'blog-categories');
-            $blogTags = $websites->addChild('Blog Tags', 'blog-tags');
-            $redirects = $websites->addChild('Redirects', 'redirects');
+            $roles = $websiteBuilder->addPage('Roles', 'roles')->addSection($list);
+            $role = $websiteBuilder->addPage('Role', 'roles', true)->addSection($show);
+            $role_info = $role->addChild('Info', '')->addSection($edit);
+            $role_permissions = $role->addChild('Permissions', 'permissions')->addSection($list);
 
-            $galleries = $websiteBuilder->addPage('Galleries', 'galleries');
-            $gallery_info = $galleries->addChild('Info', 'edit');
-            $gallery_photos = $galleries->addChild('Photos', 'photos');
-            $gallery_videos = $galleries->addChild('Videos', 'videos');
+            $permissions = $websiteBuilder->addPage('Permissions', 'permissions')->addSection($list);
+            $permission = $websiteBuilder->addPage('Permission', 'permissions', true)->addSection($show);
+            $permission_info = $permission->addChild('Info', '')->addSection($edit);
+
+            $resources = $websiteBuilder->addPage('Resources', 'resources')->addSection($list);
+            $resource = $websiteBuilder->addPage('Resource', 'resources', true)->addSection($show);
+            $resource_info = $resource->addChild('Info', '')->addSection($edit);
+
+            $websites = $websiteBuilder->addPage('Websites', 'websites')->addSection($list);
+            $website = $websiteBuilder->addPage('Website', 'websites', true)->addSection($show);
+            $website_info = $website->addChild('Info', '')->addSection($edit);
+            $navigation = $website->addChild('Navigation', 'menus')->addSection($list);
+
+            $pages = $website->addChild('Pages', 'pages')->addSection($list);
+            $page = $website->addChild('Page', 'pages', true)->addSection($show);
+            $page_info = $page->addChild('Info', '')->addSection($edit);
+            $page_layouts = $page->addChild('Layout', 'layout')->addSection($list);
+            $page_contents = $page->addChild('Content', 'contents')->addSection($list);
+            // @TODO: work out the flow of blog.
+            $blogEntries = $website->addChild('Blog Entries', 'blog-entries')->addSection($list);
+            $blogCategories = $website->addChild('Blog Categories', 'blog-categories')->addSection($list);
+            $blogTags = $website->addChild('Blog Tags', 'blog-tags')->addSection($list);
+            $redirects = $website->addChild('Redirects', 'redirects')->addSection($list);
+
+            $galleries = $websiteBuilder->addPage('Galleries', 'galleries')->addSection($list);
+            $gallery = $websiteBuilder->addPage('Gallery', 'galleries', true)->addSection($show);
+            $gallery_info = $gallery->addChild('Info', '')->addSection($edit);
+            $gallery_photos = $gallery->addChild('Photos', 'photos')->addSection($list);
+            $gallery_videos = $gallery->addChild('Videos', 'videos')->addSection($list);
 
             // @TODO: storage workflow needs to be looked at a bit.
-            $storage = $websiteBuilder->addPage('Storage', 'storage');
-            $storage_info = $storage->addChild('Info', 'edit');
-            $storage_types = $storage->addChild('Types', 'storage-types');
+            $storages = $websiteBuilder->addPage('Storage', 'storage')->addSection($list);
+            $storage = $websiteBuilder->addPage('Storage', 'storages', true)->addSection($show);
+            $storage_info = $storage->addChild('Info', '')->addSection($edit);
+            $storage_types = $storage->addChild('Types', 'storage-types')->addSection($list);
 
-            $forms = $websiteBuilder->addPage('Forms', 'forms');
-            $form_info = $forms->addChild('Info', 'edit');
+            $forms = $websiteBuilder->addPage('Forms', 'forms')->addSection($list);
+            $form = $websiteBuilder->addPage('Form', 'forms', true)->addSection($show);
+            $form_info = $form->addChild('Info', '')->addSection($edit);
             // @TODO: form submissions?
 
             $websiteBuilder->addMenu('main_nav')
