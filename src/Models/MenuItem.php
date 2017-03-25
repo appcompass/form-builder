@@ -139,10 +139,10 @@ class MenuItem extends Model
     {
         // @TODO this should return the navigatable type, but that would involve more queries -f
         switch ($this->navigatable_type) {
-            case 'P3in\Models\Link':
+            case Link::class:
                 return 'Link';
                 break;
-            case 'P3in\Models\Page':
+            case Page::class:
                 return 'Page';
                 break;
         }

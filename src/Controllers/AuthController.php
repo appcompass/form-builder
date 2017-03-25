@@ -82,50 +82,6 @@ class AuthController extends Controller
         return $user;
     }
 
-    public function routes(Request $request)
-    {
-        $cacheKey = 'routes_'.$request->website->id.'_'.(Auth::check() ? Auth::user()->id : 'guest');
-        // forever? we would then need to clear this cache when updating a user permission though.
-        // $routes = Cache::remember($cacheKey, 10, function () use ($request) {
-            $pages = $request->website
-                ->pages()
-                ->byAllowedRole()
-                ->with('sections')
-                ->get();
-
-            // return $this->buildRoutesTree($pages);
-        // });
-        $routes = $this->buildRoutesTree($pages);
-
-        return response()->json(['routes' => $routes]);
-    }
-
-    public function resources(Request $request, string $route = null)
-    {
-        $query = Resource::byAllowedRole();
-
-        if ($route) {
-            $query->where('resource',  $route);
-        }
-
-        $resources = $query->with('form')->get();
-
-        $resources->each(function ($resource) {
-            if ($resource->form) {
-                $route = $resource->resource;
-                $route_type = substr($route, strrpos($route, '.')+1);
-
-                $resource->form = $resource->form->render($route_type);
-            }
-        });
-
-        $rtn = $route ? $resources->first() : [
-            'resources' => $resources,
-        ];
-
-        return response()->json($rtn);
-    }
-
     protected function rules()
     {
 
@@ -239,58 +195,5 @@ class AuthController extends Controller
         return response()->json([
             'message' => trans('auth.failed'),
         ], 401);
-    }
-
-    private function setPageChildren(&$parent, $parent_id, $pages)
-    {
-        foreach ($pages->where('parent_id', $parent_id) as $page) {
-            unset($parent['name']);
-            $row = $this->structureRouteRow($page);
-            $this->setPageChildren($row, $page->id, $pages);
-            $parent['children'][] = $row;
-        }
-    }
-
-    private function buildRoutesTree($pages)
-    {
-        $rtn = [];
-        foreach ($pages->where('parent_id', null) as $page) {
-            $row = $this->structureRouteRow($page);
-            $this->setPageChildren($row, $page->id, $pages);
-            $rtn[] = $row;
-        }
-        return $rtn;
-    }
-
-    private function structureRouteRow($page)
-    {
-        // @TODO: fix this.  Routes that don't exist like websites.pages.contents end up with names like websites-id-pages-id-contents
-        try {
-            $name = app('router')->getRoutes()->match(app('request')->create($page->url))->getName();
-        } catch (NotFoundHttpException $e) {
-            $name = str_slug(str_replace('/', '-', $page->url));
-        }
-        // dd(app('router')->getRoutes()->match(app('request')->create($page->url))->getName());
-        $section = $page->sections->first();
-        $path = $this->formatPath($page);
-        $row = [
-            'path' => $this->formatPath($page),
-            'name' => $name,
-            // needs to be worked out.  for CP.
-            'component' => $section ? $section->template : null,
-        ];
-
-        return $row;
-    }
-
-    private function formatPath($page)
-    {
-        if (!$page->parent_id) {
-            return $page->url;
-        }
-        if ($page->dynamic_url) {
-            return substr($page->url, strrpos($page->url, $page->slug));
-        }
-        return $page->slug;
     }
 }

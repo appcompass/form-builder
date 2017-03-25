@@ -20,14 +20,29 @@ class WebsitesSeeder extends Seeder
 
             $websiteBuilder->setStorage('cp_root');
 
-            $home = Section::create([
-                'name' => 'Dashboard Template',
-                'template' => 'Home',
-                'type' => 'section'
-            ]);
             $login = Section::create([
                 'name' => 'Login Template',
                 'template' => 'Login',
+                'type' => 'section'
+            ]);
+            $register = Section::create([
+                'name' => 'Register Template',
+                'template' => 'Register',
+                'type' => 'section'
+            ]);
+            $passwordEmail = Section::create([
+                'name' => 'password Email Template',
+                'template' => 'PasswordEmail',
+                'type' => 'section'
+            ]);
+            $passwordReset = Section::create([
+                'name' => 'Password Reset Template',
+                'template' => 'PasswordReset',
+                'type' => 'section'
+            ]);
+            $home = Section::create([
+                'name' => 'Dashboard Template',
+                'template' => 'Home',
                 'type' => 'section'
             ]);
             $list = Section::create([
@@ -55,6 +70,10 @@ class WebsitesSeeder extends Seeder
         //                  ->addSection($list)
 
             $login = $websiteBuilder->addPage('Login', 'login')->addSection($login);
+            $register = $websiteBuilder->addPage('Register', 'register')->addSection($register);
+            $passwordEmail = $websiteBuilder->addPage('Request Password Reset', 'request-password-reset')->addSection($passwordEmail);
+            $passwordReset = $websiteBuilder->addPage('Reset Password', 'reset-password')->addSection($passwordReset);
+            $home = $websiteBuilder->addPage('Dashbaord', '')->addSection($home);
 
             $users = $websiteBuilder->addPage('Users', 'users')->addSection($list);
             $user = $websiteBuilder->addPage('User', 'users', true)->addSection($show);
@@ -77,7 +96,9 @@ class WebsitesSeeder extends Seeder
             $websites = $websiteBuilder->addPage('Websites', 'websites')->addSection($list);
             $website = $websiteBuilder->addPage('Website', 'websites', true)->addSection($show);
             $website_info = $website->addChild('Info', '')->addSection($edit);
-            $navigation = $website->addChild('Navigation', 'menus')->addSection($list);
+            $navigations = $website->addChild('Menus', 'menus')->addSection($list);
+            $navigation = $website->addChild('Menu', 'menus', true)->addSection($show);
+            $navigation_builder = $navigation->addChild('Editor', '')->addSection($edit);
 
             $pages = $website->addChild('Pages', 'pages')->addSection($list);
             $page = $website->addChild('Page', 'pages', true)->addSection($show);
@@ -107,9 +128,12 @@ class WebsitesSeeder extends Seeder
             $form_info = $form->addChild('Info', '')->addSection($edit);
             // @TODO: form submissions?
 
+            $websiteBuilder->addMenu('user_nav')
+                ->add(['title' => 'Profile', 'url' => '/users/:current_user_id', 'alt' => 'Profile'], 1)->icon('user');
+
             $websiteBuilder->addMenu('main_nav')
-                ->add(['title' => 'Dashboard', 'url' => '/', 'alt' => 'dashboard'], 0)
-                ->add(['title' => 'Users Management', 'alt' => 'Users Management'], 1)->sub()
+                ->add(['title' => 'Dashboard', 'url' => '/', 'alt' => 'Dashboard'], 1)
+                ->add(['title' => 'Users Management', 'alt' => 'Users Management'], 2)->sub()
                     ->add($users, 1)->icon('user')->sub()
                         ->add($user_profile, 1)->icon('user')
                         ->add($user_roles, 2)->icon('group')
@@ -125,7 +149,7 @@ class WebsitesSeeder extends Seeder
                         ->add($resource_info, 1)->icon('diamond')
                         ->parent()
                     ->parent()
-                ->add(['title' => 'Web Properties', 'alt' => 'Web Properties'], 2)->sub()
+                ->add(['title' => 'Web Properties', 'alt' => 'Web Properties'], 3)->sub()
                     ->add($websites, 1)->icon('globe')->sub()
                         ->add($website_info, 1)->icon('edit')
                         ->add($pages, 2)->icon('pages')->sub()
@@ -139,18 +163,21 @@ class WebsitesSeeder extends Seeder
                             ->add($blogCategories, 2)->icon('page')
                             ->add($blogTags, 3)->icon('page')
                             ->parent()
-                        ->add($navigation, 4)->icon('navigation')
+                        ->add($navigations, 4)->icon('navigation')->sub()
+                            ->add($navigation, 1)->icon('pages')
+                            ->add($navigation_builder, 2)->icon('page')
+                            ->parent()
                         ->add($redirects, 5)->icon('redirect')
                         ->parent()
                     ->parent()
-                ->add(['title' => 'Media Management', 'alt' => 'Media Management'], 3)->sub()
+                ->add(['title' => 'Media Management', 'alt' => 'Media Management'], 4)->sub()
                     ->add($galleries, 1)->icon('camera')->sub()
                             ->add($gallery_info, 1)->icon('gallery')
                             ->add($gallery_photos, 2)->icon('image')
                             ->add($gallery_videos, 3)->icon('video')
                         ->parent()
                     ->parent()
-                ->add(['title' => 'Settings', 'alt' => 'Settings'], 4)->sub()
+                ->add(['title' => 'Settings', 'alt' => 'Settings'], 5)->sub()
                     ->add($storage, 1)->icon('settings')->sub()
                         ->add($storage_info, 1)->icon('settings')
                         ->add($storage_types, 2)->icon('settings')

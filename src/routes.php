@@ -1,4 +1,11 @@
 <?php
+Route::group([
+    'middleware' => ['web', 'cp'],
+    'namespace' => 'P3in\Controllers',
+], function ($router) {
+    $router->get('routes', 'CpResourcesController@routes');
+    $router->get('get-resources/{route?}', 'CpResourcesController@resources');
+});
 
 Route::group([
     'prefix' => 'auth',
@@ -9,9 +16,6 @@ Route::group([
     $router->post('login', 'AuthController@login');
     $router->get('logout', 'AuthController@logout')->middleware(['auth']);
     $router->get('user', 'AuthController@user')->middleware('auth');
-
-    $router->get('routes', 'AuthController@routes');
-    $router->get('resources/{route?}', 'AuthController@resources');
 
     // registration
     $router->post('register', 'AuthController@register');
