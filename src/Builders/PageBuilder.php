@@ -244,6 +244,14 @@ class PageBuilder
         return $this->setMeta('update_frequency', $val);
     }
 
+    public function layout($layout = null)
+    {
+        $this->update(['layout' => $layout]);
+
+        return $this;
+    }
+
+
     /**
      * Sets the meta.
      *
@@ -259,7 +267,7 @@ class PageBuilder
     //     return $this;
     // }
 
-    public function renderTemplate(string $layout)
+    public function renderTemplate(string $layout = null)
     {
         $renderer = new TemplateRenderer($this->page);
 

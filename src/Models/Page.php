@@ -24,6 +24,7 @@ class Page extends Model implements Linkable
     protected $fillable = [
         'slug',
         'title',
+        'layout',
         'dynamic_url',
         'meta',
     ];

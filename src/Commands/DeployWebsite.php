@@ -3,6 +3,7 @@
 namespace P3in\Commands;
 
 use Illuminate\Console\Command;
+use P3in\Builders\PageBuilder;
 use P3in\Builders\WebsiteBuilder;
 use P3in\Models\Permission;
 use P3in\Models\Role;
@@ -50,9 +51,15 @@ class DeployWebsite extends Command
         $website = Website::where('host', $host)->firstOrFail();
         $disk = $website->storage->getDisk();
 
+        // render the page templates
+        foreach ($website->pages as $page) {
+            PageBuilder::edit($page)->renderTemplate();
+        }
+
         $wsb = WebsiteBuilder::edit($website)->deploy($disk);
         $manager = $wsb->getManager();
         $destPath = $disk->getDriver()->getAdapter()->getPathPrefix();
+
 
         //sucks!... this is basically only working with local storage.
         //this needs to be abstracted so that we can account for remote disk

@@ -21,7 +21,7 @@ class TemplateRenderer
         $this->page = $page;
     }
 
-    public function layout(string $layout)
+    public function layout(string $layout = null)
     {
         $this->layout = $layout;
         return $this;
@@ -36,8 +36,14 @@ class TemplateRenderer
      */
     public function buildTemplate(array $sections = null, array $imports = null)
     {
+        $layout = $this->page->layout ?? $this->layout;
+
+        if (!$layout) {
+            throw new \Exception('No page layout was defined for the page or to the renderer.  Please define a layout either on the page or to the template renderer.');
+        }
+
         return view('pilot-io::page', [
-            'layout' => $this->layout,
+            'layout' => $layout,
             'sections' => $sections ?? $this->sections,
             'imports' => $imports ?? $this->imports,
         ])->render();
@@ -185,10 +191,6 @@ class TemplateRenderer
     {
         $disk = $this->page->website->storage->getDisk();
 
-        // @TODO: redundant, disk can take care of storage of generated tempalte content.
-        $manager = new PublishFiles('stubs', realpath(__DIR__.'/../Templates/stubs'));
-
-        $manager->publishFile($disk, "/pages{$name}.vue", $contents, true);
-
+        $disk->put("/pages{$name}.vue", $contents);
     }
 }

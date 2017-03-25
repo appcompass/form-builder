@@ -16,13 +16,21 @@
     layout: '{!! $layout !!}',
 @endif
     components: { {!! implode(',', $imports) !!} },
-    data (context) {
+    data () {
+      return {
+        menus: {},
+        site_meta: {},
+        current_url: '',
+        content: []
+      }
+    },
+    asyncData (context) {
       return common.getPageData(context)
     },
     head() {
       return {
         title: this.page.title ? this.page.title : '',
-        meta: this.page.head_meta ? this.page.head_meta : [],
+        meta: this.page.head_meta ? this.page.head_meta : []
       }
     }
 
