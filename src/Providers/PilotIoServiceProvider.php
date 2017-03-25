@@ -10,16 +10,17 @@ use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 use Intervention\Image\ImageServiceProvider;
 use P3in\Models\Field;
+use P3in\Models\Form;
 use P3in\Models\Gallery;
 use P3in\Models\GalleryItem;
-use P3in\Models\Role;
 use P3in\Models\Menu;
 use P3in\Models\Page;
-use P3in\Models\Resource;
 use P3in\Models\PageSectionContent;
 use P3in\Models\Permission;
 use P3in\Models\Photo;
 use P3in\Models\Redirect;
+use P3in\Models\Resource;
+use P3in\Models\Role;
 use P3in\Models\User;
 use P3in\Models\Video;
 use P3in\Models\Website;
@@ -59,7 +60,10 @@ class PilotIoServiceProvider extends BaseServiceProvider
             // 'jwt.refresh'
         ],
         'api' => [
-            \P3in\Middleware\AfterRoute::class,
+            // \P3in\Middleware\AfterRoute::class,
+        ],
+        'cp' => [
+            \P3in\Middleware\ValidateControlPanel::class
         ]
     ];
 
@@ -158,7 +162,6 @@ class PilotIoServiceProvider extends BaseServiceProvider
     // @TODO: once we figure out this functionality once and for all, we can move the method into BaseServiceProvider and just store the array here.
     public function bindToRoute()
     {
-        // @TODO: sort out Route::bind vs. Route::model.
         foreach ([
             'user' => User::class,
             'permission' => Permission::class,
@@ -173,7 +176,7 @@ class PilotIoServiceProvider extends BaseServiceProvider
             'section' => Section::class,
             'menu' => Menu::class,
             'resource' => Resource::class,
-            'form' => \P3in\Models\Form::class
+            'form' => Form::class
         ] as $key => $model) {
             Route::bind($key, function ($value) use ($model) {
                 return $model::findOrFail($value);

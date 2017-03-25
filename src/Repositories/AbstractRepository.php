@@ -2,10 +2,13 @@
 
 namespace P3in\Repositories;
 
-use P3in\Interfaces\AbstractRepositoryInterface;
+use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
-use Auth;
+use Illuminate\Support\Facades\Route;
+use P3in\Interfaces\AbstractRepositoryInterface;
+use P3in\Models\Form;
+use P3in\Models\Resource;
 
 abstract class AbstractRepository implements AbstractRepositoryInterface
 {
@@ -24,6 +27,10 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
     // repo locks if use doesn't have permissions
     private $locked = false;
 
+    // always null in normal context, populated in child context.
+    // @TODO: feels off setting this here, but the current alternative is more code.
+    protected $owned = null;
+
     // Builder
     protected $builder;
 
@@ -41,8 +48,20 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         'props' => []
     ];
 
-    // model's default list view
-    protected $view = 'Table';
+    protected $route_name;
+    protected $route_params;
+    // // model's default list view
+    // protected $view = 'Table';
+    // view types: ['Table','Card','Map', 'Chart', 'etc'] and what ever other types a module in the future may need.
+    // @TODO: consider moving additional ones into the models rather than repositories.
+    // i.e. make use of HasCardView trait for Card layouts, and other traits for other layout types.
+    protected $view_types = ['Table'];
+    // create types: 'Page' - 'Add New' button that leads to new create view,
+    // 'Inline' - instead of taking the user to a page, it renders the form inline
+    // where normally the Add New button would be for Page types.
+    protected $create_type = 'Page';
+    //update types: 'Page' - normal full page behavior, 'Modal' - modal edit view, like for a photo when clicked on a grid.
+    protected $update_type = 'Page';
 
     /**
      * { function_description }
@@ -176,7 +195,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
 
         foreach((array) $search as $column => $string) {
 
-            $this->builder->where($column, 'like', "%{$string}%");
+            $this->builder->where($column, 'ilike', "%{$string}%");
 
         }
 
@@ -214,7 +233,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
      *
      * @param      <type>  $attributes  The attributes
      */
-    public function create($request)
+    public function store($request)
     {
         $request = $this->checkRequirements($request);
 
@@ -361,10 +380,15 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
      */
     public function findByPrimaryKey($id)
     {
-        return $this->make()
+
+        return $this->output($this->make()
             ->builder
             ->where($this->model->getTable() . '.' . $this->model->getKeyName(), $id)
-            ->firstOrFail();
+            ->firstOrFail());
+        // return $this->make()
+        //     ->builder
+        //     ->where($this->model->getTable() . '.' . $this->model->getKeyName(), $id)
+        //     ->firstOrFail();
     }
 
     /**
@@ -388,26 +412,29 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         // repo locks if use doesn't have permissions
         if ($this->locked) {
 
-            return;
+            // return;
+            return $this->output([], 401);
 
         }
 
         // for show() if a model has been set we only wanna load rels
         if ($this->model->id) {
 
-            return $this->model;
+            $data = $this->model;
 
         }
 
         if (request()->has('page')) {
 
-            return $this->paginate(request()->per_page, request()->page);
+            $data = $this->paginate(request()->per_page, request()->page);
 
         } else {
 
-            return $this->paginate();
+            $data = $this->paginate();
 
         }
+
+        return $this->output($data);
     }
 
     /**
@@ -456,10 +483,12 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
 
         }
 
-        return [
-            'data' => $data,
-            'view' => $this->view
-        ];
+        return $data;
+
+        // return [
+        //     'data' => $data,
+        //     'view' => $this->view
+        // ];
     }
 
     /**
@@ -474,7 +503,8 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         $file = head(array_where($attributes, function($val){
             return is_a($val, UploadedFile::class);
         }));
-        $storage = head(array_where($attributes, function($val, $key){
+
+        $storage = $this->model->storage ? $this->model->storage->name : head(array_where($attributes, function($val, $key){
             return $key == 'disk';
         }));
 
@@ -487,5 +517,82 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
             // $this->model->storeFile($storage, $file, true);
             $this->model->storeFile($storage, $file, true);
         }
+    }
+
+    public function create()
+    {
+        // output already takes care of binding the form for the route.
+        return $this->output([]);
+    }
+
+    public function output($data, $code = 200)
+    {
+        $this->setRouteInfo();
+        $rtn = [
+            'route' => $this->route_name,
+            'parameters' => $this->route_params,
+            'api_url' => $this->getApiUrl(),
+            'view_types' => $this->view_types,
+            'create_type' => $this->create_type,
+            'update_type' => $this->update_type,
+            'owned' => $this->owned,
+            'abilities' => ['create', 'edit', 'destroy', 'index', 'show'], // @TODO show is per-item in the collection
+            'form' => $this->getResourceForm(),
+            'collection' => $data,
+        ];
+
+        return response()->json($rtn, $code);
+    }
+
+    public function getApiUrl()
+    {
+        $keys = explode('.', $this->route_name);
+        $values = array_values(array_map(function($param){
+            return $param->getKey();
+        }, $this->route_params));
+
+        $segments = [''];
+        $route_type = $this->getRouteType();
+
+        for ($i=0; $i < count($keys); $i++) {
+            if ($keys[$i] !== $route_type) {
+                $segments[] = $keys[$i];
+                if (isset($values[$i])) {
+                    $segments[] = $values[$i];
+                }
+            }
+        }
+        return implode('/', $segments);
+    }
+
+    public function getResourceForm()
+    {
+        $resource = Resource::where(function($query){
+            $query->whereNull('req_role')->orWhereHas('role', function ($query) {
+                $query->whereHas('users', function ($query) {
+                    $query->where('id', Auth::user()->id);
+                });
+            });
+        })
+            ->where('resource',  $this->route_name)
+            ->with('form')
+            ->first();
+
+        if (!empty($resource->form)) {
+            return $resource->form->render($this->getRouteType());
+        }
+
+    }
+
+    public function getRouteType()
+    {
+        return substr($this->route_name, strrpos($this->route_name, '.')+1);
+    }
+
+    public function setRouteInfo()
+    {
+        $route = Route::current();
+        $this->route_name = $route->getName();
+        $this->route_params = $route->parameters();
     }
 }

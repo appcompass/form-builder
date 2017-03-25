@@ -8,6 +8,8 @@ use P3in\Interfaces\WebsitePagesRepositoryInterface;
 
 class WebsitePagesRepository extends AbstractChildRepository implements WebsitePagesRepositoryInterface
 {
+    protected $view_types = ['Table', 'Card'];
+
     public function __construct(Page $model, Website $parent)
     {
         $this->model = $model;

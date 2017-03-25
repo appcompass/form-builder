@@ -93,11 +93,12 @@ class WebsiteBuilder
      *
      * @return     PageBuilder  ( description_of_the_return_value )
      */
-    public function addPage($title, $slug)
+    public function addPage($title, $slug, $dynamic = false)
     {
         $page = new Page([
             'title' => $title,
             'slug' => $slug,
+            'dynamic_url' => $dynamic,
         ]);
 
         $page = $this->website->addPage($page);

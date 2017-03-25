@@ -8,7 +8,7 @@ use P3in\Interfaces\RolePermissionsRepositoryInterface;
 
 class RolePermissionsRepository extends AbstractChildRepository implements RolePermissionsRepositoryInterface
 {
-    protected $view = 'MultiSelect';
+    protected $view_types = ['MultiSelect'];
 
     public function __construct(Permission $model, Role $parent)
     {

@@ -21,6 +21,10 @@ class Video extends GalleryItem implements GalleryItemInterface
         $this->user()->associate(\Auth::user());
     }
 
+    public function getCardPhotoUrl()
+    {
+        return '';
+    }
 
     // /**
     // * Store a new image

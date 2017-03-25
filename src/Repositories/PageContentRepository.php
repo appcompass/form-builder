@@ -8,7 +8,8 @@ use P3in\Interfaces\PageContentRepositoryInterface;
 
 class PageContentRepository extends AbstractChildRepository implements PageContentRepositoryInterface
 {
-    public $view = 'PageEditor';
+    protected $view_types = ['PageEditor'];
+    protected $rel_depth = 2;
 
     public function __construct(PageSectionContent $model, Page $parent)
     {

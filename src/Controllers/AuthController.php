@@ -11,6 +11,7 @@ use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Password;
@@ -19,6 +20,7 @@ use P3in\Events\Login;
 use P3in\Events\Logout;
 use P3in\Models\Resource;
 use P3in\Models\User;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AuthController extends Controller
 {
@@ -78,38 +80,6 @@ class AuthController extends Controller
             return $this->noCodeResponse($request);
         }
         return $user;
-    }
-
-    public function resources(Request $request, string $route = null)
-    {
-        $query = Resource::where(function($query){
-            $query->whereNull('req_role')->orWhereHas('role', function ($query) {
-                $query->whereHas('users', function ($query) {
-                    $query->where('id', Auth::user()->id);
-                });
-            });
-        });
-
-        if ($route) {
-            $query->where('resource',  $route);
-        }
-
-        $resources = $query->with('form')->get();
-
-        $resources->each(function ($resource) {
-            if ($resource->form) {
-                $route = $resource->resource;
-                $route_type = substr($route, strrpos($route, '.')+1);
-
-                $resource->form = $resource->form->render($route_type);
-            }
-        });
-
-        $rtn = $route ? $resources->first() : [
-            'routes' => $resources,
-        ];
-
-        return response()->json($rtn);
     }
 
     protected function rules()
@@ -226,5 +196,4 @@ class AuthController extends Controller
             'message' => trans('auth.failed'),
         ], 401);
     }
-
 }

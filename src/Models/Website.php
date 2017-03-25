@@ -231,10 +231,10 @@ class Website extends Model
         }
     }
 
-    public static function fromRequest(Request $request)
+    public static function fromRequest(Request $request, $host = null)
     {
+        $host = $host ?? $request->header('Site-Host');
         try {
-            $host = $request->header('Site-Host');
 
             return Website::whereHost($host)->firstOrFail();
 

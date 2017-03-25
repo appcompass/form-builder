@@ -20,61 +20,177 @@ class WebsitesSeeder extends Seeder
 
             $websiteBuilder->setStorage('cp_root');
 
-            $users = $websiteBuilder->addPage('Users', 'users');
-            $user_roles = $users->addChild('User Roles', 'roles');
-            $roles = $websiteBuilder->addPage('Roles', 'roles');
-            $role_permissions = $roles->addChild('Role Permissions', 'permissions');
-            $permissions = $websiteBuilder->addPage('Permissions', 'permissions');
-            $resources = $websiteBuilder->addPage('Resources', 'resources');
-            $websites = $websiteBuilder->addPage('Websites', 'websites');
-            $navigation = $websites->addChild('Navigation', 'menus');
-            $pages = $websites->addChild('Pages', 'pages');
-            $contents = $pages->addChild('Content', 'contents');
-            $blogEntries = $websites->addChild('Entries', 'blog-entries');
-            $blogCategories = $websites->addChild('Categories', 'blog-categories');
-            $blogTags = $websites->addChild('Tags', 'blog-tags');
-            $galleries = $websiteBuilder->addPage('Galleries', 'galleries');
+            $login = Section::create([
+                'name' => 'Login Template',
+                'template' => 'Login',
+                'type' => 'section'
+            ]);
+            $register = Section::create([
+                'name' => 'Register Template',
+                'template' => 'Register',
+                'type' => 'section'
+            ]);
+            $passwordEmail = Section::create([
+                'name' => 'password Email Template',
+                'template' => 'PasswordEmail',
+                'type' => 'section'
+            ]);
+            $passwordReset = Section::create([
+                'name' => 'Password Reset Template',
+                'template' => 'PasswordReset',
+                'type' => 'section'
+            ]);
+            $home = Section::create([
+                'name' => 'Dashboard Template',
+                'template' => 'Home',
+                'type' => 'section'
+            ]);
+            $list = Section::create([
+                'name' => 'List Template',
+                'template' => 'List',
+                'type' => 'section'
+            ]);
+            $create = Section::create([
+                'name' => 'Create Template',
+                'template' => 'Create',
+                'type' => 'section'
+            ]);
+            $edit = Section::create([
+                'name' => 'Edit Template',
+                'template' => 'Edit',
+                'type' => 'section'
+            ]);
+            $show = Section::create([
+                'name' => 'Show Template',
+                'template' => 'Show',
+                'type' => 'section'
+            ]);
 
-            $storage = $websiteBuilder->addPage('Storage', 'storage');
-            $forms = $websiteBuilder->addPage('Forms', 'forms');
+            // ->addContainer()
+        //                  ->addSection($list)
+
+            $login = $websiteBuilder->addPage('Login', 'login')->addSection($login);
+            $register = $websiteBuilder->addPage('Register', 'register')->addSection($register);
+            $passwordEmail = $websiteBuilder->addPage('Request Password Reset', 'request-password-reset')->addSection($passwordEmail);
+            $passwordReset = $websiteBuilder->addPage('Reset Password', 'reset-password')->addSection($passwordReset);
+            $home = $websiteBuilder->addPage('Dashbaord', '')->addSection($home);
+
+            $users = $websiteBuilder->addPage('Users', 'users')->addSection($list);
+            $user = $websiteBuilder->addPage('User', 'users', true)->addSection($show);
+            $user_profile = $user->addChild('Profile', '')->addSection($edit);
+            $user_roles = $user->addChild('Roles', 'roles')->addSection($list);
+
+            $roles = $websiteBuilder->addPage('Roles', 'roles')->addSection($list);
+            $role = $websiteBuilder->addPage('Role', 'roles', true)->addSection($show);
+            $role_info = $role->addChild('Info', '')->addSection($edit);
+            $role_permissions = $role->addChild('Permissions', 'permissions')->addSection($list);
+
+            $permissions = $websiteBuilder->addPage('Permissions', 'permissions')->addSection($list);
+            $permission = $websiteBuilder->addPage('Permission', 'permissions', true)->addSection($show);
+            $permission_info = $permission->addChild('Info', '')->addSection($edit);
+
+            $resources = $websiteBuilder->addPage('Resources', 'resources')->addSection($list);
+            $resource = $websiteBuilder->addPage('Resource', 'resources', true)->addSection($show);
+            $resource_info = $resource->addChild('Info', '')->addSection($edit);
+
+            $websites = $websiteBuilder->addPage('Websites', 'websites')->addSection($list);
+            $website = $websiteBuilder->addPage('Website', 'websites', true)->addSection($show);
+            $website_info = $website->addChild('Info', '')->addSection($edit);
+            $navigations = $website->addChild('Menus', 'menus')->addSection($list);
+            $navigation = $website->addChild('Menu', 'menus', true)->addSection($show);
+            $navigation_builder = $navigation->addChild('Editor', '')->addSection($edit);
+
+            $pages = $website->addChild('Pages', 'pages')->addSection($list);
+            $page = $website->addChild('Page', 'pages', true)->addSection($show);
+            $page_info = $page->addChild('Info', '')->addSection($edit);
+            $page_layouts = $page->addChild('Layout', 'layout')->addSection($list);
+            $page_contents = $page->addChild('Content', 'contents')->addSection($list);
+            // @TODO: work out the flow of blog.
+            $blogEntries = $website->addChild('Blog Entries', 'blog-entries')->addSection($list);
+            $blogCategories = $website->addChild('Blog Categories', 'blog-categories')->addSection($list);
+            $blogTags = $website->addChild('Blog Tags', 'blog-tags')->addSection($list);
+            $redirects = $website->addChild('Redirects', 'redirects')->addSection($list);
+
+            $galleries = $websiteBuilder->addPage('Galleries', 'galleries')->addSection($list);
+            $gallery = $websiteBuilder->addPage('Gallery', 'galleries', true)->addSection($show);
+            $gallery_info = $gallery->addChild('Info', '')->addSection($edit);
+            $gallery_photos = $gallery->addChild('Photos', 'photos')->addSection($list);
+            $gallery_videos = $gallery->addChild('Videos', 'videos')->addSection($list);
+
+            // @TODO: storage workflow needs to be looked at a bit.
+            $storages = $websiteBuilder->addPage('Storage', 'storage')->addSection($list);
+            $storage = $websiteBuilder->addPage('Storage', 'storages', true)->addSection($show);
+            $storage_info = $storage->addChild('Info', '')->addSection($edit);
+            $storage_types = $storage->addChild('Types', 'storage-types')->addSection($list);
+
+            $forms = $websiteBuilder->addPage('Forms', 'forms')->addSection($list);
+            $form = $websiteBuilder->addPage('Form', 'forms', true)->addSection($show);
+            $form_info = $form->addChild('Info', '')->addSection($edit);
+            // @TODO: form submissions?
+
+            $websiteBuilder->addMenu('user_nav')
+                ->add(['title' => 'Profile', 'url' => '/users/:current_user_id', 'alt' => 'Profile'], 1)->icon('user');
 
             $websiteBuilder->addMenu('main_nav')
-                ->add(['title' => 'Dashboard', 'url' => '/', 'alt' => 'dashboard'], 0)
-                ->add(['title' => 'Users Management', 'alt' => 'Users Management'], 1)->sub()
+                ->add(['title' => 'Dashboard', 'url' => '/', 'alt' => 'Dashboard'], 1)
+                ->add(['title' => 'Users Management', 'alt' => 'Users Management'], 2)->sub()
                     ->add($users, 1)->icon('user')->sub()
-                        ->add($user_roles, 1)->icon('lock')
+                        ->add($user_profile, 1)->icon('user')
+                        ->add($user_roles, 2)->icon('group')
                         ->parent()
-                    ->add($roles, 2)->icon('lock')->sub()
-                        ->add($role_permissions, 1)
+                    ->add($roles, 2)->icon('group')->sub()
+                        ->add($role_info, 1)->icon('group')
+                        ->add($role_permissions, 2)->icon('permission')
                         ->parent()
-                    ->add($permissions, 3)->icon('lock')
-                    ->add($resources, 4)->icon('diamond')
+                    ->add($permissions, 3)->icon('permission')->sub()
+                        ->add($permission_info, 1)->icon('permission')
+                        ->parent()
+                    ->add($resources, 4)->icon('diamond')->sub()
+                        ->add($resource_info, 1)->icon('diamond')
+                        ->parent()
                     ->parent()
-                ->add(['title' => 'Web Properties', 'alt' => 'Web Properties'], 2)->sub()
+                ->add(['title' => 'Web Properties', 'alt' => 'Web Properties'], 3)->sub()
                     ->add($websites, 1)->icon('globe')->sub()
-                        ->add($pages, 1)->icon('pages')->sub()
-                            ->add($contents, 1)
+                        ->add($website_info, 1)->icon('edit')
+                        ->add($pages, 2)->icon('pages')->sub()
+                            ->add($page_info, 1)->icon('pages')
+                            ->add($page_layouts, 2)->icon('page')
+                            ->add($page_contents, 3)->icon('page')
                             ->parent()
-                        ->add(['url' => '/blog', 'title' => 'Blog', 'alt' => 'Blog'], 2)->icon('page') ->sub()
-                            ->add($blogEntries, 1)
-                            ->add($blogCategories, 2)
-                            ->add($blogTags, 3)
+                        // @TODO: blog end point flow needs to be worked out
+                        ->add(['url' => '/blog', 'title' => 'Blog', 'alt' => 'Blog'], 3)->icon('page') ->sub()
+                            ->add($blogEntries, 1)->icon('page')
+                            ->add($blogCategories, 2)->icon('page')
+                            ->add($blogTags, 3)->icon('page')
                             ->parent()
-                        ->add($navigation, 3)->icon('navigation')
+                        ->add($navigations, 4)->icon('navigation')->sub()
+                            ->add($navigation, 1)->icon('pages')
+                            ->add($navigation_builder, 2)->icon('page')
+                            ->parent()
+                        ->add($redirects, 5)->icon('redirect')
                         ->parent()
                     ->parent()
-                ->add(['title' => 'Media Management', 'alt' => 'Media Management'], 3)->sub()
+                ->add(['title' => 'Media Management', 'alt' => 'Media Management'], 4)->sub()
                     ->add($galleries, 1)->icon('camera')->sub()
+                            ->add($gallery_info, 1)->icon('gallery')
+                            ->add($gallery_photos, 2)->icon('image')
+                            ->add($gallery_videos, 3)->icon('video')
                         ->parent()
                     ->parent()
-                ->add(['title' => 'Settings', 'alt' => 'Settings'], 4)->sub()
-                    ->add($storage, 1)->icon('gear')
-                    ->add($forms, 2)->icon('file-text-o');
+                ->add(['title' => 'Settings', 'alt' => 'Settings'], 5)->sub()
+                    ->add($storage, 1)->icon('settings')->sub()
+                        ->add($storage_info, 1)->icon('settings')
+                        ->add($storage_types, 2)->icon('settings')
+                        ->parent()
+                    ->add($forms, 2)->icon('file')->sub()
+                        ->add($form_info, 1)->icon('file')
+                        ;
         })->getWebsite();
 
         // DB::statement("DELETE FROM forms WHERE name = 'websites'");
 
         $form = FormBuilder::new('websites', function (FormBuilder $builder) {
+            // $builder->setViewTypes(['list','grid']);
             $builder->string('Website Name', 'name')
                 ->list()
                 ->required()
@@ -169,6 +285,7 @@ class WebsitesSeeder extends Seeder
 
         $form = FormBuilder::new('pages', function (FormBuilder $builder) {
             $builder->editor('Page');
+            // $builder->setViewTypes(['list','grid']);
             $builder->string('Page Title', 'title')
                 ->list()
                 ->required()

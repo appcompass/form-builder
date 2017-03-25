@@ -53,6 +53,11 @@ class Photo extends GalleryItem implements GalleryItemInterface
         return $this->getDisk()->url($this->path);
     }
 
+    public function getCardPhotoUrl()
+    {
+        return $this->url;
+    }
+
     /**
      * { function_description }
      */

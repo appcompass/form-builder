@@ -1,4 +1,11 @@
 <?php
+Route::group([
+    'middleware' => ['web', 'cp'],
+    'namespace' => 'P3in\Controllers',
+], function ($router) {
+    $router->get('routes', 'CpResourcesController@routes');
+    $router->get('get-resources/{route?}', 'CpResourcesController@resources');
+});
 
 Route::group([
     'prefix' => 'auth',
@@ -9,7 +16,6 @@ Route::group([
     $router->post('login', 'AuthController@login');
     $router->get('logout', 'AuthController@logout')->middleware(['auth']);
     $router->get('user', 'AuthController@user')->middleware('auth');
-    $router->get('resources/{route?}', 'AuthController@resources')->middleware('auth');
 
     // registration
     $router->post('register', 'AuthController@register');
@@ -44,8 +50,8 @@ Route::group([
     $router->resource('pages', PagesController::class);
     $router->resource('pages.contents', PageContentController::class);
     // @TODO use generic forms getter once that's done (maybe)
-    $router->get('menus/forms/{form}', 'MenusController@getForm');
-    $router->post('menus/forms/{form}', 'MenusController@storeForm');
+    $router->get('menus/forms/{form_name}', 'MenusController@getForm');
+    $router->post('menus/forms/{form_name}', 'MenusController@storeForm');
     $router->resource('websites', WebsitesController::class);
     $router->resource('websites.menus', WebsiteMenusController::class);
     $router->resource('websites.navigation', WebsiteMenusController::class);

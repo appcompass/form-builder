@@ -18,6 +18,10 @@ class Form extends Model
         'updated_at'
     ];
 
+    // protected $casts = [
+    //     'view_types' => 'array',
+    // ];
+
     protected $with = ['fields.source'];
 
     protected $appends = ['fieldsCount'];
@@ -95,13 +99,35 @@ class Form extends Model
      */
     public function setOwner(Model $owner)
     {
-        if (isset($owner->{$owner->getKeyName()})) {
-            $this->formable_id = $owner->{$owner->getKeyName()};
-        }
+        // if (isset($owner->{$owner->getKeyName()})) {
+        //     $this->formable_id = $owner->{$owner->getKeyName()};
+        // }
 
-        $this->formable_type = get_class($owner);
+        // $this->formable_type = get_class($owner);
+        $this->formable()->associate($owner);
 
         $this->save();
+
+        return $this;
+    }
+
+    public function setViewTypes(array $types)
+    {
+        $this->update(['view_types' => $types]);
+
+        return $this;
+    }
+
+    public function setCreateType(string $type)
+    {
+        $this->update(['create_type' => $type]);
+
+        return $this;
+    }
+
+    public function setUpdateType(string $type)
+    {
+        $this->update(['update_type' => $type]);
 
         return $this;
     }

@@ -26,9 +26,13 @@ class WebsitePagesController extends AbstractChildController
     {
         // dd($model->);
         // dd($model->buildContentTree());
-        return [
+        return $this->repo->output([
             'page' => $model->toArray(),
             'data' => $model->buildContentTree(true)
-        ];
+        ]);
+        // return [
+        //     'page' => $model->toArray(),
+        //     'data' => $model->buildContentTree(true)
+        // ];
     }
 }

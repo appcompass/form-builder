@@ -18,9 +18,6 @@ class AbstractChildRepository extends AbstractRepository
     // @TODO better explanations for this
     protected $parentToChild = null;
 
-    // view gets swapped depending on the relation type
-    protected $view = 'Table';
-
     // depending on the relation we return an array containing the ids
     // owned by the parent
     protected $owned = null;
@@ -125,7 +122,7 @@ class AbstractChildRepository extends AbstractRepository
      *
      * @return     array   ( description_of_the_return_value )
      */
-    public function create($attributes)
+    public function store($attributes)
     {
         // @TODO a bit hacky but this allows us to attach `request`-ed models in the controllers
         if ($attributes instanceof Request) {
@@ -178,6 +175,16 @@ class AbstractChildRepository extends AbstractRepository
         return $this->owned;
     }
 
+    public function setDiskConfig()
+    {
+        dd($this->parent);
+        // // not a fan of doing this this way, we should find a better,
+        // // more automatic, way of handling the create config object.
+        // $this->create_config = [
+        //     'disk' =>
+        // ];
+
+    }
     /**
      * { function_description }
      *
@@ -219,11 +226,6 @@ class AbstractChildRepository extends AbstractRepository
             }
 
         }
-
-        return [
-            'data' => $data,
-            'owned' => $this->owned,
-            'view' => $this->view
-        ];
+        return $data;
     }
 }
