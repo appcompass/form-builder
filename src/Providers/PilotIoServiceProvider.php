@@ -2,13 +2,10 @@
 
 namespace P3in\Providers;
 
-use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
-use Intervention\Image\ImageServiceProvider;
 use P3in\Models\Field;
 use P3in\Models\Form;
 use P3in\Models\Gallery;
@@ -24,14 +21,6 @@ use P3in\Models\Role;
 use P3in\Models\User;
 use P3in\Models\Video;
 use P3in\Models\Website;
-use P3in\Observers\FieldObserver;
-use P3in\Observers\GalleryItemObserver;
-use P3in\Observers\PageObserver;
-use P3in\Observers\WebsiteObserver;
-use P3in\Providers\BaseServiceProvider;
-use P3in\Providers\EventServiceProvider;
-use Roumen\Sitemap\SitemapServiceProvider;
-use Tymon\JWTAuth\Providers\LaravelServiceProvider;
 
 class PilotIoServiceProvider extends BaseServiceProvider
 {
@@ -80,15 +69,20 @@ class PilotIoServiceProvider extends BaseServiceProvider
 
     ];
 
+    protected $commands = [
+        \P3in\Commands\AddUserCommand::class,
+        \P3in\Commands\DeployWebsite::class,
+    ];
+
     protected $observe = [
-        FieldObserver::class => Field::class,
-        GalleryItemObserver::class => [
+        \P3in\Observers\FieldObserver::class => Field::class,
+        \P3in\Observers\GalleryItemObserver::class => [
             Photo::class,
             Video::class
         ],
         // PhotoObserver::class => Photo::class, //@TODO: old but possibly needed for Alerts? look into it when we get to Alerts.
-        PageObserver::class => Page::class,
-        WebsiteObserver::class => Website::class,
+        \P3in\Observers\PageObserver::class => Page::class,
+        \P3in\Observers\WebsiteObserver::class => Website::class,
     ];
 
     protected $appBindings = [
@@ -139,21 +133,14 @@ class PilotIoServiceProvider extends BaseServiceProvider
     protected function registerDependentPackages()
     {
         // @TODO check how making those deferred plays out
-        $this->app->register(EventServiceProvider::class);
-        $this->app->register(SitemapServiceProvider::class);
+        $this->app->register(\P3in\Providers\EventServiceProvider::class);
+        $this->app->register(\Roumen\Sitemap\SitemapServiceProvider::class);
         // $this->app->register(FeedServiceProvider::class);
-        $this->app->register(ImageServiceProvider::class);
-        $this->app->register(LaravelServiceProvider::class);
+        $this->app->register(\Intervention\Image\ImageServiceProvider::class);
+        $this->app->register(\Tymon\JWTAuth\Providers\LaravelServiceProvider::class);
 
         $loader = AliasLoader::getInstance();
-
         $loader->alias('Image', Image::class);
-        $loader->alias('User', User::class);
-        $loader->alias('Menu', Menu::class);
-        $loader->alias('Role', Role::class);
-        $loader->alias('Perm', Permission::class);
-        $loader->alias('Gallery', Gallery::class);
-        $loader->alias('Photo', Photo::class);
 
         //@TODO: we require the use of imagick, not sure we should force this though.
         Config::set(['image' => ['driver' => 'imagick']]);
@@ -162,6 +149,8 @@ class PilotIoServiceProvider extends BaseServiceProvider
     // @TODO: once we figure out this functionality once and for all, we can move the method into BaseServiceProvider and just store the array here.
     public function bindToRoute()
     {
+        $loader = AliasLoader::getInstance();
+
         foreach ([
             'user' => User::class,
             'permission' => Permission::class,
@@ -182,6 +171,8 @@ class PilotIoServiceProvider extends BaseServiceProvider
                 return $model::findOrFail($value);
             });
             Route::model($key, $model);
+
+            $loader->alias(class_basename($model), $model);
         }
     }
 }

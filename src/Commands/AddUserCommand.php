@@ -14,7 +14,7 @@ class AddUserCommand extends Command
     *
     * @var string
     */
-    protected $name = 'p3cms:create-users';
+    protected $name = 'pilot-io:create-users';
 
     /**
     * The console command description.

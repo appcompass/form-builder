@@ -269,19 +269,23 @@ class WebsiteBuilder
         return $this->website;
     }
 
+    public function getManager()
+    {
+        return $this->manager;
+    }
     /**
      * { function_description }
      *
      * @param      <type>  $diskInstance  The disk instance
      */
     // breaking this up a bit would prob be a good idea.
-    public function deploy()
+    public function deploy($disk = null)
     {
         if (!$depConfig = $this->website->config->deployment) {
             throw new Exception('The website does not have deployment settings configured');
         }
 
-        $disk = $this->website->storage->getDisk();
+        $disk = $disk ?? $this->website->storage->getDisk();
 
         $manager = new PublishFiles('stubs', realpath(__DIR__.'/../Templates/stubs'));
 
@@ -330,25 +334,6 @@ class WebsiteBuilder
                 $manager->publishFile($disk, '/layouts/'.$layout.'.vue', $data, true);
             }
         }
-
-        // we shouldn't be running this here at all.
-        // $destPath = $manager->getPath($disk);
-        // //sucks!... this is basically only working with local storage.
-        // //this needs to be abstracted so that we can account for remote disk
-        // //instances, AWS, or what ever other cloud instances that can be used
-        // //(lots of them out there)
-        // $process = new Process('npm install && npm run build', $destPath, null, null, null); //that last null param disables timeout.
-        // $process->run(function ($type, $buffer) {
-        //     echo $buffer;
-        //     // if (Process::ERR === $type) {
-        //     //     echo $buffer;
-        //     // } else {
-        //     //     echo $buffer;
-        //     // }
-        // });
-
-        // Page builder has something we need.
-        // PageBuilder::buildTemplate($layout, $sections, $imports);
 
         // say we need to do something else after deployment with the local/remote file systems.
         // Yes this mean we should prob move the instantiation of the manager out of this
