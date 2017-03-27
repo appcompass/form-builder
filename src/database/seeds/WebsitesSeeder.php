@@ -230,6 +230,10 @@ class WebsitesSeeder extends Seeder
                     ->required()
                     ->help('Please select a Footer');
                 $builder->code('Layouts', 'layouts')
+                    // @TODO: We need to be able to provide the key value
+                    // of the repeatable field and remove the dynamic flag.
+                    // ->keyed()
+                    // ->repeatable()
                     ->dynamic(['public', 'errors']);
                 $builder->fieldset('Deployment', 'deployment', function (FormBuilder $depBuilder) {
                     $depBuilder->string('Publish From Path', 'publish_from')
@@ -272,8 +276,12 @@ class WebsitesSeeder extends Seeder
                 $builder->string('LinkedIn Url', 'linkedin_url')
                     ->required()
                     ->help('The title of the website as it apears in header');
+                // @TODO: We need to be able to provide the key value of the repeatable field,
+                // not have a config field type with limited value field type constraints.
                 $builder->config('Addtional Header Tags', 'custom')
-                    // ->dynamic(['title', 'description', 'keywords'])
+                    // ->string('Addtional Header Tags', 'custom')
+                    // ->keyed()
+                    // ->repeatable()
                     ->help('Additional meta tags to be added.');
             });
         })->linkToResources(['websites.index', 'websites.show', 'websites.create', 'websites.store', 'websites.update'])
