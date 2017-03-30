@@ -56,6 +56,8 @@ Route::group([
     $router->resource('websites.menus', WebsiteMenusController::class);
     $router->resource('websites.navigation', WebsiteMenusController::class);
     $router->resource('websites.pages', WebsitePagesController::class);
+    $router->get('websites/{website}/pages/{page}/containers', 'WebsitePagesController@containers');
+    $router->get('websites/{website}/pages/{page}/sections', 'WebsitePagesController@sections');
     // $router->resource('pages.contents', PageContentsController::class); // @TODO: websites.pages.contents
     // $router->resource('pages.sections', PageSectionsController::class); // @TODO: websites.pages.sections
     $router->resource('websites.redirects', WebsiteRedirectsController::class);

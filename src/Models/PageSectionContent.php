@@ -144,37 +144,14 @@ class PageSectionContent extends Model
     }
 
     /**
-     * Set the current section to a container type.
-     * @param int $order
-     * @param array $config
-     * @return Model PageSectionContent
-     */
-    public function saveAsContainer(int $order, array $config = null)
-    {
-        $container = Section::getContainer();
-
-        $this->fill(['order' => $order, 'config' => $config]);
-
-        $this->section()->associate($container);
-
-        $this->save();
-
-        return $this;
-    }
-
-    /**
      * Add a child container to a parent.
      * @param int $order
      * @param array $config
      * @return Model PageSectionContent
      */
-    public function addContainer(int $order = 0, array $config = null)
+    public function addContainer(Section $container)
     {
-        $container = Section::getContainer();
-
-        return $this->addSection($container, $order, [
-            'config' => $config
-        ], true);
+        return $this->addSection($container);
     }
 
     /**
@@ -190,7 +167,7 @@ class PageSectionContent extends Model
      *
      * @return     Model      PageSectionContent
      */
-    public function addSection(Section $section, int $order = 0, array $data = [])
+    public function addSection(Section $section)
     {
         if (!$this->isContainer()) {
 
@@ -198,19 +175,9 @@ class PageSectionContent extends Model
 
         }
 
-        $data = array_merge(['order' => $order], $data);
+        $child = new self;
 
-        if (isset($data['content'])) {
-
-            // @TODO validate the structure.  Throw error if doesn't match the section form structure and rules.
-
-        } else {
-
-            $data['content'] = [];
-
-        }
-
-        $child = new self($data);
+        $child->config = $section->config;
 
         $child->section()->associate($section);
 

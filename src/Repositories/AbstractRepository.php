@@ -63,6 +63,8 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
     //update types: 'Page' - normal full page behavior, 'Modal' - modal edit view, like for a photo when clicked on a grid.
     protected $update_type = 'Page';
 
+    // in rare instances we want to exclude all the extra data on the output structure.
+    public $raw_data = false;
     /**
      * { function_description }
      */
@@ -528,20 +530,30 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
     public function output($data, $code = 200)
     {
         $this->setRouteInfo();
-        $rtn = [
-            'route' => $this->route_name,
-            'parameters' => $this->route_params,
-            'api_url' => $this->getApiUrl(),
-            'view_types' => $this->view_types,
-            'create_type' => $this->create_type,
-            'update_type' => $this->update_type,
-            'owned' => $this->owned,
-            'abilities' => ['create', 'edit', 'destroy', 'index', 'show'], // @TODO show is per-item in the collection
-            'form' => $this->getResourceForm(),
-            'collection' => $data,
-        ];
+        if ($this->raw_data) {
+            $rtn = [
+                'abilities' => ['create', 'edit', 'destroy', 'index', 'show'], // @TODO show is per-item in the collection
+                'form' => $this->getResourceForm(),
+                'collection' => $data,
+            ];
 
-        return response()->json($rtn, $code);
+            return response()->json($rtn, $code);
+        }else{
+            $rtn = [
+                'route' => $this->route_name,
+                'parameters' => $this->route_params,
+                'api_url' => $this->getApiUrl(),
+                'view_types' => $this->view_types,
+                'create_type' => $this->create_type,
+                'update_type' => $this->update_type,
+                'owned' => $this->owned,
+                'abilities' => ['create', 'edit', 'destroy', 'index', 'show'], // @TODO show is per-item in the collection
+                'form' => $this->getResourceForm(),
+                'collection' => $data,
+            ];
+
+            return response()->json($rtn, $code);
+        }
     }
 
     public function getApiUrl()

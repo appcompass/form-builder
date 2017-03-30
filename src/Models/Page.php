@@ -116,12 +116,14 @@ class Page extends Model implements Linkable
      *
      * @return     Model  PageSectionContent
      */
-    public function addContainer(int $order = 0, array $config = null)
+    public function addContainer(Section $section)
     {
-        //I have no idea why they don't have a ->new() method...
+        // I have no idea why they don't have a ->new() method...
         $container = $this->contents()->findOrNew(null);
 
-        $container->saveAsContainer($order, $config);
+        $container->section()->associate($section);
+
+        $container->save();
 
         return $container;
     }
@@ -134,25 +136,12 @@ class Page extends Model implements Linkable
      *
      * @return     Model  PageSectionContent
      */
-    public function addSection(Section $section, int $order = 0, array $data = [])
+    public function addSection(Section $section)
     {
         //I have no idea why they don't have a ->new() method...
         $page_section = $this->contents()->findOrNew(null);
 
-
-        $data = array_merge(['order' => $order], $data);
-
-        if (isset($data['content'])) {
-
-            // @TODO validate the structure.  Throw error if doesn't match the section form structure and rules.
-
-        } else {
-
-            $data['content'] = [];
-
-        }
-
-        $page_section->fill($data);
+        $page_section->config = $section->config;
 
         $page_section->section()->associate($section);
 
@@ -405,7 +394,7 @@ class Page extends Model implements Linkable
     public function buildContentTree($with_sections = false)
     {
         if ($with_sections) {
-            $this->contents->load('section');
+            $this->contents->load('section.form');
         }
         $tree = [];
         foreach ($this->contents as $row) {

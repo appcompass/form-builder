@@ -122,6 +122,21 @@ class WebsiteBuilder
         $this->website->gallery()->save($gallery);
     }
 
+    public function addSection($data)
+    {
+        if (is_array($data)) {
+            $section = new Section($data);
+        // } elseif (is_int($data)) {
+        //     // Dangerious, may not be a good idea to re-assign.
+        //     $section = Section::find($data);
+        } elseif ($data instanceof Section) {
+            $section = $data;
+        }
+        $this->website->sections()->save($section);
+        // return $this;
+        return $section;
+    }
+
     /**
      * Adds a menu.
      *

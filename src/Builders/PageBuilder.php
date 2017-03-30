@@ -100,12 +100,12 @@ class PageBuilder
      * @param array $config Container's attributes
      * @return PageSectionContent
      */
-    public function addContainer(int $order = 0, array $config = [])
+    public function addContainer(Section $container = null)
     {
         if ($this->container) {
-            $container = $this->container->addContainer($order, $config);
+            $container = $this->container->addContainer($container);
         }else{
-            $container = $this->page->addContainer($order, $config);
+            $container = $this->page->addContainer($container);
         }
 
         $this->container = $container;
@@ -126,15 +126,15 @@ class PageBuilder
      *
      * @return     PageBuilder
      */
-    public function addSection(Section $section, int $order = 0, array $data = [])
+    public function addSection(Section $section)
     {
         if ($this->container) {
 
-            $this->section = $this->container->addSection($section, $order, $data);
+            $this->section = $this->container->addSection($section);
 
         }else{
 
-            $this->section = $this->page->addSection($section, $order, $data);
+            $this->section = $this->page->addSection($section);
 
         }
 

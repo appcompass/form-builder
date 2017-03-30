@@ -20,47 +20,47 @@ class WebsitesSeeder extends Seeder
 
             $websiteBuilder->setStorage('cp_root');
 
-            $login = Section::create([
+            $login = $websiteBuilder->addSection([
                 'name' => 'Login Template',
                 'template' => 'Login',
                 'type' => 'section'
             ]);
-            $register = Section::create([
+            $register = $websiteBuilder->addSection([
                 'name' => 'Register Template',
                 'template' => 'Register',
                 'type' => 'section'
             ]);
-            $passwordEmail = Section::create([
+            $passwordEmail = $websiteBuilder->addSection([
                 'name' => 'password Email Template',
                 'template' => 'PasswordEmail',
                 'type' => 'section'
             ]);
-            $passwordReset = Section::create([
+            $passwordReset = $websiteBuilder->addSection([
                 'name' => 'Password Reset Template',
                 'template' => 'PasswordReset',
                 'type' => 'section'
             ]);
-            $home = Section::create([
+            $home = $websiteBuilder->addSection([
                 'name' => 'Dashboard Template',
                 'template' => 'Home',
                 'type' => 'section'
             ]);
-            $list = Section::create([
+            $list = $websiteBuilder->addSection([
                 'name' => 'List Template',
                 'template' => 'List',
                 'type' => 'section'
             ]);
-            $create = Section::create([
+            $create = $websiteBuilder->addSection([
                 'name' => 'Create Template',
                 'template' => 'Create',
                 'type' => 'section'
             ]);
-            $edit = Section::create([
+            $edit = $websiteBuilder->addSection([
                 'name' => 'Edit Template',
                 'template' => 'Edit',
                 'type' => 'section'
             ]);
-            $show = Section::create([
+            $show = $websiteBuilder->addSection([
                 'name' => 'Show Template',
                 'template' => 'Show',
                 'type' => 'section'

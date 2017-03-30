@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\App;
 use Intervention\Image\Exception\NotFoundException;
 use P3in\Models\Page;
 use P3in\Models\Redirect;
+use P3in\Models\Section;
 use P3in\Traits\HasGallery;
 use P3in\Traits\HasJsonConfigFieldTrait;
 use P3in\Traits\HasPermissions;
@@ -58,6 +59,16 @@ class Website extends Model
     public function pages()
     {
         return $this->hasMany(Page::class);
+    }
+
+    /**
+     * Pages
+     *
+     * @return     hasMany
+     */
+    public function sections()
+    {
+        return $this->hasMany(Section::class);
     }
 
     /**
