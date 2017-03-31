@@ -379,12 +379,13 @@ class Page extends Model implements Linkable
     }
 
     // page contents and sections rendering methods
-    private function buildContentBranches($parent_id)
+    private function buildContentBranches($parent_id, $with_sections = false)
     {
         $branches = [];
         foreach ($this->contents as $row) {
             if ($row->parent_id == $parent_id) {
-                $row->children = $this->buildContentBranches($row->id);
+                $row->form = $with_sections && $row->section->form ? $row->section->form->render() : null;
+                $row->children = $this->buildContentBranches($row->id, $with_sections);
                 $branches[] = $row;
             }
         }
@@ -399,7 +400,7 @@ class Page extends Model implements Linkable
         $tree = [];
         foreach ($this->contents as $row) {
             if (is_null($row->parent_id)) {
-                $row->children = $this->buildContentBranches($row->id);
+                $row->children = $this->buildContentBranches($row->id, $with_sections);
                 $tree[] = $row;
             }
         }
