@@ -119,6 +119,9 @@ class CpResourcesController extends Controller
             'path' => $this->formatPath($page),
             'full_path' => $page->url,
             'name' => $name ? $name : strtolower($component),
+            'meta' => [
+                'title' => $page->title,
+            ],
             // might need to be worked out for CP, at least discussed to see if we want to go this route.
             'component' => $component,
         ];
