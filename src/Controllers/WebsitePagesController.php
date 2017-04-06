@@ -5,6 +5,7 @@ namespace P3in\Controllers;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use P3in\Interfaces\WebsitePagesRepositoryInterface;
+use P3in\Models\PageSectionContent;
 use P3in\Models\Section;
 use P3in\Requests\FormRequest;
 
@@ -43,21 +44,31 @@ class WebsitePagesController extends AbstractChildController
     public function containers(FormRequest $request, Model $parent, Model $model)
     {
         return response()->json([
-            'collection' => Section::where('type', 'container')->where(function($query) use ($parent) {
-                $query->whereNull('website_id')
-                    ->orWhere('website_id', $parent->id);
-            })->get()
+            'collection' => $this->getSections($parent, true)
         ]);
     }
 
     public function sections(FormRequest $request, Model $parent, Model $model)
     {
         return response()->json([
-            'collection' => Section::where('type', '!=', 'container')->where(function($query) use ($parent) {
+            'collection' => $this->getSections($parent)
+        ]);
+    }
+
+    private function getSections(Model $parent, $containers = false)
+    {
+        $sections = Section::where('type', $containers ? '=' : '!=' , 'container')->where(function($query) use ($parent) {
                 $query->whereNull('website_id')
                     ->orWhere('website_id', $parent->id);
-            })->get()
-        ]);
+            })->with('form')->get();
+
+        $rtn = [];
+        foreach ($sections as $section) {
+            $pageSectionContent = new PageSectionContent(['content' => '{}']);
+            $rtn[] = $pageSectionContent->section()->associate($section);
+        }
+
+        return $rtn;
     }
 
 }

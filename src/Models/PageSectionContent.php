@@ -105,9 +105,9 @@ class PageSectionContent extends Model
      *
      * @return     <type>  The content attribute.
      */
-    public function getContentAttribute()
+    public function getContentAttribute($value)
     {
-        $content = json_decode($this->attributes['content']);
+        $content = json_decode($value);
 
         if ($content === '[]') {
 
