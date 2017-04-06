@@ -10,6 +10,7 @@ Vue.use(Vuex)
 const defaultState = {
   content: {},
   meta: {},
+  sitemeta: {},
   formName: undefined,
   form: new Form(),
   count: 0
@@ -31,6 +32,10 @@ const mutations = {
 
   MENUS: (state, menus) => {
     state.menus = menus
+  },
+
+  SITEMETA: (state, sitemeta) => {
+    state.sitemeta = sitemeta
   },
 
   FORM: (state, formData) => {

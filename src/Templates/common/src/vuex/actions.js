@@ -27,6 +27,15 @@ export const menus = ({ commit, state }) => {
     })
 }
 
+export const siteMeta = ({ commit, state }) => {
+  return request.get('content/site-meta/')
+    .then(response => {
+      commit('SITEMETA', response.data)
+    }).catch(response => {
+      response
+    })
+}
+
 export const form = ({ commit, state }) => {
   // @NOTE a component needs to set formName before dispatching the action
   // @TODO not a particular fan of this way of declaring the formName, but it's handy for now
