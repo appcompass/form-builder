@@ -6,33 +6,36 @@
 
 <script>
 @foreach($imports as $import)
-  import {!! $import !!} from '~components/{!! $import !!}'
+  import {!! $import !!} from 'components/{!! $import !!}'
 @endforeach
-
-  import common from '~/common'
-
   export default {
-@if(!empty($layout))
-    layout: '{!! $layout !!}',
-@endif
-    components: { {!! implode(',', $imports) !!} },
-    data () {
-      return {
-        menus: {},
-        site_meta: {},
-        current_url: '',
-        content: []
+    components: {{!! implode(', ', $imports) !!}},
+    computed: {
+      content () {
+        return this.$store.state.content
       }
     },
-    asyncData (context) {
-      return common.getPageData(context)
-    },
-    head() {
-      return {
-        title: this.page.title ? this.page.title : '',
-        meta: this.page.head_meta ? this.page.head_meta : []
-      }
+    metaInfo: {
+      title: '{!! $page->title !!}', // @TODO: || '' to be safe?
+      meta: {!! str_replace([":", "'", '"', ','],[": ", "\\'", "'", ', '], preg_replace('/"([a-zA-Z_]+[a-zA-Z0-9_]*)":/', '$1:', json_encode($page->getMeta('head'), JSON_UNESCAPED_SLASHES))) !!} // @TODO: || '' to be safe?
     }
+    // data () {
+    //   return {
+    //     menus: {},
+    //     site_meta: {},
+    //     current_url: '',
+    //     content: []
+    //   }
+    // },
+    // asyncData (context) {
+    //   return common.getPageData(context)
+    // },
+    // head() {
+    //   return {
+    //     title: this.page.title ? this.page.title : '',
+    //     meta: this.page.head_meta ? this.page.head_meta : []
+    //   }
+    // }
 
   }
 </script>

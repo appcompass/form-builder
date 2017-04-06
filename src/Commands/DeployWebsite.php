@@ -56,10 +56,10 @@ class DeployWebsite extends Command
             PageBuilder::edit($page)->renderTemplate();
         }
 
-        $wsb = WebsiteBuilder::edit($website)->deploy($disk);
-        $manager = $wsb->getManager();
-        $destPath = $disk->getDriver()->getAdapter()->getPathPrefix();
+        WebsiteBuilder::edit($website)->deploy($disk);
+        $destPath = $disk->getAdapter()->getPathPrefix();
 
+        // dd('reached, run npm manually for testing.');
 
         //sucks!... this is basically only working with local storage.
         //this needs to be abstracted so that we can account for remote disk

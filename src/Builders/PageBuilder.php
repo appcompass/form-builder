@@ -244,6 +244,7 @@ class PageBuilder
         return $this->setMeta('update_frequency', $val);
     }
 
+    // @TODO: discuss then probably remove, looks like more trouble than it's worth now that we don't use Nuxt.
     public function layout($layout = null)
     {
         $this->update(['layout' => $layout]);
@@ -271,7 +272,9 @@ class PageBuilder
     {
         $renderer = new TemplateRenderer($this->page);
 
-        $renderer->layout($layout)->render();
+        $renderer
+        // ->layout($layout)
+        ->render();
 
 
         return $this;

@@ -4,13 +4,14 @@ namespace P3in\Builders;
 
 use Closure;
 use Exception;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\App;
 use P3in\Builders\MenuBuilder;
 use P3in\Builders\PageBuilder;
 use P3in\Models\Gallery;
 use P3in\Models\Layout;
-use P3in\Models\Page;
 use P3in\Models\Menu;
+use P3in\Models\Page;
 use P3in\Models\PageContent;
 use P3in\Models\Section;
 use P3in\Models\StorageConfig;
@@ -26,11 +27,6 @@ class WebsiteBuilder
      * Page instance
      */
     private $website;
-
-    /**
-     * Storage manager
-     */
-    private $manager;
 
     public function __construct(Website $website = null)
     {
@@ -256,22 +252,9 @@ class WebsiteBuilder
         return $this;
     }
 
-    public function setDeploymentNuxtConfig($data)
-    {
-        $this->website->setConfig('deployment->nuxt_config', $data);
-        return $this;
-    }
-
     public function setMetaData($data)
     {
         $this->website->setConfig('meta', $data);
-        return $this;
-    }
-
-    public function setLayout($layout, $layoutTemplate)
-    {
-        $this->website->setConfig('layouts->'.$layout, $layoutTemplate);
-
         return $this;
     }
     /**
@@ -284,9 +267,26 @@ class WebsiteBuilder
         return $this->website;
     }
 
-    public function getManager()
+    // Used to publish local install files to their disk dest.
+    public function publish(string $from, FilesystemAdapter $to, $subDir = '')
     {
-        return $this->manager;
+        // in memory, we don't need a physical record for the source files.
+        $fromDisk = (new StorageConfig([
+            'name' => $from,
+            'config' => ['driver' => 'local', 'root' => $from],
+        ]))->setConfig()->getDisk();
+        foreach ($fromDisk->allFiles() as $file) {
+            $to->put($subDir.$file, $fromDisk->get($file));
+        }
+    }
+
+    public function buildImports(FilesystemAdapter $to, string $fileName, array $components)
+    {
+        $import_file = view('pilot-io::components', [
+            'components' => $components,
+        ])->render();
+
+        $to->put($fileName, $import_file);
     }
     /**
      * { function_description }
@@ -294,66 +294,62 @@ class WebsiteBuilder
      * @param      <type>  $diskInstance  The disk instance
      */
     // breaking this up a bit would prob be a good idea.
-    public function deploy($disk = null)
+    public function deploy($to = null)
     {
         if (!$depConfig = $this->website->config->deployment) {
             throw new Exception('The website does not have deployment settings configured');
         }
+        $to = $to ?? $this->website->storage->getDisk();
 
-        $disk = $disk ?? $this->website->storage->getDisk();
+        // publish CMS common files
+        $this->publish(realpath(__DIR__.'/../Templates/common'), $to);
 
-        $manager = new PublishFiles('stubs', realpath(__DIR__.'/../Templates/stubs'));
-
+        // build page sections and form builder component libs.
         if (!empty($depConfig->publish_from)) {
-            $manager
-                ->setSrc('static', $depConfig->publish_from)
-                ->publishFolder('static', $disk, true);
+            // publish website specific files.
+            $this->publish(realpath($depConfig->publish_from), $to, 'src/');
 
-            // @TODO: do we read the dest or src folder?
-            // dd($disk->allFiles('components'));
-            foreach ($disk->allFiles('components') as $component) {
+            $pagesections = [];
+            $formfields = [];
+            $components_dir = 'src/components';
+
+            foreach ($to->allFiles($components_dir) as $component) {
                 $file = pathinfo($component);
                 if ($file['extension'] == 'vue' && $file['filename']) {
-                    $components[] = $file['filename'];
+                    switch ($file['dirname']) {
+                        case $components_dir.'/FormBuilder':
+                        $formfields[ucwords($file['filename'])] = './FormBuilder/'.$file['filename'];
+                        break;
+                        case $components_dir:
+                        $pagesections[ucwords($file['filename'])] = './'.$file['filename'];
+                        break;
+                    }
                 }
             }
-            $components_import_file = view('pilot-io::components', [
-                'components' => $components,
-            ])->render();
-
-            $manager->publishFile($disk, 'components/index.js', $components_import_file, true);
+            $this->buildImports($to, $components_dir.'/index.js', $pagesections);
+            $this->buildImports($to, $components_dir.'/formfields.js', $formfields);
         }
 
-        // lets publish the structure in case it doesn't exist.  Never overwrite!
-        // hell this one is not really necisary for us since we have a plus3website
-        // module that has the structure stored already, but that isn't a requirement
-        // and not an assumption we can make.
-        $manager->publishFolder('stubs', $disk);
-
+        // build package.json file
         if (!empty($depConfig->package_json)) {
             $package_json = json_encode($depConfig->package_json, JSON_UNESCAPED_SLASHES);
 
-            $manager->publishFile($disk, 'package.json', $package_json, true);
+            $to->put('package.json', $package_json);
         }
 
-        if (!empty($depConfig->nuxt_config)) {
-            // this method of creating the javascript file is meh imo.  No luck finding a better way yet.
-            $nuxt_conf = 'module.exports = '.preg_replace('/"([a-zA-Z_]+[a-zA-Z0-9_]*)":/', '$1:', json_encode($depConfig->nuxt_config, JSON_UNESCAPED_SLASHES));
 
-            $manager->publishFile($disk, 'nuxt.config.js', $nuxt_conf, true);
-        }
+        // get website routes and build router file.
+        $routes = $this->website->buildRoutesTree();
 
-        // now lets get the website layout(s)
-        if (!empty($this->website->config->layouts)) {
-            foreach ($this->website->config->layouts as $layout => $data) {
-                $manager->publishFile($disk, '/layouts/'.$layout.'.vue', $data, true);
-            }
-        }
+        $router_file = view('pilot-io::router', [
+            'routes' => $routes,
+            'base_url' => $this->website->scheme.'://'.$this->website->host.'/api/',
+            //@NOTE: not needed since all sites we implement use reverse proxy header value instead.  but here for ref.
+            // 'headers' => ['Site-Host' => $this->website->host],
+        ])->render();
 
-        // say we need to do something else after deployment with the local/remote file systems.
-        // Yes this mean we should prob move the instantiation of the manager out of this
-        // method, but hey, I'm just getting this working for now!
-        $this->manager = $manager;
+        $to->put('src/router.js', $router_file);
+
 
         return $this;
     }

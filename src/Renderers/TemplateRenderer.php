@@ -21,11 +21,11 @@ class TemplateRenderer
         $this->page = $page;
     }
 
-    public function layout(string $layout = null)
-    {
-        $this->layout = $layout;
-        return $this;
-    }
+    // public function layout(string $layout = null)
+    // {
+    //     $this->layout = $layout;
+    //     return $this;
+    // }
 
     /**
      * Render website page template.
@@ -36,14 +36,14 @@ class TemplateRenderer
      */
     public function buildTemplate(array $sections = null, array $imports = null)
     {
-        $layout = $this->page->layout ?? $this->layout;
+        // $layout = $this->page->layout ?? $this->layout;
 
-        if (!$layout) {
-            throw new \Exception('No page layout was defined for the page or to the renderer.  Please define a layout either on the page or to the template renderer.');
-        }
+        // if (!$layout) {
+        //     throw new \Exception('No page layout was defined for the page or to the renderer.  Please define a layout either on the page or to the template renderer.');
+        // }
 
         return view('pilot-io::page', [
-            'layout' => $layout,
+            'page' => $this->page,
             'sections' => $sections ?? $this->sections,
             'imports' => $imports ?? $this->imports,
         ])->render();
@@ -183,7 +183,7 @@ class TemplateRenderer
 
     private function compileParentTemplate()
     {
-        $sections = [$this->getElementData(0, '<nuxt-child/>')];
+        $sections = [$this->getElementData(0, '<router-view/>')];
         return $this->buildTemplate($sections);
     }
 
@@ -191,6 +191,6 @@ class TemplateRenderer
     {
         $disk = $this->page->website->storage->getDisk();
 
-        $disk->put("/pages{$name}.vue", $contents);
+        $disk->put("src/pages{$name}.vue", $contents);
     }
 }

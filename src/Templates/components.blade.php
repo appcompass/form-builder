@@ -1,5 +1,5 @@
-@foreach($components as $component)
-import {!! $component !!}Comp from '~components/{!! $component !!}'
+@foreach($components as $component => $path)
+import {!! $component !!}Comp from '{!! $path !!}'
 export var {!! $component !!} = {!! $component !!}Comp
 
 @endforeach
