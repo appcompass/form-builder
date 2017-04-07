@@ -41,12 +41,22 @@ class TemplateRenderer
         // if (!$layout) {
         //     throw new \Exception('No page layout was defined for the page or to the renderer.  Please define a layout either on the page or to the template renderer.');
         // }
-
         return view('pilot-io::page', [
             'page' => $this->page,
+            'meta' => $this->formatMeta(),
             'sections' => $sections ?? $this->sections,
             'imports' => $imports ?? $this->imports,
         ])->render();
+    }
+
+    private function formatMeta()
+    {
+        $rtn = [];
+        foreach ($this->page->getMeta('head') as $key => $value) {
+            $value = addslashes($value);
+            $rtn[] = "{vmid: '{$key}', name: '{$key}', content: '$value'}";
+        }
+        return implode(', ', $rtn);
     }
 
     /**
@@ -55,24 +65,15 @@ class TemplateRenderer
     public function render()
     {
         $page = $this->page;
-        $name = $page->url == '/' ? '/index' : $page->url;
+        $name = $page->url == '/' ? '/index' : '/'.str_replace('/', '-', trim($page->url, '/'));
 
         // //@TODO: On delete or parent change of a page (we use the url as the unique name for a page),
         // //we need to delete it's template file as to clean up junk.
-
-        // build the parent template.
-        if ($page->children->count()) {
-
-            $this->storeTemplate($name, $this->compileParentTemplate());
-
-            $name = $name.'/index';
-        }
 
         $pageStructure = $page->buildContentTree();
 
         $this->buildPageTemplateTree($pageStructure);
 
-        // build the child page template.
         $this->storeTemplate($name, $this->buildTemplate());
 
     }

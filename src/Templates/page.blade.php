@@ -17,7 +17,7 @@
     },
     metaInfo: {
       title: '{!! $page->title !!}', // @TODO: || '' to be safe?
-      meta: {!! str_replace([":", "'", '"', ','],[": ", "\\'", "'", ', '], preg_replace('/"([a-zA-Z_]+[a-zA-Z0-9_]*)":/', '$1:', json_encode($page->getMeta('head'), JSON_UNESCAPED_SLASHES))) !!} // @TODO: || '' to be safe?
+      meta: [{!! $meta !!}] // @TODO: || '' to be safe?
     }
     // data () {
     //   return {

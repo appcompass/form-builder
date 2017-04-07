@@ -27,7 +27,7 @@ export const menus = ({ commit, state }) => {
     })
 }
 
-export const siteMeta = ({ commit, state }) => {
+export const sitemeta = ({ commit, state }) => {
   return request.get('content/site-meta/')
     .then(response => {
       commit('SITEMETA', response.data)

@@ -246,12 +246,6 @@ class WebsiteBuilder
         return $this;
     }
 
-    public function setDeploymentNpmPackages($data)
-    {
-        $this->website->setConfig('deployment->package_json', $data);
-        return $this;
-    }
-
     public function setMetaData($data)
     {
         $this->website->setConfig('meta', $data);
@@ -288,6 +282,64 @@ class WebsiteBuilder
 
         $to->put($fileName, $import_file);
     }
+
+    private function buildComponentLibs(FilesystemAdapter $to)
+    {
+        // @TODO: consider moving form builder components to Templates/common and
+        // only rebuild when new fields are introduced from future modules.
+        $components_dir = 'src/components';
+
+        $pagesections = [];
+        $formfields = [];
+
+        foreach ($to->allFiles($components_dir) as $component) {
+            $file = pathinfo($component);
+            if ($file['extension'] == 'vue' && $file['filename']) {
+                switch ($file['dirname']) {
+                    case $components_dir.'/FormBuilder':
+                    $formfields[ucwords($file['filename'])] = './FormBuilder/'.$file['filename'];
+                    break;
+                    case $components_dir:
+                    $pagesections[ucwords($file['filename'])] = './'.$file['filename'];
+                    break;
+                }
+            }
+        }
+        $this->buildImports($to, $components_dir.'/index.js', $pagesections);
+        $this->buildImports($to, $components_dir.'/formfields.js', $formfields);
+    }
+
+    private function buildRouter(FilesystemAdapter $to)
+    {
+        $pages = $this->website->pages;
+
+        $router_file = view('pilot-io::router', [
+            'imports' => $this->formatImports($pages),
+            'routes' => $this->formatRoutes($pages),
+            'base_url' => $this->website->scheme.'://'.$this->website->host.'/api/',
+            //@NOTE: not needed since all sites we implement use reverse proxy header value instead.  but here for ref.
+            // 'headers' => $this->formatJson(['Site-Host' => $this->website->host]),
+        ])->render();
+
+        $to->put('src/router.js', $router_file);
+    }
+
+    public function getDeploymentSource()
+    {
+        if (!$depConfig = $this->website->config->deployment) {
+            throw new Exception('The website does not have deployment settings configured');
+        }
+        if (empty($depConfig->publish_from)) {
+            throw new Exception('A source directory where the page components can be found has not been specified.');
+        }
+
+        if (is_null($path = realpath($depConfig->publish_from))) {
+            throw new Exception("The publish directory '{$depConfig->publish_from}' doesn't exist.");
+        }
+
+        return $path;
+    }
+
     /**
      * { function_description }
      *
@@ -296,61 +348,40 @@ class WebsiteBuilder
     // breaking this up a bit would prob be a good idea.
     public function deploy($to = null)
     {
-        if (!$depConfig = $this->website->config->deployment) {
-            throw new Exception('The website does not have deployment settings configured');
-        }
+        $from_path = $this->getDeploymentSource();
+
         $to = $to ?? $this->website->storage->getDisk();
 
         // publish CMS common files
         $this->publish(realpath(__DIR__.'/../Templates/common'), $to);
 
+        // publish website specific (static) files.
+        $this->publish($from_path, $to, 'src/');
+
         // build page sections and form builder component libs.
-        if (!empty($depConfig->publish_from)) {
-            // publish website specific files.
-            $this->publish(realpath($depConfig->publish_from), $to, 'src/');
+        $this->buildComponentLibs($to);
 
-            $pagesections = [];
-            $formfields = [];
-            $components_dir = 'src/components';
-
-            foreach ($to->allFiles($components_dir) as $component) {
-                $file = pathinfo($component);
-                if ($file['extension'] == 'vue' && $file['filename']) {
-                    switch ($file['dirname']) {
-                        case $components_dir.'/FormBuilder':
-                        $formfields[ucwords($file['filename'])] = './FormBuilder/'.$file['filename'];
-                        break;
-                        case $components_dir:
-                        $pagesections[ucwords($file['filename'])] = './'.$file['filename'];
-                        break;
-                    }
-                }
-            }
-            $this->buildImports($to, $components_dir.'/index.js', $pagesections);
-            $this->buildImports($to, $components_dir.'/formfields.js', $formfields);
-        }
-
-        // build package.json file
-        if (!empty($depConfig->package_json)) {
-            $package_json = json_encode($depConfig->package_json, JSON_UNESCAPED_SLASHES);
-
-            $to->put('package.json', $package_json);
-        }
-
-
-        // get website routes and build router file.
-        $routes = $this->website->buildRoutesTree();
-
-        $router_file = view('pilot-io::router', [
-            'routes' => $routes,
-            'base_url' => $this->website->scheme.'://'.$this->website->host.'/api/',
-            //@NOTE: not needed since all sites we implement use reverse proxy header value instead.  but here for ref.
-            // 'headers' => ['Site-Host' => $this->website->host],
-        ])->render();
-
-        $to->put('src/router.js', $router_file);
-
+        // Build the router.js file
+        $this->buildRouter($to);
 
         return $this;
+    }
+
+    private function formatImports($pages) {
+        $rtn = '';
+        foreach ($pages as $page) {
+            $file = str_replace('/','-', trim($page->url, '/'));
+            $rtn .= "import {$page->template_name} from './pages/{$file}'\n";
+        }
+        return $rtn;
+    }
+
+    private function formatRoutes($pages) {
+        $pieces = [];
+        foreach ($pages as $page) {
+            $pieces[] = "{path: '{$page->url}', component: {$page->template_name}}";
+        }
+        return implode(', ', $pieces);
+        return $rtn;
     }
 }

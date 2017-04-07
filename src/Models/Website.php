@@ -267,33 +267,28 @@ class Website extends Model
     public function buildRoutesTree($pages = null)
     {
         // @TODO: not a good way to do this, refactor.
-
-        $componentByFirstElement = !is_null($pages) && $this->host === env('ADMIN_WEBSITE_HOST');
-
         $pages = $pages ?? $this->pages;
         $rtn = [];
         foreach ($pages->where('parent_id', null) as $page) {
-            $row = $this->structureRouteRow($page, $componentByFirstElement);
-            $this->setPageChildren($row, $page->id, $pages, $componentByFirstElement);
+            $row = $this->structureRouteRow($page);
+            $this->setPageChildren($row, $page->id, $pages);
             $rtn[] = $row;
         }
         return $rtn;
     }
 
-    private function setPageChildren(&$parent, $parent_id, $pages, $componentByFirstElement)
+    private function setPageChildren(&$parent, $parent_id, $pages)
     {
         foreach ($pages->where('parent_id', $parent_id) as $page) {
-            if ($componentByFirstElement) {
-                unset($parent['name']);
-            }
-            $row = $this->structureRouteRow($page, $componentByFirstElement);
-            $this->setPageChildren($row, $page->id, $pages, $componentByFirstElement);
+            unset($parent['name']);
+            $row = $this->structureRouteRow($page);
+            $this->setPageChildren($row, $page->id, $pages);
             $parent['children'][] = $row;
         }
     }
 
     // @TODO: if it's not obvious, needs some major refactoring.
-    private function structureRouteRow($page, $componentByFirstElement)
+    private function structureRouteRow($page)
     {
         // we only go 2 deep (parent/child)
         $segments = array_slice(explode('/',trim($page->url, '/')), -4, 4);
@@ -323,7 +318,7 @@ class Website extends Model
                 'title' => $page->title,
             ],
             // might need to be worked out for CP, at least discussed to see if we want to go this route.
-            'component' => $componentByFirstElement ? $component : ucwords(camel_case($name)),
+            'component' => $component,
         ];
 
         return $row;

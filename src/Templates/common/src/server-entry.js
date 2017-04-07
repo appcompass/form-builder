@@ -1,7 +1,7 @@
 import { app, router, store } from './app'
 
 // the store actions we fire at load
-let initActions = ['menus', 'fetchContent']
+let initActions = ['menus', 'fetchContent', 'sitemeta']
 
 const meta = app.$meta()
 
