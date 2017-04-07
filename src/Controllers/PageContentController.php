@@ -18,10 +18,7 @@ class PageContentController extends AbstractChildController
 
     public function index(FormRequest $request, Model $parent)
     {
-        return [
-            'data' => $parent->buildContentTree(true),
-            'view' => $this->repo->view
-        ];
+        return $this->repo->output($parent->buildContentTree(true));
     }
 
     public function update(FormRequest $request, Model $parent, Model $model)

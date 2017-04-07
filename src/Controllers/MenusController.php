@@ -2,12 +2,13 @@
 
 namespace P3in\Controllers;
 
-use P3in\Interfaces\MenusRepositoryInterface;
 use Illuminate\Database\Eloquent\Model;
-use P3in\Requests\FormRequest;
-use P3in\Models\MenuItem;
-use P3in\Models\Link;
+use P3in\Interfaces\MenusRepositoryInterface;
 use P3in\Models\Form;
+use P3in\Models\FormButler;
+use P3in\Models\Link;
+use P3in\Models\MenuItem;
+use P3in\Requests\FormRequest;
 
 class MenusController extends AbstractController
 {
@@ -54,9 +55,9 @@ class MenusController extends AbstractController
      *
      * @return     <type>                    The form.
      */
-    public function getForm(FormRequest $request, $form)
+    public function getForm(FormRequest $request, $form_name)
     {
-        return \P3in\Models\FormButler::get($form);
+        return FormButler::get($form_name);
     }
 
     /**
@@ -66,7 +67,7 @@ class MenusController extends AbstractController
      */
     public function storeForm(FormRequest $request, $form_name)
     {
-        return \P3in\Models\FormButler::store($form_name, $request->all());
+        return FormButler::store($form_name, $request->all());
     }
 
     /**

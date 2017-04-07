@@ -3,21 +3,27 @@
 namespace P3in\Repositories;
 
 use P3in\Interfaces\GalleryPhotosRepositoryInterface;
-use P3in\Requests\FormRequest;
 use P3in\Models\Gallery;
 use P3in\Models\Photo;
 use P3in\Models\User;
+use P3in\Requests\FormRequest;
 
 class GalleryPhotosRepository extends AbstractChildRepository implements GalleryPhotosRepositoryInterface
 {
 
-    // protected $view = 'Card';
-
     protected $with = ['user'];
+
+    protected $view_types = ['Card', 'Table'];
+    protected $create_type = 'Inline';
+    protected $update_type = 'Modal';
 
     // models required in order to persist
     protected $requires = [
-        'user' => ['from' => 'id', 'to' => 'user_id']
+        'methods' => [
+            'user' => ['from' => 'id', 'to' => 'user_id']
+        ],
+        'props' => [
+        ]
     ];
 
     public function __construct(Photo $model, Gallery $parent)
@@ -28,7 +34,5 @@ class GalleryPhotosRepository extends AbstractChildRepository implements Gallery
 
         $this->relationName = 'photos';
 
-        // relation from parent to child
-        // $this->parentToChild = 'pages';
     }
 }

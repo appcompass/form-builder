@@ -24,7 +24,11 @@ class CreateFormBuilder extends Migration
             $table->increments('id');
             $table->string('name')->unique();
             $table->nullableMorphs('formable');
-            $table->string('editor')->default('Form'); // editors: ['Menu', 'Gallery', 'Page'] specific components we can publish from modules
+            // @TODO: is this the right place for this?  it's only applicable the index resource type.
+            // $table->json('view_types')->default('["list"]'); // view types: ['list','grid','map', 'chart', 'etc'] and what ever other types a module in the future may need.
+            // $table->string('create_type')->default('page'); //create types: 'page' - 'Add New' button that leads to new create view, 'dropzone' - Gallery photo upload.
+            // $table->string('update_type')->default('page'); //update types: 'page' - normal full page behavior, 'modal' - modal edit view, like for a photo when clicked on a grid.
+            $table->string('editor')->default('Form'); // editors: ['Menu', 'Page'] specific components we can publish from modules
             $table->timestamps();
 
             $table->index('name');
@@ -67,10 +71,19 @@ class CreateFormBuilder extends Migration
             $table->integer('form_id')->unsigned();
             $table->foreign('form_id')->references('id')->on('forms')->onDelete('cascade');
             $table->integer('req_role')->unsigned()->nullable();
+            $table->foreign('req_role')->references('id')->on('roles');
             $table->timestamps();
 
             $table->index('resource');
             $table->index('form_id');
+        });
+
+        Schema::create('form_storage', function(Blueprint $table) {
+            $table->increments('id');
+            $table->integer('form_id')->unsigned();
+            $table->foreign('form_id')->references('id')->on('forms');
+            $table->json('content');
+            $table->timestamps();
         });
     }
 
@@ -81,6 +94,7 @@ class CreateFormBuilder extends Migration
      */
     public function down()
     {
+        Schema::drop('form_storage');
         Schema::drop('resources');
         Schema::drop('field_sources');
         Schema::drop('fields');

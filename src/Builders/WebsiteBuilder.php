@@ -4,13 +4,14 @@ namespace P3in\Builders;
 
 use Closure;
 use Exception;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\App;
 use P3in\Builders\MenuBuilder;
 use P3in\Builders\PageBuilder;
 use P3in\Models\Gallery;
 use P3in\Models\Layout;
-use P3in\Models\Page;
 use P3in\Models\Menu;
+use P3in\Models\Page;
 use P3in\Models\PageContent;
 use P3in\Models\Section;
 use P3in\Models\StorageConfig;
@@ -26,11 +27,6 @@ class WebsiteBuilder
      * Page instance
      */
     private $website;
-
-    /**
-     * Storage manager
-     */
-    private $manager;
 
     public function __construct(Website $website = null)
     {
@@ -93,11 +89,12 @@ class WebsiteBuilder
      *
      * @return     PageBuilder  ( description_of_the_return_value )
      */
-    public function addPage($title, $slug)
+    public function addPage($title, $slug, $dynamic = false)
     {
         $page = new Page([
             'title' => $title,
             'slug' => $slug,
+            'dynamic_url' => $dynamic,
         ]);
 
         $page = $this->website->addPage($page);
@@ -119,6 +116,21 @@ class WebsiteBuilder
         $gallery->user()->associate($sysUser);
 
         $this->website->gallery()->save($gallery);
+    }
+
+    public function addSection($data)
+    {
+        if (is_array($data)) {
+            $section = new Section($data);
+        // } elseif (is_int($data)) {
+        //     // Dangerious, may not be a good idea to re-assign.
+        //     $section = Section::find($data);
+        } elseif ($data instanceof Section) {
+            $section = $data;
+        }
+        $this->website->sections()->save($section);
+        // return $this;
+        return $section;
     }
 
     /**
@@ -234,28 +246,9 @@ class WebsiteBuilder
         return $this;
     }
 
-    public function setDeploymentNpmPackages($data)
-    {
-        $this->website->setConfig('deployment->package_json', $data);
-        return $this;
-    }
-
-    public function setDeploymentNuxtConfig($data)
-    {
-        $this->website->setConfig('deployment->nuxt_config', $data);
-        return $this;
-    }
-
     public function setMetaData($data)
     {
         $this->website->setConfig('meta', $data);
-        return $this;
-    }
-
-    public function setLayout($layout, $layoutTemplate)
-    {
-        $this->website->setConfig('layouts->'.$layout, $layoutTemplate);
-
         return $this;
     }
     /**
@@ -268,92 +261,127 @@ class WebsiteBuilder
         return $this->website;
     }
 
+    // Used to publish local install files to their disk dest.
+    public function publish(string $from, FilesystemAdapter $to, $subDir = '')
+    {
+        // in memory, we don't need a physical record for the source files.
+        $fromDisk = (new StorageConfig([
+            'name' => $from,
+            'config' => ['driver' => 'local', 'root' => $from],
+        ]))->setConfig()->getDisk();
+        foreach ($fromDisk->allFiles() as $file) {
+            $to->put($subDir.$file, $fromDisk->get($file));
+        }
+    }
+
+    public function buildImports(FilesystemAdapter $to, string $fileName, array $components)
+    {
+        $import_file = view('pilot-io::components', [
+            'components' => $components,
+        ])->render();
+
+        $to->put($fileName, $import_file);
+    }
+
+    private function buildComponentLibs(FilesystemAdapter $to)
+    {
+        // @TODO: consider moving form builder components to Templates/common and
+        // only rebuild when new fields are introduced from future modules.
+        $components_dir = 'src/components';
+
+        $pagesections = [];
+        $formfields = [];
+
+        foreach ($to->allFiles($components_dir) as $component) {
+            $file = pathinfo($component);
+            if ($file['extension'] == 'vue' && $file['filename']) {
+                switch ($file['dirname']) {
+                    case $components_dir.'/FormBuilder':
+                    $formfields[ucwords($file['filename'])] = './FormBuilder/'.$file['filename'];
+                    break;
+                    case $components_dir:
+                    $pagesections[ucwords($file['filename'])] = './'.$file['filename'];
+                    break;
+                }
+            }
+        }
+        $this->buildImports($to, $components_dir.'/index.js', $pagesections);
+        $this->buildImports($to, $components_dir.'/formfields.js', $formfields);
+    }
+
+    private function buildRouter(FilesystemAdapter $to)
+    {
+        $pages = $this->website->pages;
+
+        $router_file = view('pilot-io::router', [
+            'imports' => $this->formatImports($pages),
+            'routes' => $this->formatRoutes($pages),
+            'base_url' => $this->website->scheme.'://'.$this->website->host.'/api/',
+            //@NOTE: not needed since all sites we implement use reverse proxy header value instead.  but here for ref.
+            // 'headers' => $this->formatJson(['Site-Host' => $this->website->host]),
+        ])->render();
+
+        $to->put('src/router.js', $router_file);
+    }
+
+    public function getDeploymentSource()
+    {
+        if (!$depConfig = $this->website->config->deployment) {
+            throw new Exception('The website does not have deployment settings configured');
+        }
+        if (empty($depConfig->publish_from)) {
+            throw new Exception('A source directory where the page components can be found has not been specified.');
+        }
+
+        if (is_null($path = realpath($depConfig->publish_from))) {
+            throw new Exception("The publish directory '{$depConfig->publish_from}' doesn't exist.");
+        }
+
+        return $path;
+    }
+
     /**
      * { function_description }
      *
      * @param      <type>  $diskInstance  The disk instance
      */
     // breaking this up a bit would prob be a good idea.
-    public function deploy()
+    public function deploy($to = null)
     {
-        if (!$depConfig = $this->website->config->deployment) {
-            throw new Exception('The website does not have deployment settings configured');
-        }
+        $from_path = $this->getDeploymentSource();
 
-        $disk = $this->website->storage->getDisk();
+        $to = $to ?? $this->website->storage->getDisk();
 
-        $manager = new PublishFiles('stubs', realpath(__DIR__.'/../Templates/stubs'));
+        // publish CMS common files
+        $this->publish(realpath(__DIR__.'/../Templates/common'), $to);
 
-        if (!empty($depConfig->publish_from)) {
-            $manager
-                ->setSrc('static', $depConfig->publish_from)
-                ->publishFolder('static', $disk, true);
+        // publish website specific (static) files.
+        $this->publish($from_path, $to, 'src/');
 
-            // @TODO: do we read the dest or src folder?
-            // dd($disk->allFiles('components'));
-            foreach ($disk->allFiles('components') as $component) {
-                $file = pathinfo($component);
-                if ($file['extension'] == 'vue' && $file['filename']) {
-                    $components[] = $file['filename'];
-                }
-            }
-            $components_import_file = view('pilot-io::components', [
-                'components' => $components,
-            ])->render();
+        // build page sections and form builder component libs.
+        $this->buildComponentLibs($to);
 
-            $manager->publishFile($disk, 'components/index.js', $components_import_file, true);
-        }
-
-        // lets publish the structure in case it doesn't exist.  Never overwrite!
-        // hell this one is not really necisary for us since we have a plus3website
-        // module that has the structure stored already, but that isn't a requirement
-        // and not an assumption we can make.
-        $manager->publishFolder('stubs', $disk);
-
-        if (!empty($depConfig->package_json)) {
-            $package_json = json_encode($depConfig->package_json, JSON_UNESCAPED_SLASHES);
-
-            $manager->publishFile($disk, 'package.json', $package_json, true);
-        }
-
-        if (!empty($depConfig->nuxt_config)) {
-            // this method of creating the javascript file is meh imo.  No luck finding a better way yet.
-            $nuxt_conf = 'module.exports = '.preg_replace('/"([a-zA-Z_]+[a-zA-Z0-9_]*)":/', '$1:', json_encode($depConfig->nuxt_config, JSON_UNESCAPED_SLASHES));
-
-            $manager->publishFile($disk, 'nuxt.config.js', $nuxt_conf, true);
-        }
-
-        // now lets get the website layout(s)
-        if (!empty($this->website->config->layouts)) {
-            foreach ($this->website->config->layouts as $layout => $data) {
-                $manager->publishFile($disk, '/layouts/'.$layout.'.vue', $data, true);
-            }
-        }
-
-        // we shouldn't be running this here at all.
-        // $destPath = $manager->getPath($disk);
-        // //sucks!... this is basically only working with local storage.
-        // //this needs to be abstracted so that we can account for remote disk
-        // //instances, AWS, or what ever other cloud instances that can be used
-        // //(lots of them out there)
-        // $process = new Process('npm install && npm run build', $destPath, null, null, null); //that last null param disables timeout.
-        // $process->run(function ($type, $buffer) {
-        //     echo $buffer;
-        //     // if (Process::ERR === $type) {
-        //     //     echo $buffer;
-        //     // } else {
-        //     //     echo $buffer;
-        //     // }
-        // });
-
-        // Page builder has something we need.
-        // PageBuilder::buildTemplate($layout, $sections, $imports);
-
-        // say we need to do something else after deployment with the local/remote file systems.
-        // Yes this mean we should prob move the instantiation of the manager out of this
-        // method, but hey, I'm just getting this working for now!
-        $this->manager = $manager;
+        // Build the router.js file
+        $this->buildRouter($to);
 
         return $this;
+    }
+
+    private function formatImports($pages) {
+        $rtn = '';
+        foreach ($pages as $page) {
+            $file = str_replace('/','-', trim($page->url, '/'));
+            $rtn .= "import {$page->template_name} from './pages/{$file}'\n";
+        }
+        return $rtn;
+    }
+
+    private function formatRoutes($pages) {
+        $pieces = [];
+        foreach ($pages as $page) {
+            $pieces[] = "{path: '{$page->url}', component: {$page->template_name}}";
+        }
+        return implode(', ', $pieces);
+        return $rtn;
     }
 }

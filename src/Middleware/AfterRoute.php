@@ -21,15 +21,13 @@ class AfterRoute
      */
     public function handle(Request $request, Closure $next)
     {
-        $methods = ['GET'];
-
         // resolve form by uri
         $form = Form::byResource(Route::currentRouteName())->first();
 
         // get response
         $response = $next($request);
 
-        if ($response->getStatusCode() === 200 && in_array($request->getMethod(), $methods)) {
+        if ($response->getStatusCode() === 200) {
 
             //@TODO: we do this in two places.  must be a better way to do this or needs to be abstracted.
             if ($response instanceof JsonResponse) {
@@ -39,7 +37,6 @@ class AfterRoute
                 $content = $response->getOriginalContent();
                 $rtn_method = 'setContent';
             }
-
 
             $response->$rtn_method([
                 'collection' => $content,

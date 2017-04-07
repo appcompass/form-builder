@@ -2,35 +2,25 @@
 
 namespace P3in\Providers;
 
-use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
-use Intervention\Image\ImageServiceProvider;
 use P3in\Models\Field;
+use P3in\Models\Form;
 use P3in\Models\Gallery;
 use P3in\Models\GalleryItem;
-use P3in\Models\Role;
 use P3in\Models\Menu;
 use P3in\Models\Page;
-use P3in\Models\Resource;
 use P3in\Models\PageSectionContent;
 use P3in\Models\Permission;
 use P3in\Models\Photo;
 use P3in\Models\Redirect;
+use P3in\Models\Resource;
+use P3in\Models\Role;
 use P3in\Models\User;
 use P3in\Models\Video;
 use P3in\Models\Website;
-use P3in\Observers\FieldObserver;
-use P3in\Observers\GalleryItemObserver;
-use P3in\Observers\PageObserver;
-use P3in\Observers\WebsiteObserver;
-use P3in\Providers\BaseServiceProvider;
-use P3in\Providers\EventServiceProvider;
-use Roumen\Sitemap\SitemapServiceProvider;
-use Tymon\JWTAuth\Providers\LaravelServiceProvider;
 
 class PilotIoServiceProvider extends BaseServiceProvider
 {
@@ -56,10 +46,13 @@ class PilotIoServiceProvider extends BaseServiceProvider
         ],
         'auth' => [
             \Illuminate\Auth\Middleware\Authenticate::class,
-            'jwt.refresh',
+            // 'jwt.refresh'
         ],
         'api' => [
-            \P3in\Middleware\AfterRoute::class,
+            // \P3in\Middleware\AfterRoute::class,
+        ],
+        'cp' => [
+            \P3in\Middleware\ValidateControlPanel::class
         ]
     ];
 
@@ -76,15 +69,20 @@ class PilotIoServiceProvider extends BaseServiceProvider
 
     ];
 
+    protected $commands = [
+        \P3in\Commands\AddUserCommand::class,
+        \P3in\Commands\DeployWebsite::class,
+    ];
+
     protected $observe = [
-        FieldObserver::class => Field::class,
-        GalleryItemObserver::class => [
+        \P3in\Observers\FieldObserver::class => Field::class,
+        \P3in\Observers\GalleryItemObserver::class => [
             Photo::class,
             Video::class
         ],
-        PhotoObserver::class => Photo::class, //@TODO: old but possibly needed for Alerts? look into it when we get to Alerts.
-        PageObserver::class => Page::class,
-        WebsiteObserver::class => Website::class,
+        // PhotoObserver::class => Photo::class, //@TODO: old but possibly needed for Alerts? look into it when we get to Alerts.
+        \P3in\Observers\PageObserver::class => Page::class,
+        \P3in\Observers\WebsiteObserver::class => Website::class,
     ];
 
     protected $appBindings = [
@@ -92,6 +90,7 @@ class PilotIoServiceProvider extends BaseServiceProvider
         \P3in\Interfaces\UserPermissionsRepositoryInterface::class => \P3in\Repositories\UserPermissionsRepository::class,
         \P3in\Interfaces\PermissionsRepositoryInterface::class => \P3in\Repositories\PermissionsRepository::class,
         \P3in\Interfaces\RolesRepositoryInterface::class => \P3in\Repositories\RolesRepository::class,
+        \P3in\Interfaces\RolePermissionsRepositoryInterface::class => \P3in\Repositories\RolePermissionsRepository::class,
         \P3in\Interfaces\UserRolesRepositoryInterface::class => \P3in\Repositories\UserRolesRepository::class,
         \P3in\Interfaces\GalleriesRepositoryInterface::class => \P3in\Repositories\GalleriesRepository::class,
         \P3in\Interfaces\GalleryPhotosRepositoryInterface::class => \P3in\Repositories\GalleryPhotosRepository::class,
@@ -103,7 +102,8 @@ class PilotIoServiceProvider extends BaseServiceProvider
         \P3in\Interfaces\WebsitePagesRepositoryInterface::class => \P3in\Repositories\WebsitePagesRepository::class,
         \P3in\Interfaces\PageContentRepositoryInterface::class => \P3in\Repositories\PageContentRepository::class,
         \P3in\Interfaces\WebsiteMenusRepositoryInterface::class => \P3in\Repositories\WebsiteMenusRepository::class,
-        \P3in\Interfaces\ResourcesRepositoryInterface::class => \P3in\Repositories\ResourcesRepository::class
+        \P3in\Interfaces\ResourcesRepositoryInterface::class => \P3in\Repositories\ResourcesRepository::class,
+        \P3in\Interfaces\FormsRepositoryInterface::class => \P3in\Repositories\FormsRepository::class
     ];
 
     /**
@@ -114,6 +114,9 @@ class PilotIoServiceProvider extends BaseServiceProvider
         \P3in\Repositories\GalleryPhotosRepository::class => \P3in\Policies\GalleryPhotosRepositoryPolicy::class
     ];
 
+    /**
+     * Register
+     */
     public function register()
     {
         parent::register();
@@ -124,33 +127,20 @@ class PilotIoServiceProvider extends BaseServiceProvider
         $this->app['view']->addNamespace('pilot-io', realpath(__DIR__.'/../Templates'));
     }
 
-    public function boot()
-    {
-        $this->bindToRoute();
-
-        $this->registerPolicies(App('Gate'));
-    }
-
     /**
      * Load Intervention for images handling
      */
     protected function registerDependentPackages()
     {
-        $this->app->register(EventServiceProvider::class);
-        $this->app->register(SitemapServiceProvider::class);
+        // @TODO check how making those deferred plays out
+        $this->app->register(\P3in\Providers\EventServiceProvider::class);
+        $this->app->register(\Roumen\Sitemap\SitemapServiceProvider::class);
         // $this->app->register(FeedServiceProvider::class);
-        $this->app->register(ImageServiceProvider::class);
-        $this->app->register(LaravelServiceProvider::class);
+        $this->app->register(\Intervention\Image\ImageServiceProvider::class);
+        $this->app->register(\Tymon\JWTAuth\Providers\LaravelServiceProvider::class);
 
         $loader = AliasLoader::getInstance();
-
         $loader->alias('Image', Image::class);
-        $loader->alias('User', User::class);
-        $loader->alias('Menu', Menu::class);
-        $loader->alias('Role', Role::class);
-        $loader->alias('Perm', Permission::class);
-        $loader->alias('Gallery', Gallery::class);
-        $loader->alias('Photo', Photo::class);
 
         //@TODO: we require the use of imagick, not sure we should force this though.
         Config::set(['image' => ['driver' => 'imagick']]);
@@ -159,7 +149,8 @@ class PilotIoServiceProvider extends BaseServiceProvider
     // @TODO: once we figure out this functionality once and for all, we can move the method into BaseServiceProvider and just store the array here.
     public function bindToRoute()
     {
-        // @TODO: sort out Route::bind vs. Route::model.
+        $loader = AliasLoader::getInstance();
+
         foreach ([
             'user' => User::class,
             'permission' => Permission::class,
@@ -173,12 +164,15 @@ class PilotIoServiceProvider extends BaseServiceProvider
             'content' => PageSectionContent::class,
             'section' => Section::class,
             'menu' => Menu::class,
-            'resource' => Resource::class
+            'resource' => Resource::class,
+            'form' => Form::class
         ] as $key => $model) {
             Route::bind($key, function ($value) use ($model) {
                 return $model::findOrFail($value);
             });
             Route::model($key, $model);
+
+            $loader->alias(class_basename($model), $model);
         }
     }
 }

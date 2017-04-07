@@ -18,7 +18,13 @@ class Form extends Model
         'updated_at'
     ];
 
-    protected $with = ['fields'];
+    // protected $casts = [
+    //     'view_types' => 'array',
+    // ];
+
+    protected $with = ['fields.source'];
+
+    protected $appends = ['fieldsCount'];
 
     /**
      * Links to models
@@ -37,7 +43,7 @@ class Form extends Model
      */
     public function fields()
     {
-        return $this->hasMany(Field::class)->with('source');
+        return $this->hasMany(Field::class);
     }
 
     /**
@@ -61,19 +67,22 @@ class Form extends Model
 
         $fields = null;
 
-        if ($mode == 'edit') {
-
-            $fields = $this->fields()->where('to_edit', true)->get();
-
-
-        } else if ($mode == 'list') {
-
-            $fields = $this->fields()->where('to_list', true)->get();
-
-        } else {
-
-            $fields = $this->fields;
-
+        switch ($mode) {
+            case 'list': //@TODO: Delete/rename, index is the resource to use.
+            case 'index':
+                $fields = $this->fields->where('to_list', true);
+                break;
+            case 'edit': //@TODO: Delete/rename, show is the resource to use.
+            case 'show': //@TODO: show and update use the same set of fields.
+            case 'update':
+            case 'create': //@TODO: create and store use the same set of fields.
+            case 'store':
+            case 'destroy': //@TODO: add field(s) for validation on delete. for example, "hey this is a related field, first please move or delete xyz".
+                $fields = $this->fields->where('to_edit', true);
+                break;
+            default:
+                $fields = $this->fields;
+                break;
         }
 
         $form['fields'] = $this->buildTree($fields);
@@ -90,13 +99,35 @@ class Form extends Model
      */
     public function setOwner(Model $owner)
     {
-        if (isset($owner->{$owner->getKeyName()})) {
-            $this->formable_id = $owner->{$owner->getKeyName()};
-        }
+        // if (isset($owner->{$owner->getKeyName()})) {
+        //     $this->formable_id = $owner->{$owner->getKeyName()};
+        // }
 
-        $this->formable_type = get_class($owner);
+        // $this->formable_type = get_class($owner);
+        $this->formable()->associate($owner);
 
         $this->save();
+
+        return $this;
+    }
+
+    public function setViewTypes(array $types)
+    {
+        $this->update(['view_types' => $types]);
+
+        return $this;
+    }
+
+    public function setCreateType(string $type)
+    {
+        $this->update(['create_type' => $type]);
+
+        return $this;
+    }
+
+    public function setUpdateType(string $type)
+    {
+        $this->update(['update_type' => $type]);
 
         return $this;
     }
@@ -160,6 +191,28 @@ class Form extends Model
         }
 
         return $rules;
+    }
+
+    /**
+     * Gets the fields count attribute.
+     *
+     * @return     <type>  The fields count attribute.
+     */
+    public function getFieldsCountAttribute()
+    {
+        return $this->fields->count();
+    }
+
+    /**
+     * store
+     *
+     * @param      <type>  $content  The content
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
+    public function store($content)
+    {
+        return FormStorage::store($content, $this);
     }
 
     /**

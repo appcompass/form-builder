@@ -2,19 +2,22 @@
 
 namespace P3in\Models;
 
-use Tymon\JWTAuth\Contracts\JWTSubject as AuthenticatableUserContract;
+use Exception;
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Foundation\Auth\Access\Authorizable;
-use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Auth\Authenticatable;
-use P3in\ModularBaseModel;
 use P3in\Models\Gallery;
 use P3in\Models\Photo;
 use P3in\Models\Role;
-use Exception;
+use P3in\ModularBaseModel;
+use P3in\Notifications\ConfirmRegistration;
+use P3in\Notifications\ResetPassword;
+use P3in\Traits\HasCardView;
+use Tymon\JWTAuth\Contracts\JWTSubject as AuthenticatableUserContract;
 // use P3in\Traits\HasProfileTrait;
 
 class User extends ModularBaseModel implements
@@ -27,7 +30,8 @@ class User extends ModularBaseModel implements
         Authenticatable,
         Authorizable,
         CanResetPassword,
-        Notifiable
+        Notifiable,
+        HasCardView
         // HasPermissions
         // HasProfileTrait
         ;
@@ -55,7 +59,8 @@ class User extends ModularBaseModel implements
         'phone',
         'email',
         'password',
-        'active'
+        'active',
+        'activation_code'
     ];
 
     /**
@@ -126,17 +131,6 @@ class User extends ModularBaseModel implements
     }
 
     /**
-     * Sets the password attribute.
-     *
-     * @param      <type>  $value  The value
-     */
-    // @TODO doesn't laravel do this automagically? investigate
-    public function setPasswordAttribute($value)
-    {
-        $this->attributes['password'] = bcrypt($value);
-    }
-
-    /**
      *  Get user's full name
      *
      */
@@ -151,7 +145,12 @@ class User extends ModularBaseModel implements
      */
     public function getGravatarUrlAttribute()
     {
-        return "https://www.gravatar.com/avatar/" . md5($this->email) . '?d=identicon';
+        return "https://www.gravatar.com/avatar/" . md5($this->email) . '?d=identicon&s=500';
+    }
+
+    public function getCardPhotoUrl()
+    {
+        return $this->gravatar_url;
     }
 
     /**
@@ -351,4 +350,19 @@ class User extends ModularBaseModel implements
     //     }
     // }
 
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPassword($token));
+    }
+
+    public function sendRegistrationConfirmationNotification()
+    {
+        $this->notify(new ConfirmRegistration($this->activation_code));
+    }
 }

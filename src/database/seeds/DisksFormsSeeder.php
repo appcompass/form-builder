@@ -21,6 +21,21 @@ class DisksFormsSeeder extends Seeder
         // @TODO: Form is part of CP, this module is loaded before CP so something to work out.
         // Form::whereIn('forms.name', ['LocalStorage', 'SftpStorage', 'FtpStorage', 'RackspaceStorage', 'S3Storage'])->delete();
 
+        // @TODO: we need to work this out a bit, CP can technically be hosted any any disk drive, it's not specific to local.
+        if (!$cp_root = config('app.cp_root')) {
+            throw new \Exception('app.cp_root is not defined properly.  Please define a proper path');
+        }
+
+        $local = StorageType::getType('local');
+
+        $local->createDrive('cp_root', ['driver' => 'local', 'root' => $cp_root, ]);
+        $local->createDrive('cp_components', ['driver' => 'local', 'root' => $cp_root.'/src/components', ]);
+        $local->createDrive('cp_list_types', ['driver' => 'local', 'root' => $cp_root.'/src/components/ListTypes', ]);
+        $local->createDrive('cp_form_fields', ['driver' => 'local', 'root' => $cp_root.'/src/components/FormBuilder', ]);
+
+        // @NOTE form seeders moved to cp
+
+
         FormBuilder::new('LocalStorage', function (FormBuilder $fb) {
             $fb->string('Name', 'name')->validation(['required']);
             $fb->string('Path', 'root')->validation(['required']);

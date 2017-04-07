@@ -39,22 +39,40 @@ abstract class AbstractChildController extends Controller
         return $this->repo->get();
     }
 
+    public function create(FormRequest $request, Model $parent)
+    {
+        return $this->repo
+            ->setParent($parent)
+            ->create();
+    }
+
     public function store(FormRequest $request, Model $parent)
     {
-        $this->repo->setParent($parent);
+        // $this->repo->setParent($parent);
 
-        return $this->repo->create($request);
+        return $this->repo
+            ->setParent($parent)
+            ->store($request);
     }
 
     public function show(FormRequest $request, Model $parent, Model $model)
     {
+        // $this->repo->setParent($parent);
+
+        // $this->repo->setModel($model);
+
         return $this->repo
             ->setParent($parent)
+            ->setModel($model)
             ->findByPrimaryKey($model->id);
     }
 
     public function update(FormRequest $request, Model $parent, Model $model)
     {
+        // $this->repo->setParent($parent);
+
+        // $this->repo->setModel($model);
+
         $this->repo
             ->setParent($parent)
             ->fromModel($model)
@@ -63,14 +81,14 @@ abstract class AbstractChildController extends Controller
         return ['message' => 'Model updated.'];
     }
 
-    public function create(FormRequest $request, Model $parent)
-    {
-        return;
-    }
-
     public function destroy(FormRequest $request, Model $parent, Model $model)
     {
+        // $this->repo->setParent($parent);
+
+        // $this->repo->setModel($model);
+
         $success = $this->repo
+            ->setParent($parent)
             ->fromModel($model)
             ->destroy();
 

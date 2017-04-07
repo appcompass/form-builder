@@ -21,11 +21,11 @@ class TemplateRenderer
         $this->page = $page;
     }
 
-    public function layout(string $layout)
-    {
-        $this->layout = $layout;
-        return $this;
-    }
+    // public function layout(string $layout = null)
+    // {
+    //     $this->layout = $layout;
+    //     return $this;
+    // }
 
     /**
      * Render website page template.
@@ -36,11 +36,27 @@ class TemplateRenderer
      */
     public function buildTemplate(array $sections = null, array $imports = null)
     {
+        // $layout = $this->page->layout ?? $this->layout;
+
+        // if (!$layout) {
+        //     throw new \Exception('No page layout was defined for the page or to the renderer.  Please define a layout either on the page or to the template renderer.');
+        // }
         return view('pilot-io::page', [
-            'layout' => $this->layout,
+            'page' => $this->page,
+            'meta' => $this->formatMeta(),
             'sections' => $sections ?? $this->sections,
             'imports' => $imports ?? $this->imports,
         ])->render();
+    }
+
+    private function formatMeta()
+    {
+        $rtn = [];
+        foreach ($this->page->getMeta('head') as $key => $value) {
+            $value = addslashes($value);
+            $rtn[] = "{vmid: '{$key}', name: '{$key}', content: '$value'}";
+        }
+        return implode(', ', $rtn);
     }
 
     /**
@@ -49,24 +65,15 @@ class TemplateRenderer
     public function render()
     {
         $page = $this->page;
-        $name = $page->url == '/' ? '/index' : $page->url;
+        $name = $page->url == '/' ? '/index' : '/'.str_replace('/', '-', trim($page->url, '/'));
 
         // //@TODO: On delete or parent change of a page (we use the url as the unique name for a page),
         // //we need to delete it's template file as to clean up junk.
-
-        // build the parent template.
-        if ($page->children->count()) {
-
-            $this->storeTemplate($name, $this->compileParentTemplate());
-
-            $name = $name.'/index';
-        }
 
         $pageStructure = $page->buildContentTree();
 
         $this->buildPageTemplateTree($pageStructure);
 
-        // build the child page template.
         $this->storeTemplate($name, $this->buildTemplate());
 
     }
@@ -177,7 +184,7 @@ class TemplateRenderer
 
     private function compileParentTemplate()
     {
-        $sections = [$this->getElementData(0, '<nuxt-child/>')];
+        $sections = [$this->getElementData(0, '<router-view/>')];
         return $this->buildTemplate($sections);
     }
 
@@ -185,10 +192,6 @@ class TemplateRenderer
     {
         $disk = $this->page->website->storage->getDisk();
 
-        // @TODO: redundant, disk can take care of storage of generated tempalte content.
-        $manager = new PublishFiles('stubs', realpath(__DIR__.'/../Templates/stubs'));
-
-        $manager->publishFile($disk, "/pages{$name}.vue", $contents, true);
-
+        $disk->put("src/pages{$name}.vue", $contents);
     }
 }

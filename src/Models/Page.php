@@ -9,14 +9,14 @@ use Illuminate\Support\Facades\DB;
 use P3in\Interfaces\Linkable;
 use P3in\Models\Layout;
 use P3in\Models\PageSectionContent;
+use P3in\Models\Role;
 use P3in\Models\Section;
 use P3in\Models\Website;
+use P3in\Traits\HasRole;
 
 class Page extends Model implements Linkable
 {
-    use SoftDeletes
-    // , HasPermissions
-    ;
+    use SoftDeletes, HasRole;
 
     // used for page output structuring.
     private $build = [];
@@ -24,6 +24,8 @@ class Page extends Model implements Linkable
     protected $fillable = [
         'slug',
         'title',
+        'layout',
+        'dynamic_url',
         'meta',
     ];
 
@@ -112,16 +114,42 @@ class Page extends Model implements Linkable
      * @param      int    $order
      * @param      array    $config
      *
-     * @return     Model  PageComponentContent
+     * @return     Model  PageSectionContent
      */
-    public function addContainer(int $order = 0, array $config = null)
+    public function addContainer(Section $section)
     {
-        //I have no idea why they don't have a ->new() method...
+        // I have no idea why they don't have a ->new() method...
         $container = $this->contents()->findOrNew(null);
 
-        $container->saveAsContainer($order, $config);
+        $container->section()->associate($section);
+
+        $container->save();
 
         return $container;
+    }
+
+    /**
+     * Add a Section to the page.
+     *
+     * @param      int    $order
+     * @param      array    $config
+     *
+     * @return     Model  PageSectionContent
+     */
+    public function addSection(Section $section)
+    {
+        //I have no idea why they don't have a ->new() method...
+        $page_section = $this->contents()->findOrNew(null);
+
+        $page_section->config = $section->config;
+
+        $page_section->section()->associate($section);
+
+        $page_section->page()->associate($this);
+
+        $page_section->save();
+
+        return $page_section;
     }
 
     /**
@@ -132,7 +160,7 @@ class Page extends Model implements Linkable
     public function getTemplateNameAttribute()
     {
         $url = $this->url == '/' ? 'Home' : $this->url;
-        return studly_case(str_slug(str_replace('/', ' ', $url)));
+        return studly_case(str_slug(str_replace(['/', ':id'], ' ', $url)));
     }
 
     public function getHeadMetaAttribute()
@@ -251,25 +279,27 @@ class Page extends Model implements Linkable
         }
     }
 
-    /**
-     * Delete this and i'll fucking kill you
-     *
-     * @param      <type>  $slug   The slug
-     */
-    public function setSlugAttribute($slug)
-    {
-        $this->attributes['slug'] = $slug;
+    // /**
+    //  * Delete this and i'll fucking kill you
+    //  *
+    //  * @param      <type>  $slug   The slug
+    //  */
+    // OH SNAP I DELETED IT! :P  no but seriously, this isn't needed,
+    // I fixed the module load issue where observers were not being triggered.
+    // public function setSlugAttribute($slug)
+    // {
+    //     $this->attributes['slug'] = $slug;
 
-        $this->attributes['url'] = $this->buildUrl();
+    //     $this->attributes['url'] = $this->buildUrl();
 
-        if ($this->exists) {
+    //     if ($this->exists) {
 
-            $this->save();
+    //         $this->save();
 
-            $this->updateChildrenUrl();
+    //         $this->updateChildrenUrl();
 
-        }
-    }
+    //     }
+    // }
 
     /**
      * buildUrl
@@ -279,16 +309,26 @@ class Page extends Model implements Linkable
     public function buildUrl()
     {
         $page = $this;
-
-        $slugs = [$this->slug];
+        $slugs = [$page->getUrlSlug()];
 
         while ($page->parent_id !== null) {
             $page = $page->parent;
 
-            array_push($slugs, $page->slug);
+            array_push($slugs, $page->getUrlSlug());
         }
 
         return '/' . implode('/', array_reverse($slugs));
+    }
+
+    public function getUrlSlug()
+    {
+        $slug = $this->slug;
+        // @TODO: discuss: websites/:id/pages/:id which results in $route.params to always only have the last id
+        // return $this->dynamic_url ? $slug.'/:id' : $slug ;
+        // OR: /websites/:website/pages/:page which allows $route.params to have the whole chain,
+        // BUT seems to be harder to parse/work with on the front-end.
+        return $this->dynamic_url ? $slug.'/:'.$slug : $slug ;
+
     }
 
     /**
@@ -339,12 +379,13 @@ class Page extends Model implements Linkable
     }
 
     // page contents and sections rendering methods
-    private function buildContentBranches($parent_id)
+    private function buildContentBranches($parent_id, $with_sections = false)
     {
         $branches = [];
         foreach ($this->contents as $row) {
             if ($row->parent_id == $parent_id) {
-                $row->children = $this->buildContentBranches($row->id);
+                $row->form = $with_sections && $row->section->form ? $row->section->form->render() : null;
+                $row->children = $this->buildContentBranches($row->id, $with_sections);
                 $branches[] = $row;
             }
         }
@@ -354,12 +395,12 @@ class Page extends Model implements Linkable
     public function buildContentTree($with_sections = false)
     {
         if ($with_sections) {
-            $this->contents->load('section');
+            $this->contents->load('section.form');
         }
         $tree = [];
         foreach ($this->contents as $row) {
             if (is_null($row->parent_id)) {
-                $row->children = $this->buildContentBranches($row->id);
+                $row->children = $this->buildContentBranches($row->id, $with_sections);
                 $tree[] = $row;
             }
         }

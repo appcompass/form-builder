@@ -5,6 +5,7 @@ namespace P3in\Models;
 use Illuminate\Database\Eloquent\Model;
 use P3in\Models\Form;
 use P3in\Models\Page;
+use P3in\Models\Website;
 
 class Section extends Model
 {
@@ -27,6 +28,16 @@ class Section extends Model
     public function pages()
     {
         return $this->belongsToMany(Page::class, 'page_component_content');
+    }
+
+    /**
+     * Relation to a website
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
+    public function website()
+    {
+        return $this->belongsTo(Website::class);
     }
 
     /**
@@ -67,6 +78,15 @@ class Section extends Model
         return static::byTemplate($name)->firstOrFail();
     }
 
+    /**
+     * Make sure config doesn't return empty
+     *
+     * @return     array  The configuration attribute.
+     */
+    public function getConfigAttribute($value)
+    {
+        return json_decode($value) ?? [];
+    }
     /**
      * Gets the container.
      *

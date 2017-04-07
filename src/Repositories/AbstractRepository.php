@@ -2,12 +2,35 @@
 
 namespace P3in\Repositories;
 
+use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Route;
 use P3in\Interfaces\AbstractRepositoryInterface;
+use P3in\Models\Form;
+use P3in\Models\Resource;
 
 abstract class AbstractRepository implements AbstractRepositoryInterface
 {
+
+    // @TODO PHP 7.1 allows for public/private constants. consider
+    // logged user only can see owned items
+    const SEE_OWNED = 0;
+
+    // looged user sees any, edits owned
+    const EDIT_OWNED = 0;
+
+    // key on the model representing relation
+    // @TODO explore dot.separation (maybe after loading relations)
+    protected $owned_key = 'user_id';
+
+    // repo locks if use doesn't have permissions
+    private $locked = false;
+
+    // always null in normal context, populated in child context.
+    // @TODO: feels off setting this here, but the current alternative is more code.
+    protected $owned = null;
+
     // Builder
     protected $builder;
 
@@ -17,21 +40,31 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
      // Link parent/children
     protected $with = [];
 
-    // eager relations we wanna paginate
-    // @NOTE we refer to childRepos for that
-    // protected $paginatedWith = [];
-
     // @TODO it works well and it's simple but not enough. maybe.
     // list of items that must be defined when persising the repo
-    // ['user' => ['from' => 'id', 'to' => 'user_id'], [...]]
-    protected $requires = [];
+    // ['user' => ['from' => 'id', 'to' => 'user_id']]
+    protected $requires = [
+        'methods' => [],
+        'props' => []
+    ];
 
-    // model's default list view
-    protected $view = 'Table';
+    protected $route_name;
+    protected $route_params;
+    // // model's default list view
+    // protected $view = 'Table';
+    // view types: ['Table','Card','Map', 'Chart', 'etc'] and what ever other types a module in the future may need.
+    // @TODO: consider moving additional ones into the models rather than repositories.
+    // i.e. make use of HasCardView trait for Card layouts, and other traits for other layout types.
+    protected $view_types = ['Table'];
+    // create types: 'Page' - 'Add New' button that leads to new create view,
+    // 'Inline' - instead of taking the user to a page, it renders the form inline
+    // where normally the Add New button would be for Page types.
+    protected $create_type = 'Page';
+    //update types: 'Page' - normal full page behavior, 'Modal' - modal edit view, like for a photo when clicked on a grid.
+    protected $update_type = 'Page';
 
-    // @TODO limits list view, including abilities for each record
-    protected $limitsList = false;
-
+    // in rare instances we want to exclude all the extra data on the output structure.
+    public $raw_data = false;
     /**
      * { function_description }
      */
@@ -43,9 +76,26 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
 
         }
 
-        $this->loadRelations();
+        // @TODO consider how to work with relations, it could happen the Model doesn't have a user_id directly (we prob should avoid that to keep it simpler)
+        // SEE_OWNED has the highest priority
+        if (static::SEE_OWNED) {
 
-        $this->checkPermissions();
+            if (!Auth::check()) {
+
+                $this->locked = true;
+
+            }
+
+            if (!Auth::user()->isAdmin()) {
+
+
+                $this->builder->where($this->owned_key, \Auth::user()->id);
+
+            }
+
+        }
+
+        $this->loadRelations();
 
         $this->sort();
 
@@ -68,27 +118,6 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         }
 
         return $this->builder;
-    }
-
-    public function checkPermissions()
-    {
-        // depending on what we're doing we check permissions
-        // permissions are required at single element level
-        // req_perms should always be the field name (maybe make it configurable)
-        // so for exaple if we are getting a list of items we add the req_perm to the
-        // query builder
-        // if we're on single mode we just check if it requires a permission and if the
-        // current user matches it
-        if (\Auth::check()) {
-
-            // $this->builder->where('req_perm', \Auth::user()->allPermissions())->orWhereNull('req_perm');
-
-        } else {
-
-            // $this->builder->whereNull('req_perm');
-
-        }
-
     }
 
     /**
@@ -157,14 +186,18 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         }
 
         if (is_null($search)) {
-
-            $search = request()->search;
+            // request sometimes sends empty object string '{}' instead of an
+            // actual object, absolute query string values and what not.
+            $search = json_decode(request()->search, true);
+            if (is_string($search)) {
+                $search = json_decode($search, true);
+            }
 
         }
 
         foreach((array) $search as $column => $string) {
 
-            $this->builder->where($column, 'like', "%{$string}%");
+            $this->builder->where($column, 'ilike', "%{$string}%");
 
         }
 
@@ -184,9 +217,10 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         }
 
         if (is_null($sorters)) {
-
             $sorters = request()->sorters;
-
+            if (is_string($sorters)) {
+                $sorters = json_decode($sorters, true);
+            }
         }
 
         foreach((array) $sorters as $field => $order) {
@@ -201,7 +235,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
      *
      * @param      <type>  $attributes  The attributes
      */
-    public function create($request)
+    public function store($request)
     {
         $request = $this->checkRequirements($request);
 
@@ -264,6 +298,8 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
     protected function checkRequirements($request)
     {
 
+        // @TODO make this look like code
+
         // so we kwow it's a request instance
 
         // we can fetch all the attributes and add to that
@@ -273,7 +309,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         // respectively from -> field in the source object, to -> what it matches against in
         // current table i.e. 'user' => ['from' => 'id', 'to' => 'user_id']
         // it's a bit verbose but appears to be very flexible
-        foreach ($this->requires as $requirement => $field)
+        foreach ($this->requires['props'] as $requirement => $field)
         {
             if (!property_exists($request, $requirement)) {
 
@@ -282,6 +318,18 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
             }
 
             $res[$field['to']] = $request->{$requirement}->{$field['from']};
+
+        }
+
+        foreach ($this->requires['methods'] as $requirement => $field)
+        {
+            if (!method_exists($request, $requirement)) {
+
+                throw new \Exception('Requirement not satisfied: ' . $requirement);
+
+            }
+
+            $res[$field['to']] = $request->{$requirement}()->{$field['from']};
 
         }
 
@@ -334,10 +382,15 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
      */
     public function findByPrimaryKey($id)
     {
-        return $this->make()
+
+        return $this->output($this->make()
             ->builder
             ->where($this->model->getTable() . '.' . $this->model->getKeyName(), $id)
-            ->firstOrFail();
+            ->firstOrFail());
+        // return $this->make()
+        //     ->builder
+        //     ->where($this->model->getTable() . '.' . $this->model->getKeyName(), $id)
+        //     ->firstOrFail();
     }
 
     /**
@@ -357,22 +410,33 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
      */
     public function get()
     {
+
+        // repo locks if use doesn't have permissions
+        if ($this->locked) {
+
+            // return;
+            return $this->output([], 401);
+
+        }
+
         // for show() if a model has been set we only wanna load rels
         if ($this->model->id) {
 
-            return $this->model;
+            $data = $this->model;
 
         }
 
         if (request()->has('page')) {
 
-            return $this->paginate(request()->per_page, request()->page);
+            $data = $this->paginate(request()->per_page, request()->page);
 
         } else {
 
-            return $this->paginate();
+            $data = $this->paginate();
 
         }
+
+        return $this->output($data);
     }
 
     /**
@@ -390,15 +454,43 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
             $per_page = 25;
         }
 
-        // @TODO pick from here. idea is filter the builder via the eprmissions, or add allowd actions based on those
-        if ($this->limitsList) {
+        // when paginating evaluate EDIT_OWNED, if true get the results and loop through them
+        // attach `abilities` to the resulting data
+        // abilities = [create, edit, destoy, index, show]
+        $data = $this->make()->builder->paginate($per_page, ['*'], 'page', $page);
+
+        if (static::EDIT_OWNED && !Auth::user()->isAdmin()) {
+
+            foreach ($data as $record) {
+
+                if (Auth::user()->id === $record[$this->owned_key]) {
+
+                    $record['abilities'] = ['edit', 'view', 'create', 'destroy'];
+
+                } else {
+
+                    $record['abilities'] = ['view', 'create'];
+
+                }
+
+            }
+
+        } else {
+
+            foreach ($data as $record) {
+
+                $record['abilities'] = ['edit', 'view', 'create', 'destroy'];
+
+            }
 
         }
 
-        return [
-            'data' => $this->make()->builder->paginate($per_page, ['*'], 'page', $page),
-            'view' => $this->view
-        ];
+        return $data;
+
+        // return [
+        //     'data' => $data,
+        //     'view' => $this->view
+        // ];
     }
 
     /**
@@ -413,7 +505,8 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         $file = head(array_where($attributes, function($val){
             return is_a($val, UploadedFile::class);
         }));
-        $storage = head(array_where($attributes, function($val, $key){
+
+        $storage = $this->model->storage ? $this->model->storage->name : head(array_where($attributes, function($val, $key){
             return $key == 'disk';
         }));
 
@@ -426,5 +519,92 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
             // $this->model->storeFile($storage, $file, true);
             $this->model->storeFile($storage, $file, true);
         }
+    }
+
+    public function create()
+    {
+        // output already takes care of binding the form for the route.
+        return $this->output([]);
+    }
+
+    public function output($data, $code = 200)
+    {
+        $this->setRouteInfo();
+        if ($this->raw_data) {
+            $rtn = [
+                'abilities' => ['create', 'edit', 'destroy', 'index', 'show'], // @TODO show is per-item in the collection
+                'form' => $this->getResourceForm(),
+                'collection' => $data,
+            ];
+
+            return response()->json($rtn, $code);
+        }else{
+            $rtn = [
+                'route' => $this->route_name,
+                'parameters' => $this->route_params,
+                'api_url' => $this->getApiUrl(),
+                'view_types' => $this->view_types,
+                'create_type' => $this->create_type,
+                'update_type' => $this->update_type,
+                'owned' => $this->owned,
+                'abilities' => ['create', 'edit', 'destroy', 'index', 'show'], // @TODO show is per-item in the collection
+                'form' => $this->getResourceForm(),
+                'collection' => $data,
+            ];
+
+            return response()->json($rtn, $code);
+        }
+    }
+
+    public function getApiUrl()
+    {
+        $keys = explode('.', $this->route_name);
+        $values = array_values(array_map(function($param){
+            return $param->getKey();
+        }, $this->route_params));
+
+        $segments = [''];
+        $route_type = $this->getRouteType();
+
+        for ($i=0; $i < count($keys); $i++) {
+            if ($keys[$i] !== $route_type) {
+                $segments[] = $keys[$i];
+                if (isset($values[$i])) {
+                    $segments[] = $values[$i];
+                }
+            }
+        }
+        return implode('/', $segments);
+    }
+
+    public function getResourceForm()
+    {
+        $resource = Resource::where(function($query){
+            $query->whereNull('req_role')->orWhereHas('role', function ($query) {
+                $query->whereHas('users', function ($query) {
+                    $query->where('id', Auth::user()->id);
+                });
+            });
+        })
+            ->where('resource',  $this->route_name)
+            ->with('form')
+            ->first();
+
+        if (!empty($resource->form)) {
+            return $resource->form->render($this->getRouteType());
+        }
+
+    }
+
+    public function getRouteType()
+    {
+        return substr($this->route_name, strrpos($this->route_name, '.')+1);
+    }
+
+    public function setRouteInfo()
+    {
+        $route = Route::current();
+        $this->route_name = $route->getName();
+        $this->route_params = $route->parameters();
     }
 }

@@ -13,6 +13,7 @@ class SourceBuilder
      *
      * @return     array        ( description_of_the_return_value )
      */
+    // @TODO: re-write this, it's a queries in loops nightmare.
     public static function render(FieldSource $field_data)
     {
 
@@ -41,6 +42,9 @@ class SourceBuilder
 
             // build the actual query
             $builder = $instance->parseCriteria($field_data->criteria);
+
+            // @NOTE @TODO we limit to 150 only to prevent cp hiccups. there is a note on trello on how to refactor this
+            $builder->limit(150);
 
             // looks like toArray screws it up if you're not using a numeric id
             return $builder->get()->toArray();

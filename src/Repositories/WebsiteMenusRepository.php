@@ -26,7 +26,7 @@ class WebsiteMenusRepository extends AbstractChildRepository implements WebsiteM
             ->where($this->model->getTable() . '.' . $this->model->getKeyName(), $id)
             ->firstOrFail();
 
-        return [
+        return $this->output([
             'id' => $model->id,
             'title' => $model->name, // @TODO rename to title for consistency
             'menu' => $model->render(false, ['*']), // false => frontend rendering, * => do not apply permissions
@@ -41,7 +41,7 @@ class WebsiteMenusRepository extends AbstractChildRepository implements WebsiteM
                     $item->type = 'Link';
                 })
             ]
-        ];
+        ]);
 
     }
 }

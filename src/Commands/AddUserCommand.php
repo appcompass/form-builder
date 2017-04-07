@@ -14,7 +14,7 @@ class AddUserCommand extends Command
     *
     * @var string
     */
-    protected $name = 'p3cms:create-users';
+    protected $name = 'pilot-io:create-users';
 
     /**
     * The console command description.
@@ -56,7 +56,7 @@ class AddUserCommand extends Command
             'first_name' => $first_name,
             'last_name' => $last_name,
             'email' => $email,
-            'password' => $password,
+            'password' => bcrypt($password),
             'phone' => $phone,
             'active' => true
         ]);

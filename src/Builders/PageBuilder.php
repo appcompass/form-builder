@@ -41,7 +41,6 @@ class PageBuilder
         $instance = new static();
 
         $instance->page = $website->pages()->create([
-
             'title' => $title,
         ]);
 
@@ -83,11 +82,12 @@ class PageBuilder
      *
      * @return     <type>  ( description_of_the_return_value )
      */
-    public function addChild($title, $slug)
+    public function addChild($title, $slug, $dynamic = false)
     {
         $page = $this->page->createChild([
             'title' => $title,
             'slug' => $slug,
+            'dynamic_url' => $dynamic,
         ]);
 
         return new static($page);
@@ -100,12 +100,12 @@ class PageBuilder
      * @param array $config Container's attributes
      * @return PageSectionContent
      */
-    public function addContainer(int $order = 0, array $config = [])
+    public function addContainer(Section $container = null)
     {
         if ($this->container) {
-            $container = $this->container->addContainer($order, $config);
+            $container = $this->container->addContainer($container);
         }else{
-            $container = $this->page->addContainer($order, $config);
+            $container = $this->page->addContainer($container);
         }
 
         $this->container = $container;
@@ -126,15 +126,17 @@ class PageBuilder
      *
      * @return     PageBuilder
      */
-    public function addSection(Section $section, int $order = 0, array $data = [])
+    public function addSection(Section $section)
     {
-        if (!$this->container) {
+        if ($this->container) {
 
-            throw new Exception('a Container must be set to add Sections.');
+            $this->section = $this->container->addSection($section);
+
+        }else{
+
+            $this->section = $this->page->addSection($section);
 
         }
-
-        $this->section = $this->container->addSection($section, $order, $data);
 
         return $this;
     }
@@ -242,6 +244,15 @@ class PageBuilder
         return $this->setMeta('update_frequency', $val);
     }
 
+    // @TODO: discuss then probably remove, looks like more trouble than it's worth now that we don't use Nuxt.
+    public function layout($layout = null)
+    {
+        $this->update(['layout' => $layout]);
+
+        return $this;
+    }
+
+
     /**
      * Sets the meta.
      *
@@ -257,11 +268,13 @@ class PageBuilder
     //     return $this;
     // }
 
-    public function renderTemplate(string $layout)
+    public function renderTemplate(string $layout = null)
     {
         $renderer = new TemplateRenderer($this->page);
 
-        $renderer->layout($layout)->render();
+        $renderer
+        // ->layout($layout)
+        ->render();
 
 
         return $this;
