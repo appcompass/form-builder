@@ -38,7 +38,8 @@ class Photo extends GalleryItem implements GalleryItemInterface
      *
      * @return     <type>  ( description_of_the_return_value )
      */
-    public function apendStoragePath() {
+    public function apendStoragePath()
+    {
         return date('m-y');
     }
 

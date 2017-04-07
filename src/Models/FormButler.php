@@ -29,9 +29,7 @@ class FormButler
     private function parseRequest(FormRequest $request)
     {
         if ($request->has('form')) {
-
             return $this->resolveFormFromString($request->form)->render();
-
         }
 
         return;
@@ -63,15 +61,11 @@ class FormButler
         // and fill it up
         // avoid breaking things for now
         if (isset($content['id'])) {
-
             MenuItem::findOrFail($content['id'])->update($content);
-
         } else {
-
             $form = Form::whereName($form_name)->firstOrFail();
 
             $form->store($content);
-
         }
 
         return ['success' => ['Updated']];

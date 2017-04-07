@@ -28,28 +28,19 @@ trait HasDynamicContent
         ]);
 
         if (is_string($source) && class_exists($source)) {
-
             $field_source->sourceable_type = $source;
-
         } elseif ($source instanceof Model) {
-
             $field_source->sourceable_type = $source;
 
-            if (isset($source->{$source->getKeyName()}) && !is_null($source->{$source->getKeyName()}) ) {
-
+            if (isset($source->{$source->getKeyName()}) && !is_null($source->{$source->getKeyName()})) {
                 $field_source->sourceable_id = $source->{$source->getKeyName()};
-
             }
-
         }
 
         if ($callback) {
-
             $callback($field_source);
-
         }
 
         return $this;
     }
-
 }

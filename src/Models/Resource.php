@@ -8,7 +8,6 @@ use P3in\Traits\HasRole;
 
 class Resource extends Model
 {
-
     use HasRole;
 
     protected $fillable = [

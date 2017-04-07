@@ -50,9 +50,7 @@ class GalleriesRepositoryPolicy
     public function show(User $user, GalleriesRepository $repo)
     {
         if ($repo->getModel()->user->id !== $user->id) {
-
             return $this->deny('You can only see galleries you own.');
-
         }
         return true;
     }
@@ -60,9 +58,7 @@ class GalleriesRepositoryPolicy
     public function update(User $user, GalleriesRepository $repo)
     {
         if ($repo->getModel()->user->id !== $user->id) {
-
             return $this->deny('You cannot update a gallery if you\'re not the owner.');
-
         }
 
         return true;

@@ -25,7 +25,5 @@ class GalleriesRepository extends AbstractRepository implements GalleriesReposit
     public function __construct(Gallery $model)
     {
         $this->model = $model;
-
     }
-
 }

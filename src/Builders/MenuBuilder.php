@@ -79,9 +79,7 @@ class MenuBuilder
         $instance = (new static($menu))->setParent($parent);
 
         if (!is_null($closure)) {
-
             $closure($this);
-
         }
 
         return $instance;
@@ -100,15 +98,10 @@ class MenuBuilder
         $instance->menu->drop($structure['deletions']);
 
         foreach ($instance->flatten($structure['menu']) as $menuitem) {
-
             if (is_null($menuitem->menu_id)) {
-
                 $instance->add($menuitem);
-
             }
-
         }
-
     }
 
     /**
@@ -123,28 +116,20 @@ class MenuBuilder
      */
     public function add($item, $order = 0)
     {
-
         if (!isset($this->menu)) {
-
             throw new \Exception('Menu not selected.');
-
         }
 
         if (is_array($item)) {
 
             // relying on default values requires a fresh() copy of the model
             $item = Link::create($item)->fresh();
-
         }
 
         if ($item instanceof MenuItem) {
-
             $this->menu_item = $item;
-
         } else {
-
             $this->menu_item = MenuItem::fromModel($item, $order);
-
         }
 
         if ($this->hasParent()) {
@@ -158,13 +143,9 @@ class MenuBuilder
             // to have both worlds (return a MenuBuilder or a MenuItem) we return $this here
             // and we use a magic __call to check if we're calling methods MenuItem has -f
             return $this;
-
         } else {
-
             throw new \Exception("Something went wrong while adding the MenuItem {$this->menu_item->id} to Menu {$this->menu->id}");
-
         }
-
     }
 
     /**
@@ -235,44 +216,29 @@ class MenuBuilder
      *
      * @return     array   ( description_of_the_return_value )
      */
-    private function findItem($item): MenuItem {
-
+    private function findItem($item): MenuItem
+    {
         try {
-
             if (is_int($item)) {
-
                 return $this->menu->items()->where('id', $item)->firstOrFail();
-
             } elseif (is_string($item)) {
-
                 $items = $this->menu->items()->whereTitle($item)->get();
 
                 if (!$items || count($items) > 1) {
-
                     throw new \Exception('More than one instance found. Stopping.');
-
                 }
 
                 if (!$items->first()) {
-
                     throw new \Exception("Item <$item> not found in this menu <{$this->menu->name}>.");
-
                 }
 
                 return $items->first(); // and only
-
             } elseif ($item instanceof MenuItem) {
-
                 return $this->menu->items()->where('id', $item->id)->firstOrFail();
-
             }
-
         } catch (ModelNotFoundException $e) {
-
             throw new \Exception('Passed item is not part of the current Menu. Weird.');
-
         }
-
     }
 
     /**
@@ -304,7 +270,6 @@ class MenuBuilder
         // @TODO this should return the root instance menu -f
 
         return $this->menu;
-
     }
 
     /**
@@ -318,16 +283,12 @@ class MenuBuilder
     private function resolveMenuItem($item): MenuItem
     {
         if ($item instanceof MenuItem) {
-
             return $item;
-
         }
 
         // item is a MenuItem (has the polymorphic ref)
         if (isset($item['navigatable_id'])) {
-
             $menuitem = MenuItem::findOrFail($item['id']);
-
         } else {
 
             // doing the extra mile here to greatly simplify the frontend stuff
@@ -363,13 +324,10 @@ class MenuBuilder
         $res = [];
 
         if (is_null($order)) {
-
             $order = 0;
-
         }
 
         foreach ($menu as $branch) {
-
             $branch['order'] = $order++;
 
             $menuitem = $this->resolveMenuItem($branch);
@@ -383,9 +341,7 @@ class MenuBuilder
             $res[] = $menuitem;
 
             if (count($children)) {
-
                 $res = array_merge($res, $this->flatten($children, $menuitem->id, $order));
-
             }
         }
 
@@ -404,7 +360,6 @@ class MenuBuilder
 
             // @NOTE ignore and return this -f
             return $this;
-
         }
 
         call_user_func_array([$this->menu_item, $method], $args);

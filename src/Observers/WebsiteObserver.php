@@ -9,17 +9,14 @@ class WebsiteObserver
 {
     public function saving(Model $model)
     {
-
     }
 
     public function saved(Model $model)
     {
-
     }
 
     public function deleting(Model $model)
     {
-
     }
 
     public function deleted(Model $model)

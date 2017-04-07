@@ -23,7 +23,7 @@ class CreatePermissions extends Migration
 
         // @NOTE users have roles, never direct permissions
         // link permissions to roles
-        Schema::create('permission_role', function(Blueprint $table) {
+        Schema::create('permission_role', function (Blueprint $table) {
             $table->integer('role_id')->unsigned();
             $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
             $table->integer('permission_id')->unsigned();
@@ -31,7 +31,6 @@ class CreatePermissions extends Migration
             $table->unique(['role_id', 'permission_id']);
             $table->timestamps();
         });
-
     }
 
     /**

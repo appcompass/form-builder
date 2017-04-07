@@ -21,7 +21,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Website extends Model
 {
-
     use HasGallery,
         HasPermissions,
         HasStorage,
@@ -107,7 +106,8 @@ class Website extends Model
     //     return $this->morphOne(Photo::class, 'photoable');
     // }
 
-    public function apendStoragePath() {
+    public function apendStoragePath()
+    {
         // @TODO: Needs tie in with website settings with fallback of empty string.
         return '';
     }
@@ -247,17 +247,11 @@ class Website extends Model
     {
         $host = $host ?? $request->header('Site-Host');
         try {
-
             return Website::whereHost($host)->firstOrFail();
-
         } catch (NotFoundException $e) {
-
             App::abort(401, $host.' Not Authorized');
-
         } catch (ModelNotFoundException $e) {
-
             App::abort(401, $host.' Not Authorized');
-
         }
     }
 
@@ -291,10 +285,10 @@ class Website extends Model
     private function structureRouteRow($page)
     {
         // we only go 2 deep (parent/child)
-        $segments = array_slice(explode('/',trim($page->url, '/')), -4, 4);
+        $segments = array_slice(explode('/', trim($page->url, '/')), -4, 4);
         // websites/id/pages/id/content ends up with an id as the first segment, kill it.
         if (!empty($segments[0]) && strpos($segments[0], ':') === 0) {
-                unset($segments[0]);
+            unset($segments[0]);
         }
         // check the resulting url segments against a api route.
         try {

@@ -78,7 +78,7 @@ class CreateFormBuilder extends Migration
             $table->index('form_id');
         });
 
-        Schema::create('form_storage', function(Blueprint $table) {
+        Schema::create('form_storage', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('form_id')->unsigned();
             $table->foreign('form_id')->references('id')->on('forms');

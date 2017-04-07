@@ -62,5 +62,4 @@ class Permission extends ModularBaseModel
     {
         return $query->where('type', '=', $type);
     }
-
 }

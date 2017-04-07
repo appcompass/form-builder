@@ -57,10 +57,10 @@ class WebsitePagesController extends AbstractChildController
 
     private function getSections(Model $parent, $containers = false)
     {
-        $sections = Section::where('type', $containers ? '=' : '!=' , 'container')->where(function($query) use ($parent) {
-                $query->whereNull('website_id')
+        $sections = Section::where('type', $containers ? '=' : '!=', 'container')->where(function ($query) use ($parent) {
+            $query->whereNull('website_id')
                     ->orWhere('website_id', $parent->id);
-            })->with('form')->get();
+        })->with('form')->get();
 
         $rtn = [];
         foreach ($sections as $section) {
@@ -70,5 +70,4 @@ class WebsitePagesController extends AbstractChildController
 
         return $rtn;
     }
-
 }

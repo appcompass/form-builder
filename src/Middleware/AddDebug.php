@@ -29,7 +29,7 @@ class AddDebug
             $response = $next($request);
 
             return $this->setOutput($response);
-        }else{
+        } else {
             return $next($request);
         }
     }

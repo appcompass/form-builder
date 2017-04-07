@@ -10,8 +10,6 @@ use Route;
 
 class FormRequest extends BaseFormRequest
 {
-
-
     public function authorize()
     {
         return true;
@@ -26,39 +24,28 @@ class FormRequest extends BaseFormRequest
      */
     public function rules(Request $request)
     {
-    	if (!in_array($request->getMethod(), ['POST', 'PUT'])) {
-
-    		return [];
-
-    	}
+        if (!in_array($request->getMethod(), ['POST', 'PUT'])) {
+            return [];
+        }
 
         $form = Form::byResource(Route::current()->getName())->first();
 
         if ($form) {
-
             return $form->rules();
-
         } else {
 
-        	// @TODO we hit a route that has a path parameter (not final)
-        	if ($this->route('path')) {
+            // @TODO we hit a route that has a path parameter (not final)
+            if ($this->route('path')) {
+                $form_name = $this->route('path') . '.store';
 
-        		$form_name = $this->route('path') . '.store';
+                $form = Form::byResource($form_name)->first();
 
-        		$form = Form::byResource($form_name)->first();
-
-        		if ($form) {
-
-        			return $form->rules();
-
-        		}
-
-        	}
+                if ($form) {
+                    return $form->rules();
+                }
+            }
 
             return [];
-
         }
-
     }
-
 }

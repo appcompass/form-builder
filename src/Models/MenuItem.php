@@ -81,15 +81,11 @@ class MenuItem extends Model
     {
         // @TODO this to allow an override on Link->url for the current Item
         if (isset($this->attributes['url']) && !is_null($this->attributes['url'])) {
-
             return $this->attributes['url'];
-
         }
 
         if (is_null($this->navigatable)) {
-
             return null;
-
         }
 
         return $this->navigatable->url;
@@ -107,13 +103,10 @@ class MenuItem extends Model
 
         // this affects item creation, so we only care if navigatable is set
         if (isset($this->navigatable) && get_class($this->navigatable) !== Link::class) {
-
             return;
-
         }
 
         $this->attributes['url'] = $url;
-
     }
 
     /**
@@ -124,9 +117,7 @@ class MenuItem extends Model
     public function getContentAttribute()
     {
         if (get_class($this->navigatable) === Link::class) {
-
             return $this->navigatable->content;
-
         }
 
         return null;
@@ -213,7 +204,6 @@ class MenuItem extends Model
         } else {
             throw new \Exception('Unable to set url on MenuItem');
         }
-
     }
 
     /**

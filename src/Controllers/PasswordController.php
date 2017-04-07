@@ -37,5 +37,4 @@ class PasswordController extends Controller
     {
         return response()->json(['email' => trans($response)], 422);
     }
-
 }

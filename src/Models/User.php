@@ -18,6 +18,7 @@ use P3in\Notifications\ConfirmRegistration;
 use P3in\Notifications\ResetPassword;
 use P3in\Traits\HasCardView;
 use Tymon\JWTAuth\Contracts\JWTSubject as AuthenticatableUserContract;
+
 // use P3in\Traits\HasProfileTrait;
 
 class User extends ModularBaseModel implements
@@ -201,13 +202,9 @@ class User extends ModularBaseModel implements
     public function assignRole($role)
     {
         if (is_int($role)) {
-
             $role = Role::findOrFail($role);
-
         } elseif (is_string($role)) {
-
             $role = Role::whereName($role)->firstOrFail();
-
         }
 
         return $role->addUser($this);
@@ -231,25 +228,16 @@ class User extends ModularBaseModel implements
     public function hasRole($role)
     {
         try {
-
             if (is_string($role)) {
-
                 $role = Role::whereName($role)->firstOrFail();
-
             } elseif (is_int($role)) {
-
                 $role = Role::findOrFail($role);
-
             }
-
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-
             return false;
-
         }
 
         return $role->hasUser($this);
-
     }
 
     /**
@@ -263,14 +251,12 @@ class User extends ModularBaseModel implements
 
         $roles_permissions = [];
 
-        foreach($this->roles as $role) {
-
+        foreach ($this->roles as $role) {
             $role_permissions = $role->permissions()
                 ->allRelatedIds()
                 ->toArray();
 
             $roles_permissions = array_merge($roles_permissions, $role_permissions);
-
         }
 
         return array_unique($roles_permissions);
@@ -286,15 +272,11 @@ class User extends ModularBaseModel implements
      */
     public function __call($method, $args)
     {
-
         if (preg_match('/^is/', $method)) {
-
             return $this->hasRole(lcfirst(substr($method, 2)));
-
         }
 
         return parent::__call($method, $args);
-
     }
 
     /**

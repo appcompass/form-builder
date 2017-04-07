@@ -101,5 +101,4 @@ class Gallery extends Model
     {
         return $this->videos->count();
     }
-
 }

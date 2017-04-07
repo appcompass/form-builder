@@ -108,13 +108,9 @@ class FieldSource extends Model
         $criteria = $this->criteria;
 
         if (is_null($key)) {
-
             unset($criteria['where']);
-
         } else {
-
             $criteria['where'] = [$key, $value];
-
         }
 
 
@@ -147,17 +143,13 @@ class FieldSource extends Model
 
     public function config(array $config = null)
     {
-
         if (is_null($config)) {
-
             return [
                 'criteria' => $this->criteria,
                 'sourceable_type' => $this->sourceable_type,
                 'related_field' => $this->related_field
             ];
-
         }
-
     }
 
     public function render()

@@ -2,4 +2,6 @@
 
 namespace P3in\Interfaces;
 
-interface RolesRepositoryInterface extends AbstractRepositoryInterface {}
+interface RolesRepositoryInterface extends AbstractRepositoryInterface
+{
+}

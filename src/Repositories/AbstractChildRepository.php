@@ -51,15 +51,10 @@ class AbstractChildRepository extends AbstractRepository
      */
     private function getRelation()
     {
-
         try {
-
             $relation = $this->model->{$this->relationName}();
-
         } catch (\BadMethodCallException $e) {
-
             $relation = $this->parent->{$this->relationName}();
-
         }
 
         $exploded = explode('\\', get_class($relation));
@@ -91,7 +86,7 @@ class AbstractChildRepository extends AbstractRepository
         // @TODO this shouldn't be invoked manually, but constructor is not really an option
         $this->getRelation();
 
-        switch($this->relation) {
+        switch ($this->relation) {
             case 'BelongsToMany':
                 $this->builder = $this->model;
                 break;
@@ -126,9 +121,7 @@ class AbstractChildRepository extends AbstractRepository
     {
         // @TODO a bit hacky but this allows us to attach `request`-ed models in the controllers
         if ($attributes instanceof Request) {
-
             $attributes = $this->checkRequirements($attributes);
-
         }
 
         $this->getRelation();
@@ -183,7 +176,6 @@ class AbstractChildRepository extends AbstractRepository
         // $this->create_config = [
         //     'disk' =>
         // ];
-
     }
     /**
      * { function_description }
@@ -202,29 +194,17 @@ class AbstractChildRepository extends AbstractRepository
         $this->populateOwned();
 
         if (static::EDIT_OWNED && !Auth::user()->isAdmin()) {
-
             foreach ($data as $record) {
-
                 if (Auth::user()->id === $record[$this->owned_key]) {
-
                     $record['abilities'] = ['edit', 'view', 'create', 'destroy'];
-
                 } else {
-
                     $record['abilities'] = ['view', 'create'];
-
                 }
-
             }
-
         } else {
-
             foreach ($data as $record) {
-
                 $record['abilities'] = ['edit', 'view', 'create', 'destroy'];
-
             }
-
         }
         return $data;
     }

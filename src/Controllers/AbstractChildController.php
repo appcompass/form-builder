@@ -11,7 +11,6 @@ use Gate;
 
 abstract class AbstractChildController extends Controller
 {
-
     protected $repo;
 
     /**
@@ -20,9 +19,7 @@ abstract class AbstractChildController extends Controller
     private function checkPolicy()
     {
         if (!Gate::getPolicyFor($this->repo)) {
-
             Gate::policy(get_class($this->repo), ResourcesPolicy::class);
-
         }
 
         return;
@@ -93,10 +90,7 @@ abstract class AbstractChildController extends Controller
             ->destroy();
 
         if ($success) {
-
             return ['message' => 'Model deleted.'];
-
         }
     }
-
 }

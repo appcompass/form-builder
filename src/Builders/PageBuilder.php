@@ -104,7 +104,7 @@ class PageBuilder
     {
         if ($this->container) {
             $container = $this->container->addContainer($container);
-        }else{
+        } else {
             $container = $this->page->addContainer($container);
         }
 
@@ -129,13 +129,9 @@ class PageBuilder
     public function addSection(Section $section)
     {
         if ($this->container) {
-
             $this->section = $this->container->addSection($section);
-
-        }else{
-
+        } else {
             $this->section = $this->page->addSection($section);
-
         }
 
         return $this;
@@ -161,12 +157,11 @@ class PageBuilder
             if ($parent instanceof PageSectionContent) {
                 $this->container = $parent;
                 $this->section = null;
-            }elseif($parent instanceof Page) {
+            } elseif ($parent instanceof Page) {
                 $this->page = $parent;
-            }else{
+            } else {
                 throw new Exception("{get_class($parent)} not usable here");
             }
-
         }
 
         return $this;
@@ -176,11 +171,11 @@ class PageBuilder
     {
         if ($this->section) {
             return $this->section;
-        }elseif($this->container){
+        } elseif ($this->container) {
             return $this->container;
-        }elseif($this->page){
+        } elseif ($this->page) {
             return $this->page;
-        }else{
+        } else {
             throw new Exception('Must set a page, container, or section.');
         }
     }
@@ -294,9 +289,7 @@ class PageBuilder
     public function __call($method, $args)
     {
         if (method_exists($this->getContext(), $method)) {
-
             call_user_func_array([$this->getContext(), $method], $args);
-
         }
 
         return $this;

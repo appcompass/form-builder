@@ -42,6 +42,5 @@ class WebsiteMenusRepository extends AbstractChildRepository implements WebsiteM
                 })
             ]
         ]);
-
     }
 }

@@ -153,26 +153,18 @@ class WebsiteBuilder
     public function menu($menu)
     {
         if (is_string($menu)) {
-
             $menu = $this->website
                 ->menus()
                 ->whereName($menu)
                 ->firstOrFail();
-
         } elseif (is_int($menu)) {
-
             $menu = $this->website
                 ->menus()
                 ->findOrFail($menu);
-
         } elseif ($menu instanceof Menu) {
-
             if ($menu->website->id !== $this->website->id) {
-
                 throw new \Exception('Menu does not belong to this website.');
-
             }
-
         }
 
         return MenuBuilder::edit($menu);
@@ -367,16 +359,18 @@ class WebsiteBuilder
         return $this;
     }
 
-    private function formatImports($pages) {
+    private function formatImports($pages)
+    {
         $rtn = '';
         foreach ($pages as $page) {
-            $file = str_replace('/','-', trim($page->url, '/'));
+            $file = str_replace('/', '-', trim($page->url, '/'));
             $rtn .= "import {$page->template_name} from './pages/{$file}'\n";
         }
         return $rtn;
     }
 
-    private function formatRoutes($pages) {
+    private function formatRoutes($pages)
+    {
         $pieces = [];
         foreach ($pages as $page) {
             $pieces[] = "{path: '{$page->url}', component: {$page->template_name}}";

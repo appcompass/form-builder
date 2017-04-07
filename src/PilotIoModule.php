@@ -22,7 +22,11 @@ class PilotIoModule extends BaseModule
         // \Log::info('Loading <Cp> Module');
     }
 
-    public function bootstrap() {}
+    public function bootstrap()
+    {
+    }
 
-    public function register() {}
+    public function register()
+    {
+    }
 }

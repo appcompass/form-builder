@@ -12,7 +12,6 @@ use Route;
 
 abstract class AbstractController extends BaseController
 {
-
     protected $repo;
 
     /**
@@ -21,9 +20,7 @@ abstract class AbstractController extends BaseController
     private function checkPolicy()
     {
         if (!Gate::getPolicyFor($this->repo)) {
-
             Gate::policy(get_class($this->repo), ResourcesPolicy::class);
-
         }
 
         return;
@@ -88,13 +85,9 @@ abstract class AbstractController extends BaseController
         Gate::authorize('destroy', $this->repo);
 
         if ($model->delete()) {
-
             return response()->json(['message' => 'Model deleted.']);
-
         } else {
-
             throw new \Exception('Cannot delete model.');
-
         }
     }
 
@@ -103,22 +96,16 @@ abstract class AbstractController extends BaseController
         $model = $this->repo->store($request);
 
         if ($model) {
-
             return response()->json([
                 'message' => 'Model Created.',
                 'id' => $model['id'],
                 // 'model' => $success['model']
                 'model' => $model
             ]);
-
         } else {
-
             return response()->json([
                 'message' => 'Error'
             ], 503);
-
         }
-
     }
-
 }

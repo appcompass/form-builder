@@ -12,7 +12,8 @@ class Video extends GalleryItem implements GalleryItemInterface
         return 'video';
     }
 
-    public function apendStoragePath() {
+    public function apendStoragePath()
+    {
         return '';
     }
 

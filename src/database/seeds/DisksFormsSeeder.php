@@ -84,6 +84,5 @@ class DisksFormsSeeder extends Seeder
             $fb->string('Region', 'region')->validation(['required']);
             $fb->string('Bucket', 'bucket')->validation(['required']);
         })->setOwner(StorageType::whereName('s3')->first());
-
     }
 }

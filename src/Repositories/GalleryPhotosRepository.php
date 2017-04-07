@@ -10,7 +10,6 @@ use P3in\Requests\FormRequest;
 
 class GalleryPhotosRepository extends AbstractChildRepository implements GalleryPhotosRepositoryInterface
 {
-
     protected $with = ['user'];
 
     protected $view_types = ['Card', 'Table'];
@@ -33,6 +32,5 @@ class GalleryPhotosRepository extends AbstractChildRepository implements Gallery
         $this->parent = $parent;
 
         $this->relationName = 'photos';
-
     }
 }

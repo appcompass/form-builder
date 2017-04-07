@@ -17,7 +17,6 @@ class WebsitesSeeder extends Seeder
         // DB::statement('TRUNCATE pages RESTART IDENTITY CASCADE');
 
         $cp = WebsiteBuilder::new(env('ADMIN_WEBSITE_NAME'), env('ADMIN_WEBSITE_SCHEME'), env('ADMIN_WEBSITE_HOST'), function ($websiteBuilder) {
-
             $websiteBuilder->setStorage('cp_root');
 
             $login = $websiteBuilder->addSection([
@@ -214,16 +213,16 @@ class WebsitesSeeder extends Seeder
                 ->searchable()
                 ->help('Just the fully qualified hostname (FQDN)');
 
-            $builder->fieldset('Configuration', 'config', function(FormBuilder $builder) {
+            $builder->fieldset('Configuration', 'config', function (FormBuilder $builder) {
                 $builder->select('Header', 'header')
-                    ->dynamic(Section::class, function(FieldSource $source) {
+                    ->dynamic(Section::class, function (FieldSource $source) {
                         $source->where('type', 'header');
                         $source->select(['id AS index', 'name AS label']);
                     })
                     ->required()
                     ->help('Please select a Header');
                 $builder->select('Footer', 'footer')
-                    ->dynamic(Section::class, function(FieldSource $source) {
+                    ->dynamic(Section::class, function (FieldSource $source) {
                         $source->where('type', 'footer');
                         $source->select(['id AS index', 'name AS label']);
                     })
@@ -244,7 +243,7 @@ class WebsitesSeeder extends Seeder
             // @NOTE another valid approach is
             // $builder->string('Title', 'config.meta.title')
 
-            $builder->fieldset('Meta Data', 'config.meta', function(FormBuilder $builder) {
+            $builder->fieldset('Meta Data', 'config.meta', function (FormBuilder $builder) {
                 $builder->string('Title', 'title')
                     ->required()
                     ->help('The title of the website as it apears in header');
@@ -303,7 +302,7 @@ class WebsitesSeeder extends Seeder
                 ->list(false)
                 ->required();
             $builder->select('Parent', 'parent_id')->list(false)
-                ->dynamic(\P3in\Models\Page::class, function(FieldSource $source) {
+                ->dynamic(\P3in\Models\Page::class, function (FieldSource $source) {
                     $source->limit(4);
                     $source->where('website_id', \P3in\Models\Website::whereHost(env('ADMIN_WEBSITE_HOST'))->first()->id);
                     $source->select(['id AS index', 'title AS label']);
@@ -344,7 +343,7 @@ class WebsitesSeeder extends Seeder
             $builder->string('Label', 'title');
             $builder->string('Alt', 'alt');
             $builder->string('Icon', 'icon');
-            $builder->select('Permission Required', 'req_perm')->dynamic(\P3in\Models\Permission::class, function(FieldSource $source) {
+            $builder->select('Permission Required', 'req_perm')->dynamic(\P3in\Models\Permission::class, function (FieldSource $source) {
                 $source->select(['id AS index', 'label']);
             });
             $builder->boolean('New Tab', 'new_tab');
@@ -360,7 +359,7 @@ class WebsitesSeeder extends Seeder
             $builder->string('Url', 'url');
             $builder->string('Alt', 'alt');
             $builder->string('Icon', 'icon');
-            $builder->select('Permission Required', 'req_perm')->dynamic(\P3in\Models\Permission::class, function(FieldSource $source) {
+            $builder->select('Permission Required', 'req_perm')->dynamic(\P3in\Models\Permission::class, function (FieldSource $source) {
                 $source->select(['id AS index', 'label']);
             });
             $builder->boolean('New Tab', 'new_tab');
@@ -372,7 +371,7 @@ class WebsitesSeeder extends Seeder
 
         // DB::statement("DELETE FROM forms WHERE name = 'storage'");
 
-        Formbuilder::new('storage', function(FormBuilder $builder) {
+        Formbuilder::new('storage', function (FormBuilder $builder) {
             $builder->string('Name', 'name')
                 ->list()
                 ->sortable()
@@ -385,30 +384,29 @@ class WebsitesSeeder extends Seeder
                 ->required();
             $builder->select('Disk Instance', 'type_id')
                 ->list(false)
-                ->dynamic(\P3in\Models\StorageType::class, function(FieldSource $source) {
+                ->dynamic(\P3in\Models\StorageType::class, function (FieldSource $source) {
                     $source->select(['id AS index', 'name AS label']);
                 })->required();
             // @TODO this is one way, but validation has issues (too long to explain here)
             // $builder->string('Root', 'config.root')->list()->sortable()->searchable()->required();
-            $builder->fieldset('Configuration', 'config', function(FormBuilder $builder) {
+            $builder->fieldset('Configuration', 'config', function (FormBuilder $builder) {
                 $builder->string('Root', 'root')
                     ->list()
                     ->sortable()
                     ->searchable()
                     ->required();
             })->list(false)->required();
-
         })->linkToResources(['storage.index', 'storage.show', 'storage.create', 'storage.store', 'storage.update']);
 
-        FormBuilder::new('resources', function(FormBuilder $builder) {
+        FormBuilder::new('resources', function (FormBuilder $builder) {
             $builder->string('Resource', 'resource')->list()->sortable()->searchable()->required();
             $builder->string('Created', 'created_at')->list()->edit(false);
-            $builder->select('Role required', 'req_role')->dynamic(\P3in\Models\Role::class, function(FieldSource $source) {
+            $builder->select('Role required', 'req_role')->dynamic(\P3in\Models\Role::class, function (FieldSource $source) {
                 $source->select(['id As index', 'label']);
             })->nullable();
         })->linkToResources(['resources.index', 'resources.show', 'resources.create']);
 
-        FormBuilder::new('forms', function(FormBuilder $builder) {
+        FormBuilder::new('forms', function (FormBuilder $builder) {
             $builder->string('Name', 'name')->list(true)->sortable()->searchable();
             $builder->string('Editor', 'editor');
             $builder->string('Fields', 'fieldsCount')->edit(false)->list();

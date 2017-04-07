@@ -11,5 +11,4 @@ class FieldObserver
     public function saving(Model $model)
     {
     }
-
 }

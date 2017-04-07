@@ -54,7 +54,7 @@ class CpResourcesController extends Controller
         $query = Resource::byAllowedRole();
 
         if ($route) {
-            $query->where('resource',  $route);
+            $query->where('resource', $route);
         }
 
         $resources = $query->with('form')->get();
@@ -72,5 +72,4 @@ class CpResourcesController extends Controller
             'resources' => $resources,
         ];
     }
-
 }

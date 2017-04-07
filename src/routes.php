@@ -24,8 +24,6 @@ Route::group([
     // password reset
     $router->post('password/email', 'PasswordController@sendResetLinkEmail');
     $router->post('password/reset', 'PasswordController@reset');
-
-
 });
 
 Route::group([

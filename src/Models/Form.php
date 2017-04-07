@@ -180,14 +180,10 @@ class Form extends Model
         $rules = [];
 
         // we only care about to_edit rules
-        foreach($this->fields()->where('to_edit', true)->get() as $field) {
-
+        foreach ($this->fields()->where('to_edit', true)->get() as $field) {
             if (!is_null($field->validation)) {
-
                 $rules[$this->getParentsChain($field)] = $field->validation;
-
             }
-
         }
 
         return $rules;
@@ -226,16 +222,13 @@ class Form extends Model
     {
         $parents = [];
 
-        while(!is_null($field)) {
-
+        while (!is_null($field)) {
             $parents[] = $field->name;
 
             $field = $field->parent;
-
         }
 
         return implode('.', array_reverse($parents));
-
     }
 
     /**
@@ -249,25 +242,17 @@ class Form extends Model
     private function buildTree(Collection &$items, $parent_id = null, $tree = null)
     {
         if (is_null($tree)) {
-
             $tree = [];
-
         }
 
         foreach ($items as &$node) {
-
             if ($node->parent_id === $parent_id) {
-
                 $fields = $this->buildTree($items, $node->id);
 
                 if (count($fields)) {
-
                     $node->fields = $fields;
-
                 } else {
-
                     $node->fields = [];
-
                 }
 
                 // @TODO we return as array because we wanna trigger Field->source()

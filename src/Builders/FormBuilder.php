@@ -65,17 +65,11 @@ class FormBuilder
     public static function edit($form): FormBuilder
     {
         if ($form instanceof Form) {
-
             $instance = new static($form);
-
         } elseif (is_string($form)) {
-
             $instance = new static(Form::whereName($form)->firstOrFail());
-
         } elseif (is_integer($form)) {
-
             $instance = new static(Form::findOrFail($form));
-
         }
 
         return $instance;
@@ -197,34 +191,23 @@ class FormBuilder
         $field = $this->form->fields->where('name', $name);
 
         if (!count($field)) {
-
             return $this;
-
         }
 
         if (count($field) > 1 and is_null($type)) {
-
             throw new Exception("Multiple <{$name}> found, please add type");
-
         } elseif (count($field) > 1 and !is_null($type)) {
-
             $field = $field->where('type', $type);
 
             if (count($field) > 1) {
-
                 throw new Exception("Sorry there doesn't seem to be an enough specific combination to get a single result. Halting.");
-
             } else {
-
                 $field->first()->delete();
 
                 return $this;
             }
-
         } elseif (count($field) === 1) {
-
             $field->first()->delete();
-
         }
     }
 
@@ -250,9 +233,7 @@ class FormBuilder
 
         // if no such class we dead
         if (!class_exists($class_name)) {
-
             die("The FieldType: <$field_name> does not exist. Do Something!\n");
-
         }
 
         // if class exists makes a field instance
@@ -260,25 +241,19 @@ class FormBuilder
 
         // associate a parent (in case of sub-forms)
         if (!is_null($this->parent)) {
-
             $field_type->field->setParent($this->parent);
-
         }
 
         // handle a nested form
         if (isset($args[2])) {
-
             if (is_object($args[2]) && get_class($args[2]) === 'Closure') {
 
                 // formbuilder instance with the correct parent set
                 $fb = FormBuilder::edit($this->form->id)->setParent($field_type->field);
 
                 $args[2]($fb);
-
             } else {
-
                 $this->parent = null;
-
             }
         }
 
@@ -291,15 +266,11 @@ class FormBuilder
     private static function seekAndDestroy($name)
     {
         try {
-
             $form = Form::whereName($name)->firstOrFail();
 
             $form->delete();
-
         } catch (ModelNotFoundException $e) {
-
             return;
-
         }
     }
 }
