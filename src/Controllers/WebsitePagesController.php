@@ -61,7 +61,6 @@ class WebsitePagesController extends AbstractChildController
             $query->whereNull('website_id')
                     ->orWhere('website_id', $parent->id);
         })->with('form')->get();
-
         $rtn = [];
         foreach ($sections as $section) {
             $pageSectionContent = new PageSectionContent(['content' => '{}']);
