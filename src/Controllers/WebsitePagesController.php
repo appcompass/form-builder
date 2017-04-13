@@ -4,6 +4,7 @@ namespace P3in\Controllers;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use P3in\Builders\PageBuilder;
 use P3in\Interfaces\WebsitePagesRepositoryInterface;
 use P3in\Models\PageSectionContent;
 use P3in\Models\Section;
@@ -37,6 +38,13 @@ class WebsitePagesController extends AbstractChildController
         //     'page' => $model->toArray(),
         //     'data' => $model->buildContentTree(true)
         // ];
+    }
+
+    public function update(FormRequest $request, Model $parent, Model $model)
+    {
+        PageBuilder::update($model, $request->all());
+
+        return ['message' => 'Page updated.'];
     }
 
     // @TODO: these should live in their own controllers

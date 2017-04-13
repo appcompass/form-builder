@@ -5,7 +5,6 @@ namespace P3in\Builders;
 use Closure;
 use Exception;
 use Illuminate\Support\Facades\App;
-use P3in\Builders\PageLayoutBuilder;
 use P3in\Models\Page;
 use P3in\Models\PageSectionContent;
 use P3in\Models\Section;
@@ -73,6 +72,54 @@ class PageBuilder
         return new static($page);
     }
 
+    public static function update($page, $data)
+    {
+        $builder = static::edit($page);
+
+        if (!empty($data['deletions'])) {
+            $builder->page->dropContent($data['deletions']);
+        }
+
+        // for home page where slug is empty string, sometimes comes back as null as result.
+        $data['page']['slug'] = $data['page']['slug'] ?? '';
+
+        $builder->page->fill($data['page']);
+
+        $builder->page->save();
+        $builder->fromStructure($data['layout']);
+
+        // re-render the template.
+        $builder->renderTemplate();
+
+        // @TODO: currently we have to manually run `npm install && npm run build` and if we're using something like PM2, `&& pm2 restart all`
+        // Basically we have to redeploy the website because the templates have changed and thus means the bundles rebuilt.
+        // We need to find a way to avoid having to do all that..
+
+    }
+
+    public function fromStructure($array, $parent = null)
+    {
+
+        foreach ($array as $row) {
+            $pageContentSection = $this->page->contents()->findOrNew($row['id'] ?? null);
+            // @TODO: throw secific error so we know what to look for when debug is turned off.
+            $section = Section::findOrFail($row['section']['id']);
+
+            $pageContentSection->fill($row);
+
+            $pageContentSection->section()->associate($section);
+
+            if ($parent) {
+                $pageContentSection->parent()->associate($parent);
+            }
+            // dd($pageContentSection);
+            $pageContentSection->save();
+
+            if (!empty($row['children'])) {
+                $this->fromStructure($row['children'], $pageContentSection);
+            }
+        }
+    }
 
     /**
      * Adds a child.
@@ -242,7 +289,7 @@ class PageBuilder
     // @TODO: discuss then probably remove, looks like more trouble than it's worth now that we don't use Nuxt.
     public function layout($layout = null)
     {
-        $this->update(['layout' => $layout]);
+        $this->page->update(['layout' => $layout]);
 
         return $this;
     }

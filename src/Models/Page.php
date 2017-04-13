@@ -87,6 +87,37 @@ class Page extends Model implements Linkable
         return $this->hasMany(PageSectionContent::class)->orderBy('order', 'asc');
     }
 
+
+    public function dropContent($psc)
+    {
+        if (is_array($psc)) {
+            foreach ($psc as $single) {
+                $this->dropContent($single);
+            }
+
+            return $this;
+        }
+
+        if (is_int($psc)) {
+            $content = $this->contents()->findOrFail($psc);
+        } elseif ($psc instanceof PageSectionContent) {
+            $content = $this->contents()->findOrFail($psc->id);
+        }
+
+        // delete children first to trigger Observers properly.  Otherwise DB does auto clean up via cascade on delete, i.e. no Observers triggered.
+        if ($content->children->count()) {
+            foreach ($content->children as $child) {
+                $this->dropContent($child);
+            }
+        }
+
+        if ($content->delete()) {
+            return true;
+        } else {
+            throw new \Exception("Errors while removing PageSectionContent");
+        }
+    }
+
     /**
      * get the Page via it's url
      *
