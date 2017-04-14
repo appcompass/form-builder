@@ -86,7 +86,9 @@ class PageBuilder
         $builder->page->fill($data['page']);
 
         $builder->page->save();
-        $builder->fromStructure($data['layout']);
+
+        $order = 0;
+        $builder->fromStructure($data['layout'], null, $order);
 
         // re-render the template.
         $builder->renderTemplate();
@@ -97,15 +99,17 @@ class PageBuilder
 
     }
 
-    public function fromStructure($array, $parent = null)
+    public function fromStructure($array, $parent = null, &$order)
     {
 
         foreach ($array as $row) {
+            $order++;
             $pageContentSection = $this->page->contents()->findOrNew($row['id'] ?? null);
             // @TODO: throw secific error so we know what to look for when debug is turned off.
             $section = Section::findOrFail($row['section']['id']);
 
             $pageContentSection->fill($row);
+            $pageContentSection->order = $order;
 
             $pageContentSection->section()->associate($section);
 
@@ -116,7 +120,7 @@ class PageBuilder
             $pageContentSection->save();
 
             if (!empty($row['children'])) {
-                $this->fromStructure($row['children'], $pageContentSection);
+                $this->fromStructure($row['children'], $pageContentSection, $order);
             }
         }
     }
