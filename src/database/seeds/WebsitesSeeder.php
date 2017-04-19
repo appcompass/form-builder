@@ -298,10 +298,31 @@ class WebsitesSeeder extends Seeder
                 ->required()
                 ->sortable()
                 ->searchable();
+            $builder->string('Parent', 'parent.title')
+                ->list()
+                ->edit(false)
+                ->sortable()
+                ->searchable();
+            $builder->string('URL', 'url')
+                ->list()
+                ->edit(false)
+                ->sortable()
+                ->searchable();
+            $builder->string('Created', 'created_at')
+                ->list()
+                ->edit(false)
+                ->sortable()
+                ->searchable();
+            $builder->string('Updated', 'updated_at')
+                ->list()
+                ->edit(false)
+                ->sortable()
+                ->searchable();
             $builder->string('Slug', 'slug')
                 ->list(false)
                 ->required();
-            $builder->select('Parent', 'parent_id')->list(false)
+            $builder->select('Parent', 'parent_id')
+                ->list(false)
                 ->dynamic(\P3in\Models\Page::class, function (FieldSource $source) {
                     $source->limit(4);
                     $source->where('website_id', \P3in\Models\Website::whereHost(env('ADMIN_WEBSITE_HOST'))->first()->id);
