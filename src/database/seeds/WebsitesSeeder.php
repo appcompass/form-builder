@@ -75,24 +75,29 @@ class WebsitesSeeder extends Seeder
             $home = $websiteBuilder->addPage('Dashbaord', '')->addSection($home);
 
             $users = $websiteBuilder->addPage('Users', 'users')->addSection($list);
+            $create_user = $websiteBuilder->addPage('Create', 'users/create')->addSection($create);
             $user = $websiteBuilder->addPage('User', 'users', true)->addSection($show);
             $user_profile = $user->addChild('Profile', '')->addSection($edit);
             $user_roles = $user->addChild('Roles', 'roles')->addSection($list);
 
             $roles = $websiteBuilder->addPage('Roles', 'roles')->addSection($list);
+            $create_role = $websiteBuilder->addPage('Create', 'roles/create')->addSection($create);
             $role = $websiteBuilder->addPage('Role', 'roles', true)->addSection($show);
             $role_info = $role->addChild('Info', '')->addSection($edit);
             $role_permissions = $role->addChild('Permissions', 'permissions')->addSection($list);
 
             $permissions = $websiteBuilder->addPage('Permissions', 'permissions')->addSection($list);
+            $create_permission = $websiteBuilder->addPage('Create', 'permissions/create')->addSection($create);
             $permission = $websiteBuilder->addPage('Permission', 'permissions', true)->addSection($show);
             $permission_info = $permission->addChild('Info', '')->addSection($edit);
+
 
             $resources = $websiteBuilder->addPage('Resources', 'resources')->addSection($list);
             $resource = $websiteBuilder->addPage('Resource', 'resources', true)->addSection($show);
             $resource_info = $resource->addChild('Info', '')->addSection($edit);
 
             $websites = $websiteBuilder->addPage('Websites', 'websites')->addSection($list);
+            $create_website = $websiteBuilder->addPage('Create', 'websites/create')->addSection($create);
             $website = $websiteBuilder->addPage('Website', 'websites', true)->addSection($show);
             $website_info = $website->addChild('Info', '')->addSection($edit);
             $navigations = $website->addChild('Menus', 'menus')->addSection($list);
@@ -100,6 +105,7 @@ class WebsitesSeeder extends Seeder
             $navigation_builder = $navigation->addChild('Editor', '')->addSection($edit);
 
             $pages = $website->addChild('Pages', 'pages')->addSection($list);
+            $create_page = $website->addChild('Create', 'pages/create')->addSection($create);
             $page = $website->addChild('Page', 'pages', true)->addSection($show);
             $page_info = $page->addChild('Info', '')->addSection($edit);
             $page_layouts = $page->addChild('Layout', 'layout')->addSection($list);
@@ -118,11 +124,13 @@ class WebsitesSeeder extends Seeder
 
             // @TODO: storage workflow needs to be looked at a bit.
             $storages = $websiteBuilder->addPage('Storage', 'storage')->addSection($list);
+            $create_storage = $websiteBuilder->addPage('Create', 'storage/create')->addSection($create);
             $storage = $websiteBuilder->addPage('Storage', 'storages', true)->addSection($show);
             $storage_info = $storage->addChild('Info', '')->addSection($edit);
             $storage_types = $storage->addChild('Types', 'storage-types')->addSection($list);
 
             $forms = $websiteBuilder->addPage('Forms', 'forms')->addSection($list);
+            $create_forms = $websiteBuilder->addPage('Create', 'forms/create')->addSection($create);
             $form = $websiteBuilder->addPage('Form', 'forms', true)->addSection($show);
             $form_info = $form->addChild('Info', '')->addSection($edit);
             // @TODO: form submissions?
