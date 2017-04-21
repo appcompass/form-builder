@@ -241,7 +241,7 @@ class Page extends Model implements Linkable
      */
     public function getUpdateFrequencyAttribute()
     {
-        return $this->getMeta('update_frequency');
+        return $this->getMeta('sitemap->changefreq');
     }
 
     /**
@@ -251,7 +251,7 @@ class Page extends Model implements Linkable
      */
     public function getPriorityAttribute()
     {
-        return $this->getMeta('priority');
+        return $this->getMeta('sitemap->priority');
     }
 
     /**
@@ -292,7 +292,15 @@ class Page extends Model implements Linkable
      */
     public function getMeta($key)
     {
-        return isset($this->meta->{$key}) ? $this->meta->{$key} : null;
+        $path = explode('->', $key);
+        $obj = $this->meta;
+        foreach ($path as $step) {
+            if (is_null($obj = isset($obj->{$step}) ? $obj->{$step} : null)) {
+                return $obj;
+            }
+        }
+
+        return $obj;
     }
 
     /**

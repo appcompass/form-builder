@@ -316,6 +316,9 @@ class WebsitesSeeder extends Seeder
                 ->edit(false)
                 ->sortable()
                 ->searchable();
+            $builder->boolean('Dynamic', 'dynamic_url')
+                ->list()
+                ->sortable();
             $builder->string('Created', 'created_at')
                 ->list()
                 ->edit(false)
@@ -333,9 +336,56 @@ class WebsitesSeeder extends Seeder
                 ->list(false)
                 ->dynamic(\P3in\Models\Page::class, function (FieldSource $source) {
                     $source->limit(4);
+                    // @TODO: we need to specify the website_id is the same as the current page's website_id.
                     $source->where('website_id', \P3in\Models\Website::whereHost(env('ADMIN_WEBSITE_HOST'))->first()->id);
                     $source->select(['id AS index', 'title AS label']);
                 });
+            $builder->fieldset('Sitemap Data', 'config.sitemap', function (FormBuilder $builder) {
+                $builder->text('Author', 'priority')
+                    ->list(false)
+                    ->required();
+                $builder->select('Change Frequency', 'changefreq')
+                    ->list(false)
+                    ->required()
+                    ->dynamic([
+                        'always' => 'Always',
+                        'hourly' => 'Hourly',
+                        'daily' => 'Daily',
+                        'weekly' => 'Weekly',
+                        'monthly' => 'Monthly',
+                        'yearly' => 'Yearly',
+                        'never' => 'Never',
+                    ]);
+            });
+            $builder->fieldset('Meta Data', 'config.head', function (FormBuilder $builder) {
+                $builder->text('Author', 'head.author')
+                    ->list(false)
+                    ->required();
+                $builder->text('Description', 'description')
+                    ->list(false)
+                    ->required();
+                $builder->string('Keywords', 'keywords')
+                    ->list(false)
+                    ->required();
+                $builder->string('Canonical URL', 'canonical')
+                    ->list(false)
+                    ->required();
+                $builder->config('Addtional Header Tags', 'custom')
+                    ->list(false)
+                    ->help('Additional meta tags to be added. This is in addition to the website wide additional header tags.');
+            });
+            $builder->fieldset('Custom Code Inserts', 'config.code', function (FormBuilder $builder) {
+                $builder->code('Custom Header HTML', 'custom_header_html')
+                    ->list(false)
+                    ->help('Custom header HTML, CSS, JS.  This is in addition to the website wide custom header html.');
+                $builder->code('Custom Before Body End HTML', 'custom_before_body_end_html')
+                    ->list(false)
+                    ->help('HTML, CSS, JS you may need to inject before the closing </body> tag on all pages. This is in addition to the website wide custom before body end html.');
+                $builder->code('Custom Footer HTML', 'custom_footer_html')
+                    ->list(false)
+                    ->help('Custom footer HTML, CSS, JS This is in addition to the website wide custom footer html.');
+            });
+
         })->linkToResources(['pages.show', 'websites.pages.index', 'websites.pages.create', 'websites.pages.show'])
             ->getForm();
 

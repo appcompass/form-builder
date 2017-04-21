@@ -275,7 +275,7 @@ class PageBuilder
      */
     public function priority($val = '')
     {
-        return $this->setMeta('priority', $val);
+        return $this->setMeta('sitemap->priority', $val);
     }
 
     /**
@@ -287,7 +287,7 @@ class PageBuilder
      */
     public function updatedFrequency($val = '')
     {
-        return $this->setMeta('update_frequency', $val);
+        return $this->setMeta('sitemap->changefreq', $val);
     }
 
     // @TODO: discuss then probably remove, looks like more trouble than it's worth now that we don't use Nuxt.

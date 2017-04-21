@@ -63,7 +63,7 @@ class PublicWebsiteController extends BaseController
     public function renderSitemap(Request $request, $type = 'xml')
     {
         $sitemap = App::make('sitemap');
-        $pages = $request->website->pages()->orderBy('meta->priority', 'desc')->get();
+        $pages = $request->website->pages()->orderBy('meta->sitemap->priority', 'desc')->get();
 
         foreach ($pages as $page) {
             if ($page->dynamic_url) {
