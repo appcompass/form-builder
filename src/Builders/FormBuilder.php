@@ -105,10 +105,22 @@ class FormBuilder
     public function linkToResources($resources)
     {
         foreach ((array) $resources as $resource) {
-            Resource::create([
-                'resource' => $resource,
-                'form_id' => $this->form->id
+            $name = $resource;
+            $role = null;
+            if (is_array($resource)) {
+                $name = key($resource);
+                $role = $resource[$name];
+            }
+            $record = new Resource([
+                'resource' => $name
             ]);
+
+            $record->form()->associate($this->form);
+
+            if (!is_null($role)) {
+                $record->setRole($role);
+            }
+            $record->save();
         }
 
         return $this;

@@ -192,35 +192,65 @@ class WebsitesSeeder extends Seeder
                     ->add($forms, 2)->icon('file')->sub()
                         ->add($form_info, 1)->icon('file')
                         ;
-        })->getWebsite();
+        });
+
+        FormBuilder::new('users', function (FormBuilder $builder) {
+            // $builder->setViewTypes(['grid','list']);
+            $builder->string('First Name', 'first_name')->list()->required()->sortable()->searchable();
+            $builder->string('Last Name', 'last_name')->list()->required()->sortable()->searchable();
+            $builder->string('Email', 'email')->list()->validation(['required', 'email'])->sortable()->searchable();
+            $builder->string('Phone Number', 'phone')->list()->required()->sortable()->searchable();
+            $builder->boolean('Active', 'active')->list(false);
+            $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
+            $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
+            $builder->secret('Password', 'password')->required();
+        })->linkToResources(['users.index', 'users.show', 'users.create', 'users.update', 'users.store']);
+
+        FormBuilder::new('user-roles', function (FormBuilder $builder) {
+            $builder->string('Name', 'label')->list()->required()->sortable()->searchable();
+        })->linkToResources(['users.roles.index']);
+
+        // DB::statement('TRUNCATE permissions CASCADE');
+        // DB::statement("DELETE FROM forms WHERE name = 'permissions'");
+
+        FormBuilder::new('permissions', function (FormBuilder $builder) {
+            $builder->string('Name', 'label')->list()->required()->sortable()->searchable();
+            $builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();
+            $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
+            $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
+        })->linkToResources([['permissions.index' => 'admin'], ['permissions.show' => 'admin'], ['permissions.create' => 'admin'], ['permissions.store' => 'admin'], ['permissions.update' => 'admin']]);
+
+        // DB::statement('TRUNCATE roles CASCADE');
+        // DB::statement("DELETE FROM forms WHERE name = 'roles'");
+
+        FormBuilder::new('roles', function (FormBuilder $builder) {
+            $builder->string('Role Name', 'name')->list()->required()->sortable()->searchable();
+            $builder->string('Role Label', 'label')->list()->required()->sortable()->searchable();
+            $builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();
+            $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
+            $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
+        })->linkToResources([['roles.index' => 'admin'], ['roles.show' => 'admin'], ['roles.store' => 'admin'], ['roles.update' => 'admin']]);
+
+        FormBuilder::new('role-permissions', function (FormBuilder $builder) {
+            $builder->string('Name', 'label')->list()->required()->sortable()->searchable();
+        })->linkToResources([['roles.permissions.index' => 'admin']]);
 
         // DB::statement("DELETE FROM forms WHERE name = 'websites'");
 
         $form = FormBuilder::new('websites', function (FormBuilder $builder) {
             // $builder->setViewTypes(['list','grid']);
-            $builder->string('Website Name', 'name')
-                ->list()
-                ->required()
-                ->sortable()
-                ->searchable()
+            $builder->string('Website Name', 'name')->list()->required()->sortable()->searchable()
                 ->help('The Human Readable website name');
-            $builder->select('Scheme', 'scheme')
-                ->list()
-                ->required()
-                ->sortable()
-                ->searchable()
+            $builder->select('Scheme', 'scheme')->list()->required()->sortable()->searchable()
                 ->dynamic([
                     ['index' => 'http', 'label' => 'Plain (HTTP)'],
                     ['index' => 'https', 'label' => 'Secure (HTTPS)']
                 ])
                 ->help('Website Schema. We recommend website to be served using HTTPS');
-            $builder->string('Host', 'host')
-                ->list()
-                ->required()
-                ->sortable()
-                ->searchable()
+            $builder->string('Host', 'host')->list()->required()->sortable()->searchable()
                 ->help('Just the fully qualified hostname (FQDN)');
-
+            $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
+            $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
             $builder->fieldset('Configuration', 'config', function (FormBuilder $builder) {
                 $builder->select('Header', 'header')
                     ->dynamic(Section::class, function (FieldSource $source) {
@@ -294,107 +324,94 @@ class WebsitesSeeder extends Seeder
         })->linkToResources(['websites.index', 'websites.show', 'websites.create', 'websites.store', 'websites.update'])
         ->getForm();
 
-        WebsiteBuilder::edit($cp->id)->linkForm($form);
+        $cp->linkForm($form);
+
+
+        $form = FormBuilder::new('websites.redirects', function (FormBuilder $builder) {
+            $builder->string('From', 'from')->list()->sortable()->searchable()->required();
+            $builder->string('To', 'to')->list()->sortable()->searchable()->required();
+            $builder->select('Type', 'type')->list()->required()->sortable()->searchable()
+                ->dynamic([
+                    [
+                        'index' => '301',
+                        'label' => 'Permanently Moved (301)'
+                    ], [
+                        'index' => '302',
+                        'label' => 'Temporarily Moved (302)'
+                    ]
+                ])
+                ->help('The Redirect type.');
+
+            $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
+            $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
+            $builder->select('Role required', 'req_role')
+                ->dynamic(\P3in\Models\Role::class, function (FieldSource $source) {
+                    $source->select(['id As index', 'label']);
+                })
+                ->nullable();
+        })->linkToResources(['websites.redirects.index', 'websites.redirects.store', 'websites.redirects.update'])
+        ->getForm();
+
+        $cp->linkForm($form);
 
         // DB::statement("DELETE FROM forms WHERE name = 'pages'");
 
         $form = FormBuilder::new('pages', function (FormBuilder $builder) {
             $builder->editor('Page');
             // $builder->setViewTypes(['list','grid']);
-            $builder->string('Page Title', 'title')
-                ->list()
-                ->required()
-                ->sortable()
-                ->searchable();
-            $builder->string('Parent', 'parent.title')
-                ->list()
-                ->edit(false)
-                ->sortable()
-                ->searchable();
-            $builder->string('URL', 'url')
-                ->list()
-                ->edit(false)
-                ->sortable()
-                ->searchable();
-            $builder->boolean('Dynamic', 'dynamic_url')
-                ->list()
-                ->sortable();
-            $builder->string('Created', 'created_at')
-                ->list()
-                ->edit(false)
-                ->sortable()
-                ->searchable();
-            $builder->string('Updated', 'updated_at')
-                ->list()
-                ->edit(false)
-                ->sortable()
-                ->searchable();
-            $builder->string('Slug', 'slug')
-                ->list(false)
-                ->required();
-            $builder->select('Parent', 'parent_id')
-                ->list(false)
-                ->dynamic(\P3in\Models\Page::class, function (FieldSource $source) {
-                    $source->limit(4);
-                    // @TODO: we need to specify the website_id is the same as the current page's website_id.
-                    $source->where('website_id', \P3in\Models\Website::whereHost(env('ADMIN_WEBSITE_HOST'))->first()->id);
-                    $source->select(['id AS index', 'title AS label']);
-                });
+            $builder->string('Page Title', 'title')->list()->required()->sortable()->searchable();
+            $builder->string('Parent', 'parent.title')->list()->edit(false)->sortable()->searchable();
+            $builder->string('URL', 'url')->list()->edit(false)->sortable()->searchable();
+            $builder->boolean('Dynamic', 'dynamic_url')->list()->sortable();
+            $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
+            $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
+            $builder->string('Slug', 'slug')->list(false)->required();
+            $builder->select('Parent', 'parent_id')->list(false)->dynamic(\P3in\Models\Page::class, function (FieldSource $source) {
+                $source->limit(4);
+                // @TODO: we need to specify the website_id is the same as the current page's website_id.
+                $source->where('website_id', \P3in\Models\Website::whereHost(env('ADMIN_WEBSITE_HOST'))->first()->id);
+                $source->select(['id AS index', 'title AS label']);
+            });
             $builder->fieldset('Sitemap Data', 'config.sitemap', function (FormBuilder $builder) {
-                $builder->text('Author', 'priority')
-                    ->list(false)
-                    ->required();
-                $builder->select('Change Frequency', 'changefreq')
-                    ->list(false)
-                    ->required()
-                    ->dynamic([
-                        'always' => 'Always',
-                        'hourly' => 'Hourly',
-                        'daily' => 'Daily',
-                        'weekly' => 'Weekly',
-                        'monthly' => 'Monthly',
-                        'yearly' => 'Yearly',
-                        'never' => 'Never',
-                    ]);
+                $builder->text('Author', 'priority')->list(false)->required();
+                $builder->select('Change Frequency', 'changefreq')->list(false)->required()->dynamic([
+                    ['index' => 'always', 'label' => 'Always'],
+                    ['index' => 'hourly', 'label' => 'Hourly'],
+                    ['index' => 'daily', 'label' => 'Daily'],
+                    ['index' => 'weekly', 'label' => 'Weekly'],
+                    ['index' => 'monthly', 'label' => 'Monthly'],
+                    ['index' => 'yearly', 'label' => 'Yearly'],
+                    ['index' => 'never', 'label' => 'Never']
+                ])->help('Website Schema. We recommend website to be served using HTTPS');
             });
             $builder->fieldset('Meta Data', 'config.head', function (FormBuilder $builder) {
-                $builder->text('Author', 'head.author')
-                    ->list(false)
-                    ->required();
-                $builder->text('Description', 'description')
-                    ->list(false)
-                    ->required();
-                $builder->string('Keywords', 'keywords')
-                    ->list(false)
-                    ->required();
-                $builder->string('Canonical URL', 'canonical')
-                    ->list(false)
-                    ->required();
-                $builder->config('Addtional Header Tags', 'custom')
-                    ->list(false)
+                $builder->text('Author', 'head.author')->list(false)->required();
+                $builder->text('Description', 'description')->list(false)->required();
+                $builder->string('Keywords', 'keywords')->list(false)->required();
+                $builder->string('Canonical URL', 'canonical')->list(false)->required();
+                $builder->config('Addtional Header Tags', 'custom')->list(false)
                     ->help('Additional meta tags to be added. This is in addition to the website wide additional header tags.');
             });
             $builder->fieldset('Custom Code Inserts', 'config.code', function (FormBuilder $builder) {
-                $builder->code('Custom Header HTML', 'custom_header_html')
-                    ->list(false)
+                $builder->code('Custom Header HTML', 'custom_header_html')->list(false)
                     ->help('Custom header HTML, CSS, JS.  This is in addition to the website wide custom header html.');
-                $builder->code('Custom Before Body End HTML', 'custom_before_body_end_html')
-                    ->list(false)
+                $builder->code('Custom Before Body End HTML', 'custom_before_body_end_html')->list(false)
                     ->help('HTML, CSS, JS you may need to inject before the closing </body> tag on all pages. This is in addition to the website wide custom before body end html.');
-                $builder->code('Custom Footer HTML', 'custom_footer_html')
-                    ->list(false)
+                $builder->code('Custom Footer HTML', 'custom_footer_html')->list(false)
                     ->help('Custom footer HTML, CSS, JS This is in addition to the website wide custom footer html.');
             });
 
         })->linkToResources(['pages.show', 'websites.pages.index', 'websites.pages.create', 'websites.pages.show'])
             ->getForm();
 
-        WebsiteBuilder::edit($cp->id)->linkForm($form);
+        $cp->linkForm($form);
 
         // DB::statement("DELETE FROM forms WHERE name = 'menus'");
 
         FormBuilder::new('menus', function (FormBuilder $builder) {
             $builder->string('Name', 'name')->list()->required()->sortable()->searchable();
+            $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
+            $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
         })->linkToResources(['websites.menus.index', 'websites.menus.create']);
 
         // DB::statement("DELETE FROM forms WHERE name = 'menus-editor'");
@@ -429,7 +446,7 @@ class WebsitesSeeder extends Seeder
             $builder->boolean('Clickable', 'clickable');
         })->getForm();
 
-        WebsiteBuilder::edit($cp->id)->linkForm($form);
+        $cp->linkForm($form);
 
         // DB::statement("DELETE FROM forms WHERE name = 'edit-link'");
 
@@ -446,40 +463,29 @@ class WebsitesSeeder extends Seeder
             $builder->wysiwyg('Content', 'content');
         })->getForm();
 
-        WebsiteBuilder::edit($cp->id)->linkForm($form);
+        $cp->linkForm($form);
 
         // DB::statement("DELETE FROM forms WHERE name = 'storage'");
 
         Formbuilder::new('storage', function (FormBuilder $builder) {
-            $builder->string('Name', 'name')
-                ->list()
-                ->sortable()
-                ->searchable()
-                ->required();
-            $builder->string('Type', 'type.name')
-                ->list()
-                ->edit(false)->sortable()
-                ->searchable()
-                ->required();
-            $builder->select('Disk Instance', 'type_id')
-                ->list(false)
-                ->dynamic(\P3in\Models\StorageType::class, function (FieldSource $source) {
-                    $source->select(['id AS index', 'name AS label']);
-                })->required();
+            $builder->string('Name', 'name')->list()->sortable()->searchable()->required();
+            $builder->string('Type', 'type.name')->list()->edit(false)->sortable()->searchable()->required();
+            $builder->select('Disk Instance', 'type_id')->list(false)->required()->dynamic(\P3in\Models\StorageType::class, function (FieldSource $source) {
+                $source->select(['id AS index', 'name AS label']);
+            });
+            $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
+            $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
             // @TODO this is one way, but validation has issues (too long to explain here)
             // $builder->string('Root', 'config.root')->list()->sortable()->searchable()->required();
             $builder->fieldset('Configuration', 'config', function (FormBuilder $builder) {
-                $builder->string('Root', 'root')
-                    ->list()
-                    ->sortable()
-                    ->searchable()
-                    ->required();
+                $builder->string('Root', 'root')->list()->sortable()->searchable()->required();
             })->list(false)->required();
         })->linkToResources(['storage.index', 'storage.show', 'storage.create', 'storage.store', 'storage.update']);
 
         FormBuilder::new('resources', function (FormBuilder $builder) {
             $builder->string('Resource', 'resource')->list()->sortable()->searchable()->required();
-            $builder->string('Created', 'created_at')->list()->edit(false);
+            $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
+            $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
             $builder->select('Role required', 'req_role')->dynamic(\P3in\Models\Role::class, function (FieldSource $source) {
                 $source->select(['id As index', 'label']);
             })->nullable();
@@ -489,8 +495,9 @@ class WebsitesSeeder extends Seeder
             $builder->string('Name', 'name')->list(true)->sortable()->searchable();
             $builder->string('Editor', 'editor');
             $builder->string('Fields', 'fieldsCount')->edit(false)->list();
-            $builder->string('Created', 'created_at')->edit(false);
-            $builder->string('Ureated', 'updated_at')->edit(false);
+            $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
+            $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
+            $builder->string('Updated', 'updated_at')->edit(false);
         })->linkToResources(['forms.index', 'forms.show']);
     }
 }

@@ -11,6 +11,13 @@ trait HasRole
         return $this->belongsTo(Role::class, 'req_role');
     }
 
+    public function setRole(string $name)
+    {
+        $role = Role::byName($name)->firstOrFail();
+        $this->role()->associate($role);
+        return $this;
+    }
+
     public function scopeByAllowedRole($query)
     {
         $query->whereNull('req_role');

@@ -67,7 +67,7 @@ class CreateFormBuilder extends Migration
 
         Schema::create('resources', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('resource');
+            $table->string('resource')->unique();
             $table->integer('form_id')->unsigned();
             $table->foreign('form_id')->references('id')->on('forms')->onDelete('cascade');
             $table->integer('req_role')->unsigned()->nullable();

@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\DB;
 use P3in\Interfaces\Linkable;
 use P3in\Models\Layout;
 use P3in\Models\PageSectionContent;
-use P3in\Models\Role;
 use P3in\Models\Section;
 use P3in\Models\Website;
 use P3in\Traits\HasRole;
