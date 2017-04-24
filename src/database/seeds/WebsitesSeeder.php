@@ -298,20 +298,17 @@ class WebsitesSeeder extends Seeder
                     ->help('Custom footer HTML, CSS, JS');
                 $builder->text('Robots.txt Contents', 'robots_txt')
                     ->help('The Contents of the robots.txt file for search engines.');
+                $builder->string('Google Analytics Tracking ID', 'ga_tracking_id')
+                    ->help('Google Analytics Tracking ID in the format of: UA-XXXXX-Y');
                 $builder->string('Facebook Url', 'facebook_url')
-                    ->required()
                     ->help('The title of the website as it apears in header');
                 $builder->string('Instagram Url', 'instagram_url')
-                    ->required()
                     ->help('The title of the website as it apears in header');
                 $builder->string('Twitter Url', 'twitter_url')
-                    ->required()
                     ->help('The title of the website as it apears in header');
                 $builder->string('Google Plus Url', 'google_plus_url')
-                    ->required()
                     ->help('The title of the website as it apears in header');
                 $builder->string('LinkedIn Url', 'linkedin_url')
-                    ->required()
                     ->help('The title of the website as it apears in header');
                 // @TODO: We need to be able to provide the key value of the repeatable field,
                 // not have a config field type with limited value field type constraints.
