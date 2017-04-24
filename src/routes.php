@@ -62,6 +62,7 @@ Route::group([
 
     $router->resource('resources', ResourcesController::class);
     $router->resource('forms', FormsController::class);
+    $router->resource('disks', DisksController::class);
 });
 
 // Public Front-end website endpoints

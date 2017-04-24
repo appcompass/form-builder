@@ -6,6 +6,7 @@ use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
 use Intervention\Image\Facades\Image;
+use P3in\Models\StorageConfig;
 use P3in\Models\Field;
 use P3in\Models\Form;
 use P3in\Models\Gallery;
@@ -86,6 +87,7 @@ class PilotIoServiceProvider extends BaseServiceProvider
     ];
 
     protected $appBindings = [
+        \P3in\Interfaces\DisksRepositoryInterface::class => \P3in\Repositories\DisksRepository::class,
         \P3in\Interfaces\UsersRepositoryInterface::class => \P3in\Repositories\UsersRepository::class,
         \P3in\Interfaces\UserPermissionsRepositoryInterface::class => \P3in\Repositories\UserPermissionsRepository::class,
         \P3in\Interfaces\PermissionsRepositoryInterface::class => \P3in\Repositories\PermissionsRepository::class,
@@ -105,6 +107,7 @@ class PilotIoServiceProvider extends BaseServiceProvider
         \P3in\Interfaces\ResourcesRepositoryInterface::class => \P3in\Repositories\ResourcesRepository::class,
         \P3in\Interfaces\FormsRepositoryInterface::class => \P3in\Repositories\FormsRepository::class
     ];
+
 
     /**
      * List of policies to bind
@@ -152,6 +155,7 @@ class PilotIoServiceProvider extends BaseServiceProvider
         $loader = AliasLoader::getInstance();
 
         foreach ([
+            'disk' => StorageConfig::class,
             'user' => User::class,
             'permission' => Permission::class,
             'role' => Role::class,

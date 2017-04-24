@@ -278,9 +278,6 @@ class WebsitesSeeder extends Seeder
                 });
             });
 
-            // @NOTE another valid approach is
-            // $builder->string('Title', 'config.meta.title')
-
             $builder->fieldset('Meta Data', 'config.meta', function (FormBuilder $builder) {
                 $builder->string('Title', 'title')
                     ->required()
