@@ -152,9 +152,6 @@ class WebsitesSeeder extends Seeder
                     ->add($permissions, 3)->icon('permission')->sub()
                         ->add($permission_info, 1)->icon('edit')
                         ->parent()
-                    ->add($resources, 4)->icon('diamond')->sub()
-                        ->add($resource_info, 1)->icon('edit')
-                        ->parent()
                     ->parent()
                 ->add(['title' => 'Web Properties', 'alt' => 'Web Properties'], 3)->sub()
                     ->add($websites, 1)->icon('globe')->sub()
@@ -191,6 +188,9 @@ class WebsitesSeeder extends Seeder
                         ->parent()
                     ->add($forms, 2)->icon('file')->sub()
                         ->add($form_info, 1)->icon('file')
+                        ->parent()
+                    ->add($resources, 4)->icon('diamond')->sub()
+                        ->add($resource_info, 1)->icon('edit')
                         ;
         });
 
