@@ -44,11 +44,6 @@ class Website extends Model
     /**
      *
      */
-    public static $current = null;
-
-    /**
-     *
-     */
     public $appends = ['url'];
 
     /**
@@ -148,32 +143,6 @@ class Website extends Model
         return $this->attributes['scheme'].'://'.$this->attributes['host'];
     }
 
-    // @TODO refactor big time all following methods.
-    //   - website is gonna be available in the request most of the time. no use cases for this yet -f
-    /**
-     *
-     */
-    public static function setCurrent(Website $website)
-    {
-        return static::$current = $website;
-    }
-
-    /**
-     *  getCurrent
-     */
-    public static function getCurrent()
-    {
-        return static::$current;
-    }
-
-    /**
-     *  current website
-     */
-    // public static function current(Request $request = null)
-    // {
-    //     return static::$current ?: Website::admin();
-    // }
-
     /**
       * return admin
       *
@@ -190,11 +159,6 @@ class Website extends Model
     // public function scopeManaged($query)
     // {
     //     return $query->where('site_name', '!=', env('ADMIN_WEBSITE_NAME', 'CMS Admin CP'));
-    // }
-
-    // public static function isManaged()
-    // {
-    //     return Website::current()->id !== Website::admin()->id;
     // }
 
     /**

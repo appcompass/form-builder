@@ -365,7 +365,7 @@ class Page extends Model implements Linkable
         // return $this->dynamic_url ? $slug.'/:id' : $slug ;
         // OR: /websites/:website/pages/:page which allows $route.params to have the whole chain,
         // BUT seems to be harder to parse/work with on the front-end.
-        return $this->dynamic_url ? $slug.'/:'.$slug : $slug ;
+        return $this->dynamic_url ? $slug.'/:'.str_slug($slug, '_') : $slug ;
     }
 
     /**

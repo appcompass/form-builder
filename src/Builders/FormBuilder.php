@@ -166,6 +166,12 @@ class FormBuilder
         return $this;
     }
 
+    public function setConfig($key, $name = null)
+    {
+        $this->form->setConfig($key, $name);
+
+        return $this;
+    }
     /**
      * Set a Parent Field for subsequent fields
      *

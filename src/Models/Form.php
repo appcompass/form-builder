@@ -2,12 +2,15 @@
 
 namespace P3in\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use P3in\Traits\HasJsonConfigFieldTrait;
 
 class Form extends Model
 {
+    use HasJsonConfigFieldTrait;
+
     protected $fillable = [
         'name',
         'editor'
@@ -107,27 +110,6 @@ class Form extends Model
         $this->formable()->associate($owner);
 
         $this->save();
-
-        return $this;
-    }
-
-    public function setViewTypes(array $types)
-    {
-        $this->update(['view_types' => $types]);
-
-        return $this;
-    }
-
-    public function setCreateType(string $type)
-    {
-        $this->update(['create_type' => $type]);
-
-        return $this;
-    }
-
-    public function setUpdateType(string $type)
-    {
-        $this->update(['update_type' => $type]);
 
         return $this;
     }

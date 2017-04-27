@@ -13,33 +13,31 @@ class WebsitesSeeder extends Seeder
 {
     public function run()
     {
-        // DB::statement('TRUNCATE websites RESTART IDENTITY CASCADE');
-        // DB::statement('TRUNCATE pages RESTART IDENTITY CASCADE');
 
         $cp = WebsiteBuilder::new(env('ADMIN_WEBSITE_NAME'), env('ADMIN_WEBSITE_SCHEME'), env('ADMIN_WEBSITE_HOST'), function ($websiteBuilder) {
             $websiteBuilder->setStorage('cp_root');
 
-            $login = $websiteBuilder->addSection([
+            $loginSection = $websiteBuilder->addSection([
                 'name' => 'Login Template',
                 'template' => 'Login',
                 'type' => 'section'
             ]);
-            $register = $websiteBuilder->addSection([
+            $registerSection = $websiteBuilder->addSection([
                 'name' => 'Register Template',
                 'template' => 'Register',
                 'type' => 'section'
             ]);
-            $passwordEmail = $websiteBuilder->addSection([
+            $passwordEmailSection = $websiteBuilder->addSection([
                 'name' => 'password Email Template',
                 'template' => 'PasswordEmail',
                 'type' => 'section'
             ]);
-            $passwordReset = $websiteBuilder->addSection([
+            $passwordResetSection = $websiteBuilder->addSection([
                 'name' => 'Password Reset Template',
                 'template' => 'PasswordReset',
                 'type' => 'section'
             ]);
-            $home = $websiteBuilder->addSection([
+            $homeSection = $websiteBuilder->addSection([
                 'name' => 'Dashboard Template',
                 'template' => 'Home',
                 'type' => 'section'
@@ -65,14 +63,11 @@ class WebsitesSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            // ->addContainer()
-        //                  ->addSection($list)
-
-            $login = $websiteBuilder->addPage('Login', 'login')->addSection($login);
-            $register = $websiteBuilder->addPage('Register', 'register')->addSection($register);
-            $passwordEmail = $websiteBuilder->addPage('Request Password Reset', 'request-password-reset')->addSection($passwordEmail);
-            $passwordReset = $websiteBuilder->addPage('Reset Password', 'reset-password')->addSection($passwordReset);
-            $home = $websiteBuilder->addPage('Dashbaord', '')->addSection($home);
+            $login = $websiteBuilder->addPage('Login', 'login')->addSection($loginSection);
+            $register = $websiteBuilder->addPage('Register', 'register')->addSection($registerSection);
+            $passwordEmail = $websiteBuilder->addPage('Request Password Reset', 'request-password-reset')->addSection($passwordEmailSection);
+            $passwordReset = $websiteBuilder->addPage('Reset Password', 'reset-password', true)->addSection($passwordResetSection);
+            $home = $websiteBuilder->addPage('Dashbaord', '')->addSection($homeSection);
 
             $users = $websiteBuilder->addPage('Users', 'users')->addSection($list);
             $create_user = $websiteBuilder->addPage('Create', 'users/create')->addSection($create);
@@ -194,8 +189,7 @@ class WebsitesSeeder extends Seeder
                         ;
         });
 
-        FormBuilder::new('users', function (FormBuilder $builder) {
-            // $builder->setViewTypes(['grid','list']);
+        $form = FormBuilder::new('users', function (FormBuilder $builder) {
             $builder->string('First Name', 'first_name')->list()->required()->sortable()->searchable();
             $builder->string('Last Name', 'last_name')->list()->required()->sortable()->searchable();
             $builder->string('Email', 'email')->list()->validation(['required', 'email'])->sortable()->searchable();
@@ -204,41 +198,48 @@ class WebsitesSeeder extends Seeder
             $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
             $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
             $builder->secret('Password', 'password')->required();
-        })->linkToResources(['users.index', 'users.show', 'users.create', 'users.update', 'users.store']);
+        })->linkToResources(['users.index', 'users.show', 'users.create', 'users.update', 'users.store'])
+        ->getForm();
 
-        FormBuilder::new('user-roles', function (FormBuilder $builder) {
+        $cp->linkForm($form);
+
+        $form = FormBuilder::new('user-roles', function (FormBuilder $builder) {
             $builder->string('Name', 'label')->list()->required()->sortable()->searchable();
-        })->linkToResources(['users.roles.index']);
+        })->linkToResources(['users.roles.index'])
+        ->getForm();
 
-        // DB::statement('TRUNCATE permissions CASCADE');
-        // DB::statement("DELETE FROM forms WHERE name = 'permissions'");
+        $cp->linkForm($form);
 
-        FormBuilder::new('permissions', function (FormBuilder $builder) {
+        $form = FormBuilder::new('permissions', function (FormBuilder $builder) {
             $builder->string('Name', 'label')->list()->required()->sortable()->searchable();
             $builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();
             $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
             $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
-        })->linkToResources([['permissions.index' => 'admin'], ['permissions.show' => 'admin'], ['permissions.create' => 'admin'], ['permissions.store' => 'admin'], ['permissions.update' => 'admin']]);
+        })->linkToResources([['permissions.index' => 'admin'], ['permissions.show' => 'admin'], ['permissions.create' => 'admin'], ['permissions.store' => 'admin'], ['permissions.update' => 'admin']])
+        ->getForm();
 
-        // DB::statement('TRUNCATE roles CASCADE');
-        // DB::statement("DELETE FROM forms WHERE name = 'roles'");
+        $cp->linkForm($form);
 
-        FormBuilder::new('roles', function (FormBuilder $builder) {
+        $form = FormBuilder::new('roles', function (FormBuilder $builder) {
             $builder->string('Role Name', 'name')->list()->required()->sortable()->searchable();
             $builder->string('Role Label', 'label')->list()->required()->sortable()->searchable();
             $builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();
             $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
             $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
-        })->linkToResources([['roles.index' => 'admin'], ['roles.show' => 'admin'], ['roles.store' => 'admin'], ['roles.update' => 'admin']]);
+        })->linkToResources([['roles.index' => 'admin'], ['roles.show' => 'admin'], ['roles.store' => 'admin'], ['roles.update' => 'admin']])
+        ->getForm();
 
-        FormBuilder::new('role-permissions', function (FormBuilder $builder) {
+        $cp->linkForm($form);
+
+        $form = FormBuilder::new('role-permissions', function (FormBuilder $builder) {
             $builder->string('Name', 'label')->list()->required()->sortable()->searchable();
-        })->linkToResources([['roles.permissions.index' => 'admin']]);
+        })->linkToResources([['roles.permissions.index' => 'admin']])
+        ->getForm();
 
-        // DB::statement("DELETE FROM forms WHERE name = 'websites'");
+        $cp->linkForm($form);
+
 
         $form = FormBuilder::new('websites', function (FormBuilder $builder) {
-            // $builder->setViewTypes(['list','grid']);
             $builder->string('Website Name', 'name')->list()->required()->sortable()->searchable()
                 ->help('The Human Readable website name');
             $builder->select('Scheme', 'scheme')->list()->required()->sortable()->searchable()
@@ -320,7 +321,6 @@ class WebsitesSeeder extends Seeder
 
         $cp->linkForm($form);
 
-
         $form = FormBuilder::new('websites.redirects', function (FormBuilder $builder) {
             $builder->string('From', 'from')->list()->sortable()->searchable()->required();
             $builder->string('To', 'to')->list()->sortable()->searchable()->required();
@@ -348,11 +348,8 @@ class WebsitesSeeder extends Seeder
 
         $cp->linkForm($form);
 
-        // DB::statement("DELETE FROM forms WHERE name = 'pages'");
-
         $form = FormBuilder::new('pages', function (FormBuilder $builder) {
             $builder->editor('Page');
-            // $builder->setViewTypes(['list','grid']);
             $builder->string('Page Title', 'title')->list()->required()->sortable()->searchable();
             $builder->string('Parent', 'parent.title')->list()->edit(false)->sortable()->searchable();
             $builder->string('URL', 'url')->list()->edit(false)->sortable()->searchable();
@@ -400,24 +397,25 @@ class WebsitesSeeder extends Seeder
 
         $cp->linkForm($form);
 
-        // DB::statement("DELETE FROM forms WHERE name = 'menus'");
 
-        FormBuilder::new('menus', function (FormBuilder $builder) {
+        $form = FormBuilder::new('menus', function (FormBuilder $builder) {
             $builder->string('Name', 'name')->list()->required()->sortable()->searchable();
             $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
             $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
-        })->linkToResources(['websites.menus.index', 'websites.menus.create']);
+        })->linkToResources(['websites.menus.index', 'websites.menus.create'])
+        ->getForm();
 
-        // DB::statement("DELETE FROM forms WHERE name = 'menus-editor'");
+        $cp->linkForm($form);
 
-        FormBuilder::new('menus-editor', function (FormBuilder $builder) {
+        $form = FormBuilder::new('menus-editor', function (FormBuilder $builder) {
             $builder->editor('Menu');
             // $builder->menuEditor('Menu', 'menu')->list(false);
-        })->linkToResources(['websites.menus.show']);
+        })->linkToResources(['websites.menus.show'])
+        ->getForm();
 
-        // DB::statement("DELETE FROM forms WHERE name = 'create-link'");
+        $cp->linkForm($form);
 
-        FormBuilder::new('create-link', function (FormBuilder $builder) {
+        $form = FormBuilder::new('create-link', function (FormBuilder $builder) {
             $builder->string('Label', 'title');
             $builder->string('Url', 'url');
             $builder->string('Alt', 'alt');
@@ -425,9 +423,10 @@ class WebsitesSeeder extends Seeder
             $builder->boolean('New Tab', 'new_tab');
             $builder->boolean('Clickable', 'clickable');
             $builder->wysiwyg('Content', 'content');
-        });
+        })
+        ->getForm();
 
-        // DB::statement("DELETE FROM forms WHERE name = 'edit-menu-item'");
+        $cp->linkForm($form);
 
         $form = FormBuilder::new('edit-menu-item', function (FormBuilder $builder) {
             $builder->string('Label', 'title');
@@ -441,8 +440,6 @@ class WebsitesSeeder extends Seeder
         })->getForm();
 
         $cp->linkForm($form);
-
-        // DB::statement("DELETE FROM forms WHERE name = 'edit-link'");
 
         $form = FormBuilder::new('edit-link', function (FormBuilder $builder) {
             $builder->string('Label', 'title');
@@ -459,9 +456,7 @@ class WebsitesSeeder extends Seeder
 
         $cp->linkForm($form);
 
-        // DB::statement("DELETE FROM forms WHERE name = 'storage'");
-
-        Formbuilder::new('storage', function (FormBuilder $builder) {
+        $form = Formbuilder::new('storage', function (FormBuilder $builder) {
             $builder->string('Name', 'name')->list()->sortable()->searchable()->required();
             $builder->string('Type', 'type.name')->list()->edit(false)->sortable()->searchable()->required();
             $builder->select('Disk Instance', 'type_id')->list(false)->required()->dynamic(\P3in\Models\StorageType::class, function (FieldSource $source) {
@@ -474,24 +469,34 @@ class WebsitesSeeder extends Seeder
             $builder->fieldset('Configuration', 'config', function (FormBuilder $builder) {
                 $builder->string('Root', 'root')->list()->sortable()->searchable()->required();
             })->list(false)->required();
-        })->linkToResources(['storage.index', 'storage.show', 'storage.create', 'storage.store', 'storage.update']);
+        })->linkToResources(['storage.index', 'storage.show', 'storage.create', 'storage.store', 'storage.update'])
+        ->getForm();
 
-        FormBuilder::new('resources', function (FormBuilder $builder) {
+        $cp->linkForm($form);
+
+        $form = FormBuilder::new('resources', function (FormBuilder $builder) {
             $builder->string('Resource', 'resource')->list()->sortable()->searchable()->required();
             $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
             $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
             $builder->select('Role required', 'req_role')->dynamic(\P3in\Models\Role::class, function (FieldSource $source) {
                 $source->select(['id As index', 'label']);
             })->nullable();
-        })->linkToResources(['resources.index', 'resources.show', 'resources.create']);
+        })->linkToResources(['resources.index', 'resources.show', 'resources.create'])
+        ->getForm();
 
-        FormBuilder::new('forms', function (FormBuilder $builder) {
+        $cp->linkForm($form);
+
+        $form = FormBuilder::new('forms', function (FormBuilder $builder) {
             $builder->string('Name', 'name')->list(true)->sortable()->searchable();
             $builder->string('Editor', 'editor');
             $builder->string('Fields', 'fieldsCount')->edit(false)->list();
             $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
             $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
             $builder->string('Updated', 'updated_at')->edit(false);
-        })->linkToResources(['forms.index', 'forms.show']);
+        })->linkToResources(['forms.index', 'forms.show'])
+        ->getForm();
+
+        $cp->linkForm($form);
+
     }
 }
