@@ -63,6 +63,12 @@ class WebsitesSeeder extends Seeder
                 'type' => 'section'
             ]);
 
+            $pageEditor = $websiteBuilder->addSection([
+                'name' => 'Website Page Editor Template',
+                'template' => 'WebsitePageEditor',
+                'type' => 'section'
+            ]);
+
             $login = $websiteBuilder->addPage('Login', 'login')->addSection($loginSection)->layout('Public');
             $register = $websiteBuilder->addPage('Register', 'register')->addSection($registerSection)->layout('Public');
             $passwordEmail = $websiteBuilder->addPage('Request Password Reset', 'request-password-reset')->addSection($passwordEmailSection)->layout('Public');
@@ -99,11 +105,11 @@ class WebsitesSeeder extends Seeder
             $navigation_builder = $navigation->addChild('Editor', '')->addSection($edit)->layout('Private')->requiresAuth()->resource('websites.menus.edit');
 
             $pages = $website->addChild('Pages', 'pages')->addSection($list)->layout('Private')->requiresAuth()->resource('websites.pages.index');
-            $create_page = $website->addChild('Create', 'pages/create')->addSection($create)->layout('WebsitePageEditor')->resource('websites.pages.create');
-            $page = $website->addChild('Page', 'pages', true)->addSection($edit)->layout('WebsitePageEditor')->resource('websites.pages.show');
-            $page_info = $page->addChild('Info', '')->addSection($edit)->layout('WebsitePageEditor')->resource('websites.pages.edit');
-            $page_layouts = $page->addChild('Layout', 'layout')->addSection($list)->layout('WebsitePageEditor')->resource('pages.contents.index');
-            $page_contents = $page->addChild('Content', 'contents')->addSection($list)->layout('WebsitePageEditor')->resource('pages.contents.show');
+            $create_page = $website->addChild('Create', 'pages/create')->addSection($pageEditor)->layout('FullScreen')->resource('websites.pages.create');
+            $page = $website->addChild('Page', 'pages', true)->addSection($pageEditor)->layout('FullScreen')->resource('websites.pages.show');
+            // $page_info = $page->addChild('Info', '')->addSection($pageEditor)->layout('FullScreen')->resource('websites.pages.edit');
+            // $page_layouts = $page->addChild('Layout', 'layout')->addSection($pageEditor)->layout('FullScreen')->resource('pages.contents.index');
+            // $page_contents = $page->addChild('Content', 'contents')->addSection($pageEditor)->layout('FullScreen')->resource('pages.contents.show');
             // // @TODO: work out the flow of blog.
             // $blogEntries = $website->addChild('Blog Entries', 'blog-entries')->addSection($list)->layout('Private')->requiresAuth()->resource('websites.blog-entries.index');
             // $blogCategories = $website->addChild('Blog Categories', 'blog-categories')->addSection($list)->layout('Private')->requiresAuth()->resource('websites.blog-categories.index');
@@ -150,11 +156,12 @@ class WebsitesSeeder extends Seeder
                 ->add(['title' => 'Web Properties', 'alt' => 'Web Properties'], 3)->sub()
                     ->add($websites, 1)->icon('globe')->sub()
                         ->add($website_info, 1)->icon('edit')
-                        ->add($pages, 2)->icon('pages')->sub()
-                            ->add($page_info, 1)->icon('edit')
-                            ->add($page_layouts, 2)->icon('page')
-                            ->add($page_contents, 3)->icon('page')
-                            ->parent()
+                        ->add($pages, 2)->icon('pages')
+                        // ->sub()
+                        //     ->add($page_info, 1)->icon('edit')
+                        //     ->add($page_layouts, 2)->icon('page')
+                        //     ->add($page_contents, 3)->icon('page')
+                        //     ->parent()
                         // // @TODO: blog end point flow needs to be worked out
                         // ->add(['url' => '/blog', 'title' => 'Blog', 'alt' => 'Blog'], 3)->icon('page') ->sub()
                         //     ->add($blogEntries, 1)->icon('page')
