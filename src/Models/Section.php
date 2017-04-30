@@ -6,9 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use P3in\Models\Form;
 use P3in\Models\Page;
 use P3in\Models\Website;
+use P3in\Traits\HasJsonConfigFieldTrait;
 
 class Section extends Model
 {
+    use HasJsonConfigFieldTrait;
+
     protected $fillable = [
         'name',
         'template',

@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Support\Facades\App;
 use P3in\Models\Page;
 use P3in\Models\PageSectionContent;
+use P3in\Models\Resource;
 use P3in\Models\Section;
 use P3in\PublishFiles;
 use P3in\Renderers\TemplateRenderer;
@@ -290,7 +291,6 @@ class PageBuilder
         return $this->setMeta('sitemap->changefreq', $val);
     }
 
-    // @TODO: discuss then probably remove, looks like more trouble than it's worth now that we don't use Nuxt.
     public function layout($layout = null)
     {
         $this->page->update(['layout' => $layout]);
@@ -298,6 +298,29 @@ class PageBuilder
         return $this;
     }
 
+    /**
+     * Sets the resource.
+     *
+     * @param      string  $val    The value
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
+    public function resource($val = '')
+    {
+        return $this->setMeta('resource', $val);
+    }
+
+    /**
+     * Sets the requiresAuth.
+     *
+     * @param      string  $val    The value
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
+    public function requiresAuth($val = true)
+    {
+        return $this->setMeta('requiresAuth', $val);
+    }
 
     /**
      * Sets the meta.
@@ -307,12 +330,12 @@ class PageBuilder
      *
      * @return     <type>  ( description_of_the_return_value )
      */
-    // public function setMeta($key, $val)
-    // {
-    //     $this->page->setMeta($key, $val);
+    public function setMeta($key, $val)
+    {
+        $this->page->setMeta($key, $val);
 
-    //     return $this;
-    // }
+        return $this;
+    }
 
     public function renderTemplate(string $layout = null)
     {

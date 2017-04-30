@@ -14,7 +14,7 @@ class WebsitesSeeder extends Seeder
     public function run()
     {
 
-        $cp = WebsiteBuilder::new(env('ADMIN_WEBSITE_NAME'), env('ADMIN_WEBSITE_SCHEME'), env('ADMIN_WEBSITE_HOST'), function ($websiteBuilder) {
+        WebsiteBuilder::new(env('ADMIN_WEBSITE_NAME'), env('ADMIN_WEBSITE_SCHEME'), env('ADMIN_WEBSITE_HOST'), function ($websiteBuilder) {
             $websiteBuilder->setStorage('cp_root');
 
             $loginSection = $websiteBuilder->addSection([
@@ -63,71 +63,70 @@ class WebsitesSeeder extends Seeder
                 'type' => 'section'
             ]);
 
-            $login = $websiteBuilder->addPage('Login', 'login')->addSection($loginSection);
-            $register = $websiteBuilder->addPage('Register', 'register')->addSection($registerSection);
-            $passwordEmail = $websiteBuilder->addPage('Request Password Reset', 'request-password-reset')->addSection($passwordEmailSection);
-            $passwordReset = $websiteBuilder->addPage('Reset Password', 'reset-password', true)->addSection($passwordResetSection);
-            $home = $websiteBuilder->addPage('Dashbaord', '')->addSection($homeSection);
+            $login = $websiteBuilder->addPage('Login', 'login')->addSection($loginSection)->layout('Public');
+            $register = $websiteBuilder->addPage('Register', 'register')->addSection($registerSection)->layout('Public');
+            $passwordEmail = $websiteBuilder->addPage('Request Password Reset', 'request-password-reset')->addSection($passwordEmailSection)->layout('Public');
+            $passwordReset = $websiteBuilder->addPage('Reset Password', 'reset-password', true)->addSection($passwordResetSection)->layout('Public');
+            $home = $websiteBuilder->addPage('Dashbaord', 'dashboard')->addSection($homeSection)->layout('Private')->requiresAuth();
 
-            $users = $websiteBuilder->addPage('Users', 'users')->addSection($list);
-            $create_user = $websiteBuilder->addPage('Create', 'users/create')->addSection($create);
-            $user = $websiteBuilder->addPage('User', 'users', true)->addSection($show);
-            $user_profile = $user->addChild('Profile', '')->addSection($edit);
-            $user_roles = $user->addChild('Roles', 'roles')->addSection($list);
+            $users = $websiteBuilder->addPage('Users', 'users')->addSection($list)->layout('Private')->requiresAuth()->resource('users.index');
+            $create_user = $websiteBuilder->addPage('Create', 'users/create')->addSection($create)->layout('Private')->requiresAuth()->resource('users.create');
+            $user = $websiteBuilder->addPage('User', 'users', true)->addSection($edit)->layout('Private')->requiresAuth()->resource('users.show');
+            $user_profile = $user->addChild('Profile', '')->addSection($edit)->layout('Private')->requiresAuth()->resource('users.edit');
+            $user_roles = $user->addChild('Roles', 'roles')->addSection($list)->layout('Private')->requiresAuth()->resource('users.roles.index');
 
-            $roles = $websiteBuilder->addPage('Roles', 'roles')->addSection($list);
-            $create_role = $websiteBuilder->addPage('Create', 'roles/create')->addSection($create);
-            $role = $websiteBuilder->addPage('Role', 'roles', true)->addSection($show);
-            $role_info = $role->addChild('Info', '')->addSection($edit);
-            $role_permissions = $role->addChild('Permissions', 'permissions')->addSection($list);
+            $roles = $websiteBuilder->addPage('Roles', 'roles')->addSection($list)->layout('Private')->requiresAuth()->resource('roles.index');
+            $create_role = $websiteBuilder->addPage('Create', 'roles/create')->addSection($create)->layout('Private')->requiresAuth()->resource('roles.create');
+            $role = $websiteBuilder->addPage('Role', 'roles', true)->addSection($edit)->layout('Private')->requiresAuth()->resource('roles.show');
+            $role_info = $role->addChild('Info', '')->addSection($edit)->layout('Private')->requiresAuth()->resource('roles.edit');
+            $role_permissions = $role->addChild('Permissions', 'permissions')->addSection($list)->layout('Private')->requiresAuth()->resource('roles.permissions.index');
 
-            $permissions = $websiteBuilder->addPage('Permissions', 'permissions')->addSection($list);
-            $create_permission = $websiteBuilder->addPage('Create', 'permissions/create')->addSection($create);
-            $permission = $websiteBuilder->addPage('Permission', 'permissions', true)->addSection($show);
-            $permission_info = $permission->addChild('Info', '')->addSection($edit);
+            $permissions = $websiteBuilder->addPage('Permissions', 'permissions')->addSection($list)->layout('Private')->requiresAuth()->resource('permissions.index');
+            $create_permission = $websiteBuilder->addPage('Create', 'permissions/create')->addSection($create)->layout('Private')->requiresAuth()->resource('permissions.create');
+            $permission = $websiteBuilder->addPage('Permission', 'permissions', true)->addSection($edit)->layout('Private')->requiresAuth()->resource('permissions.show');
+            $permission_info = $permission->addChild('Info', '')->addSection($edit)->layout('Private')->requiresAuth()->resource('permissions.edit');
 
+            $resources = $websiteBuilder->addPage('Resources', 'resources')->addSection($list)->layout('Private')->requiresAuth()->resource('resources.index');
+            $resource = $websiteBuilder->addPage('Resource', 'resources', true)->addSection($edit)->layout('Private')->requiresAuth()->resource('resources.show');
+            $resource_info = $resource->addChild('Info', '')->addSection($edit)->layout('Private')->requiresAuth()->resource('resources.edit');
 
-            $resources = $websiteBuilder->addPage('Resources', 'resources')->addSection($list);
-            $resource = $websiteBuilder->addPage('Resource', 'resources', true)->addSection($show);
-            $resource_info = $resource->addChild('Info', '')->addSection($edit);
+            $websites = $websiteBuilder->addPage('Websites', 'websites')->addSection($list)->layout('Private')->requiresAuth()->resource('websites.index');
+            $create_website = $websiteBuilder->addPage('Create', 'websites/create')->addSection($create)->layout('Private')->requiresAuth()->resource('websites.create');
+            $website = $websiteBuilder->addPage('Website', 'websites', true)->addSection($edit)->layout('Private')->requiresAuth()->resource('websites.show');
+            $website_info = $website->addChild('Info', '')->addSection($edit)->layout('Private')->requiresAuth()->resource('websites.edit');
+            $navigations = $website->addChild('Menus', 'menus')->addSection($list)->layout('Private')->requiresAuth()->resource('websites.menus.index');
+            $navigation = $website->addChild('Menu', 'menus', true)->addSection($edit)->layout('Private')->requiresAuth()->resource('websites.menus.show');
+            $navigation_builder = $navigation->addChild('Editor', '')->addSection($edit)->layout('Private')->requiresAuth()->resource('websites.menus.edit');
 
-            $websites = $websiteBuilder->addPage('Websites', 'websites')->addSection($list);
-            $create_website = $websiteBuilder->addPage('Create', 'websites/create')->addSection($create);
-            $website = $websiteBuilder->addPage('Website', 'websites', true)->addSection($show);
-            $website_info = $website->addChild('Info', '')->addSection($edit);
-            $navigations = $website->addChild('Menus', 'menus')->addSection($list);
-            $navigation = $website->addChild('Menu', 'menus', true)->addSection($show);
-            $navigation_builder = $navigation->addChild('Editor', '')->addSection($edit);
+            $pages = $website->addChild('Pages', 'pages')->addSection($list)->layout('Private')->requiresAuth()->resource('websites.pages.index');
+            $create_page = $website->addChild('Create', 'pages/create')->addSection($create)->layout('WebsitePageEditor')->resource('websites.pages.create');
+            $page = $website->addChild('Page', 'pages', true)->addSection($edit)->layout('WebsitePageEditor')->resource('websites.pages.show');
+            $page_info = $page->addChild('Info', '')->addSection($edit)->layout('WebsitePageEditor')->resource('websites.pages.edit');
+            $page_layouts = $page->addChild('Layout', 'layout')->addSection($list)->layout('WebsitePageEditor')->resource('pages.contents.index');
+            $page_contents = $page->addChild('Content', 'contents')->addSection($list)->layout('WebsitePageEditor')->resource('pages.contents.show');
+            // // @TODO: work out the flow of blog.
+            // $blogEntries = $website->addChild('Blog Entries', 'blog-entries')->addSection($list)->layout('Private')->requiresAuth()->resource('websites.blog-entries.index');
+            // $blogCategories = $website->addChild('Blog Categories', 'blog-categories')->addSection($list)->layout('Private')->requiresAuth()->resource('websites.blog-categories.index');
+            // $blogTags = $website->addChild('Blog Tags', 'blog-tags')->addSection($list)->layout('Private')->requiresAuth()->resource('websites.blog-tags.index');
 
-            $pages = $website->addChild('Pages', 'pages')->addSection($list);
-            $create_page = $website->addChild('Create', 'pages/create')->addSection($create);
-            $page = $website->addChild('Page', 'pages', true)->addSection($show);
-            $page_info = $page->addChild('Info', '')->addSection($edit);
-            $page_layouts = $page->addChild('Layout', 'layout')->addSection($list);
-            $page_contents = $page->addChild('Content', 'contents')->addSection($list);
-            // @TODO: work out the flow of blog.
-            $blogEntries = $website->addChild('Blog Entries', 'blog-entries')->addSection($list);
-            $blogCategories = $website->addChild('Blog Categories', 'blog-categories')->addSection($list);
-            $blogTags = $website->addChild('Blog Tags', 'blog-tags')->addSection($list);
-            $redirects = $website->addChild('Redirects', 'redirects')->addSection($list);
+            $redirects = $website->addChild('Redirects', 'redirects')->addSection($list)->layout('Private')->requiresAuth()->resource('websites.redirects.index');
 
-            $galleries = $websiteBuilder->addPage('Galleries', 'galleries')->addSection($list);
-            $gallery = $websiteBuilder->addPage('Gallery', 'galleries', true)->addSection($show);
-            $gallery_info = $gallery->addChild('Info', '')->addSection($edit);
-            $gallery_photos = $gallery->addChild('Photos', 'photos')->addSection($list);
-            $gallery_videos = $gallery->addChild('Videos', 'videos')->addSection($list);
+            $galleries = $websiteBuilder->addPage('Galleries', 'galleries')->addSection($list)->layout('Private')->requiresAuth()->resource('galleries.index');
+            $gallery = $websiteBuilder->addPage('Gallery', 'galleries', true)->addSection($edit)->layout('Private')->requiresAuth()->resource('galleries.show');
+            $gallery_info = $gallery->addChild('Info', '')->addSection($edit)->layout('Private')->requiresAuth()->resource('galleries.edit');
+            $gallery_photos = $gallery->addChild('Photos', 'photos')->addSection($list)->layout('Private')->requiresAuth()->resource('galleries.photos.index');
+            $gallery_videos = $gallery->addChild('Videos', 'videos')->addSection($list)->layout('Private')->requiresAuth()->resource('galleries.videos.index');
 
             // @TODO: storage workflow needs to be looked at a bit.
-            $storages = $websiteBuilder->addPage('Storage', 'storage')->addSection($list);
-            $create_storage = $websiteBuilder->addPage('Create', 'storage/create')->addSection($create);
-            $storage = $websiteBuilder->addPage('Storage', 'storages', true)->addSection($show);
-            $storage_info = $storage->addChild('Info', '')->addSection($edit);
-            $storage_types = $storage->addChild('Types', 'storage-types')->addSection($list);
+            $storages = $websiteBuilder->addPage('Storage', 'storage')->addSection($list)->layout('Private')->requiresAuth()->resource('disks.index');
+            $create_storage = $websiteBuilder->addPage('Create', 'storage/create')->addSection($create)->layout('Private')->requiresAuth()->resource('disks.create');
+            $storage = $websiteBuilder->addPage('Storage', 'storages', true)->addSection($edit)->layout('Private')->requiresAuth()->resource('disks.show');
+            $storage_info = $storage->addChild('Info', '')->addSection($edit)->layout('Private')->requiresAuth()->resource('disks.edit');
 
-            $forms = $websiteBuilder->addPage('Forms', 'forms')->addSection($list);
-            $create_forms = $websiteBuilder->addPage('Create', 'forms/create')->addSection($create);
-            $form = $websiteBuilder->addPage('Form', 'forms', true)->addSection($show);
-            $form_info = $form->addChild('Info', '')->addSection($edit);
+            $forms = $websiteBuilder->addPage('Forms', 'forms')->addSection($list)->layout('Private')->requiresAuth()->resource('forms.index');
+            $create_forms = $websiteBuilder->addPage('Create', 'forms/create')->addSection($create)->layout('Private')->requiresAuth()->resource('forms.create');
+            $form = $websiteBuilder->addPage('Form', 'forms', true)->addSection($edit)->layout('Private')->requiresAuth()->resource('forms.show');
+            $form_info = $form->addChild('Info', '')->addSection($edit)->layout('Private')->requiresAuth()->resource('forms.edit');
             // @TODO: form submissions?
 
             $websiteBuilder->addMenu('user_nav')
@@ -156,12 +155,12 @@ class WebsitesSeeder extends Seeder
                             ->add($page_layouts, 2)->icon('page')
                             ->add($page_contents, 3)->icon('page')
                             ->parent()
-                        // @TODO: blog end point flow needs to be worked out
-                        ->add(['url' => '/blog', 'title' => 'Blog', 'alt' => 'Blog'], 3)->icon('page') ->sub()
-                            ->add($blogEntries, 1)->icon('page')
-                            ->add($blogCategories, 2)->icon('page')
-                            ->add($blogTags, 3)->icon('page')
-                            ->parent()
+                        // // @TODO: blog end point flow needs to be worked out
+                        // ->add(['url' => '/blog', 'title' => 'Blog', 'alt' => 'Blog'], 3)->icon('page') ->sub()
+                        //     ->add($blogEntries, 1)->icon('page')
+                        //     ->add($blogCategories, 2)->icon('page')
+                        //     ->add($blogTags, 3)->icon('page')
+                        //     ->parent()
                         ->add($navigations, 4)->icon('navigation')->sub()
                             ->add($navigation, 1)->icon('pages')
                             ->add($navigation_builder, 2)->icon('page')
@@ -179,7 +178,6 @@ class WebsitesSeeder extends Seeder
                 ->add(['title' => 'Settings', 'alt' => 'Settings'], 5)->sub()
                     ->add($storage, 1)->icon('settings')->sub()
                         ->add($storage_info, 1)->icon('settings')
-                        ->add($storage_types, 2)->icon('settings')
                         ->parent()
                     ->add($forms, 2)->icon('file')->sub()
                         ->add($form_info, 1)->icon('file')
@@ -188,315 +186,5 @@ class WebsitesSeeder extends Seeder
                         ->add($resource_info, 1)->icon('edit')
                         ;
         });
-
-        $form = FormBuilder::new('users', function (FormBuilder $builder) {
-            $builder->string('First Name', 'first_name')->list()->required()->sortable()->searchable();
-            $builder->string('Last Name', 'last_name')->list()->required()->sortable()->searchable();
-            $builder->string('Email', 'email')->list()->validation(['required', 'email'])->sortable()->searchable();
-            $builder->string('Phone Number', 'phone')->list()->required()->sortable()->searchable();
-            $builder->boolean('Active', 'active')->list(false);
-            $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
-            $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
-            $builder->secret('Password', 'password')->required();
-        })->linkToResources(['users.index', 'users.show', 'users.create', 'users.update', 'users.store'])
-        ->getForm();
-
-        $cp->linkForm($form);
-
-        $form = FormBuilder::new('user-roles', function (FormBuilder $builder) {
-            $builder->string('Name', 'label')->list()->required()->sortable()->searchable();
-        })->linkToResources(['users.roles.index'])
-        ->getForm();
-
-        $cp->linkForm($form);
-
-        $form = FormBuilder::new('permissions', function (FormBuilder $builder) {
-            $builder->string('Name', 'label')->list()->required()->sortable()->searchable();
-            $builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();
-            $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
-            $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
-        })->linkToResources([['permissions.index' => 'admin'], ['permissions.show' => 'admin'], ['permissions.create' => 'admin'], ['permissions.store' => 'admin'], ['permissions.update' => 'admin']])
-        ->getForm();
-
-        $cp->linkForm($form);
-
-        $form = FormBuilder::new('roles', function (FormBuilder $builder) {
-            $builder->string('Role Name', 'name')->list()->required()->sortable()->searchable();
-            $builder->string('Role Label', 'label')->list()->required()->sortable()->searchable();
-            $builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();
-            $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
-            $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
-        })->linkToResources([['roles.index' => 'admin'], ['roles.show' => 'admin'], ['roles.store' => 'admin'], ['roles.update' => 'admin']])
-        ->getForm();
-
-        $cp->linkForm($form);
-
-        $form = FormBuilder::new('role-permissions', function (FormBuilder $builder) {
-            $builder->string('Name', 'label')->list()->required()->sortable()->searchable();
-        })->linkToResources([['roles.permissions.index' => 'admin']])
-        ->getForm();
-
-        $cp->linkForm($form);
-
-
-        $form = FormBuilder::new('websites', function (FormBuilder $builder) {
-            $builder->string('Website Name', 'name')->list()->required()->sortable()->searchable()
-                ->help('The Human Readable website name');
-            $builder->select('Scheme', 'scheme')->list()->required()->sortable()->searchable()
-                ->dynamic([
-                    ['index' => 'http', 'label' => 'Plain (HTTP)'],
-                    ['index' => 'https', 'label' => 'Secure (HTTPS)']
-                ])
-                ->help('Website Schema. We recommend website to be served using HTTPS');
-            $builder->string('Host', 'host')->list()->required()->sortable()->searchable()
-                ->help('Just the fully qualified hostname (FQDN)');
-            $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
-            $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
-            $builder->fieldset('Configuration', 'config', function (FormBuilder $builder) {
-                $builder->select('Header', 'header')
-                    ->dynamic(Section::class, function (FieldSource $source) {
-                        $source->where('type', 'header');
-                        $source->select(['id AS index', 'name AS label']);
-                    })
-                    ->required()
-                    ->help('Please select a Header');
-                $builder->select('Footer', 'footer')
-                    ->dynamic(Section::class, function (FieldSource $source) {
-                        $source->where('type', 'footer');
-                        $source->select(['id AS index', 'name AS label']);
-                    })
-                    ->required()
-                    ->help('Please select a Footer');
-                $builder->code('Layouts', 'layouts')
-                    // @TODO: We need to be able to provide the key value
-                    // of the repeatable field and remove the dynamic flag.
-                    // ->keyed()
-                    // ->repeatable()
-                    ->dynamic(['public', 'errors']);
-                $builder->fieldset('Deployment', 'deployment', function (FormBuilder $depBuilder) {
-                    $depBuilder->string('Publish From Path', 'publish_from')
-                        ->required();
-                });
-            });
-
-            $builder->fieldset('Meta Data', 'config.meta', function (FormBuilder $builder) {
-                $builder->string('Title', 'title')
-                    ->required()
-                    ->help('The title of the website as it apears in header');
-                $builder->text('Description', 'description')
-                    ->required()
-                    ->help('The website desscription');
-                $builder->text('Keywords', 'keywords')
-                    ->help('The website keywords, though this is no longer used by many Search Engines');
-                $builder->code('Custom Header HTML', 'custom_header_html')
-                    ->help('Custom header HTML, CSS, JS');
-                $builder->code('Custom Before Body End HTML', 'custom_before_body_end_html')
-                    ->help('HTML, CSS, JS you may need to inject before the closing </body> tag on all pages.');
-                $builder->code('Custom Footer HTML', 'custom_footer_html')
-                    ->help('Custom footer HTML, CSS, JS');
-                $builder->text('Robots.txt Contents', 'robots_txt')
-                    ->help('The Contents of the robots.txt file for search engines.');
-                $builder->string('Google Analytics Tracking ID', 'ga_tracking_id')
-                    ->help('Google Analytics Tracking ID in the format of: UA-XXXXX-Y');
-                $builder->string('Facebook Url', 'facebook_url')
-                    ->help('The title of the website as it apears in header');
-                $builder->string('Instagram Url', 'instagram_url')
-                    ->help('The title of the website as it apears in header');
-                $builder->string('Twitter Url', 'twitter_url')
-                    ->help('The title of the website as it apears in header');
-                $builder->string('Google Plus Url', 'google_plus_url')
-                    ->help('The title of the website as it apears in header');
-                $builder->string('LinkedIn Url', 'linkedin_url')
-                    ->help('The title of the website as it apears in header');
-                // @TODO: We need to be able to provide the key value of the repeatable field,
-                // not have a config field type with limited value field type constraints.
-                $builder->config('Addtional Header Tags', 'custom')
-                    // ->string('Addtional Header Tags', 'custom')
-                    // ->keyed()
-                    // ->repeatable()
-                    ->help('Additional meta tags to be added.');
-            });
-        })->linkToResources(['websites.index', 'websites.show', 'websites.create', 'websites.store', 'websites.update'])
-        ->getForm();
-
-        $cp->linkForm($form);
-
-        $form = FormBuilder::new('websites.redirects', function (FormBuilder $builder) {
-            $builder->string('From', 'from')->list()->sortable()->searchable()->required();
-            $builder->string('To', 'to')->list()->sortable()->searchable()->required();
-            $builder->select('Type', 'type')->list()->required()->sortable()->searchable()
-                ->dynamic([
-                    [
-                        'index' => '301',
-                        'label' => 'Permanently Moved (301)'
-                    ], [
-                        'index' => '302',
-                        'label' => 'Temporarily Moved (302)'
-                    ]
-                ])
-                ->help('The Redirect type.');
-
-            $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
-            $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
-            $builder->select('Role required', 'req_role')
-                ->dynamic(\P3in\Models\Role::class, function (FieldSource $source) {
-                    $source->select(['id As index', 'label']);
-                })
-                ->nullable();
-        })->linkToResources(['websites.redirects.index', 'websites.redirects.store', 'websites.redirects.update'])
-        ->getForm();
-
-        $cp->linkForm($form);
-
-        $form = FormBuilder::new('pages', function (FormBuilder $builder) {
-            $builder->editor('Page');
-            $builder->string('Page Title', 'title')->list()->required()->sortable()->searchable();
-            $builder->string('Parent', 'parent.title')->list()->edit(false)->sortable()->searchable();
-            $builder->string('URL', 'url')->list()->edit(false)->sortable()->searchable();
-            $builder->boolean('Dynamic', 'dynamic_url')->list()->sortable();
-            $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
-            $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
-            $builder->string('Slug', 'slug')->list(false)->required();
-            $builder->select('Parent', 'parent_id')->list(false)->dynamic(\P3in\Models\Page::class, function (FieldSource $source) {
-                $source->limit(4);
-                // @TODO: we need to specify the website_id is the same as the current page's website_id.
-                $source->where('website_id', \P3in\Models\Website::whereHost(env('ADMIN_WEBSITE_HOST'))->first()->id);
-                $source->select(['id AS index', 'title AS label']);
-            });
-            $builder->fieldset('Sitemap Data', 'config.sitemap', function (FormBuilder $builder) {
-                $builder->text('Author', 'priority')->list(false)->required();
-                $builder->select('Change Frequency', 'changefreq')->list(false)->required()->dynamic([
-                    ['index' => 'always', 'label' => 'Always'],
-                    ['index' => 'hourly', 'label' => 'Hourly'],
-                    ['index' => 'daily', 'label' => 'Daily'],
-                    ['index' => 'weekly', 'label' => 'Weekly'],
-                    ['index' => 'monthly', 'label' => 'Monthly'],
-                    ['index' => 'yearly', 'label' => 'Yearly'],
-                    ['index' => 'never', 'label' => 'Never']
-                ])->help('Website Schema. We recommend website to be served using HTTPS');
-            });
-            $builder->fieldset('Meta Data', 'config.head', function (FormBuilder $builder) {
-                $builder->text('Author', 'head.author')->list(false)->required();
-                $builder->text('Description', 'description')->list(false)->required();
-                $builder->string('Keywords', 'keywords')->list(false)->required();
-                $builder->string('Canonical URL', 'canonical')->list(false)->required();
-                $builder->config('Addtional Header Tags', 'custom')->list(false)
-                    ->help('Additional meta tags to be added. This is in addition to the website wide additional header tags.');
-            });
-            $builder->fieldset('Custom Code Inserts', 'config.code', function (FormBuilder $builder) {
-                $builder->code('Custom Header HTML', 'custom_header_html')->list(false)
-                    ->help('Custom header HTML, CSS, JS.  This is in addition to the website wide custom header html.');
-                $builder->code('Custom Before Body End HTML', 'custom_before_body_end_html')->list(false)
-                    ->help('HTML, CSS, JS you may need to inject before the closing </body> tag on all pages. This is in addition to the website wide custom before body end html.');
-                $builder->code('Custom Footer HTML', 'custom_footer_html')->list(false)
-                    ->help('Custom footer HTML, CSS, JS This is in addition to the website wide custom footer html.');
-            });
-
-        })->linkToResources(['pages.show', 'websites.pages.index', 'websites.pages.create', 'websites.pages.show'])
-            ->getForm();
-
-        $cp->linkForm($form);
-
-
-        $form = FormBuilder::new('menus', function (FormBuilder $builder) {
-            $builder->string('Name', 'name')->list()->required()->sortable()->searchable();
-            $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
-            $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
-        })->linkToResources(['websites.menus.index', 'websites.menus.create'])
-        ->getForm();
-
-        $cp->linkForm($form);
-
-        $form = FormBuilder::new('menus-editor', function (FormBuilder $builder) {
-            $builder->editor('Menu');
-            // $builder->menuEditor('Menu', 'menu')->list(false);
-        })->linkToResources(['websites.menus.show'])
-        ->getForm();
-
-        $cp->linkForm($form);
-
-        $form = FormBuilder::new('create-link', function (FormBuilder $builder) {
-            $builder->string('Label', 'title');
-            $builder->string('Url', 'url');
-            $builder->string('Alt', 'alt');
-            $builder->string('Icon', 'icon');
-            $builder->boolean('New Tab', 'new_tab');
-            $builder->boolean('Clickable', 'clickable');
-            $builder->wysiwyg('Content', 'content');
-        })
-        ->getForm();
-
-        $cp->linkForm($form);
-
-        $form = FormBuilder::new('edit-menu-item', function (FormBuilder $builder) {
-            $builder->string('Label', 'title');
-            $builder->string('Alt', 'alt');
-            $builder->string('Icon', 'icon');
-            $builder->select('Permission Required', 'req_perm')->dynamic(\P3in\Models\Permission::class, function (FieldSource $source) {
-                $source->select(['id AS index', 'label']);
-            });
-            $builder->boolean('New Tab', 'new_tab');
-            $builder->boolean('Clickable', 'clickable');
-        })->getForm();
-
-        $cp->linkForm($form);
-
-        $form = FormBuilder::new('edit-link', function (FormBuilder $builder) {
-            $builder->string('Label', 'title');
-            $builder->string('Url', 'url');
-            $builder->string('Alt', 'alt');
-            $builder->string('Icon', 'icon');
-            $builder->select('Permission Required', 'req_perm')->dynamic(\P3in\Models\Permission::class, function (FieldSource $source) {
-                $source->select(['id AS index', 'label']);
-            });
-            $builder->boolean('New Tab', 'new_tab');
-            $builder->boolean('Clickable', 'clickable');
-            $builder->wysiwyg('Content', 'content');
-        })->getForm();
-
-        $cp->linkForm($form);
-
-        $form = Formbuilder::new('storage', function (FormBuilder $builder) {
-            $builder->string('Name', 'name')->list()->sortable()->searchable()->required();
-            $builder->string('Type', 'type.name')->list()->edit(false)->sortable()->searchable()->required();
-            $builder->select('Disk Instance', 'type_id')->list(false)->required()->dynamic(\P3in\Models\StorageType::class, function (FieldSource $source) {
-                $source->select(['id AS index', 'name AS label']);
-            });
-            $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
-            $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
-            // @TODO this is one way, but validation has issues (too long to explain here)
-            // $builder->string('Root', 'config.root')->list()->sortable()->searchable()->required();
-            $builder->fieldset('Configuration', 'config', function (FormBuilder $builder) {
-                $builder->string('Root', 'root')->list()->sortable()->searchable()->required();
-            })->list(false)->required();
-        })->linkToResources(['storage.index', 'storage.show', 'storage.create', 'storage.store', 'storage.update'])
-        ->getForm();
-
-        $cp->linkForm($form);
-
-        $form = FormBuilder::new('resources', function (FormBuilder $builder) {
-            $builder->string('Resource', 'resource')->list()->sortable()->searchable()->required();
-            $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
-            $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
-            $builder->select('Role required', 'req_role')->dynamic(\P3in\Models\Role::class, function (FieldSource $source) {
-                $source->select(['id As index', 'label']);
-            })->nullable();
-        })->linkToResources(['resources.index', 'resources.show', 'resources.create'])
-        ->getForm();
-
-        $cp->linkForm($form);
-
-        $form = FormBuilder::new('forms', function (FormBuilder $builder) {
-            $builder->string('Name', 'name')->list(true)->sortable()->searchable();
-            $builder->string('Editor', 'editor');
-            $builder->string('Fields', 'fieldsCount')->edit(false)->list();
-            $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
-            $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
-            $builder->string('Updated', 'updated_at')->edit(false);
-        })->linkToResources(['forms.index', 'forms.show'])
-        ->getForm();
-
-        $cp->linkForm($form);
-
     }
 }

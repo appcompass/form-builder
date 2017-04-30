@@ -240,7 +240,7 @@ class Page extends Model implements Linkable
      */
     public function getUpdateFrequencyAttribute()
     {
-        return $this->getMeta('sitemap->changefreq');
+        return $this->getMeta('sitemap.changefreq');
     }
 
     /**
@@ -250,7 +250,7 @@ class Page extends Model implements Linkable
      */
     public function getPriorityAttribute()
     {
-        return $this->getMeta('sitemap->priority');
+        return $this->getMeta('sitemap.priority');
     }
 
     /**
@@ -291,15 +291,9 @@ class Page extends Model implements Linkable
      */
     public function getMeta($key)
     {
-        $path = explode('->', $key);
-        $obj = $this->meta;
-        foreach ($path as $step) {
-            if (is_null($obj = isset($obj->{$step}) ? $obj->{$step} : null)) {
-                return $obj;
-            }
-        }
-
-        return $obj;
+        // array_get is what we need but only works with arrays.
+        $conf = json_decode(json_encode($this->meta ?: []), true);
+        return array_get($conf, $key, null);
     }
 
     /**

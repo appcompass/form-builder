@@ -19,6 +19,7 @@ use P3in\Events\Login;
 use P3in\Events\Logout;
 use P3in\Models\Resource;
 use P3in\Models\User;
+use P3in\Renderers\WebsiteRenderer;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CpResourcesController extends Controller
@@ -29,15 +30,10 @@ class CpResourcesController extends Controller
         // forever? we would then need to clear this cache when updating a user permission though.
         // @TODO: fix form render so it's not running queries in loops.
         $data = Cache::remember($cacheKey, 0, function () use ($request) {
-            $pages = $request->website
-                ->pages()
-                ->byAllowedRole()
-                ->with('sections')
-                ->get();
-
+            $renderer = new WebsiteRenderer($request->website);
             return [
                 // 'resources' => $this->getResources(),
-                'routes' => $request->website->buildRoutesTree($pages),
+                'routes' => $renderer->buildRoutesTree(),
             ];
         });
 
