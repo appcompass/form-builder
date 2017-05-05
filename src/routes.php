@@ -54,10 +54,15 @@ Route::group([
     $router->resource('websites.menus', WebsiteMenusController::class);
     $router->resource('websites.navigation', WebsiteMenusController::class);
     $router->resource('websites.pages', WebsitePagesController::class);
+    // @TODO: websites/{website}/containers
     $router->get('websites/{website}/pages/{page}/containers', 'WebsitePagesController@containers');
+    // @TODO: websites/{website}/sections
     $router->get('websites/{website}/pages/{page}/sections', 'WebsitePagesController@sections');
-    // $router->resource('pages.contents', PageContentsController::class); // @TODO: websites.pages.contents
-    // $router->resource('pages.sections', PageSectionsController::class); // @TODO: websites.pages.sections
+    // @TODO: websites/{website}/page-links
+    $router->get('websites/{website}/pages/{page}/page-links', 'WebsitePagesController@pageLinks');
+    // @TODO: websites/{website}/extrnal-links
+    $router->get('websites/{website}/pages/{page}/external-links', 'WebsitePagesController@externalLinks');
+
     $router->resource('websites.redirects', WebsiteRedirectsController::class);
 
     $router->resource('resources', ResourcesController::class);

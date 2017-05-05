@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use P3in\Builders\PageBuilder;
 use P3in\Interfaces\WebsitePagesRepositoryInterface;
+use P3in\Models\Link;
 use P3in\Models\PageSectionContent;
 use P3in\Models\Section;
 use P3in\Requests\FormRequest;
@@ -76,5 +77,20 @@ class WebsitePagesController extends AbstractChildController
         }
 
         return $rtn;
+    }
+
+    // @TODO: these should live in their own controllers too.
+    public function pageLinks(FormRequest $request, Model $parent, Model $model)
+    {
+        return response()->json([
+            'collection' => $parent->pages
+        ]);
+    }
+    public function externalLinks(FormRequest $request, Model $parent, Model $model)
+    {
+        // @TODO: $parent->links instead of Link::get()
+        return response()->json([
+            'collection' => Link::get()
+        ]);
     }
 }
