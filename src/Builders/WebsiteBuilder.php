@@ -364,7 +364,8 @@ class WebsiteBuilder
         $rtn = '';
         foreach ($pages as $page) {
             $file = str_replace('/', '-', trim($page->url, '/'));
-            $rtn .= "import {$page->template_name} from './pages/{$file}'\n";
+            $name = $file ? $file : 'home';
+            $rtn .= "const {$page->template_name} = r => require.ensure([], () => r(require('./pages/{$file}')), '{$name}')\n";
         }
         return $rtn;
     }

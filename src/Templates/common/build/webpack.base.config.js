@@ -2,6 +2,8 @@ const path = require('path')
 // const projectRoot = path.resolve(__dirname, '../')
 const vueConfig = require('./vue-loader.config')
 
+var WebpackMd5Hash = require('webpack-md5-hash');
+
 module.exports = {
   devtool: '#source-map',
   entry: {
@@ -23,9 +25,12 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, '../dist'),
     publicPath: '/dist/',
-    filename: 'client-bundle.[chunkhash].js'
+    filename: '[name].[chunkhash].js',
+    chunkFilename: '[name].[chunkhash].js'
   },
-
+  plugins: [
+    new WebpackMd5Hash()
+  ],
   module: {
     rules: [
       {
