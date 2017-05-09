@@ -5,6 +5,7 @@ namespace P3in\Builders;
 use Closure;
 use Exception;
 use Illuminate\Support\Facades\App;
+use P3in\Builders\WebsiteBuilder;
 use P3in\Models\Page;
 use P3in\Models\PageSectionContent;
 use P3in\Models\Resource;
@@ -89,18 +90,22 @@ class PageBuilder
         $builder->page->save();
 
         $order = 0;
-        $builder->fromStructure($data['layout'], null, $order);
-
-        // re-render the template.
-        $builder->renderTemplate();
+        $structueChange = false;
+        $builder->fromStructure($data['layout'], null, $order, $structueChange);
 
         // @TODO: currently we have to manually run `npm install && npm run build` and if we're using something like PM2, `&& pm2 restart all`
         // Basically we have to redeploy the website because the templates have changed and thus means the bundles rebuilt.
         // We need to find a way to avoid having to do all that..
+        if ($structueChange) {
+            // re-render the template.
+            $builder->renderTemplate();
+            // Deploy website when page structure has changed.
+            $builder->deployWebsite();
+        }
 
     }
 
-    public function fromStructure($array, $parent = null, &$order)
+    public function fromStructure($array, $parent = null, &$order, &$structueChange)
     {
 
         foreach ($array as $row) {
@@ -108,6 +113,10 @@ class PageBuilder
             $pageContentSection = $this->page->contents()->findOrNew($row['id'] ?? null);
             // @TODO: throw secific error so we know what to look for when debug is turned off.
             $section = Section::findOrFail($row['section']['id']);
+
+            if ($pageContentSection->getAttributeValue('order') != $order) {
+                $structueChange = true;
+            }
 
             $pageContentSection->fill($row);
             $pageContentSection->order = $order;
@@ -121,7 +130,7 @@ class PageBuilder
             $pageContentSection->save();
 
             if (!empty($row['children'])) {
-                $this->fromStructure($row['children'], $pageContentSection, $order);
+                $this->fromStructure($row['children'], $pageContentSection, $order, $structueChange);
             }
         }
     }
@@ -349,6 +358,11 @@ class PageBuilder
         return $this;
     }
 
+    public function deployWebsite()
+    {
+        $builder = WebsiteBuilder::edit($this->page->website);
+        $builder->deploy();
+    }
 
     /**
      * Passthrough for building a MenuItem from the page
