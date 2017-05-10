@@ -74,7 +74,6 @@ class DeployWebsite extends Command
             //     $this->info($buffer);
             // }
         });
-
     }
 
   /**

@@ -165,15 +165,12 @@ class Field extends Model
      */
     public function required($required = true)
     {
-
         $attrs = $this->getAttributes();
 
         $exploded = isset($attrs['validation']) ? explode(' | ', $attrs['validation']) : [];
 
         if (isset($exploded['required'])) {
-
             unset($exploded['required']);
-
         }
 
         $exploded[] = $required ? 'required' : null;

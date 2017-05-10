@@ -17,9 +17,7 @@ class GalleryPhotosRepositoryPolicy
     public function before(User $user, $ability)
     {
         if ($user->isAdmin()) {
-
             return true;
-
         }
     }
 
@@ -33,9 +31,7 @@ class GalleryPhotosRepositoryPolicy
         $gallery = $repo->getParent();
 
         if ($repo->getParent()->user->id !== $user->id) {
-
             return $this->deny('You cannot upload images to this gallery.');
-
         }
 
         return true;
@@ -44,9 +40,7 @@ class GalleryPhotosRepositoryPolicy
     public function destroy(User $user, GalleryPhotosRepository $repo)
     {
         if ($repo->getParent()->user->id !== $user->id || $repo->getModel()->user_id !== $user->id) {
-
             return $this->deny('Why would you think you can delete that doesn\'t belong you.');
-
         }
 
         return true;

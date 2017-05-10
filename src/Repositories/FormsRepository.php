@@ -7,7 +7,6 @@ use P3in\Models\Form;
 
 class FormsRepository extends AbstractRepository implements FormsRepositoryInterface
 {
-
     public function __construct(Form $model)
     {
         $this->model = $model;

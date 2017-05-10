@@ -5,12 +5,12 @@ namespace P3in\Controllers;
 use Illuminate\Database\Eloquent\Model;
 use P3in\Requests\FormRequest;
 use P3in\Interfaces\PageContentRepositoryInterface;
+
 // use P3in\Models\Page;
 // use P3in\Models\PageSectionContent;
 
 class PageContentController extends AbstractChildController
 {
-
     public function __construct(PageContentRepositoryInterface $repo)
     {
         $this->repo = $repo;
@@ -24,9 +24,7 @@ class PageContentController extends AbstractChildController
     public function update(FormRequest $request, Model $parent, Model $model)
     {
         if ($model->source) {
-
             foreach ($model->section->form->fields as $field) {
-
                 if ($field->type !== 'Dynamic') {
                     continue;
                 }

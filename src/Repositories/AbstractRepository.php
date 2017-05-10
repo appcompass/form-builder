@@ -71,28 +71,19 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
     protected function make()
     {
         if (! $this->builder) {
-
             $this->builder = $this->getBuilder();
-
         }
 
         // @TODO consider how to work with relations, it could happen the Model doesn't have a user_id directly (we prob should avoid that to keep it simpler)
         // SEE_OWNED has the highest priority
         if (static::SEE_OWNED) {
-
             if (!Auth::check()) {
-
                 $this->locked = true;
-
             }
 
             if (!Auth::user()->isAdmin()) {
-
-
                 $this->builder->where($this->owned_key, \Auth::user()->id);
-
             }
-
         }
 
         $this->loadRelations();
@@ -112,9 +103,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
     public function getBuilder()
     {
         if (!$this->builder) {
-
             $this->builder = $this->model->newQuery();
-
         }
 
         return $this->builder;
@@ -127,10 +116,8 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
     {
         $with = [];
 
-        foreach($this->with as $relation) {
-
+        foreach ($this->with as $relation) {
             $this->builder->with($relation);
-
         }
 
         return $this;
@@ -180,9 +167,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
     public function search($search = null)
     {
         if (!request()->has('search') && is_null($search)) {
-
             return;
-
         }
 
         if (is_null($search)) {
@@ -192,15 +177,11 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
             if (is_string($search)) {
                 $search = json_decode($search, true);
             }
-
         }
 
-        foreach((array) $search as $column => $string) {
-
+        foreach ((array) $search as $column => $string) {
             $this->builder->where($column, 'ilike', "%{$string}%");
-
         }
-
     }
 
     /**
@@ -211,9 +192,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
     public function sort($sorters = null)
     {
         if (!request()->has('sorters') && is_null($sorters)) {
-
             return;
-
         }
 
         if (is_null($sorters)) {
@@ -223,10 +202,8 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
             }
         }
 
-        foreach((array) $sorters as $field => $order) {
-
+        foreach ((array) $sorters as $field => $order) {
             $this->builder->orderBy($field, $order);
-
         }
     }
 
@@ -245,13 +222,9 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         $this->model->fill($request);
 
         if ($this->model->save()) {
-
             return $this->model;
-
         } else {
-
             return false;
-
         }
     }
 
@@ -268,22 +241,17 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         // get the whole list of stuff we're sorting
         $items = $rel->whereIn('id', $order);
 
-        foreach($order as $single) {
-
+        foreach ($order as $single) {
             $coll[] = $items->find($single);
-
         }
 
         for ($i = 0; $i < count($coll); $i++) {
-
             $coll[$i]->order = $i;
 
             $coll[$i]->save();
-
         }
 
         return $this;
-
     }
 
     /**
@@ -309,28 +277,20 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         // respectively from -> field in the source object, to -> what it matches against in
         // current table i.e. 'user' => ['from' => 'id', 'to' => 'user_id']
         // it's a bit verbose but appears to be very flexible
-        foreach ($this->requires['props'] as $requirement => $field)
-        {
+        foreach ($this->requires['props'] as $requirement => $field) {
             if (!property_exists($request, $requirement)) {
-
                 throw new \Exception('Requirement not satisfied: ' . $requirement);
-
             }
 
             $res[$field['to']] = $request->{$requirement}->{$field['from']};
-
         }
 
-        foreach ($this->requires['methods'] as $requirement => $field)
-        {
+        foreach ($this->requires['methods'] as $requirement => $field) {
             if (!method_exists($request, $requirement)) {
-
                 throw new \Exception('Requirement not satisfied: ' . $requirement);
-
             }
 
             $res[$field['to']] = $request->{$requirement}()->{$field['from']};
-
         }
 
         return $res;
@@ -382,7 +342,6 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
      */
     public function findByPrimaryKey($id)
     {
-
         return $this->output($this->make()
             ->builder
             ->where($this->model->getTable() . '.' . $this->model->getKeyName(), $id)
@@ -416,24 +375,17 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
 
             // return;
             return $this->output([], 401);
-
         }
 
         // for show() if a model has been set we only wanna load rels
         if ($this->model->id) {
-
             $data = $this->model;
-
         }
 
         if (request()->has('page')) {
-
             $data = $this->paginate(request()->per_page, request()->page);
-
         } else {
-
             $data = $this->paginate();
-
         }
 
         return $this->output($data);
@@ -460,29 +412,17 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         $data = $this->make()->builder->paginate($per_page, ['*'], 'page', $page);
 
         if (static::EDIT_OWNED && !Auth::user()->isAdmin()) {
-
             foreach ($data as $record) {
-
                 if (Auth::user()->id === $record[$this->owned_key]) {
-
                     $record['abilities'] = ['edit', 'view', 'create', 'destroy'];
-
                 } else {
-
                     $record['abilities'] = ['view', 'create'];
-
                 }
-
             }
-
         } else {
-
             foreach ($data as $record) {
-
                 $record['abilities'] = ['edit', 'view', 'create', 'destroy'];
-
             }
-
         }
 
         return $data;
@@ -502,11 +442,11 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
      */
     public function checkForUploads($attributes)
     {
-        $file = head(array_where($attributes, function($val){
+        $file = head(array_where($attributes, function ($val) {
             return is_a($val, UploadedFile::class);
         }));
 
-        $storage = $this->model->storage ? $this->model->storage->name : head(array_where($attributes, function($val, $key){
+        $storage = $this->model->storage ? $this->model->storage->name : head(array_where($attributes, function ($val, $key) {
             return $key == 'disk';
         }));
 
@@ -538,7 +478,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
             ];
 
             return response()->json($rtn, $code);
-        }else{
+        } else {
             $rtn = [
                 'route' => $this->route_name,
                 'parameters' => $this->route_params,
@@ -559,7 +499,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
     public function getApiUrl()
     {
         $keys = explode('.', $this->route_name);
-        $values = array_values(array_map(function($param){
+        $values = array_values(array_map(function ($param) {
             return $param->getKey();
         }, $this->route_params));
 
@@ -579,21 +519,14 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
 
     public function getResourceForm()
     {
-        $resource = Resource::where(function($query){
-            $query->whereNull('req_role')->orWhereHas('role', function ($query) {
-                $query->whereHas('users', function ($query) {
-                    $query->where('id', Auth::user()->id);
-                });
-            });
-        })
-            ->where('resource',  $this->route_name)
+        $resource = Resource::byAllowedRole()
+            ->where('resource', $this->route_name)
             ->with('form')
             ->first();
 
         if (!empty($resource->form)) {
             return $resource->form->render($this->getRouteType());
         }
-
     }
 
     public function getRouteType()

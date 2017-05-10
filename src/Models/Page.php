@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\DB;
 use P3in\Interfaces\Linkable;
 use P3in\Models\Layout;
 use P3in\Models\PageSectionContent;
-use P3in\Models\Role;
 use P3in\Models\Section;
 use P3in\Models\Website;
 use P3in\Traits\HasRole;
@@ -85,6 +84,37 @@ class Page extends Model implements Linkable
     public function contents()
     {
         return $this->hasMany(PageSectionContent::class)->orderBy('order', 'asc');
+    }
+
+
+    public function dropContent($psc)
+    {
+        if (is_array($psc)) {
+            foreach ($psc as $single) {
+                $this->dropContent($single);
+            }
+
+            return $this;
+        }
+
+        if (is_int($psc)) {
+            $content = $this->contents()->findOrFail($psc);
+        } elseif ($psc instanceof PageSectionContent) {
+            $content = $this->contents()->findOrFail($psc->id);
+        }
+
+        // delete children first to trigger Observers properly.  Otherwise DB does auto clean up via cascade on delete, i.e. no Observers triggered.
+        if ($content->children->count()) {
+            foreach ($content->children as $child) {
+                $this->dropContent($child);
+            }
+        }
+
+        if ($content->delete()) {
+            return true;
+        } else {
+            throw new \Exception("Errors while removing PageSectionContent");
+        }
     }
 
     /**
@@ -210,7 +240,7 @@ class Page extends Model implements Linkable
      */
     public function getUpdateFrequencyAttribute()
     {
-        return $this->getMeta('update_frequency');
+        return $this->getMeta('sitemap.changefreq');
     }
 
     /**
@@ -220,7 +250,7 @@ class Page extends Model implements Linkable
      */
     public function getPriorityAttribute()
     {
-        return $this->getMeta('priority');
+        return $this->getMeta('sitemap.priority');
     }
 
     /**
@@ -261,7 +291,9 @@ class Page extends Model implements Linkable
      */
     public function getMeta($key)
     {
-        return isset($this->meta->{$key}) ? $this->meta->{$key} : null;
+        // array_get is what we need but only works with arrays.
+        $conf = json_decode(json_encode($this->meta ?: []), true);
+        return array_get($conf, $key, null);
     }
 
     /**
@@ -327,8 +359,7 @@ class Page extends Model implements Linkable
         // return $this->dynamic_url ? $slug.'/:id' : $slug ;
         // OR: /websites/:website/pages/:page which allows $route.params to have the whole chain,
         // BUT seems to be harder to parse/work with on the front-end.
-        return $this->dynamic_url ? $slug.'/:'.$slug : $slug ;
-
+        return $this->dynamic_url ? $slug.'/:'.str_slug($slug, '_') : $slug ;
     }
 
     /**

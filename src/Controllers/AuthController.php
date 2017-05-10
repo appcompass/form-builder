@@ -70,12 +70,11 @@ class AuthController extends Controller
             $user->active = true;
             $user->save();
 
-            if($this->afterLoginAttempt(($this->guard()->login($user)))) {
+            if ($this->afterLoginAttempt(($this->guard()->login($user)))) {
                 return $this->sendLoginResponse($request);
-            }else{
+            } else {
                 return $this->sendFailedLoginResponse($request);
             }
-
         } catch (ModelNotFoundException $e) {
             return $this->noCodeResponse($request);
         }
@@ -84,7 +83,6 @@ class AuthController extends Controller
 
     protected function rules()
     {
-
         return [
             'first_name' => 'required|max:255',
             'last_name' => 'required|max:255',
@@ -117,7 +115,7 @@ class AuthController extends Controller
     // use in the controller, not sure why JWT doesn't do it internally...
     protected function attemptLogin(Request $request)
     {
-        if($token = $this->guard()->attempt($this->credentials($request))) {
+        if ($token = $this->guard()->attempt($this->credentials($request))) {
             return $this->afterLoginAttempt($token);
         }
         return $token;
@@ -154,7 +152,7 @@ class AuthController extends Controller
     {
         if ($token = $this->guard()->getToken()) {
             $token = $token->get();
-        }else{
+        } else {
             return $this->sendFailedLoginResponse($request);
         }
 

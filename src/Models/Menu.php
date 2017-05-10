@@ -53,35 +53,23 @@ class Menu extends Model
     public function drop($item)
     {
         if (is_array($item)) {
-
-            foreach($item as $single) {
-
+            foreach ($item as $single) {
                 $this->drop($single);
-
             }
 
             return $this;
-
         }
 
         if (is_int($item)) {
-
             $menu_item = $this->items()->where('id', $item)->firstOrFail();
-
         } elseif ($item instanceof MenuItem) {
-
             $menu_item = $this->items()->where('id', $item->id)->firstOrFail();
-
         }
 
         if ($menu_item->delete() && $this->clean($menu_item)) {
-
             return true;
-
         } else {
-
             throw new \Exception("Errors while removing MenuItem");
-
         }
     }
 
@@ -95,13 +83,9 @@ class Menu extends Model
         $children = MenuItem::where('parent_id', $menuitem->id)->get();
 
         if ($children) {
-
             foreach ($children as $child) {
-
                 $this->clean($child);
-
             }
-
         }
 
         $menuitem->delete();
@@ -138,29 +122,19 @@ class Menu extends Model
         $tree = [];
 
         foreach ($items as $key => &$node) {
-
             if ($node->parent_id === $parent_id) {
-
                 $children = $this->buildTree($items, $node->id, $permissions);
 
                 $node->children = $children ?? [];
 
                 if ($node['req_perm']) {
-
                     if (isset($permissions[0]) && $permissions[0] == '*') {
-
                         $tree[] = $node;
-
                     } elseif (in_array($node['req_perm'], $permissions)) {
-
                         $tree[] = $node;
-
                     }
-
                 } else {
-
                     $tree[] = $node;
-
                 }
 
                 unset($items[$key]);

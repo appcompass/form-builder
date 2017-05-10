@@ -4,11 +4,8 @@ namespace P3in\Traits;
 
 trait HasCardView
 {
-
-
     public function __construct(array $attributes = [])
     {
-
         $this->append('card_photo');
 
         parent::__construct($attributes);
@@ -20,5 +17,4 @@ trait HasCardView
     {
         return $this->getCardPhotoUrl();
     }
-
 }

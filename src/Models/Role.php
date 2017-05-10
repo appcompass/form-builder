@@ -39,9 +39,7 @@ class Role extends Model
     public function addUser(User $user)
     {
         if (!$this->users->contains($user->id)) {
-
             return $this->users()->attach($user);
-
         }
 
         return false;
@@ -84,37 +82,22 @@ class Role extends Model
     public function grantPermissions($perm)
     {
         if (is_null($perm)) {
-
             return;
-
         } elseif ($perm instanceof \Illuminate\Database\Eloquent\Collection) {
-
             return $this->permissions()->sync($perm);
-
         } elseif (is_string($perm)) {
-
             return $this->grantPermissions(Permission::byType($perm)->firstOrFail());
-
         } elseif ($perm instanceof Permission) {
-
             if (!$this->permissions->contains($perm->id)) {
-
                 return $this->permissions()->attach($perm);
-
             }
 
             return false;
-
         } elseif (is_array($perm)) {
-
             foreach ($perm as $single_permission) {
-
                 $this->grantPermissions($single_permission);
-
             }
-
         }
-
     }
 
     /**
@@ -149,26 +132,15 @@ class Role extends Model
     public function revokePermissions($perm)
     {
         if (is_null($perm)) {
-
             return;
-
         } elseif (is_string($perm)) {
-
             return $this->revokePermissions(Permission::byType($perm)->firstOrFail());
-
         } elseif ($perm instanceof Permission) {
-
             return $this->permissions()->detach($perm);
-
         } elseif (is_array($perm)) {
-
             foreach ($perm as $single_permission) {
-
                 $this->revokePermissions($single_permission);
-
             }
-
         }
-
     }
 }

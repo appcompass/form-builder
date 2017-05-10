@@ -21,7 +21,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Website extends Model
 {
-
     use HasGallery,
         HasPermissions,
         HasStorage,
@@ -41,11 +40,6 @@ class Website extends Model
     ];
 
     // protected $hidden = ['config'];
-
-    /**
-     *
-     */
-    public static $current = null;
 
     /**
      *
@@ -107,7 +101,8 @@ class Website extends Model
     //     return $this->morphOne(Photo::class, 'photoable');
     // }
 
-    public function apendStoragePath() {
+    public function apendStoragePath()
+    {
         // @TODO: Needs tie in with website settings with fallback of empty string.
         return '';
     }
@@ -148,32 +143,6 @@ class Website extends Model
         return $this->attributes['scheme'].'://'.$this->attributes['host'];
     }
 
-    // @TODO refactor big time all following methods.
-    //   - website is gonna be available in the request most of the time. no use cases for this yet -f
-    /**
-     *
-     */
-    public static function setCurrent(Website $website)
-    {
-        return static::$current = $website;
-    }
-
-    /**
-     *  getCurrent
-     */
-    public static function getCurrent()
-    {
-        return static::$current;
-    }
-
-    /**
-     *  current website
-     */
-    // public static function current(Request $request = null)
-    // {
-    //     return static::$current ?: Website::admin();
-    // }
-
     /**
       * return admin
       *
@@ -190,11 +159,6 @@ class Website extends Model
     // public function scopeManaged($query)
     // {
     //     return $query->where('site_name', '!=', env('ADMIN_WEBSITE_NAME', 'CMS Admin CP'));
-    // }
-
-    // public static function isManaged()
-    // {
-    //     return Website::current()->id !== Website::admin()->id;
     // }
 
     /**
@@ -247,92 +211,12 @@ class Website extends Model
     {
         $host = $host ?? $request->header('Site-Host');
         try {
-
             return Website::whereHost($host)->firstOrFail();
-
         } catch (NotFoundException $e) {
-
             App::abort(401, $host.' Not Authorized');
-
         } catch (ModelNotFoundException $e) {
-
             App::abort(401, $host.' Not Authorized');
-
         }
-    }
-
-
-    // Methods for Vue Route format output of all pages
-    // @TODO: we prob want to move this to something else, like WebsiteBuilder maybe
-    public function buildRoutesTree($pages = null)
-    {
-        // @TODO: not a good way to do this, refactor.
-        $pages = $pages ?? $this->pages;
-        $rtn = [];
-        foreach ($pages->where('parent_id', null) as $page) {
-            $row = $this->structureRouteRow($page);
-            $this->setPageChildren($row, $page->id, $pages);
-            $rtn[] = $row;
-        }
-        return $rtn;
-    }
-
-    private function setPageChildren(&$parent, $parent_id, $pages)
-    {
-        foreach ($pages->where('parent_id', $parent_id) as $page) {
-            unset($parent['name']);
-            $row = $this->structureRouteRow($page);
-            $this->setPageChildren($row, $page->id, $pages);
-            $parent['children'][] = $row;
-        }
-    }
-
-    // @TODO: if it's not obvious, needs some major refactoring.
-    private function structureRouteRow($page)
-    {
-        // we only go 2 deep (parent/child)
-        $segments = array_slice(explode('/',trim($page->url, '/')), -4, 4);
-        // websites/id/pages/id/content ends up with an id as the first segment, kill it.
-        if (!empty($segments[0]) && strpos($segments[0], ':') === 0) {
-                unset($segments[0]);
-        }
-        // check the resulting url segments against a api route.
-        try {
-            $request = app('router')->getRoutes()->match(app('request')->create(implode('/', $segments)));
-            $name = $request->getName();
-        } catch (NotFoundHttpException $e) {
-            // fallback which is more of a way of saying "hey, create this route or delete this page"
-            $name = str_slug(str_replace('/', '-', $page->url));
-        }
-        // cp pages are like any other, so we use the sections to define the view type
-        // (handy if we ever decided to change a view type for a page).
-        $section = $page->sections->first();
-        $path = $this->formatPath($page);
-        $component = $section ? $section->template : null;
-        $name = $name ? $name : 'home';
-        $row = [
-            'path' => $this->formatPath($page),
-            'full_path' => $page->url,
-            'name' => $name,
-            'meta' => [
-                'title' => $page->title,
-            ],
-            // might need to be worked out for CP, at least discussed to see if we want to go this route.
-            'component' => $component,
-        ];
-
-        return $row;
-    }
-
-    private function formatPath($page)
-    {
-        if (!$page->parent_id) {
-            return $page->url;
-        }
-        if ($page->dynamic_url) {
-            return substr($page->url, strpos($page->url, $page->slug));
-        }
-        return $page->slug;
     }
 
     // public function populateField($field_name)

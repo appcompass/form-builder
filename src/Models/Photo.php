@@ -38,7 +38,8 @@ class Photo extends GalleryItem implements GalleryItemInterface
      *
      * @return     <type>  ( description_of_the_return_value )
      */
-    public function apendStoragePath() {
+    public function apendStoragePath()
+    {
         return date('m-y');
     }
 
@@ -208,6 +209,8 @@ class Photo extends GalleryItem implements GalleryItemInterface
      */
     public function getMeta($key, $default = null)
     {
-        return isset($this->meta->{$key}) ? $this->meta->{$key} : $default;
+        // array_get is what we need but only works with arrays.
+        $conf = json_decode(json_encode($this->meta ?: []), true);
+        return array_get($conf, $key, $default);
     }
 }

@@ -16,21 +16,18 @@ class SourceBuilder
     // @TODO: re-write this, it's a queries in loops nightmare.
     public static function render(FieldSource $field_data)
     {
-
         $instance = new static;
 
         // do we return the data stored in the fieldData (precendece)?
         if ($field_data->data) {
-
             return $field_data->data;
 
         // if both type and id are set we want a single record
         } elseif (!is_null($field_data->sourceable_id) && !is_null($field_data->sourceable_type)) {
-
             return $field_data->sourceable->toArray();
 
         // when the type is set but not the id we resolve the query using fieldsource's criteria
-        } else if (!is_null($field_data->sourceable_type) && is_null($field_data->sourceable_id)) {
+        } elseif (!is_null($field_data->sourceable_type) && is_null($field_data->sourceable_id)) {
 
             // instantiate the model pointed by FieldSource
             $source_instance = new $field_data->sourceable_type();
@@ -48,7 +45,6 @@ class SourceBuilder
 
             // looks like toArray screws it up if you're not using a numeric id
             return $builder->get()->toArray();
-
         }
     }
 
@@ -64,13 +60,12 @@ class SourceBuilder
      */
     public function parseCriteria(array $criteria)
     {
-        foreach($criteria as $method => $single_criteria) {
+        foreach ($criteria as $method => $single_criteria) {
 
             // @TODO/@NOTE the pain point here is the UI not sending correctly formed arrays, to solve make sure ui
             // doesn't send strings instead of arrays i.e. NOT '["item1", "item2"]' (join, looking at you)
 
             call_user_func_array([$this, $method], (array) $single_criteria);
-
         }
 
         return $this->builder;
@@ -119,7 +114,6 @@ class SourceBuilder
         $destination = $destination_table . '.' . $destination_field;
 
         $this->builder->join($destination_table, $origin, '=', $destination);
-
     }
 
     /**

@@ -2,12 +2,15 @@
 
 namespace P3in\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use P3in\Traits\HasJsonConfigFieldTrait;
 
 class Form extends Model
 {
+    use HasJsonConfigFieldTrait;
+
     protected $fillable = [
         'name',
         'editor'
@@ -111,27 +114,6 @@ class Form extends Model
         return $this;
     }
 
-    public function setViewTypes(array $types)
-    {
-        $this->update(['view_types' => $types]);
-
-        return $this;
-    }
-
-    public function setCreateType(string $type)
-    {
-        $this->update(['create_type' => $type]);
-
-        return $this;
-    }
-
-    public function setUpdateType(string $type)
-    {
-        $this->update(['update_type' => $type]);
-
-        return $this;
-    }
-
 
     /**
      * like website.create or page.content
@@ -180,14 +162,10 @@ class Form extends Model
         $rules = [];
 
         // we only care about to_edit rules
-        foreach($this->fields()->where('to_edit', true)->get() as $field) {
-
+        foreach ($this->fields()->where('to_edit', true)->get() as $field) {
             if (!is_null($field->validation)) {
-
                 $rules[$this->getParentsChain($field)] = $field->validation;
-
             }
-
         }
 
         return $rules;
@@ -226,16 +204,13 @@ class Form extends Model
     {
         $parents = [];
 
-        while(!is_null($field)) {
-
+        while (!is_null($field)) {
             $parents[] = $field->name;
 
             $field = $field->parent;
-
         }
 
         return implode('.', array_reverse($parents));
-
     }
 
     /**
@@ -249,25 +224,17 @@ class Form extends Model
     private function buildTree(Collection &$items, $parent_id = null, $tree = null)
     {
         if (is_null($tree)) {
-
             $tree = [];
-
         }
 
         foreach ($items as &$node) {
-
             if ($node->parent_id === $parent_id) {
-
                 $fields = $this->buildTree($items, $node->id);
 
                 if (count($fields)) {
-
                     $node->fields = $fields;
-
                 } else {
-
                     $node->fields = [];
-
                 }
 
                 // @TODO we return as array because we wanna trigger Field->source()

@@ -6,10 +6,16 @@ use P3in\Models\Role;
 
 trait HasRole
 {
-
     public function role()
     {
         return $this->belongsTo(Role::class, 'req_role');
+    }
+
+    public function setRole(string $name)
+    {
+        $role = Role::byName($name)->firstOrFail();
+        $this->role()->associate($role);
+        return $this;
     }
 
     public function scopeByAllowedRole($query)

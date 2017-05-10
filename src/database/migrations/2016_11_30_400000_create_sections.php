@@ -22,6 +22,8 @@ class CreateSections extends Migration
             $table->json("config")->nullable();
             $table->integer('website_id')->nullable();
             $table->foreign('website_id')->references('id')->on('websites');
+
+            $table->unique(['website_id', 'name']);
             // @TODO: do we want to have section storage?
             // Technically these reference files so the question must be asked.
             // $table->integer('storage_id')->nullable();

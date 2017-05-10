@@ -25,7 +25,7 @@ class PasswordController extends Controller
 
     protected function sendResetLinkFailedResponse(Request $request, $response)
     {
-        return response()->json(['email' => trans($response)], 422);
+        return response()->json(['email' => [trans($response)]], 422);
     }
 
     protected function sendResetResponse($response)
@@ -35,7 +35,22 @@ class PasswordController extends Controller
 
     protected function sendResetFailedResponse(Request $request, $response)
     {
-        return response()->json(['email' => trans($response)], 422);
+        return response()->json(['token' => [trans($response)]], 422);
     }
 
+    protected function rules()
+    {
+        return [
+            'token' => 'required',
+            'email' => 'required|email|exists:users',
+            'password' => 'required|confirmed|min:6',
+        ];
+    }
+
+    protected function validationErrorMessages()
+    {
+        return [
+            'email.exists' => trans('passwords.user')
+        ];
+    }
 }

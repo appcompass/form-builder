@@ -21,9 +21,7 @@ class GalleriesController extends AbstractController
 
     public function store(FormRequest $request)
     {
-
         if (Auth::check()) {
-
             $request->user = Auth::user();
 
             return parent::store($request);
@@ -38,6 +36,4 @@ class GalleriesController extends AbstractController
 
         return parent::update($request, $model);
     }
-
-
 }

@@ -21,14 +21,14 @@ class GalleriesSeeder extends Seeder
 
         FormBuilder::new('galleries', function (FormBuilder $builder) {
             $builder->string('Gallery Name', 'name')->list()->validation(['required'])->sortable()->searchable();
-            $builder->select('Disk Instance', 'galleryable.storage.name')->dynamic(\P3in\Models\StorageConfig::class, function(FieldSource $source) {
+            $builder->select('Disk Instance', 'galleryable.storage.name')->dynamic(\P3in\Models\StorageConfig::class, function (FieldSource $source) {
                 $source->select(['name AS index', 'name AS label']);
             });
             $builder->string('Owner', 'user.email')->list()->edit(false);
         })->linkToResources(['galleries.index', 'galleries.show', 'galleries.store']);
 
         FormBuilder::new('photos_upload', function (FormBuilder $builder) {
-            $builder->select('Disk Instance', 'storage.name')->dynamic(\P3in\Models\StorageConfig::class, function(FieldSource $source) {
+            $builder->select('Disk Instance', 'storage.name')->dynamic(\P3in\Models\StorageConfig::class, function (FieldSource $source) {
                 // @TODO: add selected target.  i.e in this case the default selected value is the parent or another relationship, like gallery's storage.
                 // Really it could be anything though, granted we would need to specify the value type if we left it open ended.
                 // $source->defaultValue('gallery.galleryable.storage.name')

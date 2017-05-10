@@ -7,7 +7,6 @@ use P3in\Models\Website;
 
 class WebsitesRepository extends AbstractRepository implements WebsitesRepositoryInterface
 {
-
     protected $view_types = ['Table', 'Card'];
 
     public function __construct(Website $model)

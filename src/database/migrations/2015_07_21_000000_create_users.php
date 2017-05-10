@@ -32,7 +32,6 @@ class CreateUsers extends Migration
             $table->string('token')->index();
             $table->timestamp('created_at')->nullable();
         });
-
     }
 
     /**

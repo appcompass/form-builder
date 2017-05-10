@@ -17,9 +17,7 @@ class ResourcesPolicy
     public function before($user, $perm)
     {
         if ($user->isAdmin()) {
-
             return true;
-
         }
     }
 
@@ -28,7 +26,6 @@ class ResourcesPolicy
         $role = Resource::resolve(Route::currentRouteName())->req_role;
 
         if (is_null($role)) {
-
             return true;
         }
 
@@ -58,5 +55,4 @@ class ResourcesPolicy
 
         return true;
     }
-
 }

@@ -23,7 +23,6 @@ class CreateGalleries extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-
     }
 
     /**

@@ -22,9 +22,7 @@ class MenusController extends AbstractController
         $permisions = [];
 
         if (\Auth::check()) {
-
             $permissions = \Auth::user()->allPermissions();
-
         }
 
         return $model->render(false, $permissions);

@@ -31,7 +31,6 @@ class CreateRoles extends Migration
             $table->index(['role_id', 'user_id']);
             $table->timestamps();
         });
-
     }
 
     /**

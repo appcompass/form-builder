@@ -11,5 +11,4 @@ class UsersController extends AbstractController
     {
         $this->repo = $repo;
     }
-
 }

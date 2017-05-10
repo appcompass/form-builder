@@ -75,7 +75,6 @@ class TemplateRenderer
         $this->buildPageTemplateTree($pageStructure);
 
         $this->storeTemplate($name, $this->buildTemplate());
-
     }
 
     /**
@@ -91,7 +90,7 @@ class TemplateRenderer
 
         if ($container) {
             return $this->buildContainer($conf);
-        }else{
+        } else {
             return $this->buildComponent($part);
         }
 
@@ -117,7 +116,6 @@ class TemplateRenderer
         $props[] = ':data="content['.$part->id.']"';
 
         return $elm.'('.implode(', ', $props).')';
-
     }
 
     /**

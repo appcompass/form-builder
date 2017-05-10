@@ -35,12 +35,9 @@ class FormStorage extends Model
         $storage->form()->associate($form);
 
         if ($storage->save()) {
-
             Notification::send(Role::whereName('admin')->first()->users, new FormStored($storage));
-
         }
 
         return $storage;
     }
-
 }

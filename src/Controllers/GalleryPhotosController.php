@@ -53,7 +53,5 @@ class GalleryPhotosController extends AbstractChildController
         // @TODO take a look at how generic reordering is
         //  -- not THAT many cases for this kind of reordering yet: the other one -menu- sorts in place and the pushes the whole thing. for photos we are properly using parent/child relations, thus we push every time we sort. where else is this gonna happen?
         $this->repo->reorder($request->order, 'order');
-
     }
-
 }

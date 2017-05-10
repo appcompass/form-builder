@@ -110,9 +110,7 @@ class PageSectionContent extends Model
         $content = json_decode($value);
 
         if ($content === '[]') {
-
             $content = json_decode('{}');
-
         }
 
         if ($this->source) {
@@ -120,26 +118,20 @@ class PageSectionContent extends Model
             // @TODO this needs to go, why is content sometimes an array and sometimes an object
             // when content is empty json_decode treats it as an array, how can it tell...
             if (is_array($content)) {
-
                 $content[$this->source->related_field] = $this->source->render();
-
             } else {
-
                 $content->{$this->source->related_field} = $this->source->render();
-
             }
 
             // we don't need a separate field in this case
             unset($this->source);
 
             return $content;
-
         } else {
 
             // if content doesn't have a linked source just return actual content
 
             return $content;
-
         }
     }
 
@@ -170,9 +162,7 @@ class PageSectionContent extends Model
     public function addSection(Section $section)
     {
         if (!$this->isContainer()) {
-
             throw new Exception('a Section can only be added to a Container.');
-
         }
 
         $child = new self;
@@ -216,7 +206,6 @@ class PageSectionContent extends Model
     public function edit()
     {
         if ($this->source) {
-
             $source = $this->source;
 
             $content = json_decode($this->attributes['content']);
@@ -224,19 +213,12 @@ class PageSectionContent extends Model
             // @TODO this needs to go, why is content sometimes an array and sometimes an object
             // when content is empty json_decode treats it as an array, how can it tell...
             if (is_array($content)) {
-
                 $content[$this->source->related_field] = $this->source->config();
-
             } else {
-
                 $content->{$this->source->related_field} = $this->source->config();
-
             }
-
         } else {
-
             $content = json_decode($this->attributes['content']);
-
         }
 
         $website = $this->page->website;
@@ -261,6 +243,5 @@ class PageSectionContent extends Model
 
     public function getBasePhotoPath()
     {
-
     }
 }
