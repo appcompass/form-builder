@@ -216,6 +216,8 @@ class ResourcesSeeder extends Seeder
             $builder->string('Alt', 'alt');
             $builder->string('Icon', 'icon');
             $builder->boolean('New Tab', 'new_tab');
+            $builder->boolean('Shared Link', 'shared')
+                ->help('Checking this option allows this link to be visible and accessed via any installed website, and not just this website.');
             $builder->boolean('Clickable', 'clickable');
             $builder->wysiwyg('Content', 'content');
         });

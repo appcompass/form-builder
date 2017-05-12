@@ -22,6 +22,8 @@ class CreateLinks extends Migration
             $table->boolean('clickable')->default(true); // sometimes we just want separators
             $table->string('icon')->nullable();
             $table->text('content')->nullable();
+            $table->integer('website_id')->nullable();
+            $table->foreign('website_id')->references('id')->on('websites');
             $table->timestamps();
         });
     }

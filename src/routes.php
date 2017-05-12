@@ -43,15 +43,17 @@ Route::group([
     $router->post('galleries/{gallery}/photos/sort', 'GalleryPhotosController@sort'); // @TODO see about this
     $router->resource('galleries.videos', GalleryVideosController::class);
 
-    $router->delete('menus/links/{link_id}', 'MenusController@deleteLink');
-    $router->resource('menus', MenusController::class);
+    // $router->resource('menus', MenusController::class);
     $router->resource('pages', PagesController::class);
     $router->resource('pages.contents', PageContentController::class);
-    // @TODO use generic forms getter once that's done (maybe)
-    $router->get('menus/forms/{form_name}', 'MenusController@getForm');
-    $router->post('menus/forms/{form_name}', 'MenusController@storeForm');
     $router->resource('websites', WebsitesController::class);
     $router->resource('websites.menus', WebsiteMenusController::class);
+    // @TODO use generic forms getter once that's done (maybe)
+    $router->get('websites/{website}/menus/forms/{form_name}', 'WebsiteMenusController@getForm');
+    $router->post('websites/{website}/menus/forms/{form_name}', 'WebsiteMenusController@storeForm');
+    // @TODO: should prob make a resourceful controller for websites.links, though some links can be set to website agnostic.
+    $router->post('websites/{website}/menus/links', 'WebsiteMenusController@storeLink');
+    $router->delete('websites/{website}/menus/links/{link_id}', 'WebsiteMenusController@deleteLink');
     $router->resource('websites.navigation', WebsiteMenusController::class);
     $router->resource('websites.pages', WebsitePagesController::class);
     // @TODO: websites/{website}/containers

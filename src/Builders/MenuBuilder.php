@@ -122,8 +122,13 @@ class MenuBuilder
 
         if (is_array($item)) {
 
+            $item = new Link($item);
+            if ($website = $this->menu->website) {
+                $item->website()->associate($website);
+            }
+            $item->save();
             // relying on default values requires a fresh() copy of the model
-            $item = Link::create($item)->fresh();
+            $item = $item->fresh();
         }
 
         if ($item instanceof MenuItem) {

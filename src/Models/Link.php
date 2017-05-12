@@ -2,11 +2,12 @@
 
 namespace P3in\Models;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use P3in\Interfaces\Linkable;
 use P3in\Models\MenuItem;
+use P3in\Models\Website;
 use Validator;
-use Exception;
 
 class Link extends Model implements Linkable
 {
@@ -31,6 +32,16 @@ class Link extends Model implements Linkable
     public $appends = ['type'];
 
     /**
+     * Website
+     *
+     * @return     BelongsTo    Website
+     */
+    public function website()
+    {
+        return $this->belongsTo(Website::class);
+    }
+
+    /**
      * Makes a menu item.
      *
      * @param      integer   $order  The order
@@ -39,15 +50,10 @@ class Link extends Model implements Linkable
      */
     public function makeMenuItem($order = 0): MenuItem
     {
-        $item = new MenuItem([
-            'title' => $this->title,
-            'alt' => $this->alt,
-            'order' => $order,
-            'new_tab' => $this->new_tab,
-            'url' => $this->url,
-            'clickable' => $this->clickable,
-            'icon' => $this->icon
-        ]);
+        $attributes = collect($this->getAttributes())
+            ->only(['title','alt','order','new_tab','url','clickable','icon']);
+        $item = new MenuItem($attributes->all());
+        $item->order = $order;
 
         $item->navigatable()->associate($this);
 

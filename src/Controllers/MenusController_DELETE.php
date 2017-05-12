@@ -32,7 +32,16 @@ class MenusController extends AbstractController
     public function store(FormRequest $request)
     {
         // @TODO validate link
-        $link = Link::create($request->except(['children']));
+        $data = $request->except(['children']);
+
+        $link = new Link($data);
+
+        // if (!$request->get('shared')) {
+        //     $link->
+        // }
+
+        dd($link);
+
 
         $menuitem = MenuItem::fromModel($link);
 

@@ -26,6 +26,11 @@ class WebsiteMenusRepository extends AbstractChildRepository implements WebsiteM
             ->where($this->model->getTable() . '.' . $this->model->getKeyName(), $id)
             ->firstOrFail();
 
+        $links = Link::where(function ($query) {
+            $query->whereNull('website_id')
+                    ->orWhere('website_id', $this->parent->id);
+        })->get();
+
         return $this->output([
             'id' => $model->id,
             'title' => $model->name, // @TODO rename to title for consistency
@@ -36,7 +41,7 @@ class WebsiteMenusRepository extends AbstractChildRepository implements WebsiteM
                     $item->children = [];
                     $item->type = 'Page';
                 }),
-                'links' => Link::all()->each(function ($item) {
+                'links' => $links->each(function ($item) {
                     $item->children = [];
                     $item->type = 'Link';
                 })
