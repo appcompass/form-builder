@@ -70,7 +70,6 @@ class WebsitesSeeder extends Seeder
             ]);
 
             $mediaEditor = $websiteBuilder->addSection([
-<<<<<<< Updated upstream
                 'name' => 'Media Editor Component',
                 'template' => 'MediaEditor',
                 'type' => 'section'
