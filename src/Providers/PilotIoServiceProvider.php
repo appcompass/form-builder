@@ -53,7 +53,8 @@ class PilotIoServiceProvider extends BaseServiceProvider
             // \P3in\Middleware\AfterRoute::class,
         ],
         'cp' => [
-            \P3in\Middleware\ValidateControlPanel::class
+            \P3in\Middleware\ValidateControlPanel::class,
+            \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class
         ]
     ];
 

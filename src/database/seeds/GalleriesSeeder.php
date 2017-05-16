@@ -38,11 +38,11 @@ class GalleriesSeeder extends Seeder
         })->linkToResources(['galleries.photos.create']);
 
         $form = FormBuilder::new('photos', function (FormBuilder $builder) {
-            $builder->string('ID', 'id')->list();
-            $builder->string('Photo Name', 'title')->list()->validation(['required'])->sortable()->searchable();
             $builder->string('Path', 'path')->list();
-            $builder->string('Url', 'url')->list();
             $builder->photo('Photo', 'photo')->list(false)->validation(['image', 'required']);
+            $builder->string('Photo Name', 'title')->list()->validation(['required'])->sortable()->searchable();
+            $builder->string('User', 'user.full_name')->list()->sortable()->searchable();
+            $builder->string('Date Created', 'created_at')->list()->sortable()->searchable();
         })->linkToResources(['galleries.photos.index', 'galleries.photos.show']);
             // ->getForm();
 
