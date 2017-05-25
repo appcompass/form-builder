@@ -69,6 +69,12 @@ class WebsitesSeeder extends Seeder
                 'type' => 'section'
             ]);
 
+            $mediaEditor = $websiteBuilder->addSection([
+                'name' => 'Media Editor',
+                'template' => 'MediaEditor',
+                'type' => 'section'
+            ]);
+
             $login = $websiteBuilder->addPage('Login', 'login')->addSection($loginSection)->layout('Public');
             $register = $websiteBuilder->addPage('Register', 'register')->addSection($registerSection)->layout('Public');
             $passwordEmail = $websiteBuilder->addPage('Request Password Reset', 'request-password-reset')->addSection($passwordEmailSection)->layout('Public');
@@ -120,7 +126,7 @@ class WebsitesSeeder extends Seeder
             $galleries = $websiteBuilder->addPage('Galleries', 'galleries')->addSection($list)->layout('Private')->requiresAuth()->resource('galleries.index');
             $gallery = $websiteBuilder->addPage('Gallery', 'galleries', true)->addSection($edit)->layout('Private')->requiresAuth()->resource('galleries.show');
             $gallery_info = $gallery->addChild('Info', '')->addSection($edit)->layout('Private')->requiresAuth()->resource('galleries.edit');
-            $gallery_photos = $gallery->addChild('Photos', 'photos')->addSection($list)->layout('Private')->requiresAuth()->resource('galleries.photos.index');
+            $gallery_photos = $gallery->addChild('Photos', 'photos')->addSection($mediaEditor)->layout('Private')->requiresAuth()->resource('galleries.photos.index');
             $gallery_videos = $gallery->addChild('Videos', 'videos')->addSection($list)->layout('Private')->requiresAuth()->resource('galleries.videos.index');
 
             // @TODO: storage workflow needs to be looked at a bit.

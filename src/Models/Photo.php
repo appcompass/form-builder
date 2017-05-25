@@ -65,9 +65,12 @@ class Photo extends GalleryItem implements GalleryItemInterface
     public function afterStorage()
     {
         if (\Auth::check()) {
+
             $this->user()->associate(\Auth::user());
+
         }
-        $this->setMetaFromExif();
+
+        // $this->setMetaFromExif();
     }
 
     /**

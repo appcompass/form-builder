@@ -265,18 +265,8 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
      */
     protected function checkRequirements($request)
     {
-
-        // @TODO make this look like code
-
-        // so we kwow it's a request instance
-
-        // we can fetch all the attributes and add to that
         $res = $request->all();
 
-        // loop through the requirements, expects field[from] and field[to] to match
-        // respectively from -> field in the source object, to -> what it matches against in
-        // current table i.e. 'user' => ['from' => 'id', 'to' => 'user_id']
-        // it's a bit verbose but appears to be very flexible
         foreach ($this->requires['props'] as $requirement => $field) {
             if (!property_exists($request, $requirement)) {
                 throw new \Exception('Requirement not satisfied: ' . $requirement);
@@ -346,10 +336,6 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
             ->builder
             ->where($this->model->getTable() . '.' . $this->model->getKeyName(), $id)
             ->firstOrFail());
-        // return $this->make()
-        //     ->builder
-        //     ->where($this->model->getTable() . '.' . $this->model->getKeyName(), $id)
-        //     ->firstOrFail();
     }
 
     /**
@@ -426,11 +412,6 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         }
 
         return $data;
-
-        // return [
-        //     'data' => $data,
-        //     'view' => $this->view
-        // ];
     }
 
     /**
