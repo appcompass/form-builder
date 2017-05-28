@@ -46,8 +46,6 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        // for testing.
-        User::where('email', $request->email)->delete();
         $this->validate($request, $this->rules(), $this->validationMessages());
 
         $user = $this->create($request->all());
@@ -83,13 +81,11 @@ class AuthController extends Controller
 
     protected function rules()
     {
-        return [
-            'first_name' => 'required|max:255',
-            'last_name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users',
-            'phone' => 'required|min:10',
-            'password' => 'required|min:6|confirmed',
-        ];
+        $rules = User::$rules;
+        $rules['email'] .= '|unique:users';
+        $rules['password'] .= '|required';
+
+        return $rules;
     }
 
     protected function validationMessages()
@@ -105,7 +101,7 @@ class AuthController extends Controller
             'last_name' => $data['last_name'],
             'email' => $data['email'],
             'phone' => $data['phone'],
-            'password' => bcrypt($data['password']),
+            'password' => $data['password'],
             'activation_code' => str_random(64)
         ]);
     }

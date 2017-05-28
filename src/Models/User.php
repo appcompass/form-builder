@@ -86,9 +86,9 @@ class User extends ModularBaseModel implements
     public static $rules = [
         'first_name' => 'required|max:255',
         'last_name' => 'required|max:255',
-        'phone' => 'required|max:255',
-        'email' => 'required|email|unique:users|max:255',
-        'password' => 'required|min:2|max:255',
+        'email' => 'required|email|max:255', //|unique:users when registrering only
+        'phone' => 'required|min:10|max:255',
+        'password' => 'min:6|confirmed', //|required when registering only.
     ];
 
     /**
@@ -177,6 +177,24 @@ class User extends ModularBaseModel implements
                 'name' => $this->full_name,
              ]
         ];
+    }
+
+    /**
+     *  Set user's password
+     *
+     */
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = bcrypt($value);
+    }
+
+    /**
+     *  Set user's password
+     *
+     */
+    public function setEmailAttribute($value)
+    {
+        $this->attributes['email'] = strtolower($value);
     }
 
     /**
