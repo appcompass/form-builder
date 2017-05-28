@@ -25,6 +25,7 @@ class CreateUsers extends Migration
             $table->timestamp('last_login', 64)->nullable();
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('password_resets', function (Blueprint $table) {
