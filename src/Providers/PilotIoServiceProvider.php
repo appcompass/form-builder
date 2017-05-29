@@ -6,22 +6,6 @@ use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
 use Intervention\Image\Facades\Image;
-use P3in\Models\StorageConfig;
-use P3in\Models\Field;
-use P3in\Models\Form;
-use P3in\Models\Gallery;
-use P3in\Models\GalleryItem;
-use P3in\Models\Menu;
-use P3in\Models\Page;
-use P3in\Models\PageSectionContent;
-use P3in\Models\Permission;
-use P3in\Models\Photo;
-use P3in\Models\Redirect;
-use P3in\Models\Resource;
-use P3in\Models\Role;
-use P3in\Models\User;
-use P3in\Models\Video;
-use P3in\Models\Website;
 
 class PilotIoServiceProvider extends BaseServiceProvider
 {
@@ -77,14 +61,14 @@ class PilotIoServiceProvider extends BaseServiceProvider
     ];
 
     protected $observe = [
-        \P3in\Observers\FieldObserver::class => Field::class,
+        \P3in\Observers\FieldObserver::class => \P3in\Models\Field::class,
         \P3in\Observers\GalleryItemObserver::class => [
-            Photo::class,
-            Video::class
+            \P3in\Models\Photo::class,
+            \P3in\Models\Video::class
         ],
         // PhotoObserver::class => Photo::class, //@TODO: old but possibly needed for Alerts? look into it when we get to Alerts.
-        \P3in\Observers\PageObserver::class => Page::class,
-        \P3in\Observers\WebsiteObserver::class => Website::class,
+        \P3in\Observers\PageObserver::class => \P3in\Models\Page::class,
+        \P3in\Observers\WebsiteObserver::class => \P3in\Models\Website::class,
     ];
 
     protected $appBindings = [
@@ -109,6 +93,23 @@ class PilotIoServiceProvider extends BaseServiceProvider
         \P3in\Interfaces\FormsRepositoryInterface::class => \P3in\Repositories\FormsRepository::class
     ];
 
+    protected $routeBindings = [
+        'disk' => \P3in\Models\StorageConfig::class,
+        'user' => \P3in\Models\User::class,
+        'permission' => \P3in\Models\Permission::class,
+        'role' => \P3in\Models\Role::class,
+        'gallery' => \P3in\Models\Gallery::class,
+        'photo' => \P3in\Models\Photo::class,
+        'video' => \P3in\Models\Video::class,
+        'website' => \P3in\Models\Website::class,
+        'redirect' => \P3in\Models\Redirect::class,
+        'page' => \P3in\Models\Page::class,
+        'content' => \P3in\Models\PageSectionContent::class,
+        'section' => \P3in\Models\Section::class,
+        'menu' => \P3in\Models\Menu::class,
+        'resource' => \P3in\Models\Resource::class,
+        'form' => \P3in\Models\Form::class
+    ];
 
     /**
      * List of policies to bind
@@ -148,36 +149,5 @@ class PilotIoServiceProvider extends BaseServiceProvider
 
         //@TODO: we require the use of imagick, not sure we should force this though.
         Config::set(['image' => ['driver' => 'imagick']]);
-    }
-
-    // @TODO: once we figure out this functionality once and for all, we can move the method into BaseServiceProvider and just store the array here.
-    public function bindToRoute()
-    {
-        $loader = AliasLoader::getInstance();
-
-        foreach ([
-            'disk' => StorageConfig::class,
-            'user' => User::class,
-            'permission' => Permission::class,
-            'role' => Role::class,
-            'gallery' => Gallery::class,
-            'photo' => Photo::class,
-            'video' => Video::class,
-            'website' => Website::class,
-            'redirect' => Redirect::class,
-            'page' => Page::class,
-            'content' => PageSectionContent::class,
-            'section' => Section::class,
-            'menu' => Menu::class,
-            'resource' => Resource::class,
-            'form' => Form::class
-        ] as $key => $model) {
-            Route::bind($key, function ($value) use ($model) {
-                return $model::findOrFail($value);
-            });
-            Route::model($key, $model);
-
-            $loader->alias(class_basename($model), $model);
-        }
     }
 }
