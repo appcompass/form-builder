@@ -62,7 +62,7 @@ class FormBuilder
      *
      * @return     static  ( description_of_the_return_value )
      */
-    public static function edit($form): FormBuilder
+    public static function edit($form, Closure $closure = null): FormBuilder
     {
         if ($form instanceof Form) {
             $instance = new static($form);
@@ -70,6 +70,10 @@ class FormBuilder
             $instance = new static(Form::whereName($form)->firstOrFail());
         } elseif (is_integer($form)) {
             $instance = new static(Form::findOrFail($form));
+        }
+
+        if ($closure) {
+            $closure($instance);
         }
 
         return $instance;

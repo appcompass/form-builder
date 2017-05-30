@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use P3in\Models\Gallery;
 use P3in\Models\Scopes\GalleryItemScope;
-use P3in\Models\User;
+use App\User;
 use P3in\Traits\HasCardView;
 use P3in\Traits\HasPermissions;
 use P3in\Traits\HasStorage;

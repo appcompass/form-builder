@@ -3,7 +3,7 @@
 namespace P3in\Seeders;
 
 use Illuminate\Database\Seeder;
-use P3in\Models\User;
+use App\User;
 use P3in\Models\Permission;
 use P3in\Models\Role;
 

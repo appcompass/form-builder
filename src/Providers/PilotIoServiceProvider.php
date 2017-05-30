@@ -95,7 +95,7 @@ class PilotIoServiceProvider extends BaseServiceProvider
 
     protected $routeBindings = [
         'disk' => \P3in\Models\StorageConfig::class,
-        'user' => \P3in\Models\User::class,
+        'user' => \App\User::class,
         'permission' => \P3in\Models\Permission::class,
         'role' => \P3in\Models\Role::class,
         'gallery' => \P3in\Models\Gallery::class,

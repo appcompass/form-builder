@@ -5,7 +5,7 @@ namespace P3in\Commands;
 use Illuminate\Console\Command;
 use P3in\Models\Role;
 use P3in\Models\Permission;
-use P3in\Models\User;
+use App\User;
 
 class AddUserCommand extends Command
 {

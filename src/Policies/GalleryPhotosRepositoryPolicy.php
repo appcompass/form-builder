@@ -6,7 +6,7 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 use P3in\Repositories\GalleryPhotosRepository;
 use P3in\Models\Gallery;
 use P3in\Models\Photo;
-use P3in\Models\User;
+use App\User;
 use Carbon\Carbon;
 
 class GalleryPhotosRepositoryPolicy

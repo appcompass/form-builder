@@ -40,6 +40,9 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
      // Link parent/children
     protected $with = [];
 
+    // appends attributes to output.
+    protected $appends = [];
+
     // @TODO it works well and it's simple but not enough. maybe.
     // list of items that must be defined when persising the repo
     // ['user' => ['from' => 'id', 'to' => 'user_id']]
@@ -114,10 +117,20 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
      */
     private function loadRelations()
     {
-        $with = [];
-
         foreach ($this->with as $relation) {
             $this->builder->with($relation);
+        }
+
+        return $this;
+    }
+
+    // @TODO: look into a way to apply this directly to the model so the output is handled automatically.
+    private function setAppends(&$collection)
+    {
+        if ($this->appends) {
+            $collection->each(function($row) {
+                $row->setAppends($this->appends);
+            });
         }
 
         return $this;
@@ -128,9 +141,9 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
      */
     public function fromModel(Model $model)
     {
-        $this->builder = $model->newQuery();
-
         $this->setModel($model);
+
+        $this->builder = $model->newQuery();
 
         $this->loadRelations();
 
@@ -451,6 +464,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
     public function output($data, $code = 200)
     {
         $this->setRouteInfo();
+        $this->setAppends($data);
         if ($this->raw_data) {
             $rtn = [
                 'abilities' => ['create', 'edit', 'destroy', 'index', 'show'], // @TODO show is per-item in the collection

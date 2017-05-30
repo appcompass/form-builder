@@ -2,7 +2,7 @@
 
 namespace P3in\Traits;
 
-use P3in\Models\User;
+use App\User;
 
 trait IsProfileTrait
 {

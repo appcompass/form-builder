@@ -4,7 +4,7 @@ namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use P3in\Models\User;
+use App\User;
 use Illuminate\Database\Eloquent\Collection;
 
 class Role extends Model

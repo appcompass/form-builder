@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use P3in\Interfaces\GalleryItemInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use P3in\Models\GalleryItem;
-use P3in\Models\User;
+use App\User;
 use P3in\Models\Video;
 use P3in\Models\Photo;
 
@@ -24,7 +24,8 @@ class Gallery extends Model
 
     protected $dates = [];
 
-    protected $appends = ['photoCount', 'videoCount'];
+    // @TODO: move this to repo.
+    protected $appends = ['photo_count', 'video_count'];
 
     /**
      *  Relationship with users

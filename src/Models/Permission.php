@@ -4,7 +4,7 @@ namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use P3in\Models\Role;
-use P3in\Models\User;
+use App\User;
 use P3in\ModularBaseModel;
 
 class Permission extends ModularBaseModel
@@ -45,7 +45,7 @@ class Permission extends ModularBaseModel
      *
      *
      * @param      \Illuminate\Database\Eloquent\Builder  $builder  The builder
-     * @param      \P3in\Models\User                      $user     The user
+     * @param      \App\User                              $user     The user
      *
      * @return     <type>                                 ( description_of_the_return_value )
      */

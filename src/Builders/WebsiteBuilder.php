@@ -15,7 +15,7 @@ use P3in\Models\Page;
 use P3in\Models\PageContent;
 use P3in\Models\Section;
 use P3in\Models\StorageConfig;
-use P3in\Models\User;
+use App\User;
 use P3in\Models\Website;
 use P3in\PublishFiles;
 use Symfony\Component\Process\Process;

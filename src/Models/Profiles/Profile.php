@@ -2,7 +2,7 @@
 
 namespace P3in\Models\Profiles;
 
-use P3in\Models\User;
+use App\User;
 use P3in\ModularBaseModel;
 
 class Profile extends ModularBaseModel

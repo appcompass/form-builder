@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class AbstractChildRepository extends AbstractRepository
 {
 
+    // There are situations where we need to only display the children.
+    const CHILDREN_ONLY = 0;
+
     // child model
     protected $parent;
 
@@ -88,7 +91,11 @@ class AbstractChildRepository extends AbstractRepository
 
         switch ($this->relation) {
             case 'BelongsToMany':
-                $this->builder = $this->model;
+                if (static::CHILDREN_ONLY) {
+                    $this->builder = $this->parent->{$this->parentToChild}();
+                }else{
+                    $this->builder = $this->model;
+                }
                 break;
 
             case 'BelongsTo':

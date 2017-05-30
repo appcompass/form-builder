@@ -7,7 +7,7 @@ use Illuminate\Http\UploadedFile;
 use Intervention\Image\Facades\Image;
 use P3in\Interfaces\GalleryItemInterface;
 use P3in\Models\GalleryItem;
-use P3in\Models\User;
+use App\User;
 
 class Photo extends GalleryItem implements GalleryItemInterface
 {
@@ -18,6 +18,7 @@ class Photo extends GalleryItem implements GalleryItemInterface
         'order'
     ];
 
+    // @TODO: move this to repo.
     /**
      * Attributes appendend by default
      */

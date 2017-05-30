@@ -2,7 +2,7 @@
 
 namespace P3in\Repositories;
 
-use P3in\Models\User;
+use App\User;
 use P3in\Interfaces\UsersRepositoryInterface;
 
 class UsersRepository extends AbstractRepository implements UsersRepositoryInterface

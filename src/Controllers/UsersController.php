@@ -3,7 +3,7 @@
 namespace P3in\Controllers;
 
 use P3in\Interfaces\UsersRepositoryInterface;
-use P3in\Models\User;
+use App\User;
 
 class UsersController extends AbstractController
 {
