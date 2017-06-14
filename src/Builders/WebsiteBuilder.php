@@ -365,7 +365,7 @@ class WebsiteBuilder
         foreach ($pages as $page) {
             $file = str_replace('/', '-', trim($page->url, '/'));
             $name = $file ? $file : 'home';
-            $rtn .= "const {$page->template_name} = r => require.ensure([], () => r(require('./pages/{$file}')), '{$name}')\n";
+            $rtn .= "const {$page->template_name} = r => require.ensure([], () => r(require('./pages/{$file}')), 'pages')\n";
         }
         return $rtn;
     }

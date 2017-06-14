@@ -56,6 +56,11 @@ Route::group([
     $router->delete('websites/{website}/menus/links/{link_id}', 'WebsiteMenusController@deleteLink');
     $router->resource('websites.navigation', WebsiteMenusController::class);
     $router->resource('websites.pages', WebsitePagesController::class);
+    // $router->resource('websites.sections', WebsiteSectionsController::class);
+    $router->get('websites/{website}/sections', 'WebsitesController@sections');
+    $router->get('websites/{website}/containers', 'WebsitesController@containers');
+    $router->get('websites/{website}/page-links', 'WebsitesController@pageLinks');
+    $router->get('websites/{website}/external-links', 'WebsitesController@externalLinks');
     // @TODO: websites/{website}/containers
     $router->get('websites/{website}/pages/{page}/containers', 'WebsitePagesController@containers');
     // @TODO: websites/{website}/sections
