@@ -6,6 +6,7 @@ use Exception;
 use P3in\Models\Page;
 use P3in\Models\PageSectionContent;
 use P3in\PublishFiles;
+use P3in\Storage;
 
 class TemplateRenderer
 {
@@ -14,11 +15,17 @@ class TemplateRenderer
     private $sections = [];
     private $imports = [];
     private $exports = [];
-    private $build;
+    private $contents;
 
-    public function __construct(Page $page)
+    public function __construct(Page $page, Storage $disk = null)
     {
         $this->page = $page;
+        $this->disk = $disk ?? Storage::disk('websites_root');
+    }
+
+    public function getContents()
+    {
+        return $this->contents;
     }
 
     // public function layout(string $layout = null)
@@ -64,17 +71,21 @@ class TemplateRenderer
      */
     public function render()
     {
+        $pageStructure = $this->page->buildContentTree();
+
+        $this->buildPageTemplateTree($pageStructure);
+        $this->contents = $this->buildTemplate();
+        return $this;
+    }
+
+    public function store()
+    {
         $page = $this->page;
         $name = $page->url == '/' ? '/index' : '/'.str_replace('/', '-', trim($page->url, '/'));
 
+        $this->storeTemplate($name);
         // //@TODO: On delete or parent change of a page (we use the url as the unique name for a page),
         // //we need to delete it's template file as to clean up junk.
-
-        $pageStructure = $page->buildContentTree();
-
-        $this->buildPageTemplateTree($pageStructure);
-
-        $this->storeTemplate($name, $this->buildTemplate());
     }
 
     /**
@@ -186,10 +197,15 @@ class TemplateRenderer
         return $this->buildTemplate($sections);
     }
 
-    public function storeTemplate($name, $contents)
+    public function storeTemplate($name)
     {
-        $disk = $this->page->website->storage->getDisk();
+        if (!$this->contents) {
+            throw new Exception('Template file has not been properly constructed');
 
-        $disk->put("src/pages{$name}.vue", $contents);
+        }
+        if (!$this->disk) {
+            throw new Exception('No Disk specified to store templates.');
+        }
+        $this->disk->put("{$this->page->website->host}/src/pages{$name}.vue", $this->contents);
     }
 }

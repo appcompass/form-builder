@@ -98,9 +98,10 @@ class PageBuilder
         // We need to find a way to avoid having to do all that..
         if ($structueChange) {
             // re-render the template.
-            $builder->renderTemplate();
-            // Deploy website when page structure has changed.
-            $builder->deployWebsite();
+            $builder->storePage();
+            // Store the website when page structure has changed.
+            // @TODO: shouldn't be necisary.
+            $builder->storeWebsite();
         }
 
     }
@@ -346,22 +347,23 @@ class PageBuilder
         return $this;
     }
 
-    public function renderTemplate(string $layout = null)
+    public function storePage(string $layout = null)
     {
         $renderer = new TemplateRenderer($this->page);
 
         $renderer
         // ->layout($layout)
-        ->render();
+        ->render()
+        ->store();
 
 
         return $this;
     }
 
-    public function deployWebsite()
+    public function storeWebsite()
     {
         $builder = WebsiteBuilder::edit($this->page->website);
-        $builder->deploy();
+        $builder->storeWebsite();
     }
 
     /**

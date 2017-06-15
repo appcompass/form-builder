@@ -25,13 +25,18 @@ class DisksFormsSeeder extends Seeder
         if (!$cp_root = config('app.cp_root')) {
             throw new \Exception('app.cp_root is not defined properly.  Please define a proper path');
         }
+        if (!$websites_root = config('app.websites_root')) {
+            throw new \Exception('app.websites_root is not defined properly.  Please define a proper path');
+        }
 
         $local = StorageType::getType('local');
 
-        $local->createDrive('cp_root', ['driver' => 'local', 'root' => $cp_root, ]);
-        $local->createDrive('cp_components', ['driver' => 'local', 'root' => $cp_root.'/src/components', ]);
-        $local->createDrive('cp_list_types', ['driver' => 'local', 'root' => $cp_root.'/src/components/ListTypes', ]);
-        $local->createDrive('cp_form_fields', ['driver' => 'local', 'root' => $cp_root.'/src/components/FormBuilder', ]);
+        $local->createDrive('cp_root', ['driver' => 'local', 'root' => $cp_root]);
+        $local->createDrive('cp_components', ['driver' => 'local', 'root' => $cp_root.'/src/components']);
+        $local->createDrive('cp_list_types', ['driver' => 'local', 'root' => $cp_root.'/src/components/ListTypes']);
+        $local->createDrive('cp_form_fields', ['driver' => 'local', 'root' => $cp_root.'/src/components/FormBuilder']);
+
+        $local->createDrive('websites_root', ['driver' => 'local', 'root' => $websites_root]);
 
         // @NOTE form seeders moved to cp
 

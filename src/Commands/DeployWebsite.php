@@ -49,23 +49,13 @@ class DeployWebsite extends Command
         $host = $this->argument('host');
 
         $website = Website::where('host', $host)->firstOrFail();
-        $disk = $website->storage->getDisk();
 
-        // render the page templates
-        foreach ($website->pages as $page) {
-            PageBuilder::edit($page)->renderTemplate();
-        }
+        $wb = WebsiteBuilder::edit($website);
 
-        WebsiteBuilder::edit($website)->deploy($disk);
-        $destPath = $disk->getAdapter()->getPathPrefix();
+        $wb->storePages()->storeWebsite();
 
-        // dd('reached, run npm manually for testing.');
-
-        //sucks!... this is basically only working with local storage.
-        //this needs to be abstracted so that we can account for remote disk
-        //instances, AWS, or what ever other cloud instances that can be used
-        //(lots of them out there)
-        $process = new Process('npm install && npm run build', $destPath, null, null, null); //that last null param disables timeout.
+        // run the local build.
+        $process = new Process('npm install && npm run build', $wb->getStorePath(), null, null, null); //that last null param disables timeout.
         $process->run(function ($type, $buffer) {
             $this->line($buffer);
             // if (Process::ERR === $type) {
@@ -74,6 +64,8 @@ class DeployWebsite extends Command
             //     $this->info($buffer);
             // }
         });
+
+        $wb->deploy();
     }
 
   /**
