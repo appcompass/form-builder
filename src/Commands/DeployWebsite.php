@@ -52,19 +52,11 @@ class DeployWebsite extends Command
 
         $wb = WebsiteBuilder::edit($website);
 
-        $wb->storePages()->storeWebsite();
+        // @TODO: change workflow back to storing and running directly on website disk instance.
+        $wb->storePages()
+            ->storeWebsite();
 
-        // run the local build.
-        $process = new Process('npm install && npm run build', $wb->getStorePath(), null, null, null); //that last null param disables timeout.
-        $process->run(function ($type, $buffer) {
-            $this->line($buffer);
-            // if (Process::ERR === $type) {
-            //     $this->error($buffer);
-            // } else {
-            //     $this->info($buffer);
-            // }
-        });
-
+        // @TODO: find a good way to "minitor and display" the process as it runs.
         $wb->deploy();
     }
 

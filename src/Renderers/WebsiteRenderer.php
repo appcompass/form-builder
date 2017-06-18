@@ -37,7 +37,7 @@ class WebsiteRenderer
     public function getDistBuildFiles()
     {
         $files = [];
-        $basePath = "{$this->rootDir}/dist";
+        $basePath = $this->rootDir;
         foreach ($this->disk->allFiles($basePath) as $file) {
             $key = substr($file, strlen($basePath));
             $files[$key] = $this->disk->get($file);
@@ -69,6 +69,66 @@ class WebsiteRenderer
         return $rtn;
     }
 
+    // Used to publish local install files to their disk dest.
+    public function publish(string $from, $subDir = '')
+    {
+        // in memory, we don't need a physical record for the source files.
+        $fromDisk = (new StorageConfig([
+            'name' => $from,
+            'config' => ['driver' => 'local', 'root' => $from],
+        ]))->set()->getDisk();
+        foreach ($fromDisk->allFiles() as $file) {
+            $this->put($subDir.$file, $fromDisk->get($file));
+        }
+    }
+
+    public function getDeploymentSource()
+    {
+        if (!$depConfig = $this->website->config->deployment) {
+            throw new Exception('The website does not have deployment settings configured');
+        }
+        if (empty($depConfig->publish_from)) {
+            throw new Exception('A source directory where the page components can be found has not been specified.');
+        }
+
+        if (is_null($path = realpath($depConfig->publish_from))) {
+            throw new Exception("The publish directory '{$depConfig->publish_from}' doesn't exist.");
+        }
+
+        return $path;
+    }
+
+    /**
+     * { function_description }
+     *
+     * @param      <type>  $diskInstance  The disk instance
+     */
+    public function store()
+    {
+        $from_path = $this->getDeploymentSource();
+
+        // publish CMS common files
+        $this->publish(realpath(__DIR__.'/../Templates/common'));
+
+        // publish website specific (static) files.
+        $this->publish($from_path, 'src/');
+
+        // build page sections and form builder component libs.
+        $this->buildComponentLibs();
+
+        // Build the router.js file
+        $this->buildRouter();
+
+        // Build nginx server configurations.
+        $this->buildServerConfig();
+
+        return $this;
+    }
+
+    /**
+     * Private Methods
+     **/
+
     private function formatRoutesBranch($pages)
     {
         $rtn = [];
@@ -87,39 +147,6 @@ class WebsiteRenderer
             ];
         }
         return $rtn;
-    }
-
-
-    private function setPageChildren(&$parent, $parent_id, $pages)
-    {
-        foreach ($pages->where('parent_id', $parent_id) as $page) {
-            unset($parent['name']);
-            $row = $this->structureRouteRow($page);
-            $this->setPageChildren($row, $page->id, $pages);
-            $parent['children'][] = $row;
-        }
-    }
-
-    // Used to publish local install files to their disk dest.
-    public function publish(string $from, $subDir = '')
-    {
-        // in memory, we don't need a physical record for the source files.
-        $fromDisk = (new StorageConfig([
-            'name' => $from,
-            'config' => ['driver' => 'local', 'root' => $from],
-        ]))->setConfig()->getDisk();
-        foreach ($fromDisk->allFiles() as $file) {
-            $this->put($subDir.$file, $fromDisk->get($file));
-        }
-    }
-
-    public function buildImports(string $fileName, array $components)
-    {
-        $import_file = view('pilot-io::components', [
-            'components' => $components,
-        ])->render();
-
-        $this->put($fileName, $import_file);
     }
 
     private function buildComponentLibs()
@@ -148,58 +175,26 @@ class WebsiteRenderer
         $this->buildImports($components_dir.'/formfields.js', $formfields);
     }
 
+    private function buildImports(string $fileName, array $components)
+    {
+        $this->renderView('components', [
+            'components' => $components,
+        ], $fileName);
+
+        return $this;
+    }
+
     private function buildRouter()
     {
         $pages = $this->website->pages;
 
-        $router_file = view('pilot-io::router', [
+        $this->renderView('router', [
             'imports' => $this->formatImports($pages),
             'routes' => $this->formatRoutes($pages),
             'base_url' => $this->website->scheme.'://'.$this->website->host.'/api/',
             //@NOTE: not needed since all sites we implement use reverse proxy header value instead.  but here for ref.
             // 'headers' => $this->formatJson(['Site-Host' => $this->website->host]),
-        ])->render();
-
-        $this->put('src/router.js', $router_file);
-    }
-
-    public function getDeploymentSource()
-    {
-        if (!$depConfig = $this->website->config->deployment) {
-            throw new Exception('The website does not have deployment settings configured');
-        }
-        if (empty($depConfig->publish_from)) {
-            throw new Exception('A source directory where the page components can be found has not been specified.');
-        }
-
-        if (is_null($path = realpath($depConfig->publish_from))) {
-            throw new Exception("The publish directory '{$depConfig->publish_from}' doesn't exist.");
-        }
-
-        return $path;
-    }
-
-    /**
-     * { function_description }
-     *
-     * @param      <type>  $diskInstance  The disk instance
-     */
-    // breaking this up a bit would prob be a good idea.
-    public function store()
-    {
-        $from_path = $this->getDeploymentSource();
-
-        // publish CMS common files
-        $this->publish(realpath(__DIR__.'/../Templates/common'));
-
-        // publish website specific (static) files.
-        $this->publish($from_path, 'src/');
-
-        // build page sections and form builder component libs.
-        $this->buildComponentLibs();
-
-        // Build the router.js file
-        $this->buildRouter();
+        ], 'src/router.js');
 
         return $this;
     }
@@ -225,7 +220,47 @@ class WebsiteRenderer
         return $rtn;
     }
 
-    private function put($filePath, $contents)
+    private function buildServerConfig()
+    {
+        $this->renderView('nginx-redirects', [
+            'redirects' => $this->website->redirects,
+            'website' => $this->website,
+        ], 'nginx-redirects.conf');
+
+        // @TODO: Values to add/move to the Deployment section of the website management form (Note: we might want to split it into it's own form/page UI wise as it does have some unique functionality, i.e deploying)
+        // listen_ip
+        // listen_port (uses scheme 80/443 only for now)
+        // server_names (repeatable text field for all host names associated with website)
+        // disk selection and value management (part of why we may want to move deloyment to it's own screen and call it Configuration)
+        // client_max_body_size value i.e. 100M, 300M, 500000M etc for max upload file size.
+        // SSL Cert generation (including dhparam.pem and letsencrypt cert)
+        // api_url (used for the reverse proxy)
+        // ssr_url (used for ssr server, normally 127.0.0.1:3000 but we will prob need to allow this to be dynamic in order to allow multiple websites in a single server each with their own SSR service)
+
+        // @TODO: add following form settings.
+        //
+        // @TODO: add command to generate this.
+        // ssl_dhparam {{$storage->root}}/ssl/dhparam.pem;
+        // create the /logs/ folder but file can be ignored.  NOTE: permissions must be set to writable by the server (i.e. nginx/apache user)
+        // access_log {{$storage->root}}/logs/www-access.log;
+        // error_log {{$storage->root}}/logs/www-error.log;
+
+        $this->renderView('nginx-vhost', [
+            'website' => $this->website,
+            'storage' => $this->website->storage,
+        ], 'nginx-vhost.conf');
+
+        return $this;
+    }
+    // @TODO: below two methods can be used for both Website and Page Renderers, abstract to a trait or base class.
+    private function renderView(string $view, array $data, string $filename)
+    {
+        $contents = view("pilot-io::{$view}", $data)->render();
+
+        $this->put($filename, $contents);
+    }
+
+    private function put(string $filePath, string $contents)
     {
         $rootDir = $this->rootDir ? $this->rootDir.'/' : '';
         $this->disk->put("{$rootDir}{$filePath}", $contents);

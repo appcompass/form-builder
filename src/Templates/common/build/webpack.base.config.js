@@ -3,6 +3,7 @@ const path = require('path')
 const vueConfig = require('./vue-loader.config')
 
 var WebpackMd5Hash = require('webpack-md5-hash');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   devtool: '#source-map',
@@ -29,7 +30,16 @@ module.exports = {
     chunkFilename: '[name].[chunkhash].js'
   },
   plugins: [
-    new WebpackMd5Hash()
+    new WebpackMd5Hash(),
+    new CopyWebpackPlugin([
+        { from: 'src/assets/favicon.ico', to: 'assets/favicon.ico' },
+        { from: 'src/assets/fonts', to: 'assets/fonts' },
+        { from: 'src/assets/images', to: 'assets/images' }
+    ], {
+        ignore: [
+            '*.txt'
+        ]
+    })
   ],
   module: {
     rules: [

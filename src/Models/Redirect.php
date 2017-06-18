@@ -52,34 +52,16 @@ class Redirect extends Model
         return $redirect->save();
     }
 
-    /**
-     *  Render a single redirect
-     */
-    public function render($base_url)
+    public function getNginxTypeAttribute()
     {
-        return "rewrite ^{$this->from}$ \$scheme://{$base_url}".$this->to. " last";
-        // return "rewrite ^{$this->from}$ \$scheme://{$base_url}".trim($this->to, '/'). " last";
-    }
-
-    /**
-     * Return all the redirects for a specific website
-     */
-    public static function forWebsite(Website $websites)
-    {
-        return Redirect::where('website_id', '=', $websites->id);
-    }
-
-    /**
-     *  Render the redirects for a specific website
-     */
-    public static function renderForWebsite(Website $websites)
-    {
-        $acc = '';
-
-        foreach (Redirect::forWebsite($websites)->get() as $redirect) {
-            $acc .= $redirect->render($websites->site_url) . ";\n";
+        switch ($this->type) {
+            case 301:
+                return 'permanent';
+                break;
+            case 302:
+                return 'redirect';
+                break;
         }
-
-        return $acc;
+        return 'redirect';
     }
 }

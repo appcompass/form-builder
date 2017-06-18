@@ -34,6 +34,8 @@ class WebsiteBuilder
     {
         if (!is_null($website)) {
             $this->website = $website;
+            $this->renderer = new WebsiteRenderer($website);
+            $this->renderer->setRootDir($website->host);
         }
     }
 
@@ -255,6 +257,11 @@ class WebsiteBuilder
         return $this->website;
     }
 
+    public function getStorePath()
+    {
+        return $this->renderer->getStorePath();
+    }
+
     public function storePages()
     {
         foreach ($this->website->pages as $page) {
@@ -264,22 +271,9 @@ class WebsiteBuilder
         return $this;
     }
 
-    public function getStorePath()
-    {
-        return $this->renderer->getStorePath();
-    }
-    /**
-     * { function_description }
-     *
-     * @param      <type>  $diskInstance  The disk instance
-     */
     public function storeWebsite()
     {
-        $this->renderer = new WebsiteRenderer($this->website);
-
-        $this->renderer
-            ->setRootDir($this->website->host)
-            ->store();
+        $this->renderer->store();
 
         return $this;
     }
@@ -288,9 +282,19 @@ class WebsiteBuilder
     {
         $files = $this->renderer->getDistBuildFiles();
         $dest = $this->website->storage->getDisk();
+
         foreach ($files as $name => $contents) {
-            $dest->put('html/'.$name, $contents);
+            $dest->put($name, $contents);
         }
-        // @TODO: render and store vhost.conf and redirects.conf in root dir.
+        // run build process.
+        // @TODO: make this disk specific operation.  i.e. $dest->runCommand('npm install && npm run build');
+        $process = new Process('npm install && npm run build', $dest->getAdapter()->getPathPrefix(), null, null, null); //that last null param disables timeout.
+        $process->run(function ($type, $buffer) {
+            // if (Process::ERR === $type) {
+            //     $this->error($buffer);
+            // } else {
+            //     $this->info($buffer);
+            // }
+        });
     }
 }
