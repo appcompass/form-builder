@@ -105,7 +105,11 @@ class WebsitesSeeder extends Seeder
             $websites = $websiteBuilder->addPage('Websites', 'websites')->addSection($list)->layout('Private')->requiresAuth()->resource('websites.index');
             $create_website = $websiteBuilder->addPage('Create', 'websites/create')->addSection($create)->layout('Private')->requiresAuth()->resource('websites.create');
             $website = $websiteBuilder->addPage('Website', 'websites', true)->addSection($edit)->layout('Private')->requiresAuth()->resource('websites.show');
-            $website_info = $website->addChild('Info', '')->addSection($edit)->layout('Private')->requiresAuth()->resource('websites.edit');
+            $website_setup = $website->addChild('Setup', 'setup')->addSection($edit)->layout('Private')->requiresAuth()->resource('websites-setup');
+            $website_settings = $website->addChild('Settings', '')->addSection($edit)->layout('Private')->requiresAuth()->resource('websites.edit');
+            $website_layouts = $website->addChild('Layouts', 'layouts')->addSection($list)->layout('Private')->requiresAuth()->resource('websites.layouts.index');
+            $website_layout = $website->addChild('Layout', 'layouts', true)->addSection($edit)->layout('Private')->requiresAuth()->resource('websites.layouts.show');
+            $website_layout_builder = $website_layout->addChild('Builder', '')->addSection($pageEditor)->layout('Private')->requiresAuth()->resource('websites.layouts.edit');
             $navigations = $website->addChild('Menus', 'menus')->addSection($list)->layout('Private')->requiresAuth()->resource('websites.menus.index');
             $navigation = $website->addChild('Menu', 'menus', true)->addSection($edit)->layout('Private')->requiresAuth()->resource('websites.menus.show');
             $navigation_builder = $navigation->addChild('Editor', '')->addSection($edit)->layout('Private')->requiresAuth()->resource('websites.menus.edit');
@@ -161,8 +165,10 @@ class WebsitesSeeder extends Seeder
                     ->parent()
                 ->add(['title' => 'Web Properties', 'alt' => 'Web Properties'], 3)->sub()
                     ->add($websites, 1)->icon('globe')->sub()
-                        ->add($website_info, 1)->icon('edit')
-                        ->add($pages, 2)->icon('pages')
+                        ->add($website_setup, 1)->icon('settings')
+                        ->add($website_settings, 2)->icon('edit')
+                        ->add($website_layouts, 3)->icon('layouts')
+                        ->add($pages, 4)->icon('pages')
                         // ->sub()
                         //     ->add($page_info, 1)->icon('edit')
                         //     ->add($page_layouts, 2)->icon('page')
@@ -174,11 +180,11 @@ class WebsitesSeeder extends Seeder
                         //     ->add($blogCategories, 2)->icon('page')
                         //     ->add($blogTags, 3)->icon('page')
                         //     ->parent()
-                        ->add($navigations, 4)->icon('navigation')->sub()
+                        ->add($navigations, 5)->icon('navigation')->sub()
                             ->add($navigation, 1)->icon('pages')
                             ->add($navigation_builder, 2)->icon('page')
                             ->parent()
-                        ->add($redirects, 5)->icon('redirect')
+                        ->add($redirects, 6)->icon('redirect')
                         ->parent()
                     ->parent()
                 ->add(['title' => 'Media Management', 'alt' => 'Media Management'], 4)->sub()

@@ -50,45 +50,10 @@ class ResourcesSeeder extends Seeder
 
 
         FormBuilder::new('websites', function (FormBuilder $builder) {
-            $builder->string('Website Name', 'name')->list()->required()->sortable()->searchable()
-                ->help('The Human Readable website name');
-            $builder->select('Scheme', 'scheme')->list()->required()->sortable()->searchable()
-                ->dynamic([
-                    ['index' => 'http', 'label' => 'Plain (HTTP)'],
-                    ['index' => 'https', 'label' => 'Secure (HTTPS)']
-                ])
-                ->help('Website Schema. We recommend website to be served using HTTPS');
-            $builder->string('Host', 'host')->list()->required()->sortable()->searchable()
-                ->help('Just the fully qualified hostname (FQDN)');
+            $builder->string('Website Name', 'name')->list()->sortable()->searchable()->edit(false);
+            $builder->select('URL', 'url')->list()->sortable()->searchable()->edit(false);
             $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
             $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
-            $builder->fieldset('Configuration', 'config', function (FormBuilder $builder) {
-                $builder->select('Header', 'header')
-                    ->dynamic(Section::class, function (FieldSource $source) {
-                        $source->where('type', 'header');
-                        $source->select(['id AS index', 'name AS label']);
-                    })
-                    ->required()
-                    ->help('Please select a Header');
-                $builder->select('Footer', 'footer')
-                    ->dynamic(Section::class, function (FieldSource $source) {
-                        $source->where('type', 'footer');
-                        $source->select(['id AS index', 'name AS label']);
-                    })
-                    ->required()
-                    ->help('Please select a Footer');
-                $builder->code('Layouts', 'layouts')
-                    // @TODO: We need to be able to provide the key value
-                    // of the repeatable field and remove the dynamic flag.
-                    // ->keyed()
-                    // ->repeatable()
-                    ->dynamic(['public', 'errors']);
-                $builder->fieldset('Deployment', 'deployment', function (FormBuilder $depBuilder) {
-                    $depBuilder->string('Publish From Path', 'publish_from')
-                        ->required();
-                });
-            });
-
             $builder->fieldset('Meta Data', 'config.meta', function (FormBuilder $builder) {
                 $builder->string('Title', 'title')
                     ->required()
@@ -127,6 +92,72 @@ class ResourcesSeeder extends Seeder
                     ->help('Additional meta tags to be added.');
             });
         })->linkToResources(['websites.index', 'websites.show', 'websites.create', 'websites.store', 'websites.update']);
+
+        FormBuilder::new('websites.layouts', function (FormBuilder $builder) {
+            $builder->string('Name', 'name')->list()->sortable()->searchable()->edit()
+                ->help('Layout name.');
+            $builder->select('Header', 'header')
+                ->dynamic(Section::class, function (FieldSource $source) {
+                    $source->where('type', 'header');
+                    $source->select(['id AS index', 'name AS label']);
+                })
+                ->required()
+                ->help('Please select a Header');
+            $builder->select('Footer', 'footer')
+                ->dynamic(Section::class, function (FieldSource $source) {
+                    $source->where('type', 'footer');
+                    $source->select(['id AS index', 'name AS label']);
+                })
+                ->required()
+                ->help('Please select a Footer');
+            $builder->code('Layouts', 'layouts')
+                // @TODO: We need to be able to provide the key value
+                // of the repeatable field and remove the dynamic flag.
+                // ->keyed()
+                // ->repeatable()
+                ->dynamic(['public', 'errors']);
+        })->linkToResources(['websites.layouts.index', 'websites.layouts.store', 'websites.layouts.update']);
+
+        FormBuilder::new('website-setup', function (FormBuilder $builder) {
+            $builder->string('Website Name', 'name')->required()->sortable()->searchable()
+                ->help('The Human Readable website name');
+            $builder->select('Scheme', 'scheme')->required()->sortable()->searchable()
+                ->dynamic([
+                    ['index' => 'http', 'label' => 'Plain (HTTP)'],
+                    ['index' => 'https', 'label' => 'Secure (HTTPS)']
+                ])
+                ->help('Website Schema. We recommend website to be served using HTTPS');
+            $builder->string('Host', 'host')->required()->sortable()->searchable()
+                ->help('Just the fully qualified hostname (FQDN)');
+
+            $builder->fieldset('Deployment', 'config.deployment', function (FormBuilder $depBuilder) {
+                $depBuilder->string('Publish From Path', 'publish_from')
+                    ->required();
+                $depBuilder->string('Listen IP', 'listen_ip')
+                    ->help('Specify only if you need the website to only listen on a specific IP.');
+                $depBuilder->string('Listen Port', 'listen_port')
+                    ->help('Specify only if not typical 80/443 ports.');
+                $depBuilder->string('Server Name', 'server_names')
+                    ->repeatable()
+                    ->help('other Hostnames that the website is known by.');
+                // @TODO: this must be a full select/add new type of dynamic field.
+                $depBuilder->select('Hosting info', 'disk')
+                    ->required()->dynamic(\P3in\Models\Storage::class, function (FieldSource $source) {
+                        $source->select(['id AS index', 'name AS label']);
+                    })
+                    ->help('Hosting info where the website should be hosted.');
+                $depBuilder->string('API URL', 'api_url')
+                    ->help('URL where the website will access the backend API.');
+                $depBuilder->string('SSR URL', 'ssr_url')
+                    ->help('URL where the website can serve up the Server Side Rendered pages for SEO.');
+                $depBuilder->string('Max Upload File Size', 'client_max_body_size')
+                    ->help('Max allowed file upload size in Mebagbites.');
+                $depBuilder->file('SSL Certificate Key', 'ssl_key')
+                    ->help('SSL Certificate Key.');
+                $depBuilder->file('SSL Certificate', 'ssl_certificate')
+                    ->help('SSL Certificate.');
+            });
+        })->linkToResources(['websites-setup']);
 
         FormBuilder::new('websites.redirects', function (FormBuilder $builder) {
             $builder->string('From', 'from')->list()->sortable()->searchable()->required();

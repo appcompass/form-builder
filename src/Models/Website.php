@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Intervention\Image\Exception\NotFoundException;
+use P3in\Models\Layout;
 use P3in\Models\Page;
 use P3in\Models\Redirect;
 use P3in\Models\Section;
@@ -66,6 +67,15 @@ class Website extends Model
         return $this->hasMany(Section::class);
     }
 
+    /**
+     * Pages
+     *
+     * @return     hasMany
+     */
+    public function layouts()
+    {
+        return $this->hasMany(Layout::class);
+    }
     /**
      * Menus
      *

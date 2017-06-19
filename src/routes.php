@@ -47,6 +47,8 @@ Route::group([
     $router->resource('pages', PagesController::class);
     $router->resource('pages.contents', PageContentController::class);
     $router->resource('websites', WebsitesController::class);
+    $router->get('websites/{website}/setup', 'WebsiteSetupController@getSetup')->name('websites-setup');
+    // $router->get('websites/{website}/setup', 'WebsiteSetupController@getSetup')->name('websites-setup');
     $router->resource('websites.menus', WebsiteMenusController::class);
     // @TODO use generic forms getter once that's done (maybe)
     $router->get('websites/{website}/menus/forms/{form_name}', 'WebsiteMenusController@getForm');
@@ -56,6 +58,8 @@ Route::group([
     $router->delete('websites/{website}/menus/links/{link_id}', 'WebsiteMenusController@deleteLink');
     $router->resource('websites.navigation', WebsiteMenusController::class);
     $router->resource('websites.pages', WebsitePagesController::class);
+    $router->resource('websites.layouts', WebsiteLayoutsController::class);
+    $router->resource('websites.redirects', WebsiteRedirectsController::class);
     // $router->resource('websites.sections', WebsiteSectionsController::class);
     $router->get('websites/{website}/sections', 'WebsitesController@sections');
     $router->get('websites/{website}/containers', 'WebsitesController@containers');
@@ -69,8 +73,6 @@ Route::group([
     $router->get('websites/{website}/pages/{page}/page-links', 'WebsitePagesController@pageLinks');
     // @TODO: websites/{website}/extrnal-links
     $router->get('websites/{website}/pages/{page}/external-links', 'WebsitePagesController@externalLinks');
-
-    $router->resource('websites.redirects', WebsiteRedirectsController::class);
 
     $router->resource('resources', ResourcesController::class);
     $router->resource('forms', FormsController::class);
