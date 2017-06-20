@@ -2,7 +2,7 @@
 
 namespace P3in\Builders;
 
-use App\User;
+use P3in\Models\User;
 use Closure;
 use Exception;
 use Illuminate\Filesystem\FilesystemAdapter;

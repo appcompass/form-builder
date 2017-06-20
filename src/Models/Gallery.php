@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use P3in\Interfaces\GalleryItemInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use P3in\Models\GalleryItem;
-use App\User;
+use P3in\Models\User;
 use P3in\Models\Video;
 use P3in\Models\Photo;
 

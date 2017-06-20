@@ -7,7 +7,7 @@ use Illuminate\Http\UploadedFile;
 use Intervention\Image\Facades\Image;
 use P3in\Interfaces\GalleryItemInterface;
 use P3in\Models\GalleryItem;
-use App\User;
+use P3in\Models\User;
 
 class Photo extends GalleryItem implements GalleryItemInterface
 {

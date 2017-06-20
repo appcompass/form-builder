@@ -7,7 +7,7 @@ use P3in\Builders\PageBuilder;
 use P3in\Builders\WebsiteBuilder;
 use P3in\Models\Permission;
 use P3in\Models\Role;
-use App\User;
+use P3in\Models\User;
 use P3in\Models\Website;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Process\Process;

@@ -9,7 +9,7 @@ use P3in\Models\Website;
 use P3in\Builders\WebsiteBuilder;
 use P3in\Models\FieldSource;
 
-use App\User;
+use P3in\Models\User;
 
 class GalleriesSeeder extends Seeder
 {

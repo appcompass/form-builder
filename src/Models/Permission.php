@@ -4,7 +4,7 @@ namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use P3in\Models\Role;
-use App\User;
+use P3in\Models\User;
 use P3in\ModularBaseModel;
 
 class Permission extends ModularBaseModel

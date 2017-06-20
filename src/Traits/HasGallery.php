@@ -13,7 +13,7 @@ namespace P3in\Traits;
 use Auth;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use P3in\Models\Gallery;
-use App\User;
+use P3in\Models\User;
 
 trait HasGallery
 {

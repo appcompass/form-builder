@@ -5,7 +5,7 @@ namespace P3in\Policies;
 use P3in\Models\Permission;
 use P3in\Models\PermissionsRequired;
 use P3in\Models\Resource;
-use App\User;
+use P3in\Models\User;
 use P3in\Requests\FormRequest;
 use Route;
 

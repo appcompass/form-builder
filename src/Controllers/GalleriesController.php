@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use P3in\Requests\FormRequest;
 use P3in\Models\Gallery;
 use P3in\Models\Photo;
-use App\User;
+use P3in\Models\User;
 use Auth;
 use Gate;
 

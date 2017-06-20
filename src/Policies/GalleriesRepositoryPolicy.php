@@ -5,7 +5,7 @@ namespace P3in\Policies;
 use Carbon\Carbon;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use P3in\Models\Gallery;
-use App\User;
+use P3in\Models\User;
 use P3in\Repositories\GalleriesRepository;
 
 class GalleriesRepositoryPolicy
