@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 use P3in\Events\Login;
 use P3in\Events\Logout;
 use P3in\Models\Resource;
-use P3in\Models\User;
+use App\User;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AuthController extends Controller
