@@ -1,7 +1,11 @@
+@php
+    $listenIP = $website->getConfig('deployment.listen_ip').':' ?? '';
+    $listenPort = $website->scheme === 'https' ? '443 ssl http2' : '80';
+    $listenPort = $website->getConfig('deployment.listen_port') ?? $listenPort;
+@endphp
+@if($website->scheme === 'https')
 server {
-    # @TODO: listen_ip (none if left empty for any on server)
-    # @TODO: conditional based on scheme: listen_port
-    listen       172.24.16.210:80;
+    listen       {{$listenIP}}80;
     # @TODO: append: server_names
     server_name  {{$website->host}};
 
@@ -13,22 +17,27 @@ server {
 
     return 301 {{$website->scheme}}://{{$website->host}}$request_uri;
 }
-
+@endif
 server {
-    # @TODO: listen_ip (none if left empty for any on server)
-    # @TODO: conditional based on scheme: listen_port
-    listen       172.24.16.210:443 ssl http2;
+    listen       {{$listenIP}}{{$listenPort}};
     # @TODO: append server_names
     server_name  {{$website->host}};
 
     if ($host != {{$website->host}}) {
         return 301 {{$website->scheme}}://{{$website->host}}$request_uri;
     }
+    @if($website->scheme === 'https')
 
     ssl on;
+    @if($website->getConfig('deployment.letsencrypt') == true)
+
     ssl_certificate /etc/letsencrypt/live/{{$website->host}}/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/{{$website->host}}/privkey.pem;
     ssl_trusted_certificate /etc/letsencrypt/live/{{$website->host}}/fullchain.pem;
+    @else
+
+    @endif
+
     ssl_dhparam {{$storage->getConfig('root')}}/ssl/dhparam.pem;
     ssl_ciphers "ECDHE-RSA-AES256-SHA384:DHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA";
     ssl_protocols TLSv1.1 TLSv1.2;
@@ -38,6 +47,7 @@ server {
     ssl_session_tickets off;
     ssl_stapling on;
     ssl_stapling_verify on;
+    @endif
 
     resolver 8.8.8.8 8.8.4.4;
 
@@ -54,7 +64,6 @@ server {
         return 200;
     }
 
-    # client_max_body_size 100M;
     client_max_body_size {{$website->getConfig('deployment.client_max_body_size')}};
     root {{$storage->getConfig('root')}}/dist/;
 
@@ -72,7 +81,6 @@ server {
         proxy_send_timeout 3600;
 
         proxy_pass {{$website->getConfig('deployment.api_url')}}/;
-        # proxy_pass https://api.p3in.com/;
     }
 
     location /sitemap. {
@@ -86,7 +94,6 @@ server {
         proxy_send_timeout 3600;
 
         proxy_pass {{$website->getConfig('deployment.api_url')}}/render/sitemap.;
-        # proxy_pass https://api.p3in.com/render/sitemap.;
     }
 
     location /robots.txt {
@@ -100,12 +107,13 @@ server {
         proxy_send_timeout 3600;
 
         proxy_pass {{$website->getConfig('deployment.api_url')}}/render/robots.txt;
-        # proxy_pass https://api.p3in.com/render/robots.txt;
     }
 
+    @if($website->getConfig('deployment.letsencrypt') == true)
     location ~ /.well-known {
             allow all;
     }
+    @endif
 
     location / {
         try_files $uri @ssr;
@@ -122,7 +130,6 @@ server {
         proxy_send_timeout 3600;
 
         proxy_pass {{$website->getConfig('deployment.ssr_url')}};
-        # proxy_pass http://127.0.0.1:3000;
     }
 
     include {{$storage->getConfig('root')}}/nginx-redirects.conf;

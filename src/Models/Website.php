@@ -157,40 +157,19 @@ class Website extends Model
       * return admin
       *
       */
-    // public function scopeAdmin($query)
-    // {
-    //     return $query->where('site_name', '=', env('ADMIN_WEBSITE_NAME', 'CMS Admin CP'))->firstOrFail();
-    // }
+    public function scopeAdmin($query)
+    {
+        return $query->where('host', '=', env('ADMIN_WEBSITE_HOST'))->firstOrFail();
+    }
 
     /**
       * return all but admin
       *
       */
-    // public function scopeManaged($query)
-    // {
-    //     return $query->where('site_name', '!=', env('ADMIN_WEBSITE_NAME', 'CMS Admin CP'));
-    // }
-
-    /**
-      *
-      *
-      */
-    // public function scopeManagedById($query, $id)
-    // {
-    //     return $query->managed()->findOrFail($id);
-    // }
-
-    // public function scopeIsLive($query)
-    // {
-    //     return $query->whereHas('settings', function ($query) {
-    //         $query->where("data->>'live'", 'true');
-    //     });
-    // }
-
-    // public function getIsLiveAttribute()
-    // {
-    //     return $this->settings('live') ? 'Yes' : 'No';
-    // }
+    public function scopeManaged($query)
+    {
+        return $query->where('host', '!=', env('ADMIN_WEBSITE_HOST'));
+    }
 
     /**
      * as per hasGallery Trait
@@ -205,7 +184,7 @@ class Website extends Model
      */
     public function getMachineName()
     {
-        return strtolower(str_replace(' ', '_', $this->site_name));
+        return strtolower(str_replace(' ', '_', 'website '.$this->attributes['name'].' id '.$this->getKey()));
     }
 
     public function getPageFromUrl($url)
@@ -221,246 +200,11 @@ class Website extends Model
     {
         $host = $host ?? $request->header('Site-Host');
         try {
-            return Website::whereHost($host)->firstOrFail();
+            return self::whereHost($host)->firstOrFail();
         } catch (NotFoundException $e) {
             App::abort(401, $host.' Not Authorized');
         } catch (ModelNotFoundException $e) {
             App::abort(401, $host.' Not Authorized');
         }
     }
-
-    // public function populateField($field_name)
-    // {
-    //     switch ($field_name) {
-    //         case 'website_header_list':
-    //             return Section::headers()->orderBy('name')->lists('name', 'id');
-    //             break;
-    //         case 'website_footer_list':
-    //             return Section::footers()->orderBy('name')->lists('name', 'id');
-    //             break;
-    //         default:
-    //             return [];
-    //             break;
-    //     }
-    // }
-
-
-    // /**
-    //  *  @TODO deployment shouldn't really be a Website responsibility
-    //  */
-    // public function deploy()
-    // {
-
-    //     if (!self::testConnection((array) $this->config)) {
-
-    //         throw new \Exception('Unable to connect.');
-
-    //     }
-
-    //     $ver = Carbon::now()->timestamp;
-
-    //     $css_path = '/'.$ver.'-style.css';
-
-    //     $css = $this->buildCss();
-
-    //     try {
-
-    //         $disk = $this->getDiskInstance();
-
-    //         if (!$disk->put($css_path, $css) ) {
-
-    //             Log::error('Unable to write file on the remote server: '.$this->config->host);
-
-    //             return false;
-
-    //         }
-
-    //         $this->settings('css_file', $css_path);
-
-    //         return true;
-
-    //     } catch (\RuntimeException $e) {
-
-    //         \Log::error($e->getMessage());
-
-    //         return false;
-
-    //     }
-
-    // }
-
-    // /**
-    //   * Get disk instance
-    //   *
-    //   * @param boolean $first_time uses parent as root
-    //   */
-    // public function getDiskInstance($first_time = false)
-    // {
-
-    //     $connection_info = array_replace(Config::get('filesystems.disks.sftp'), (array) $this->config);
-
-    //     if ($first_time) {
-
-    //       $connection_info['root'] = dirname($connection_info['root']);
-
-    //     }
-
-    //     Config::set('filesystems.disks.sftp', $connection_info);
-
-    //     $disk = \Storage::disk('sftp');
-
-    //     return $disk;
-
-    // }
-
-    // /**
-    // *  Test connection to website
-    // *
-    // *
-    // */
-    // public static function testConnection(array $overrides = [], $first_time = false)
-    // {
-
-    //     $instance = new static;
-
-    //     $instance->config = $overrides;
-
-    //     $disk = $instance->getDiskInstance($first_time);
-
-    //     try {
-
-    //       $disk->getAdapter()->getConnection();
-
-    //     } catch (\LogicException $e) {
-    //         // dd($e->getMessage());
-    //       return false;
-
-    //     }
-
-    //     $website_folder = basename($instance->config->root);
-
-    //     if ($first_time AND !$disk->has($website_folder)) {
-
-    //       return $disk->createDir($website_folder);
-
-    //     }
-
-    //     return true;
-
-    // }
-
-    // /**
-    //   * buildCSS
-    //   *
-    //   * builds css files out of the settings
-    //   */
-    // public function buildCss()
-    // {
-
-    //     $parser = new Less_Parser(config('less'));
-
-    //     $parser->parseFile(config('less.less_path'));
-
-    //     $parser->ModifyVars([
-    //         'color-theme-primary'=> $this->settings('color_primary'),
-    //         'color-theme-secondary' => $this->settings('color_secondary'),
-    //     ]);
-
-    //     return $parser->getCss();
-
-    // }
-
-    // /*
-    // * Store an image as the website logo
-    // *
-    // */
-    // public function addLogo(UploadedFile $file)
-    // {
-
-    //     // TODO vvvv BULLCRAP, move it to a separate method
-    //     $connection_info = array_replace(Config::get('filesystems.disks.sftp'), (array) $this->config);
-
-    //     Config::set('filesystems.disks.'.config('app.default_storage'), $connection_info);
-
-    //     $photo = Photo::store($file, Auth::user(), [
-    //         'storage' => $this->site_url,
-    //         'file_path' => 'images/',
-    //         'name' => 'logo',
-    //     ], $this->getDiskInstance());
-
-    //     if (!config('app.skip_alt_logo')) {
-    //         $photo_original_path = $connection_info['root'].$photo->attributes['path'];
-
-    //         // Now lets create the alternate png version.
-    //         // get file size.
-    //         $sizeCheck = new Imagick($photo_original_path);
-    //         $size = $sizeCheck->getImageGeometry();
-
-    //         // lets create the png version
-    //         $image = new Imagick();
-    //         $image->setResolution(4096, 4096);
-    //         $image->setBackgroundColor(new ImagickPixel('transparent'));
-    //         $image->readImageBlob(file_get_contents($photo_original_path));
-    //         $image->setImageFormat("png32");
-    //         $image->writeImage($connection_info['root'].str_replace('.svg', '.png', $photo->attributes['path']));
-    //     }
-
-
-    //     $this->logo()->delete();
-
-    //     return $this->logo()->save($photo);
-    // }
-
-    // /**
-    //  * Check if current website has a logo
-    //  */
-    // public function hasLogo()
-    // {
-    //     return $this->logo()->exists();
-    // }
-
-    // /**
-    // *
-    // * Website::first()->render()
-    // *
-    // *
-    // */
-    // public function renderPage($page_path)
-    // {
-
-    //     try {
-
-    //         $page = $this->pages()
-    //             ->where('slug', $page_path)
-    //             ->firstOrFail();
-
-    //     if ($page->checkPermissions(Auth::user())) {
-    //         return $page;
-    //     }
-
-    //     } catch (ModelNotFoundException $e ) {
-
-    //         return false;
-
-    //     }
-
-    //     return false;
-    // }
-    // /**
-    //  *
-    //  */
-    // public function storeRedirects()
-    // {
-
-    //     $rendered = Redirect::renderForWebsite($this);
-
-    //     $disk = $this->getDiskInstance();
-
-    //     if (!$disk->put('nginx-redirects.conf', $rendered)) {
-
-    //         abort(503);
-
-    //     }
-    //     return true;
-    // }
 }

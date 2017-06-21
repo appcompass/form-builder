@@ -48,6 +48,7 @@ Route::group([
     $router->resource('pages.contents', PageContentController::class);
     $router->resource('websites', WebsitesController::class);
     $router->get('websites/{website}/setup', 'WebsiteSetupController@getSetup')->name('websites-setup');
+    $router->match(['post', 'put'], 'websites/{website}/setup', 'WebsiteSetupController@postSetup')->name('websites-setup.update');
     // $router->get('websites/{website}/setup', 'WebsiteSetupController@getSetup')->name('websites-setup');
     $router->resource('websites.menus', WebsiteMenusController::class);
     // @TODO use generic forms getter once that's done (maybe)

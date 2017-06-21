@@ -130,34 +130,37 @@ class ResourcesSeeder extends Seeder
             $builder->string('Host', 'host')->required()->sortable()->searchable()
                 ->help('Just the fully qualified hostname (FQDN)');
 
-            $builder->fieldset('Deployment', 'config.deployment', function (FormBuilder $depBuilder) {
-                $depBuilder->string('Publish From Path', 'publish_from')
+            // @TODO: this must be a full select/add new type of dynamic field.
+            $builder->select('Storage', 'storage_id')
+                ->required()->dynamic(\P3in\Models\StorageConfig::class, function (FieldSource $source) {
+                    $source->select(['id AS index', 'name AS label']);
+                })
+                ->help('Hosting location where the frontend website will be set up.');
+
+            $builder->fieldset('Deployment', 'config.deployment', function (FormBuilder $builder) {
+                $builder->string('Publish From Path', 'publish_from')
                     ->required();
-                $depBuilder->string('Listen IP', 'listen_ip')
+                $builder->string('Listen IP', 'listen_ip')
                     ->help('Specify only if you need the website to only listen on a specific IP.');
-                $depBuilder->string('Listen Port', 'listen_port')
+                $builder->string('Listen Port', 'listen_port')
                     ->help('Specify only if not typical 80/443 ports.');
-                $depBuilder->string('Server Name', 'server_names')
+                $builder->string('Server Name', 'server_names')
                     ->repeatable()
                     ->help('other Hostnames that the website is known by.');
-                // @TODO: this must be a full select/add new type of dynamic field.
-                $depBuilder->select('Hosting info', 'disk')
-                    ->required()->dynamic(\P3in\Models\Storage::class, function (FieldSource $source) {
-                        $source->select(['id AS index', 'name AS label']);
-                    })
-                    ->help('Hosting info where the website should be hosted.');
-                $depBuilder->string('API URL', 'api_url')
+                $builder->string('API URL', 'api_url')
                     ->help('URL where the website will access the backend API.');
-                $depBuilder->string('SSR URL', 'ssr_url')
+                $builder->string('SSR URL', 'ssr_url')
                     ->help('URL where the website can serve up the Server Side Rendered pages for SEO.');
-                $depBuilder->string('Max Upload File Size', 'client_max_body_size')
+                $builder->string('Max Upload File Size', 'client_max_body_size')
                     ->help('Max allowed file upload size in Mebagbites.');
-                $depBuilder->file('SSL Certificate Key', 'ssl_key')
+                $builder->boolean('Use LetsEncrypt Certificate', 'letsencrypt')
+                    ->help('Use Letsencrypt to generate certificate.');
+                $builder->file('SSL Certificate Key', 'ssl_key')
                     ->help('SSL Certificate Key.');
-                $depBuilder->file('SSL Certificate', 'ssl_certificate')
+                $builder->file('SSL Certificate', 'ssl_certificate')
                     ->help('SSL Certificate.');
             });
-        })->linkToResources(['websites-setup']);
+        })->linkToResources(['websites-setup', 'websites-setup.update']);
 
         FormBuilder::new('websites.redirects', function (FormBuilder $builder) {
             $builder->string('From', 'from')->list()->sortable()->searchable()->required();
