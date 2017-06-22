@@ -35,7 +35,6 @@ class WebsiteBuilder
         if (!is_null($website)) {
             $this->website = $website;
             $this->renderer = new WebsiteRenderer($website);
-            $this->renderer->setRootDir($website->host);
         }
     }
 
@@ -196,6 +195,8 @@ class WebsiteBuilder
         $this->website->storage()->associate($storage);
 
         $this->website->save();
+
+        $this->renderer->setDisk($this->website->storage->getContainer());
     }
 
     /**
@@ -262,39 +263,28 @@ class WebsiteBuilder
         return $this->renderer->getStorePath();
     }
 
-    public function storePages()
+    public function compilePages()
     {
         foreach ($this->website->pages as $page) {
-            PageBuilder::edit($page)->storePage();
+            PageBuilder::edit($page)->compilePage();
         }
 
         return $this;
     }
 
-    public function storeWebsite()
+    public function compileWebsite()
     {
-        $this->renderer->store();
+        $this->renderer->compile();
 
         return $this;
     }
 
     public function deploy()
     {
-        $files = $this->renderer->getDistBuildFiles();
-        $dest = $this->website->storage->getDisk();
+        $storage = $this->website->storage;
+        $server = $storage->getContainer();
 
-        foreach ($files as $name => $contents) {
-            $dest->put($name, $contents);
-        }
-        // run build process.
-        // @TODO: make this disk specific operation.  i.e. $dest->runCommand('npm install && npm run build');
-        $process = new Process('npm install && npm run build', $dest->getAdapter()->getPathPrefix(), null, null, null); //that last null param disables timeout.
-        $process->run(function ($type, $buffer) {
-            // if (Process::ERR === $type) {
-            //     $this->error($buffer);
-            // } else {
-            //     $this->info($buffer);
-            // }
-        });
+        // @TODO: needs error handling, and this also assumes PM2 is being used which is a req on the server.
+        return $server->runCommand('npm install && npm run build && pm2 restart all');
     }
 }

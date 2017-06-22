@@ -20,7 +20,7 @@ class TemplateRenderer
     public function __construct(Page $page, Storage $disk = null)
     {
         $this->page = $page;
-        $this->disk = $disk ?? Storage::disk('websites_root');
+        $this->disk = $disk ?? $page->website->getDisk();
     }
 
     public function getContents()
@@ -206,6 +206,6 @@ class TemplateRenderer
         if (!$this->disk) {
             throw new Exception('No Disk specified to store templates.');
         }
-        $this->disk->put("{$this->page->website->host}/src/pages{$name}.vue", $this->contents);
+        $this->disk->put("/src/pages{$name}.vue", $this->contents);
     }
 }

@@ -98,10 +98,10 @@ class PageBuilder
         // We need to find a way to avoid having to do all that..
         if ($structueChange) {
             // re-render the template.
-            $builder->storePage();
+            $builder->compilePage();
             // Store the website when page structure has changed.
             // @TODO: shouldn't be necisary.
-            $builder->storeWebsite();
+            $builder->compileWebsite();
         }
 
     }
@@ -347,7 +347,7 @@ class PageBuilder
         return $this;
     }
 
-    public function storePage(string $layout = null)
+    public function compilePage(string $layout = null)
     {
         $renderer = new TemplateRenderer($this->page);
 
@@ -360,10 +360,10 @@ class PageBuilder
         return $this;
     }
 
-    public function storeWebsite()
+    public function compileWebsite()
     {
         $builder = WebsiteBuilder::edit($this->page->website);
-        $builder->storeWebsite();
+        $builder->compileWebsite();
     }
 
     /**

@@ -52,12 +52,9 @@ class DeployWebsite extends Command
 
         $wb = WebsiteBuilder::edit($website);
 
-        // @TODO: change workflow back to storing and running directly on website disk instance.
-        $wb->storePages()
-            ->storeWebsite();
-
-        // @TODO: find a good way to "minitor and display" the process as it runs.
-        $wb->deploy();
+        $wb->compilePages()
+            ->compileWebsite()
+            ->deploy();
     }
 
   /**
