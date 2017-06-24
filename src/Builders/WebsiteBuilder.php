@@ -18,7 +18,6 @@ use P3in\Models\Section;
 use P3in\Models\StorageConfig;
 use P3in\Models\Website;
 use P3in\PublishFiles;
-use P3in\Renderers\WebsiteRenderer;
 use Symfony\Component\Process\Process;
 
 class WebsiteBuilder
@@ -34,8 +33,13 @@ class WebsiteBuilder
     {
         if (!is_null($website)) {
             $this->website = $website;
-            $this->renderer = new WebsiteRenderer($website);
+            $this->renderer = $website->renderer();
         }
+    }
+
+    public function renderer()
+    {
+        return $this->renderer;
     }
 
     /**
@@ -82,6 +86,17 @@ class WebsiteBuilder
         }
 
         return new static($website);
+    }
+
+    public function addLayout($name)
+    {
+        $layout = new Layout([
+            'name' => $name,
+        ]);
+
+        $layout = $this->website->addLayout($layout);
+
+        return new LayoutBuilder($layout);
     }
 
     /**
@@ -196,33 +211,7 @@ class WebsiteBuilder
 
         $this->website->save();
 
-        $this->renderer->setDisk($this->website->storage->getContainer());
-    }
-
-    /**
-     * Sets the header.
-     *
-     * @param      <type>  $template  The template
-     *
-     * @return     <type>  ( description_of_the_return_value )
-     */
-    public function setHeader($template)
-    {
-        $this->website->setConfig('header', $template);
-        return $this;
-    }
-
-    /**
-     * Sets the footer.
-     *
-     * @param      <type>  $template  The template
-     *
-     * @return     <type>  ( description_of_the_return_value )
-     */
-    public function setFooter($template)
-    {
-        $this->website->setConfig('footer', $template);
-        return $this;
+        $this->renderer()->setDisk($this->website->storage->getContainer());
     }
 
     public function setDeploymentDisk($disk)
@@ -248,6 +237,7 @@ class WebsiteBuilder
         $this->website->setConfig('meta', $data);
         return $this;
     }
+
     /**
      * Gets the website.
      *
@@ -260,13 +250,13 @@ class WebsiteBuilder
 
     public function getStorePath()
     {
-        return $this->renderer->getStorePath();
+        return $this->renderer()->getStorePath();
     }
 
     public function compilePages()
     {
         foreach ($this->website->pages as $page) {
-            PageBuilder::edit($page)->compilePage();
+            $page->renderer()->compile();
         }
 
         return $this;
@@ -274,7 +264,7 @@ class WebsiteBuilder
 
     public function compileWebsite()
     {
-        $this->renderer->compile();
+        $this->renderer()->compile();
 
         return $this;
     }

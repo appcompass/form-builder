@@ -88,6 +88,14 @@ class TemplateRenderer
         // //we need to delete it's template file as to clean up junk.
     }
 
+    public function compile()
+    {
+        $this->render()
+        ->store();
+
+        return $this;
+    }
+
     /**
      * { function_description }
      *

@@ -39,12 +39,12 @@ class WebsiteRenderer
             ->get();
 
         $rtn = [];
-        foreach ($pages->unique('layout')->pluck('layout') as $layout) {
+        foreach ($pages->unique('layout.name')->pluck('layout.name') as $layout) {
             if ($layout) {
                 $rtn[] = [
                     'path' => '',
                     'component' => $layout,
-                    'children' => $this->formatRoutesBranch($pages->where('layout', $layout))
+                    'children' => $this->formatRoutesBranch($pages->where('layout.name', $layout))
                 ];
             }
         }

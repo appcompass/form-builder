@@ -53,8 +53,12 @@ class DeployWebsite extends Command
         $wb = WebsiteBuilder::edit($website);
 
         $wb->compilePages()
-            ->compileWebsite()
-            ->deploy();
+            ->renderer()
+            ->compile();
+
+        $output = $wb->deploy();
+
+        $this->info($output);
     }
 
   /**

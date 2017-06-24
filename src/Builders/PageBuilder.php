@@ -6,12 +6,12 @@ use Closure;
 use Exception;
 use Illuminate\Support\Facades\App;
 use P3in\Builders\WebsiteBuilder;
+use P3in\Models\Layout;
 use P3in\Models\Page;
 use P3in\Models\PageSectionContent;
 use P3in\Models\Resource;
 use P3in\Models\Section;
 use P3in\PublishFiles;
-use P3in\Renderers\TemplateRenderer;
 
 class PageBuilder
 {
@@ -21,14 +21,20 @@ class PageBuilder
     private $page;
     private $container;
     private $section;
+    private $renderer;
 
     public function __construct(Page $page = null)
     {
         if (!is_null($page)) {
             $this->page = $page;
+            $this->renderer = $page->renderer();
         }
     }
 
+    public function renderer()
+    {
+        return $this->renderer;
+    }
 
     /**
      * new
@@ -39,11 +45,9 @@ class PageBuilder
      */
     public static function new($title, Website $website, Closure $closure = null)
     {
-        $instance = new static();
-
-        $instance->page = $website->pages()->create([
+        $instance = new static($website->pages()->create([
             'title' => $title,
-        ]);
+        ]));
 
         if ($closure) {
             $closure($instance);
@@ -98,10 +102,10 @@ class PageBuilder
         // We need to find a way to avoid having to do all that..
         if ($structueChange) {
             // re-render the template.
-            $builder->compilePage();
+            $builder->renderer()->compile();
             // Store the website when page structure has changed.
             // @TODO: shouldn't be necisary.
-            $builder->compileWebsite();
+            $page->website->renderer()->compile();
         }
 
     }
@@ -301,9 +305,10 @@ class PageBuilder
         return $this->setMeta('sitemap->changefreq', $val);
     }
 
-    public function layout($layout = null)
+    public function layout(Layout $layout)
     {
-        $this->page->update(['layout' => $layout]);
+        $this->page->layout()->associate($layout);
+        $this->page->save();
 
         return $this;
     }
@@ -345,25 +350,6 @@ class PageBuilder
         $this->page->setMeta($key, $val);
 
         return $this;
-    }
-
-    public function compilePage(string $layout = null)
-    {
-        $renderer = new TemplateRenderer($this->page);
-
-        $renderer
-        // ->layout($layout)
-        ->render()
-        ->store();
-
-
-        return $this;
-    }
-
-    public function compileWebsite()
-    {
-        $builder = WebsiteBuilder::edit($this->page->website);
-        $builder->compileWebsite();
     }
 
     /**

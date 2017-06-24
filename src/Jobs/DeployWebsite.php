@@ -36,9 +36,13 @@ class DeployWebsite implements ShouldQueue
         $wb = WebsiteBuilder::edit($this->website);
 
         info('starting deployment for '.$this->website->host.'.');
-        $result = $wb->compilePages()
-            ->compileWebsite()
-            ->deploy();
+
+        $wb->compilePages()
+            ->renderer()
+            ->compile();
+
+        $result = $wb->deploy();
+
         info('deployment complete.', $result);
     }
 }
