@@ -168,26 +168,24 @@ class AuthController extends Controller
         ]);
     }
 
-    // @TODO: needs error code, can't be 401.
     protected function noCodeResponse(Request $request)
     {
         return response()->json([
             'message' => trans('registration.activation-failed'),
-        ]);
+        ], 422);
     }
 
-    // @TODO: needs error code, can't be 401.
     protected function alreadyActiveResponse(Request $request)
     {
         return response()->json([
             'message' => trans('registration.already-active'),
-        ]);
+        ], 422);
     }
 
     protected function sendFailedLoginResponse(Request $request)
     {
         return response()->json([
             'message' => trans('auth.failed'),
-        ], 401);
+        ], 422);
     }
 }
