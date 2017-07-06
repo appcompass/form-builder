@@ -59,6 +59,7 @@ Route::group([
     $router->delete('websites/{website}/menus/links/{link_id}', 'WebsiteMenusController@deleteLink');
     $router->resource('websites.navigation', WebsiteMenusController::class);
     $router->resource('websites.pages', WebsitePagesController::class);
+    $router->post('websites/{website}/pages/{page}', 'WebsitePagesController@uploadMedia');
     $router->resource('websites.layouts', WebsiteLayoutsController::class);
     $router->resource('websites.redirects', WebsiteRedirectsController::class);
     // $router->resource('websites.sections', WebsiteSectionsController::class);

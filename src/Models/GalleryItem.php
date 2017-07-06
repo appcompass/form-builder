@@ -9,11 +9,10 @@ use P3in\Models\Scopes\GalleryItemScope;
 use P3in\Models\User;
 use P3in\Traits\HasCardView;
 use P3in\Traits\HasPermissions;
-use P3in\Traits\HasStorage;
 
 abstract class GalleryItem extends Model
 {
-    use HasStorage, SoftDeletes, HasPermissions, HasCardView;
+    use SoftDeletes, HasPermissions, HasCardView;
 
     /**
      * Table Name
@@ -66,5 +65,34 @@ abstract class GalleryItem extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Sets the meta.
+     *
+     * @param      <type>  $key    The key
+     * @param      <type>  $val    The value
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
+    public function setMeta($key, $val)
+    {
+        $this->update(['meta->'.$key => $val]);
+
+        return $this;
+    }
+
+    /**
+     * Gets the meta.
+     *
+     * @param      <type>  $key    The key
+     *
+     * @return     <type>  The meta.
+     */
+    public function getMeta($key)
+    {
+        // array_get is what we need but only works with arrays.
+        $conf = json_decode(json_encode($this->meta ?: []), true);
+        return array_get($conf, $key, null);
     }
 }

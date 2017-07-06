@@ -4,9 +4,12 @@ namespace P3in\Models;
 
 use P3in\Interfaces\GalleryItemInterface;
 use P3in\Models\GalleryItem;
+use P3in\Traits\HasStorage;
 
 class Video extends GalleryItem implements GalleryItemInterface
 {
+    use HasStorage;
+
     public function getType()
     {
         return 'video';

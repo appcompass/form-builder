@@ -10,7 +10,10 @@ use P3in\Requests\FormRequest;
 
 class GalleryPhotosRepository extends AbstractChildRepository implements GalleryPhotosRepositoryInterface
 {
-    protected $with = ['user'];
+    protected $with = [
+        'user',
+        // 'gallery.galleryable.storage'
+    ];
 
     protected $view_types = ['Card', 'Table'];
     protected $create_type = 'Inline';

@@ -11,12 +11,6 @@ use P3in\Models\User;
 
 class Photo extends GalleryItem implements GalleryItemInterface
 {
-    protected $fillable = [
-        'user_id',
-        'name',
-        'path',
-        'order'
-    ];
 
     // @TODO: move this to repo.
     /**
@@ -35,16 +29,6 @@ class Photo extends GalleryItem implements GalleryItemInterface
     }
 
     /**
-     * { function_description }
-     *
-     * @return     <type>  ( description_of_the_return_value )
-     */
-    public function apendStoragePath()
-    {
-        return date('m-y');
-    }
-
-    /**
      * Gets the url attribute.
      *
      * @return     <type>  The url attribute.
@@ -52,7 +36,7 @@ class Photo extends GalleryItem implements GalleryItemInterface
      // @NOTE: We must ALWAYS get Photo::with('storage') to avoid 1 query per record.  meaning, this is a @TODO: refactor.
     public function getUrlAttribute()
     {
-        return $this->getDisk()->url($this->path);
+        return $this->getMeta('url');
     }
 
     public function getCardPhotoUrl()

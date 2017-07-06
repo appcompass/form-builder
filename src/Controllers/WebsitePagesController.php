@@ -7,8 +7,11 @@ use Illuminate\Http\Request;
 use P3in\Builders\PageBuilder;
 use P3in\Interfaces\WebsitePagesRepositoryInterface;
 use P3in\Models\Link;
+use P3in\Models\Page;
 use P3in\Models\PageSectionContent;
+use P3in\Models\Photo;
 use P3in\Models\Section;
+use P3in\Models\Website;
 use P3in\Requests\FormRequest;
 
 class WebsitePagesController extends AbstractChildController
@@ -92,5 +95,41 @@ class WebsitePagesController extends AbstractChildController
         return response()->json([
             'collection' => Link::get()
         ]);
+    }
+
+    public function uploadMedia(FormRequest $request, Website $website, Page $page)
+    {
+    // @TODO: used for handling file uploads, move this to field specific handling and right now we only check for two file types, images and videos.
+    $this->validate($request, [
+        'video' => 'mimetypes:video/x-msvideo,video/mpeg,video/ogv,video/webm,video/3pg,video/3g2',
+        // @TODO: change to image.
+        'file' => 'mimetypes:image/gif,image/jpeg,image/png,image/svg+xml,image/tiff,image/webp',
+    ]);
+    $diskName = $website->storage->name;
+
+    // done to set the disk instance config info that is unsed internally in the laravel storage workflow.
+    $disk = $website->getDisk();
+    // if ($request->hasFile('video')) {
+    //     Video
+    //     $website->gallery->videos()->save($video);
+    // }
+    if ($request->hasFile('file')) {
+        $name = date('y-m').'/'.strtolower($request->file->getClientOriginalName());
+        $path = $request->file->storeAs('images', $name, $diskName);
+
+        $photo = Photo::firstOrNew([
+            'path' => $path
+        ]);
+
+        $photo->meta = ['url' => $disk->url($path)];
+
+        $photo->user()->associate($request->user());
+        $website->gallery->photos()->save($photo);
+
+        return $this->repo->output([
+            'image_url' => $photo->url,
+        ]);
+    }
+    return false;
     }
 }

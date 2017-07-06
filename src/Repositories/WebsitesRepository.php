@@ -13,6 +13,6 @@ class WebsitesRepository extends AbstractRepository implements WebsitesRepositor
     {
         $this->model = $model;
         // exclude the admin cp from the managed website list.
-        $this->builder = $model->newQuery()->managed();
+        $this->builder = $model->managed()->newQuery();
     }
 }
