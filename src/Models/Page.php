@@ -6,11 +6,13 @@ use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
+use P3in\Builders\PageBuilder;
 use P3in\Interfaces\Linkable;
 use P3in\Models\Layout;
 use P3in\Models\PageSectionContent;
 use P3in\Models\Section;
 use P3in\Models\Website;
+use P3in\Renderers\TemplateRenderer;
 use P3in\Traits\HasRole;
 
 class Page extends Model implements Linkable
@@ -76,6 +78,11 @@ class Page extends Model implements Linkable
         return $this->belongsToMany(Section::class, 'page_section_content');
     }
 
+    public function layout()
+    {
+        return $this->belongsTo(Layout::class);
+    }
+
     /**
      * content
      *
@@ -86,6 +93,15 @@ class Page extends Model implements Linkable
         return $this->hasMany(PageSectionContent::class)->orderBy('order', 'asc');
     }
 
+    public function builder()
+    {
+        return new PageBuilder($this);
+    }
+
+    public function renderer()
+    {
+        return new TemplateRenderer($this);
+    }
 
     public function dropContent($psc)
     {

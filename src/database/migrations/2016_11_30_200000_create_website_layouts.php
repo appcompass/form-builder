@@ -15,15 +15,15 @@ class CreateWebsiteLayouts extends Migration
     {
         Schema::create('website_layouts', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->string('name')->nullable();
 
             $table->integer('website_id')->unsigned()->nullable();
             $table->foreign('website_id')->references('id')->on('websites')->onDelete('cascade');
 
-            $table->integer('parent_id')->nullable();
+            $table->integer('parent_id')->unsigned()->nullable();
             $table->foreign('parent_id')->references('id')->on('website_layouts')->onDelete('cascade');
 
-            $table->integer('section_id')->unsigned();
+            $table->integer('section_id')->unsigned()->nullable();
             $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
 
             $table->json('config')->nullable();

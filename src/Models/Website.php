@@ -10,10 +10,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Intervention\Image\Exception\NotFoundException;
+use P3in\Builders\WebsiteBuilder;
 use P3in\Models\Layout;
 use P3in\Models\Page;
 use P3in\Models\Redirect;
 use P3in\Models\Section;
+use P3in\Renderers\WebsiteRenderer;
 use P3in\Traits\HasGallery;
 use P3in\Traits\HasJsonConfigFieldTrait;
 use P3in\Traits\HasPermissions;
@@ -111,6 +113,16 @@ class Website extends Model
     //     return $this->morphOne(Photo::class, 'photoable');
     // }
 
+    public function builder()
+    {
+        return new WebsiteBuilder($this);
+    }
+
+    public function renderer()
+    {
+        return new WebsiteRenderer($this);
+    }
+
     public function apendStoragePath()
     {
         // @TODO: Needs tie in with website settings with fallback of empty string.
@@ -130,6 +142,17 @@ class Website extends Model
     public function scopeByName($query, $name)
     {
         return $query->where('site_name', '=', $name);
+    }
+
+    /**
+     *  Link a layout
+     *
+     */
+    public function addLayout(Layout $layout)
+    {
+        $this->layouts()->save($layout);
+
+        return $layout;
     }
 
     /**
