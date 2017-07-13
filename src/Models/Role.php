@@ -3,9 +3,10 @@
 namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use P3in\Models\User;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notification;
+use P3in\Models\User;
 
 class Role extends Model
 {
@@ -142,5 +143,10 @@ class Role extends Model
                 $this->revokePermissions($single_permission);
             }
         }
+    }
+
+    public function notify(Notification $notification)
+    {
+        return \Notification::send($this->users, $notification);
     }
 }

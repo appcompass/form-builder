@@ -6,12 +6,16 @@ use Exception;
 use P3in\Models\Website;
 use P3in\Storage;
 use P3in\Models\StorageConfig;
+use P3in\Models\Role;
+use P3in\Notifications\DeploymentStatus;
 
 class WebsiteRenderer
 {
     private $website;
     private $build;
     private $disk;
+    // @TODO: we use this in both builder and renderer, we should establish who's in charge of running commands on the disk instance.
+    public $commandOutputs = [];
 
     public function __construct(Website $website, Storage $disk = null)
     {
@@ -211,7 +215,7 @@ class WebsiteRenderer
 
             // // @TODO: needs error handling.  Also, we assume this is a Linux server.
             // We'll need to abstract this to the "container" to simply generate the dhparam.pem file.
-            $output = $server->runCommand('openssl dhparam -out dhparam.pem 4096', 'ssl');
+            $this->commandOutputs[] = $server->runCommand('openssl dhparam -out dhparam.pem 4096', 'ssl');
         }
 
         // @TODO: permissions must be set to writable by the server (i.e. nginx/apache user)

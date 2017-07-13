@@ -52,13 +52,25 @@ class DeployWebsite extends Command
 
         $wb = WebsiteBuilder::edit($website);
 
-        $wb->compilePages()
-            ->renderer()
-            ->compile();
+        $renderer = $wb->compilePages()->renderer();
 
-        $output = $wb->deploy();
+        // @TODO: either renderer or builder should be responsible for interacting with the disk.  Not both.
+        $renderer->compile();
+        $wb->deploy();
 
-        $this->info($output);
+        if (!empty($renderer->commandOutputs)) {
+            foreach ($renderer->commandOutputs as $line) {
+                $this->info($line);
+            }
+        }
+
+        if (!empty($wb->commandOutputs)) {
+            foreach ($wb->commandOutputs as $line) {
+                $this->info($line);
+            }
+        }
+
+        $this->info('Done!');
     }
 
   /**

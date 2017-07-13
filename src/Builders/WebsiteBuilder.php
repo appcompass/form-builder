@@ -28,6 +28,8 @@ class WebsiteBuilder
      */
     private $website;
     private $renderer;
+    // @TODO: we use this in both builder and renderer, we should establish who's in charge of running commands on the disk instance.
+    public $commandOutputs = [];
 
     public function __construct(Website $website = null)
     {
@@ -275,6 +277,6 @@ class WebsiteBuilder
         $server = $storage->getContainer();
 
         // @TODO: needs error handling, and this also assumes PM2 is being used which is a req on the server.
-        return $server->runCommand('npm install && npm run build && pm2 restart all');
+        $this->commandOutputs[] = $server->runCommand('npm install && npm run build && pm2 restart all');
     }
 }
