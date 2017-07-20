@@ -203,12 +203,13 @@ class PageBuilder
         return $this;
     }
 
-    public function cloneTo(&$variable)
-    {
-        $variable = clone $this;
+    // @TODO: REMOVE
+    // public function cloneTo(&$variable)
+    // {
+    //     $variable = clone $this;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function parent($ancestors = 1)
     {

@@ -514,7 +514,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
 
     public function getResourceForm()
     {
-        $resource = Resource::byAllowedRole()
+        $resource = Resource::byAllowed()
             ->where('resource', $this->route_name)
             ->with('form')
             ->first();

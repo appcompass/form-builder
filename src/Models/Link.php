@@ -7,10 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use P3in\Interfaces\Linkable;
 use P3in\Models\MenuItem;
 use P3in\Models\Website;
+use P3in\Traits\HasPermission;
 use Validator;
 
 class Link extends Model implements Linkable
 {
+    use HasPermission;
+
     protected $fillable = [
         'title',
         'url',

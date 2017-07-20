@@ -13,11 +13,11 @@ use P3in\Models\PageSectionContent;
 use P3in\Models\Section;
 use P3in\Models\Website;
 use P3in\Renderers\TemplateRenderer;
-use P3in\Traits\HasRole;
+use P3in\Traits\HasPermission;
 
 class Page extends Model implements Linkable
 {
-    use SoftDeletes, HasRole;
+    use SoftDeletes, HasPermission;
 
     // used for page output structuring.
     private $build = [];

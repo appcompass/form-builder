@@ -78,6 +78,7 @@ class PilotIoServiceProvider extends BaseServiceProvider
         \P3in\Interfaces\PermissionsRepositoryInterface::class => \P3in\Repositories\PermissionsRepository::class,
         \P3in\Interfaces\RolesRepositoryInterface::class => \P3in\Repositories\RolesRepository::class,
         \P3in\Interfaces\RolePermissionsRepositoryInterface::class => \P3in\Repositories\RolePermissionsRepository::class,
+        \P3in\Interfaces\UserPermissionsRepositoryInterface::class => \P3in\Repositories\UserPermissionsRepository::class,
         \P3in\Interfaces\UserRolesRepositoryInterface::class => \P3in\Repositories\UserRolesRepository::class,
         \P3in\Interfaces\GalleriesRepositoryInterface::class => \P3in\Repositories\GalleriesRepository::class,
         \P3in\Interfaces\GalleryPhotosRepositoryInterface::class => \P3in\Repositories\GalleryPhotosRepository::class,

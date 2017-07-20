@@ -25,6 +25,7 @@ class CreateMenuItems extends Migration
             $table->string('url', 2083)->nullable();
             $table->integer('order')->unsigned()->nullable();
             $table->integer('req_perm')->unsigned()->nullable();
+            $table->foreign('req_perm')->references('id')->on('permissions')->onDelete('set null');
             $table->boolean('clickable')->default(true); // sometimes we just want separators
             $table->string('icon')->nullable();
             $table->integer('sort')->nullable();

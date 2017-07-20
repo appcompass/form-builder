@@ -7,9 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use P3in\Models\Menu;
 use P3in\Models\Page;
 use P3in\Models\Link;
+use P3in\Traits\HasPermission;
 
 class MenuItem extends Model
 {
+    use HasPermission;
+
     protected $fillable = [
         'title',
         'alt',

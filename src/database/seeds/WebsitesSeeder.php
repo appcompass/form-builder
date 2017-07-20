@@ -96,6 +96,7 @@ class WebsitesSeeder extends Seeder
             $user = $websiteBuilder->addPage('User', 'users', true)->addSection($edit)->layout($privateLayout)->requiresAuth()->resource('users.show');
             $user_profile = $user->addChild('Profile', '')->addSection($edit)->layout($privateLayout)->requiresAuth()->resource('users.edit');
             $user_roles = $user->addChild('Roles', 'roles')->addSection($list)->layout($privateLayout)->requiresAuth()->resource('users.roles.index');
+            $user_permissions = $user->addChild('Permissions', 'permissions')->addSection($list)->layout($privateLayout)->requiresAuth()->resource('users.permissions.index');
 
             $roles = $websiteBuilder->addPage('Roles', 'roles')->addSection($list)->layout($privateLayout)->requiresAuth()->resource('roles.index');
             $create_role = $websiteBuilder->addPage('Create', 'roles/create')->addSection($create)->layout($privateLayout)->requiresAuth()->resource('roles.create');
@@ -164,6 +165,7 @@ class WebsitesSeeder extends Seeder
                     ->add($users, 1)->icon('user')->sub()
                         ->add($user_profile, 1)->icon('user')
                         ->add($user_roles, 2)->icon('group')
+                        ->add($user_permissions, 3)->icon('permission')
                         ->parent()
                     ->add($roles, 2)->icon('group')->sub()
                         ->add($role_info, 1)->icon('edit')

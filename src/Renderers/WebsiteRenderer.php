@@ -38,7 +38,7 @@ class WebsiteRenderer
     public function buildRoutesTree($pages = null)
     {
         $pages = $this->website->pages()
-            ->byAllowedRole()
+            ->byAllowed()
             ->with('sections')
             ->get();
 

@@ -110,10 +110,10 @@ class FormBuilder
     {
         foreach ((array) $resources as $resource) {
             $name = $resource;
-            $role = null;
+            $permission = null;
             if (is_array($resource)) {
                 $name = key($resource);
-                $role = $resource[$name];
+                $permission = $resource[$name];
             }
             $record = new Resource([
                 'resource' => $name
@@ -121,8 +121,8 @@ class FormBuilder
 
             $record->form()->associate($this->form);
 
-            if (!is_null($role)) {
-                $record->setRole($role);
+            if (!is_null($permission)) {
+                $record->setPermission($permission);
             }
             $record->save();
         }

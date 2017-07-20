@@ -19,15 +19,22 @@ class ResourcesSeeder extends Seeder
             $builder->string('Last Name', 'last_name')->list()->required()->sortable()->searchable();
             $builder->string('Email', 'email')->list()->validation(['required', 'email'])->sortable()->searchable();
             $builder->string('Phone Number', 'phone')->list()->required()->sortable()->searchable();
-            $builder->boolean('Active', 'active')->list(false);
+            $builder->boolean('Active', 'active')->list()->sortable();
             $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
             $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
+            $builder->string('Last Login', 'last_login')->list()->edit(false)->sortable()->searchable();
             $builder->secret('Password', 'password')->required();
         })->linkToResources(['users.index', 'users.show', 'users.create', 'users.update', 'users.store']);
 
         FormBuilder::new('user-roles', function (FormBuilder $builder) {
             $builder->string('Name', 'label')->list()->required()->sortable()->searchable();
+            $builder->string('Description', 'description')->list()->required()->sortable()->searchable();
         })->linkToResources(['users.roles.index']);
+
+        FormBuilder::new('user-permissions', function (FormBuilder $builder) {
+            $builder->string('Name', 'label')->list()->required()->sortable()->searchable();
+            $builder->string('Description', 'description')->list()->required()->sortable()->searchable();
+        })->linkToResources(['users.permissions.index']);
 
         FormBuilder::new('permissions', function (FormBuilder $builder) {
             $builder->string('Name', 'label')->list()->required()->sortable()->searchable();

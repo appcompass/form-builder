@@ -19,6 +19,9 @@ class CreateWebsites extends Migration
             $table->integer('storage_id')->nullable();
             $table->foreign('storage_id')->references('id')->on('storage_configs');
 
+            $table->integer('req_perm')->unsigned()->nullable();
+            $table->foreign('req_perm')->references('id')->on('permissions')->onDelete('set null');
+
             $table->string('name', 64);
             $table->string('scheme', 64);
             $table->string('host', 128)->unique();

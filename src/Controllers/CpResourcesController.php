@@ -45,7 +45,7 @@ class CpResourcesController extends Controller
 
     private function getResources(string $route = null)
     {
-        $query = Resource::byAllowedRole();
+        $query = Resource::byAllowed();
 
         if ($route) {
             $query->where('resource', $route);

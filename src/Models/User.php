@@ -11,12 +11,14 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
 use P3in\Models\Gallery;
+use P3in\Models\Permission;
 use P3in\Models\Photo;
 use P3in\Models\Role;
 use P3in\ModularBaseModel;
 use P3in\Notifications\ConfirmRegistration;
 use P3in\Notifications\ResetPassword;
 use P3in\Traits\HasCardView;
+use P3in\Traits\HasPermissions;
 use Tymon\JWTAuth\Contracts\JWTSubject as AuthenticatableUserContract;
 
 // use P3in\Traits\HasProfileTrait;
@@ -32,8 +34,8 @@ class User extends ModularBaseModel implements
         Authorizable,
         CanResetPassword,
         Notifiable,
-        HasCardView
-        // HasPermissions
+        HasCardView,
+        HasPermissions
         // HasProfileTrait
         ;
 
@@ -99,16 +101,6 @@ class User extends ModularBaseModel implements
     public function roles()
     {
         return $this->belongsToMany(Role::class)->withTimestamps();
-    }
-
-    /**
-     * Permissions
-     *
-     * @return     <type>  ( description_of_the_return_value )
-     */
-    public function permissions()
-    {
-        return $this->belongsToMany(Permission::class)->withTimestamps();
     }
 
     /**
@@ -211,7 +203,7 @@ class User extends ModularBaseModel implements
     }
 
     /**
-      * Add current user to a group
+      * Add current user to a role
       *
       * @param      mixed $role  The role
       *
@@ -219,7 +211,9 @@ class User extends ModularBaseModel implements
       */
     public function assignRole($role)
     {
-        if (is_int($role)) {
+        if ($role instanceof Role) {
+            // do nothing.
+        }elseif (is_int($role)) {
             $role = Role::findOrFail($role);
         } elseif (is_string($role)) {
             $role = Role::whereName($role)->firstOrFail();
@@ -229,7 +223,7 @@ class User extends ModularBaseModel implements
     }
 
     /**
-      *  Remove current user from a group
+      *  Remove current user from a role
       */
     public function revokeRole(Role $role)
     {
@@ -246,7 +240,9 @@ class User extends ModularBaseModel implements
     public function hasRole($role)
     {
         try {
-            if (is_string($role)) {
+            if ($role instanceof Role) {
+                // do nothing.
+            } elseif (is_string($role)) {
                 $role = Role::whereName($role)->firstOrFail();
             } elseif (is_int($role)) {
                 $role = Role::findOrFail($role);
@@ -259,13 +255,14 @@ class User extends ModularBaseModel implements
     }
 
     /**
-     * keep this to avoid breaking the api. consider removal. maybe. i'm def in a remove-it-all mood
      *
      * @return     <type>  ( description_of_the_return_value )
      */
     public function allPermissions()
     {
         $this->load('roles.permissions');
+
+        $user_permissions = $this->permissions()->allRelatedIds()->toArray();
 
         $roles_permissions = [];
 
@@ -276,6 +273,8 @@ class User extends ModularBaseModel implements
 
             $roles_permissions = array_merge($roles_permissions, $role_permissions);
         }
+
+        $roles_permissions = array_merge($roles_permissions, $user_permissions);
 
         return array_unique($roles_permissions);
     }

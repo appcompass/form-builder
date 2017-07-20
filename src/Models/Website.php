@@ -18,14 +18,14 @@ use P3in\Models\Section;
 use P3in\Renderers\WebsiteRenderer;
 use P3in\Traits\HasGallery;
 use P3in\Traits\HasJsonConfigFieldTrait;
-use P3in\Traits\HasPermissions;
+use P3in\Traits\HasPermission;
 use P3in\Traits\HasStorage;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Website extends Model
 {
     use HasGallery,
-        HasPermissions,
+        HasPermission,
         HasStorage,
         SoftDeletes,
         HasJsonConfigFieldTrait;

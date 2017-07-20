@@ -37,6 +37,7 @@ Route::group([
     $router->resource('roles.permissions', RolePermissionsController::class);
     $router->resource('permissions', PermissionsController::class);
     $router->resource('users.roles', UserRolesController::class);
+    $router->resource('users.permissions', UserPermissionsController::class);
 
     $router->resource('galleries', GalleriesController::class);
     $router->resource('galleries.photos', GalleryPhotosController::class);

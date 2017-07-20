@@ -16,8 +16,8 @@ class CreatePages extends Migration
         Schema::create('pages', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->integer('req_role')->unsigned()->nullable();
-            $table->foreign('req_role')->references('id')->on('roles');
+            $table->integer('req_perm')->unsigned()->nullable();
+            $table->foreign('req_perm')->references('id')->on('permissions')->onDelete('set null');
 
             $table->integer('parent_id')->unsigned()->nullable();
             $table->foreign('parent_id')->references('id')->on('pages');

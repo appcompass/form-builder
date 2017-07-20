@@ -14,14 +14,13 @@ class CreatePermissions extends Migration
     {
         Schema::create('permissions', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('type')->unique();
+            $table->string('name')->unique();
             $table->string('label');
             $table->text('description')->nullable();
             // $table->boolean('locked')->default(false); // @TODO locked has no current meaning in the code, commenting out
             $table->timestamps();
         });
 
-        // @NOTE users have roles, never direct permissions
         // link permissions to roles
         Schema::create('permission_role', function (Blueprint $table) {
             $table->integer('role_id')->unsigned();
@@ -31,6 +30,16 @@ class CreatePermissions extends Migration
             $table->unique(['role_id', 'permission_id']);
             $table->timestamps();
         });
+
+        Schema::create('permission_user', function (Blueprint $table) {
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->integer('permission_id')->unsigned();
+            $table->foreign('permission_id')->references('id')->on('permissions')->onDelete('cascade');
+            $table->unique(['user_id', 'permission_id']);
+            $table->timestamps();
+        });
+
     }
 
     /**
@@ -40,6 +49,7 @@ class CreatePermissions extends Migration
      */
     public function down()
     {
+        Schema::drop('permission_user');
         Schema::drop('permission_role');
         Schema::drop('permissions');
     }

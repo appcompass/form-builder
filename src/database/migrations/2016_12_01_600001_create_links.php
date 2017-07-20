@@ -24,6 +24,8 @@ class CreateLinks extends Migration
             $table->text('content')->nullable();
             $table->integer('website_id')->nullable();
             $table->foreign('website_id')->references('id')->on('websites');
+            $table->integer('req_perm')->unsigned()->nullable();
+            $table->foreign('req_perm')->references('id')->on('permissions')->onDelete('set null');
             $table->timestamps();
         });
     }

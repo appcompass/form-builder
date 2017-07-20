@@ -4,16 +4,15 @@ namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use P3in\Traits\HasRole;
+use P3in\Traits\HasPermission;
 
 class Resource extends Model
 {
-    use HasRole;
+    use HasPermission;
 
     protected $fillable = [
         'form_id',
         'resource',
-        'req_role'
     ];
 
     /**

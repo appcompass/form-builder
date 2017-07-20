@@ -58,8 +58,8 @@ class Permission extends ModularBaseModel
     *   Get permission by type
     *
     */
-    public function scopeByType($query, $type)
+    public function scopeByName($query, $name)
     {
-        return $query->where('type', '=', $type);
+        return $query->where('name', $name);
     }
 }
