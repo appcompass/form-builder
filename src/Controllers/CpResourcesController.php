@@ -25,10 +25,10 @@ class CpResourcesController extends Controller
 {
     public function routes(Request $request)
     {
-        $cacheKey = 'routes_'.$request->website->id.'_'.(Auth::check() ? Auth::user()->id : 'guest');
+        $cacheKey = $request->website->id.'_'.(Auth::check() ? Auth::user()->id : 'guest');
         // forever? we would then need to clear this cache when updating a user permission though.
         // @TODO: fix form render so it's not running queries in loops.
-        $data = Cache::remember($cacheKey, 0, function () use ($request) {
+        $data = Cache::tags('routes')->remember($cacheKey, 0, function () use ($request) {
             return [
                 // 'resources' => $this->getResources(),
                 'routes' => $request->website->renderer()->buildRoutesTree(),

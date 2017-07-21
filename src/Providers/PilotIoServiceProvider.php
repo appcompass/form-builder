@@ -61,6 +61,7 @@ class PilotIoServiceProvider extends BaseServiceProvider
     ];
 
     protected $observe = [
+        \P3in\Observers\PermissionObserver::class => \P3in\Models\Permission::class,
         \P3in\Observers\FieldObserver::class => \P3in\Models\Field::class,
         \P3in\Observers\GalleryItemObserver::class => [
             \P3in\Models\Photo::class,

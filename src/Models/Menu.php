@@ -127,10 +127,10 @@ class Menu extends Model
 
                 $node->children = $children ?? [];
 
-                if ($node['req_perm']) {
+                if ($node->req_perm) {
                     if (isset($permissions[0]) && $permissions[0] == '*') {
                         $tree[] = $node;
-                    } elseif (in_array($node['req_perm'], $permissions)) {
+                    } elseif (in_array($node->req_perm, $permissions)) {
                         $tree[] = $node;
                     }
                 } else {

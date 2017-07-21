@@ -5,8 +5,6 @@ namespace P3in\Traits;
 use Illuminate\Database\Eloquent\Collection;
 use P3in\Models\Permission;
 use P3in\Models\PermissionsRequired;
-use P3in\Models\PermissionsRequired\PermissionItems\Element;
-use P3in\Models\PermissionsRequired\PermissionItems\Model;
 
 trait HasPermissions
 {

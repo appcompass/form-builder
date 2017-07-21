@@ -8,6 +8,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\URL;
 use P3in\Models\FormButler;
@@ -39,11 +40,11 @@ class PublicWebsiteController extends BaseController
 
         $menus = $request
             ->website
-            ->menus
-            ->load('items');
+            ->menus()->with('items')->get();
 
+        $permIds = Auth::check() ? (array) Cache::tags('auth_permissions')->get(Auth::user()->id) : [];
         foreach ($menus as $menu) {
-            $rtn[$menu->name] = $menu->render(true);
+            $rtn[$menu->name] = $menu->render(true, $permIds);
         }
 
         return $rtn;

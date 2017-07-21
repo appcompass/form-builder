@@ -24,24 +24,24 @@ class ResourcesSeeder extends Seeder
             $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
             $builder->string('Last Login', 'last_login')->list()->edit(false)->sortable()->searchable();
             $builder->secret('Password', 'password')->required();
-        })->linkToResources(['users.index', 'users.show', 'users.create', 'users.update', 'users.store']);
+        })->linkToResources(['users.index', 'users.show', 'users.create', 'users.update', 'users.store'], 'users_admin');
 
         FormBuilder::new('user-roles', function (FormBuilder $builder) {
             $builder->string('Name', 'label')->list()->required()->sortable()->searchable();
             $builder->string('Description', 'description')->list()->required()->sortable()->searchable();
-        })->linkToResources(['users.roles.index']);
+        })->linkToResources(['users.roles.index'], 'users_admin');
 
         FormBuilder::new('user-permissions', function (FormBuilder $builder) {
             $builder->string('Name', 'label')->list()->required()->sortable()->searchable();
             $builder->string('Description', 'description')->list()->required()->sortable()->searchable();
-        })->linkToResources(['users.permissions.index']);
+        })->linkToResources(['users.permissions.index'], 'users_admin');
 
         FormBuilder::new('permissions', function (FormBuilder $builder) {
             $builder->string('Name', 'label')->list()->required()->sortable()->searchable();
             $builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();
             $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
             $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
-        })->linkToResources([['permissions.index' => 'admin'], ['permissions.show' => 'admin'], ['permissions.create' => 'admin'], ['permissions.store' => 'admin'], ['permissions.update' => 'admin']]);
+        })->linkToResources(['permissions.index', 'permissions.show', 'permissions.create', 'permissions.store', 'permissions.update'], 'permissions_admin');
 
         FormBuilder::new('roles', function (FormBuilder $builder) {
             $builder->string('Role Name', 'name')->list()->required()->sortable()->searchable();
@@ -49,12 +49,11 @@ class ResourcesSeeder extends Seeder
             $builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();
             $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
             $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
-        })->linkToResources([['roles.index' => 'admin'], ['roles.show' => 'admin'], ['roles.store' => 'admin'], ['roles.update' => 'admin']]);
+        })->linkToResources(['roles.index', 'roles.show', 'roles.store', 'roles.update'], 'permissions_admin');
 
         FormBuilder::new('role-permissions', function (FormBuilder $builder) {
             $builder->string('Name', 'label')->list()->required()->sortable()->searchable();
-        })->linkToResources([['roles.permissions.index' => 'admin']]);
-
+        })->linkToResource('roles.permissions.index', 'permissions_admin');
 
         FormBuilder::new('websites', function (FormBuilder $builder) {
             $builder->string('Website Name', 'name')->list()->sortable()->searchable()->edit(false);
@@ -98,7 +97,13 @@ class ResourcesSeeder extends Seeder
                     // ->repeatable()
                     ->help('Additional meta tags to be added.');
             });
-        })->linkToResources(['websites.index', 'websites.show', 'websites.create', 'websites.store', 'websites.update']);
+        })
+            ->linkToResource('websites.index', 'websites_admin_view')
+            ->linkToResource('websites.show', 'websites_admin_view')
+            ->linkToResource('websites.create', 'websites_admin_create')
+            ->linkToResource('websites.store', 'websites_admin_create')
+            ->linkToResource('websites.update', 'websites_admin_create')
+            ->linkToResource('websites.destroy', 'websites_admin_destroy');
 
         FormBuilder::new('websites.layouts', function (FormBuilder $builder) {
             $builder->string('Name', 'name')->list()->sortable()->searchable()->edit()
@@ -123,7 +128,7 @@ class ResourcesSeeder extends Seeder
                 // ->keyed()
                 // ->repeatable()
                 ->dynamic(['public', 'errors']);
-        })->linkToResources(['websites.layouts.index', 'websites.layouts.store', 'websites.layouts.update']);
+        })->linkToResources(['websites.layouts.index', 'websites.layouts.store', 'websites.layouts.update'], 'websites_layouts_admin');
 
         FormBuilder::new('website-setup', function (FormBuilder $builder) {
             $builder->string('Website Name', 'name')->required()->sortable()->searchable()
@@ -167,7 +172,7 @@ class ResourcesSeeder extends Seeder
                 $builder->file('SSL Certificate', 'ssl_certificate')
                     ->help('SSL Certificate.');
             });
-        })->linkToResources(['websites-setup', 'websites-setup.update']);
+        })->linkToResources(['websites-setup', 'websites-setup.update'], 'websites_admin_create');
 
         FormBuilder::new('websites.redirects', function (FormBuilder $builder) {
             $builder->string('From', 'from')->list()->sortable()->searchable()->required();
@@ -191,7 +196,7 @@ class ResourcesSeeder extends Seeder
                     $source->select(['id As index', 'label']);
                 })
                 ->nullable();
-        })->linkToResources(['websites.redirects.index', 'websites.redirects.store', 'websites.redirects.update']);
+        })->linkToResources(['websites.redirects.index', 'websites.redirects.store', 'websites.redirects.update'], 'websites_admin_create');
 
         FormBuilder::new('pages', function (FormBuilder $builder) {
             $builder->editor('Page');
@@ -237,14 +242,14 @@ class ResourcesSeeder extends Seeder
                     ->help('Custom footer HTML, CSS, JS This is in addition to the website wide custom footer html.');
             });
 
-        })->linkToResources(['pages.show', 'websites.pages.index', 'websites.pages.create', 'websites.pages.show']);
+        })->linkToResources(['pages.show', 'websites.pages.index', 'websites.pages.create', 'websites.pages.show'], 'websites_pages_admin');
 
 
         FormBuilder::new('menus', function (FormBuilder $builder) {
             $builder->string('Name', 'name')->list()->required()->sortable()->searchable();
             $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
             $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
-        })->linkToResources(['websites.menus.index', 'websites.menus.create']);
+        })->linkToResources(['websites.menus.index', 'websites.menus.create'], 'websites_menus_admin');
 
         FormBuilder::new('menus-editor', function (FormBuilder $builder) {
             $builder->editor('Menu');
@@ -300,7 +305,7 @@ class ResourcesSeeder extends Seeder
             $builder->fieldset('Configuration', 'config', function (FormBuilder $builder) {
                 $builder->string('Root', 'root')->list()->sortable()->searchable()->required();
             })->list(false)->required();
-        })->linkToResources(['storage.index', 'storage.show', 'storage.create', 'storage.store', 'storage.update']);
+        })->linkToResources(['storage.index', 'storage.show', 'storage.create', 'storage.store', 'storage.update'], 'storage_admin');
 
         FormBuilder::new('resources', function (FormBuilder $builder) {
             $builder->string('Resource', 'resource')->list()->sortable()->searchable()->required();
@@ -309,7 +314,7 @@ class ResourcesSeeder extends Seeder
             $builder->select('Role required', 'req_role')->dynamic(\P3in\Models\Role::class, function (FieldSource $source) {
                 $source->select(['id As index', 'label']);
             })->nullable();
-        })->linkToResources(['resources.index', 'resources.show', 'resources.create']);
+        })->linkToResources(['resources.index', 'resources.show', 'resources.create'], 'resources_admin');
 
         FormBuilder::new('forms', function (FormBuilder $builder) {
             $builder->string('Name', 'name')->list(true)->sortable()->searchable();
@@ -318,7 +323,7 @@ class ResourcesSeeder extends Seeder
             $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
             $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
             $builder->string('Updated', 'updated_at')->edit(false);
-        })->linkToResources(['forms.index', 'forms.show']);
+        })->linkToResources(['forms.index', 'forms.show'], 'forms_admin');
 
     }
 }

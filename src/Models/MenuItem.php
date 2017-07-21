@@ -31,7 +31,7 @@ class MenuItem extends Model
     public $appends = [
         'content', // get content through the Link if available
         'url',  // make sure we fetch the url from the linked element
-        'type' // [Page|Link] for now, but the type in general
+        'type', // [Page|Link] for now, but the type in general
     ];
 
     /**
@@ -110,6 +110,22 @@ class MenuItem extends Model
         }
 
         $this->attributes['url'] = $url;
+    }
+
+    /**
+     * Gets the local req_perm attribute only if it's populated, otherwise get the item's relationship req_perm if it's set.
+     *
+     * @return     <int|null>  The req_perm attribute.
+     */
+    public function getReqPermAttribute()
+    {
+        if (!empty($this->attributes['req_perm'])) {
+            return $this->attributes['req_perm'];
+        } elseif (!is_null($this->navigatable)) {
+            return $this->navigatable->req_perm;
+        } else {
+            return null;
+        }
     }
 
     /**
