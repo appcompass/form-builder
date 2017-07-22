@@ -3,11 +3,12 @@
 namespace P3in\Renderers;
 
 use Exception;
-use P3in\Models\Website;
-use P3in\Storage;
-use P3in\Models\StorageConfig;
+use P3in\Models\Resource;
 use P3in\Models\Role;
+use P3in\Models\StorageConfig;
+use P3in\Models\Website;
 use P3in\Notifications\DeploymentStatus;
+use P3in\Storage;
 
 class WebsiteRenderer
 {
@@ -35,20 +36,24 @@ class WebsiteRenderer
 
     // Methods for Vue Route format output of all pages
     // @TODO: we prob want to move this to something else, like WebsiteBuilder maybe
-    public function buildRoutesTree($pages = null)
+    public function buildRoutesTree()
     {
-        $pages = $this->website->pages()
+        $resources = Resource::byConfig('layout', '!=', '')
             ->byAllowed()
-            ->with('sections')
             ->get();
+        // return $resources;
+        // $pages = $this->website->pages()
+        //     ->byAllowed()
+        //     ->with('sections')
+        //     ->get();
 
         $rtn = [];
-        foreach ($pages->unique('layout.name')->pluck('layout.name') as $layout) {
+        foreach ($resources->unique('config.layout')->pluck('config.layout') as $layout) {
             if ($layout) {
                 $rtn[] = [
                     'path' => '',
                     'component' => $layout,
-                    'children' => $this->formatRoutesBranch($pages->where('layout.name', $layout))
+                    'children' => $this->formatRoutesBranch($resources->where('config.layout', $layout))
                 ];
             }
         }
@@ -116,22 +121,11 @@ class WebsiteRenderer
      * Private Methods
      **/
 
-    private function formatRoutesBranch($pages)
+    private function formatRoutesBranch($resources)
     {
         $rtn = [];
-        foreach ($pages as $page) {
-            // cp pages are like any other, so we use the sections to define the view type
-            // (handy if we ever decided to change a view type for a page).
-            $section = $page->sections->first();
-            $meta = (object) $page->meta;
-            $meta->title = $page->title;
-            $rtn[] = [
-                'path' => $page->url,
-                'name' => $page->getMeta('resource') ?? $page->slug,
-                'meta' => $meta,
-                // might need to be worked out for CP, at least discussed to see if we want to go this route.
-                'component' => $section ? $section->template : null,
-            ];
+        foreach ($resources as $resource) {
+            $rtn[] = $resource->vueRoute();
         }
         return $rtn;
     }

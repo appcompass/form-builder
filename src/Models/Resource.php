@@ -82,7 +82,15 @@ class Resource extends Model implements Linkable
 
         }
 
-        return str_replace(['{', '}'], [':', ''], $route->uri());
+        $params = $route->parameterNames();
+        array_walk($params, function(&$val){
+            $val = ':'.str_plural($val);
+            return $val;
+        });
+
+        $url = route($name, $params, false);
+
+        return preg_replace(['/\/edit$/', '/\/show$/'], ['/',''], $url);
     }
 
     /**
@@ -104,11 +112,11 @@ class Resource extends Model implements Linkable
 
     public function vueRoute()
     {
+        $name = $this->resource;
         $meta = (object) $this->getConfig('meta');
 
         // @TODO: can prob remove.  here for backwards compatibility only.
         $meta->resource = $name;
-        $title = substr($name, 0, strrpos($name, "."));
 
         return [
             'path' => $this->url,
