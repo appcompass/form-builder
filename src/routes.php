@@ -19,7 +19,7 @@ Route::group([
 
     // registration
     $router->post('register', 'AuthController@register');
-    $router->get('activate/{code}', 'AuthController@activate')->name('activate-account');
+    $router->get('activate/{code}', 'AuthController@activate')->name('cp-activate-account');
 
     // password reset
     $router->post('password/email', 'PasswordController@sendResetLinkEmail');
@@ -30,8 +30,7 @@ Route::group([
     'namespace' => 'P3in\Controllers',
     'middleware' => ['auth', 'api']
 ], function ($router) {
-    // $router->get('notification-center', 'CpController@getNotificationCenter');
-    // $router->get('dashboard', 'CpController@getDashboard');
+    $router->get('dashboard', 'CpResourcesController@getDashboard')->name('cp-dashboard');
     $router->resource('users', UsersController::class);
     $router->resource('roles', RolesController::class);
     $router->resource('roles.permissions', RolePermissionsController::class);

@@ -65,7 +65,8 @@ class CreateFormBuilder extends Migration
         Schema::create('resources', function (Blueprint $table) {
             $table->increments('id');
             $table->string('resource')->unique();
-            $table->integer('form_id')->unsigned();
+            $table->json('config')->nullable();
+            $table->integer('form_id')->unsigned()->nullable();
             $table->foreign('form_id')->references('id')->on('forms')->onDelete('cascade');
             $table->integer('req_perm')->unsigned()->nullable();
             $table->foreign('req_perm')->references('id')->on('permissions')->onDelete('set null');

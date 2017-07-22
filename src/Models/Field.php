@@ -30,6 +30,7 @@ class Field extends Model
         'config' => 'object',
     ];
 
+
     protected $hidden = [];
 
     protected $appends = [];

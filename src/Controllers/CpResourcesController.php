@@ -23,6 +23,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CpResourcesController extends Controller
 {
+    public function getDashboard(Request $request)
+    {
+        return response()->json(['coming soon.']);
+    }
+
     public function routes(Request $request)
     {
         $cacheKey = $request->website->id.'_'.(Auth::check() ? Auth::user()->id : 'guest');

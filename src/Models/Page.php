@@ -405,7 +405,7 @@ class Page extends Model implements Linkable
      *
      * @return     MenuItem
      */
-    public function makeMenuItem($order = 0)
+    public function makeMenuItem($order = 0): MenuItem
     {
 
         // @TODO find a way to auto-determine order based on previous insertions

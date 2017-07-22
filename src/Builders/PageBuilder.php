@@ -333,10 +333,10 @@ class PageBuilder
      *
      * @return     <type>  ( description_of_the_return_value )
      */
-    public function requiresAuth($val = true)
-    {
-        return $this->setMeta('requiresAuth', $val);
-    }
+    // public function requiresAuth($val = true)
+    // {
+    //     return $this->setMeta('requiresAuth', $val);
+    // }
 
     /**
      * Sets the meta.

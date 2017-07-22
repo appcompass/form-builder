@@ -8,4 +8,5 @@ interface Linkable
 {
     // public function makeMenuItem($order = 0);
     public function getTypeAttribute();
+    public function makeMenuItem($order): MenuItem;
 }
