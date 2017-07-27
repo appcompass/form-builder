@@ -127,6 +127,10 @@ class Menu extends Model
 
                 $node->children = $children ?? [];
 
+                if (empty($node->children) && empty($node->url)) {
+                    continue;
+                }
+
                 if ($node->req_perm) {
                     if (isset($permissions[0]) && $permissions[0] == '*') {
                         $tree[] = $node;
