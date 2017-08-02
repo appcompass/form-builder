@@ -9,26 +9,26 @@ class ResourcesSeeder extends Seeder
 {
     public function run()
     {
-        Resource::build('cp-dashboard')->setLayout('Private')->setComponent('Home')->setTitle('Dashbaord')->requiresAuth()->setPermission('cp_login');
+        Resource::build('cp-dashboard')->setLayout('Private')->setComponent('Home')->setTitle('Dashbaord')->setPermission('cp_login')->requiresAuth();
 
-        Resource::build('users.index')->setLayout('Private')->setComponent('List')->setTitle('Users')->requiresAuth();
-        Resource::build('users.show')->setLayout('Private')->setComponent('Edit')->setTitle('User')->requiresAuth();
-        Resource::build('users.edit')->setLayout('Private')->setComponent('Edit')->setTitle('Profile')->requiresAuth();
-        Resource::build('users.create')->setLayout('Private')->setComponent('Create')->setTitle('Create')->requiresAuth();
+        Resource::build('users.index')->setLayout('Private')->setComponent('List')->setTitle('Users')->setPermission('users_admin')->requiresAuth();
+        Resource::build('users.show')->setLayout('Private')->setComponent('Edit')->setTitle('User')->setPermission('users_admin')->requiresAuth();
+        Resource::build('users.edit')->setLayout('Private')->setComponent('Edit')->setTitle('Profile')->setPermission('users_admin')->requiresAuth();
+        Resource::build('users.create')->setLayout('Private')->setComponent('Create')->setTitle('Create')->setPermission('users_admin')->requiresAuth();
 
-        Resource::build('users.roles.index')->setLayout('Private')->setComponent('List')->setTitle('Roles')->requiresAuth();
-        Resource::build('users.permissions.index')->setLayout('Private')->setComponent('List')->setTitle('Permissions')->requiresAuth();
+        Resource::build('users.roles.index')->setLayout('Private')->setComponent('List')->setTitle('Roles')->setPermission('users_admin')->requiresAuth();
+        Resource::build('users.permissions.index')->setLayout('Private')->setComponent('List')->setTitle('Permissions')->setPermission('users_admin')->requiresAuth();
 
-        Resource::build('permissions.index')->setLayout('Private')->setComponent('List')->setTitle('Permissions')->requiresAuth();
-        Resource::build('permissions.show')->setLayout('Private')->setComponent('Edit')->setTitle('Permission')->requiresAuth();
-        Resource::build('permissions.edit')->setLayout('Private')->setComponent('Edit')->setTitle('Info')->requiresAuth();
-        Resource::build('permissions.create')->setLayout('Private')->setComponent('Create')->setTitle('Create')->requiresAuth();
+        Resource::build('permissions.index')->setLayout('Private')->setComponent('List')->setTitle('Permissions')->setPermission('permissions_admin')->requiresAuth();
+        Resource::build('permissions.show')->setLayout('Private')->setComponent('Edit')->setTitle('Permission')->setPermission('permissions_admin')->requiresAuth();
+        Resource::build('permissions.edit')->setLayout('Private')->setComponent('Edit')->setTitle('Info')->setPermission('permissions_admin')->requiresAuth();
+        Resource::build('permissions.create')->setLayout('Private')->setComponent('Create')->setTitle('Create')->setPermission('permissions_admin')->requiresAuth();
 
-        Resource::build('roles.index')->setLayout('Private')->setComponent('List')->setTitle('Roles')->requiresAuth();
-        Resource::build('roles.show')->setLayout('Private')->setComponent('Edit')->setTitle('Role')->requiresAuth();
-        Resource::build('roles.edit')->setLayout('Private')->setComponent('Edit')->setTitle('Info')->requiresAuth();
-        Resource::build('roles.create')->setLayout('Private')->setComponent('Create')->setTitle('Create')->requiresAuth();
-        Resource::build('roles.permissions.index')->setLayout('Private')->setComponent('List')->setTitle('Permissions')->requiresAuth();
+        Resource::build('roles.index')->setLayout('Private')->setComponent('List')->setTitle('Roles')->setPermission('permissions_admin')->requiresAuth();
+        Resource::build('roles.show')->setLayout('Private')->setComponent('Edit')->setTitle('Role')->setPermission('permissions_admin')->requiresAuth();
+        Resource::build('roles.edit')->setLayout('Private')->setComponent('Edit')->setTitle('Info')->setPermission('permissions_admin')->requiresAuth();
+        Resource::build('roles.create')->setLayout('Private')->setComponent('Create')->setTitle('Create')->setPermission('permissions_admin')->requiresAuth();
+        Resource::build('roles.permissions.index')->setLayout('Private')->setComponent('List')->setTitle('Permissions')->setPermission('permissions_admin')->requiresAuth();
 
         Resource::build('resources.index')->setLayout('Private')->setComponent('List')->setTitle('Resources')->setPermission('resources_admin')->requiresAuth();
         Resource::build('resources.show')->setLayout('Private')->setComponent('Edit')->setTitle('Resource')->setPermission('resources_admin')->requiresAuth();
@@ -40,12 +40,13 @@ class ResourcesSeeder extends Seeder
         Resource::build('websites.edit')->setLayout('Private')->setComponent('Edit')->setTitle('Settings')->setPermission('websites_admin_create')->requiresAuth();
         Resource::build('websites.create')->setLayout('Private')->setComponent('Create')->setTitle('Create')->setPermission('websites_admin_create')->requiresAuth();
         Resource::build('websites-setup')->setLayout('Private')->setComponent('Create')->setTitle('Setup')->setPermission('websites_admin_create')->requiresAuth();
-        Resource::build('websites.layouts.index')->setLayout('Private')->setComponent('List')->setTitle('Layouts')->setPermission('websites_layouts_admin')->requiresAuth();;
-        Resource::build('websites.layouts.show')->setLayout('Private')->setComponent('Edit')->setTitle('Layout')->setPermission('websites_layouts_admin')->requiresAuth();;
-        Resource::build('websites.layouts.edit')->setLayout('Private')->setComponent('WebsiteLayoutEditor')->setTitle('Builder')->setPermission('websites_layouts_admin')->requiresAuth();;
-        Resource::build('websites.menus.index')->setComponent('List')->setTitle('Menus')->setPermission('websites_menus_admin')->requiresAuth();;
-        Resource::build('websites.menus.show')->setComponent('Edit')->setTitle('Menu')->setPermission('websites_menus_admin')->requiresAuth();;
-        Resource::build('websites.menus.edit')->setComponent('Edit')->setTitle('Editor')->setPermission('websites_menus_admin')->requiresAuth();;
+        Resource::build('websites.layouts.index')->setLayout('Private')->setComponent('List')->setTitle('Layouts')->setPermission('websites_layouts_admin')->requiresAuth();
+        Resource::build('websites.layouts.create')->setLayout('FullScreen')->setComponent('WebsiteLayoutEditor')->setTitle('Create')->setPermission('websites_layouts_admin')->requiresAuth();
+        Resource::build('websites.layouts.show')->setLayout('FullScreen')->setComponent('WebsiteLayoutEditor')->setTitle('Layout')->setPermission('websites_layouts_admin')->requiresAuth();
+        Resource::build('websites.layouts.edit')->setLayout('FullScreen')->setComponent('WebsiteLayoutEditor')->setTitle('Builder')->setPermission('websites_layouts_admin')->requiresAuth();
+        Resource::build('websites.menus.index')->setComponent('List')->setTitle('Menus')->setPermission('websites_menus_admin')->requiresAuth();
+        Resource::build('websites.menus.show')->setComponent('Edit')->setTitle('Menu')->setPermission('websites_menus_admin')->requiresAuth();
+        Resource::build('websites.menus.edit')->setComponent('Edit')->setTitle('Editor')->setPermission('websites_menus_admin')->requiresAuth();
 
         Resource::build('websites.pages.index')->setLayout('Private')->setComponent('List')->setTitle('Pages')->setPermission('websites_pages_admin')->requiresAuth();
         Resource::build('websites.pages.create')->setLayout('FullScreen')->setComponent('WebsitePageEditor')->setTitle('Create')->setPermission('websites_pages_admin')->requiresAuth();
@@ -72,6 +73,5 @@ class ResourcesSeeder extends Seeder
         Resource::build('forms.create')->setLayout('Private')->setComponent('Create')->setTitle('Create')->setPermission('forms_admin')->requiresAuth();
         Resource::build('forms.show')->setLayout('Private')->setComponent('Edit')->setTitle('Form')->setPermission('forms_admin')->requiresAuth();
         Resource::build('forms.edit')->setLayout('Private')->setComponent('Edit')->setTitle('Info')->setPermission('forms_admin')->requiresAuth();
-
     }
 }

@@ -37,7 +37,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
     // Model
     protected $model;
 
-     // Link parent/children
+    // Link parent/children
     protected $with = [];
 
     // appends attributes to output.
@@ -48,7 +48,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
     // ['user' => ['from' => 'id', 'to' => 'user_id']]
     protected $requires = [
         'methods' => [],
-        'props' => []
+        'props'   => [],
     ];
 
     protected $route_name;
@@ -68,12 +68,13 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
 
     // in rare instances we want to exclude all the extra data on the output structure.
     public $raw_data = false;
+
     /**
      * { function_description }
      */
     protected function make()
     {
-        if (! $this->builder) {
+        if (!$this->builder) {
             $this->builder = $this->getBuilder();
         }
 
@@ -128,7 +129,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
     private function setAppends(&$collection)
     {
         if ($this->appends) {
-            $collection->each(function($row) {
+            $collection->each(function ($row) {
                 $row->setAppends($this->appends);
             });
         }
@@ -153,7 +154,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
     /**
      * Sets the model.
      *
-     * @param      \Illuminate\Database\Eloquent\Model  $model  The model
+     * @param      \Illuminate\Database\Eloquent\Model $model The model
      *
      * @return     <type>                               ( description_of_the_return_value )
      */
@@ -192,7 +193,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
             }
         }
 
-        foreach ((array) $search as $column => $string) {
+        foreach ((array)$search as $column => $string) {
             $this->builder->where($column, 'ilike', "%{$string}%");
         }
     }
@@ -215,7 +216,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
             }
         }
 
-        foreach ((array) $sorters as $field => $order) {
+        foreach ((array)$sorters as $field => $order) {
             $this->builder->orderBy($field, $order);
         }
     }
@@ -309,10 +310,12 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
      */
     public function update($attributes)
     {
-        $this->model->fill($attributes);
-
+        // $this->model->fill($attributes); // does not trigger any mutators.
+        foreach ($attributes as $key => $val) {
+            $this->model->{$key} = $val;
+        }
         $this->checkForUploads($attributes);
-
+        
         return $this->model->save();
     }
 
@@ -327,7 +330,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
     /**
      * { function_description }
      *
-     * @param      integer  $limit  The limit
+     * @param      integer $limit The limit
      *
      * @return     <type>   ( description_of_the_return_value )
      */
@@ -394,7 +397,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
      * { function_description }
      *
      * @param      <type>   $page      The page
-     * @param      integer  $per_page  The per page
+     * @param      integer $per_page The per page
      *
      * @return     <type>   ( description_of_the_return_value )
      */
@@ -440,9 +443,10 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
             return is_a($val, UploadedFile::class);
         }));
 
-        $storage = $this->model->storage ? $this->model->storage->name : head(array_where($attributes, function ($val, $key) {
-            return $key == 'disk';
-        }));
+        $storage = $this->model->storage ? $this->model->storage->name : head(array_where($attributes,
+            function ($val, $key) {
+                return $key == 'disk';
+            }));
 
         if ($file) {
             if (!$storage) {
@@ -467,24 +471,26 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         $this->setAppends($data);
         if ($this->raw_data) {
             $rtn = [
-                'abilities' => ['create', 'edit', 'destroy', 'index', 'show'], // @TODO show is per-item in the collection
-                'form' => $this->getResourceForm(),
+                'abilities'  => ['create', 'edit', 'destroy', 'index', 'show'],
+                // @TODO show is per-item in the collection
+                'form'       => $this->getResourceForm(),
                 'collection' => $data,
             ];
 
             return response()->json($rtn, $code);
         } else {
             $rtn = [
-                'route' => $this->route_name,
-                'parameters' => $this->route_params,
-                'api_url' => $this->getApiUrl(),
-                'view_types' => $this->view_types,
+                'route'       => $this->route_name,
+                'parameters'  => $this->route_params,
+                'api_url'     => $this->getApiUrl(),
+                'view_types'  => $this->view_types,
                 'create_type' => $this->create_type,
                 'update_type' => $this->update_type,
-                'owned' => $this->owned,
-                'abilities' => ['create', 'edit', 'destroy', 'index', 'show'], // @TODO show is per-item in the collection
-                'form' => $this->getResourceForm(),
-                'collection' => $data,
+                'owned'       => $this->owned,
+                'abilities'   => ['create', 'edit', 'destroy', 'index', 'show'],
+                // @TODO show is per-item in the collection
+                'form'        => $this->getResourceForm(),
+                'collection'  => $data,
             ];
 
             return response()->json($rtn, $code);
@@ -501,7 +507,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         $segments = [''];
         $route_type = $this->getRouteType();
 
-        for ($i=0; $i < count($keys); $i++) {
+        for ($i = 0; $i < count($keys); $i++) {
             if ($keys[$i] !== $route_type) {
                 $segments[] = $keys[$i];
                 if (isset($values[$i])) {
@@ -509,6 +515,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
                 }
             }
         }
+
         return implode('/', $segments);
     }
 
@@ -526,7 +533,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
 
     public function getRouteType()
     {
-        return substr($this->route_name, strrpos($this->route_name, '.')+1);
+        return substr($this->route_name, strrpos($this->route_name, '.') + 1);
     }
 
     public function setRouteInfo()

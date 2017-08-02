@@ -5,6 +5,7 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreatePermissions extends Migration
 {
+
     /**
      * Run the migrations.
      *
@@ -17,7 +18,7 @@ class CreatePermissions extends Migration
             $table->string('name')->unique();
             $table->string('label');
             $table->text('description')->nullable();
-            // $table->boolean('locked')->default(false); // @TODO locked has no current meaning in the code, commenting out
+            $table->boolean('system')->default(false);
             $table->timestamps();
         });
 
@@ -39,7 +40,6 @@ class CreatePermissions extends Migration
             $table->unique(['user_id', 'permission_id']);
             $table->timestamps();
         });
-
     }
 
     /**

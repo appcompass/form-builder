@@ -2,7 +2,6 @@
 
 namespace P3in\Models;
 
-use Exception;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
@@ -10,10 +9,7 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
-use P3in\Models\Gallery;
-use P3in\Models\Permission;
-use P3in\Models\Photo;
-use P3in\Models\Role;
+
 use P3in\ModularBaseModel;
 use P3in\Notifications\ConfirmRegistration;
 use P3in\Notifications\ResetPassword;
@@ -35,8 +31,7 @@ class User extends ModularBaseModel implements
         CanResetPassword,
         Notifiable,
         HasCardView,
-        HasPermissions
-        // HasProfileTrait
+        HasPermissions // , HasProfileTrait
         ;
 
     /**
@@ -63,19 +58,19 @@ class User extends ModularBaseModel implements
         'email',
         'password',
         'active',
-        'activation_code'
+        'activation_code',
     ];
 
     /**
      *  The attributes excluded from the model's JSON form.
      *
-     *  @var array
+     * @var array
      */
     protected $hidden = [
         'password',
         'remember_token',
         'activated_at',
-        'activation_code'
+        'activation_code',
     ];
 
     /**
@@ -87,10 +82,10 @@ class User extends ModularBaseModel implements
 
     public static $rules = [
         'first_name' => 'required|max:255',
-        'last_name' => 'required|max:255',
-        'email' => 'required|email|max:255', //|unique:users when registrering only
-        'phone' => 'required|min:10|max:255',
-        'password' => 'min:6|confirmed', //|required when registering only.
+        'last_name'  => 'required|max:255',
+        'email'      => 'required|email|max:255', //|unique:users when registrering only
+        'phone'      => 'min:10|max:255',
+        // 'password'   => 'min:6|confirmed', //|required when registering only.
     ];
 
     /**
@@ -164,10 +159,10 @@ class User extends ModularBaseModel implements
     public function getJWTCustomClaims()
     {
         return [
-             'user' => [
-                'id' => $this->id,
+            'user' => [
+                'id'   => $this->id,
                 'name' => $this->full_name,
-             ]
+            ],
         ];
     }
 
@@ -203,17 +198,17 @@ class User extends ModularBaseModel implements
     }
 
     /**
-      * Add current user to a role
-      *
-      * @param      mixed $role  The role
-      *
-      * @return     <type>  ( description_of_the_return_value )
-      */
+     * Add current user to a role
+     *
+     * @param      mixed $role The role
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
     public function assignRole($role)
     {
         if ($role instanceof Role) {
             // do nothing.
-        }elseif (is_int($role)) {
+        } elseif (is_int($role)) {
             $role = Role::findOrFail($role);
         } elseif (is_string($role)) {
             $role = Role::whereName($role)->firstOrFail();
@@ -223,8 +218,8 @@ class User extends ModularBaseModel implements
     }
 
     /**
-      *  Remove current user from a role
-      */
+     *  Remove current user from a role
+     */
     public function revokeRole(Role $role)
     {
         return $role->removeUser($this);
@@ -352,7 +347,7 @@ class User extends ModularBaseModel implements
     /**
      * Send the password reset notification.
      *
-     * @param  string  $token
+     * @param  string $token
      * @return void
      */
     public function sendPasswordResetNotification($token)

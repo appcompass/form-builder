@@ -3,9 +3,7 @@
 namespace P3in\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use P3in\Builders\FormBuilder;
-use P3in\Builders\WebsiteBuilder;
 use P3in\Models\FieldSource;
 use P3in\Models\Section;
 
@@ -13,23 +11,30 @@ class FormBuilderSeeder extends Seeder
 {
     public function run()
     {
-
         FormBuilder::new('users', function (FormBuilder $builder) {
             $builder->string('First Name', 'first_name')->list()->required()->sortable()->searchable();
             $builder->string('Last Name', 'last_name')->list()->required()->sortable()->searchable();
             $builder->string('Email', 'email')->list()->validation(['required', 'email'])->sortable()->searchable();
-            $builder->string('Phone Number', 'phone')->list()->required()->sortable()->searchable();
+            $builder->string('Phone Number', 'phone')->list()->sortable()->searchable();
             $builder->boolean('Active', 'active')->list()->sortable();
             $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
             $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
             $builder->string('Last Login', 'last_login')->list()->edit(false)->sortable()->searchable();
-            $builder->secret('Password', 'password')->required();
-        })->linkToResources(['users.index', 'users.show', 'users.create', 'users.update', 'users.store'], 'users_admin');
+            $builder->secret('Password', 'password'); // ->required()
+        })->linkToResources([
+            'users.index',
+            'users.show',
+            'users.create',
+            'users.update',
+            'users.store',
+        ], 'users_admin');
 
         FormBuilder::new('user-roles', function (FormBuilder $builder) {
             $builder->string('Name', 'label')->list()->required()->sortable()->searchable();
             $builder->string('Description', 'description')->list()->required()->sortable()->searchable();
-        })->linkToResources(['users.roles.index'], 'users_admin');
+        })->linkToResources([
+            'users.roles.index',
+        ], 'users_admin');
 
         FormBuilder::new('user-permissions', function (FormBuilder $builder) {
             $builder->string('Name', 'label')->list()->required()->sortable()->searchable();
@@ -41,7 +46,13 @@ class FormBuilderSeeder extends Seeder
             $builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();
             $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
             $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
-        })->linkToResources(['permissions.index', 'permissions.show', 'permissions.create', 'permissions.store', 'permissions.update'], 'permissions_admin');
+        })->linkToResources([
+            'permissions.index',
+            'permissions.show',
+            'permissions.create',
+            'permissions.store',
+            'permissions.update',
+        ], 'permissions_admin');
 
         FormBuilder::new('roles', function (FormBuilder $builder) {
             $builder->string('Role Name', 'name')->list()->required()->sortable()->searchable();
@@ -49,7 +60,12 @@ class FormBuilderSeeder extends Seeder
             $builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();
             $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
             $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
-        })->linkToResources(['roles.index', 'roles.show', 'roles.store', 'roles.update'], 'permissions_admin');
+        })->linkToResources([
+            'roles.index',
+            'roles.show',
+            'roles.store',
+            'roles.update',
+        ], 'permissions_admin');
 
         FormBuilder::new('role-permissions', function (FormBuilder $builder) {
             $builder->string('Name', 'label')->list()->required()->sortable()->searchable();
@@ -128,7 +144,11 @@ class FormBuilderSeeder extends Seeder
                 // ->keyed()
                 // ->repeatable()
                 ->dynamic(['public', 'errors']);
-        })->linkToResources(['websites.layouts.index', 'websites.layouts.store', 'websites.layouts.update'], 'websites_layouts_admin');
+        })->linkToResources([
+            'websites.layouts.index',
+            'websites.layouts.store',
+            'websites.layouts.update',
+        ], 'websites_layouts_admin');
 
         FormBuilder::new('website-setup', function (FormBuilder $builder) {
             $builder->string('Website Name', 'name')->required()->sortable()->searchable()
@@ -136,7 +156,7 @@ class FormBuilderSeeder extends Seeder
             $builder->select('Scheme', 'scheme')->required()->sortable()->searchable()
                 ->dynamic([
                     ['index' => 'http', 'label' => 'Plain (HTTP)'],
-                    ['index' => 'https', 'label' => 'Secure (HTTPS)']
+                    ['index' => 'https', 'label' => 'Secure (HTTPS)'],
                 ])
                 ->help('Website Schema. We recommend website to be served using HTTPS');
             $builder->string('Host', 'host')->required()->sortable()->searchable()
@@ -172,7 +192,10 @@ class FormBuilderSeeder extends Seeder
                 $builder->file('SSL Certificate', 'ssl_certificate')
                     ->help('SSL Certificate.');
             });
-        })->linkToResources(['websites-setup', 'websites-setup.update'], 'websites_admin_create');
+        })->linkToResources([
+            'websites-setup',
+            'websites-setup.update',
+        ], 'websites_admin_create');
 
         FormBuilder::new('websites.redirects', function (FormBuilder $builder) {
             $builder->string('From', 'from')->list()->sortable()->searchable()->required();
@@ -181,11 +204,12 @@ class FormBuilderSeeder extends Seeder
                 ->dynamic([
                     [
                         'index' => '301',
-                        'label' => 'Permanently Moved (301)'
-                    ], [
+                        'label' => 'Permanently Moved (301)',
+                    ],
+                    [
                         'index' => '302',
-                        'label' => 'Temporarily Moved (302)'
-                    ]
+                        'label' => 'Temporarily Moved (302)',
+                    ],
                 ])
                 ->help('The Redirect type.');
 
@@ -196,7 +220,11 @@ class FormBuilderSeeder extends Seeder
                     $source->select(['id As index', 'label']);
                 })
                 ->nullable();
-        })->linkToResources(['websites.redirects.index', 'websites.redirects.store', 'websites.redirects.update'], 'websites_admin_create');
+        })->linkToResources([
+            'websites.redirects.index',
+            'websites.redirects.store',
+            'websites.redirects.update',
+        ], 'websites_admin_create');
 
         FormBuilder::new('pages', function (FormBuilder $builder) {
             $builder->editor('Page');
@@ -207,12 +235,13 @@ class FormBuilderSeeder extends Seeder
             $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
             $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
             $builder->string('Slug', 'slug')->list(false)->required();
-            $builder->select('Parent', 'parent_id')->list(false)->dynamic(\P3in\Models\Page::class, function (FieldSource $source) {
-                $source->limit(4);
-                // @TODO: we need to specify the website_id is the same as the current page's website_id.
-                // $source->where('website_id', \P3in\Models\Website::whereHost(env('ADMIN_WEBSITE_HOST'))->first()->id);
-                $source->select(['id AS index', 'title AS label']);
-            });
+            $builder->select('Parent', 'parent_id')->list(false)->dynamic(\P3in\Models\Page::class,
+                function (FieldSource $source) {
+                    $source->limit(4);
+                    // @TODO: we need to specify the website_id is the same as the current page's website_id.
+                    // $source->where('website_id', \P3in\Models\Website::whereHost(env('ADMIN_WEBSITE_HOST'))->first()->id);
+                    $source->select(['id AS index', 'title AS label']);
+                });
             $builder->fieldset('Sitemap Data', 'config.sitemap', function (FormBuilder $builder) {
                 $builder->text('Author', 'priority')->list(false)->required();
                 $builder->select('Change Frequency', 'changefreq')->list(false)->required()->dynamic([
@@ -222,7 +251,7 @@ class FormBuilderSeeder extends Seeder
                     ['index' => 'weekly', 'label' => 'Weekly'],
                     ['index' => 'monthly', 'label' => 'Monthly'],
                     ['index' => 'yearly', 'label' => 'Yearly'],
-                    ['index' => 'never', 'label' => 'Never']
+                    ['index' => 'never', 'label' => 'Never'],
                 ])->help('Website Schema. We recommend website to be served using HTTPS');
             });
             $builder->fieldset('Meta Data', 'config.head', function (FormBuilder $builder) {
@@ -241,20 +270,29 @@ class FormBuilderSeeder extends Seeder
                 $builder->code('Custom Footer HTML', 'custom_footer_html')->list(false)
                     ->help('Custom footer HTML, CSS, JS This is in addition to the website wide custom footer html.');
             });
-
-        })->linkToResources(['pages.show', 'websites.pages.index', 'websites.pages.create', 'websites.pages.show'], 'websites_pages_admin');
+        })->linkToResources([
+            'pages.show',
+            'websites.pages.index',
+            'websites.pages.create',
+            'websites.pages.show',
+        ], 'websites_pages_admin');
 
 
         FormBuilder::new('menus', function (FormBuilder $builder) {
             $builder->string('Name', 'name')->list()->required()->sortable()->searchable();
             $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
             $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
-        })->linkToResources(['websites.menus.index', 'websites.menus.create'], 'websites_menus_admin');
+        })->linkToResources([
+            'websites.menus.index',
+            'websites.menus.create',
+        ], 'websites_menus_admin');
 
         FormBuilder::new('menus-editor', function (FormBuilder $builder) {
             $builder->editor('Menu');
             // $builder->menuEditor('Menu', 'menu')->list(false);
-        })->linkToResources(['websites.menus.show']);
+        })->linkToResources([
+            'websites.menus.show',
+        ]);
 
         FormBuilder::new('create-link', function (FormBuilder $builder) {
             $builder->string('Label', 'title');
@@ -272,9 +310,10 @@ class FormBuilderSeeder extends Seeder
             $builder->string('Label', 'title');
             $builder->string('Alt', 'alt');
             $builder->string('Icon', 'icon');
-            $builder->select('Permission Required', 'req_perm')->dynamic(\P3in\Models\Permission::class, function (FieldSource $source) {
-                $source->select(['id AS index', 'label']);
-            });
+            $builder->select('Permission Required', 'req_perm')->dynamic(\P3in\Models\Permission::class,
+                function (FieldSource $source) {
+                    $source->select(['id AS index', 'label']);
+                });
             $builder->boolean('New Tab', 'new_tab');
             $builder->boolean('Clickable', 'clickable');
         });
@@ -284,9 +323,10 @@ class FormBuilderSeeder extends Seeder
             $builder->string('Url', 'url');
             $builder->string('Alt', 'alt');
             $builder->string('Icon', 'icon');
-            $builder->select('Permission Required', 'req_perm')->dynamic(\P3in\Models\Permission::class, function (FieldSource $source) {
-                $source->select(['id AS index', 'label']);
-            });
+            $builder->select('Permission Required', 'req_perm')->dynamic(\P3in\Models\Permission::class,
+                function (FieldSource $source) {
+                    $source->select(['id AS index', 'label']);
+                });
             $builder->boolean('New Tab', 'new_tab');
             $builder->boolean('Clickable', 'clickable');
             $builder->wysiwyg('Content', 'content');
@@ -295,9 +335,11 @@ class FormBuilderSeeder extends Seeder
         Formbuilder::new('storage', function (FormBuilder $builder) {
             $builder->string('Name', 'name')->list()->sortable()->searchable()->required();
             $builder->string('Type', 'type.name')->list()->edit(false)->sortable()->searchable()->required();
-            $builder->select('Disk Instance', 'type_id')->list(false)->required()->dynamic(\P3in\Models\StorageType::class, function (FieldSource $source) {
-                $source->select(['id AS index', 'name AS label']);
-            });
+            $builder->select('Disk Instance',
+                'type_id')->list(false)->required()->dynamic(\P3in\Models\StorageType::class,
+                function (FieldSource $source) {
+                    $source->select(['id AS index', 'name AS label']);
+                });
             $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
             $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
             // @TODO this is one way, but validation has issues (too long to explain here)
@@ -305,16 +347,27 @@ class FormBuilderSeeder extends Seeder
             $builder->fieldset('Configuration', 'config', function (FormBuilder $builder) {
                 $builder->string('Root', 'root')->list()->sortable()->searchable()->required();
             })->list(false)->required();
-        })->linkToResources(['storage.index', 'storage.show', 'storage.create', 'storage.store', 'storage.update'], 'storage_admin');
+        })->linkToResources([
+            'storage.index',
+            'storage.show',
+            'storage.create',
+            'storage.store',
+            'storage.update',
+        ], 'storage_admin');
 
         FormBuilder::new('resources', function (FormBuilder $builder) {
             $builder->string('Resource', 'resource')->list()->sortable()->searchable()->required();
             $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
             $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
-            $builder->select('Role required', 'req_role')->dynamic(\P3in\Models\Role::class, function (FieldSource $source) {
-                $source->select(['id As index', 'label']);
-            })->nullable();
-        })->linkToResources(['resources.index', 'resources.show', 'resources.create'], 'resources_admin');
+            $builder->select('Role required', 'req_role')->dynamic(\P3in\Models\Role::class,
+                function (FieldSource $source) {
+                    $source->select(['id As index', 'label']);
+                })->nullable();
+        })->linkToResources([
+            'resources.index',
+            'resources.show',
+            'resources.create',
+        ], 'resources_admin');
 
         FormBuilder::new('forms', function (FormBuilder $builder) {
             $builder->string('Name', 'name')->list(true)->sortable()->searchable();
@@ -323,7 +376,9 @@ class FormBuilderSeeder extends Seeder
             $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
             $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
             $builder->string('Updated', 'updated_at')->edit(false);
-        })->linkToResources(['forms.index', 'forms.show'], 'forms_admin');
-
+        })->linkToResources([
+            'forms.index',
+            'forms.show',
+        ], 'forms_admin');
     }
 }

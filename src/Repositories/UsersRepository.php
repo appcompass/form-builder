@@ -7,9 +7,10 @@ use P3in\Interfaces\UsersRepositoryInterface;
 
 class UsersRepository extends AbstractRepository implements UsersRepositoryInterface
 {
-    const SEE_OWNED = 1;
 
-    const EDIT_OWNED = 1;
+//    const SEE_OWNED = 1;
+
+//    const EDIT_OWNED = 1;
 
     protected $owned_key = 'id';
 

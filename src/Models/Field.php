@@ -3,7 +3,6 @@
 namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use P3in\Models\FieldSource;
 use P3in\Models\Scopes\OrderScope;
 use P3in\Traits\HasDynamicContent;
 use P3in\Traits\HasJsonConfigFieldTrait;
@@ -23,7 +22,7 @@ class Field extends Model
         'validation',
         'dynamic',
         'form_id',
-        'help'
+        'help',
     ];
 
     protected $casts = [
@@ -39,6 +38,7 @@ class Field extends Model
 
     /**
      * override boot method
+     *
      * @NOTE remember Field::withoutGlobalScope(OrderScope::class)->get();
      * @TODO we can probably get rid of this i added the scope for the sake of it -f
      */
@@ -114,7 +114,7 @@ class Field extends Model
     /**
      * { function_description }
      *
-     * @param      boolean  $nullable  The nullable
+     * @param      boolean $nullable The nullable
      */
     public function nullable($nullable = true)
     {
@@ -134,7 +134,7 @@ class Field extends Model
     /**
      * Sets the parent.
      *
-     * @param      Field  $field  The field
+     * @param      Field $field The field
      */
     public function setParent(Field $field)
     {
@@ -185,6 +185,13 @@ class Field extends Model
     public function repeatable($repeatable = true)
     {
         $this->setConfig('repeatable', $repeatable);
+
+        return $this;
+    }
+
+    public function multiple($multiple = true)
+    {
+        $this->setConfig('multiple', $multiple);
 
         return $this;
     }
