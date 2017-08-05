@@ -3,24 +3,15 @@
 namespace P3in\Controllers;
 
 use App\Http\Controllers\Controller;
-use Carbon\Carbon;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Foundation\Auth\ResetsPasswords;
-use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Route;
 use P3in\Events\Login;
 use P3in\Events\Logout;
-use P3in\Models\Resource;
 use App\User;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AuthController extends Controller
 {
@@ -76,6 +67,7 @@ class AuthController extends Controller
         } catch (ModelNotFoundException $e) {
             return $this->noCodeResponse($request);
         }
+
         return $user;
     }
 
@@ -97,12 +89,12 @@ class AuthController extends Controller
     protected function create(array $data)
     {
         return User::create([
-            'first_name' => $data['first_name'],
-            'last_name' => $data['last_name'],
-            'email' => $data['email'],
-            'phone' => $data['phone'],
-            'password' => $data['password'],
-            'activation_code' => str_random(64)
+            'first_name'      => $data['first_name'],
+            'last_name'       => $data['last_name'],
+            'email'           => $data['email'],
+            'phone'           => $data['phone'],
+            'password'        => $data['password'],
+            'activation_code' => str_random(64),
         ]);
     }
 
@@ -114,6 +106,7 @@ class AuthController extends Controller
         if ($token = $this->guard()->attempt($this->credentials($request))) {
             return $this->afterLoginAttempt($token);
         }
+
         return $token;
     }
 
@@ -131,9 +124,10 @@ class AuthController extends Controller
     protected function validateLogin(Request $request)
     {
         // we add remember => true to the request since all token auth are set to remember (no session).
-        $request->merge(array('remember' => true));
+        $request->merge(['remember' => true]);
         $this->validate($request, [
-            $this->username() => 'required', 'password' => 'required',
+            $this->username() => 'required',
+            'password'        => 'required',
         ]);
     }
 
@@ -141,6 +135,7 @@ class AuthController extends Controller
     {
         $creds = $request->only($this->username(), 'password');
         $creds['active'] = 1;
+
         return $creds;
     }
 
@@ -154,9 +149,9 @@ class AuthController extends Controller
 
         return response()->json([
             'access_token' => $token,
-            'token_type' => 'Bearer',
-            'expires_in' => config('jwt.ttl') * 60,
-            'user' => $user
+            'token_type'   => 'Bearer',
+            'expires_in'   => config('jwt.ttl') * 60,
+            'user'         => $user,
         ]);
     }
 
@@ -164,7 +159,7 @@ class AuthController extends Controller
     {
         return response()->json([
             'message' => trans('registration.check-email'),
-            'user' => $user
+            'user'    => $user,
         ]);
     }
 
