@@ -15,6 +15,7 @@ use P3in\Notifications\ConfirmRegistration;
 use P3in\Notifications\ResetPassword;
 use P3in\Traits\HasCardView;
 use P3in\Traits\HasPermissions;
+use P3in\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject as AuthenticatableUserContract;
 
 // use P3in\Traits\HasProfileTrait;
@@ -31,7 +32,8 @@ class User extends ModularBaseModel implements
         CanResetPassword,
         Notifiable,
         HasCardView,
-        HasPermissions // , HasProfileTrait
+        HasPermissions,
+        HasRoles // , HasProfileTrait
         ;
 
     /**
@@ -88,15 +90,6 @@ class User extends ModularBaseModel implements
         // 'password'   => 'min:6|confirmed', //|required when registering only.
     ];
 
-    /**
-     *  Get all the roles this user belongs to
-     *
-     *
-     */
-    public function roles()
-    {
-        return $this->belongsToMany(Role::class)->withTimestamps();
-    }
 
     /**
      * Photos
@@ -185,71 +178,6 @@ class User extends ModularBaseModel implements
     }
 
     /**
-     * Get users having a specific rol e
-     *
-     * @param      <type>  $query  The query
-     * @param      <type>  $role   The role
-     *
-     * @return     <type>  ( description_of_the_return_value )
-     */
-    public static function scopeHavingRole($query, $role)
-    {
-        return Role::whereName($role)->firstOrFail()->users();
-    }
-
-    /**
-     * Add current user to a role
-     *
-     * @param      mixed $role The role
-     *
-     * @return     <type>  ( description_of_the_return_value )
-     */
-    public function assignRole($role)
-    {
-        if ($role instanceof Role) {
-            // do nothing.
-        } elseif (is_int($role)) {
-            $role = Role::findOrFail($role);
-        } elseif (is_string($role)) {
-            $role = Role::whereName($role)->firstOrFail();
-        }
-
-        return $role->addUser($this);
-    }
-
-    /**
-     *  Remove current user from a role
-     */
-    public function revokeRole(Role $role)
-    {
-        return $role->removeUser($this);
-    }
-
-    /**
-     * Determines if it has role.
-     *
-     * @param      <type>   $role  The role
-     *
-     * @return     boolean  True if has role, False otherwise.
-     */
-    public function hasRole($role)
-    {
-        try {
-            if ($role instanceof Role) {
-                // do nothing.
-            } elseif (is_string($role)) {
-                $role = Role::whereName($role)->firstOrFail();
-            } elseif (is_int($role)) {
-                $role = Role::findOrFail($role);
-            }
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return false;
-        }
-
-        return $role->hasUser($this);
-    }
-
-    /**
      *
      * @return     <type>  ( description_of_the_return_value )
      */
@@ -272,23 +200,6 @@ class User extends ModularBaseModel implements
         $roles_permissions = array_merge($roles_permissions, $user_permissions);
 
         return array_unique($roles_permissions);
-    }
-
-    /**
-     * Allows for role/group matching using  is[name] pattern
-     *
-     * @param      <type>  $method  The method
-     * @param      <type>  $args    The arguments
-     *
-     * @return     <type>  ( description_of_the_return_value )
-     */
-    public function __call($method, $args)
-    {
-        if (preg_match('/^is/', $method)) {
-            return $this->hasRole(lcfirst(substr($method, 2)));
-        }
-
-        return parent::__call($method, $args);
     }
 
     /**
