@@ -3,6 +3,7 @@
 namespace P3in\Repositories;
 
 use Auth;
+use DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Route;
@@ -194,7 +195,9 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
         }
 
         foreach ((array)$search as $column => $string) {
-            $this->builder->where($column, 'ilike', "%{$string}%");
+            $string = strtolower($string);
+            $string = DB::connection()->getPdo()->quote("%$string%");
+            $this->builder->whereRaw("lower(cast($column as varchar)) LIKE {$string}");
         }
     }
 
@@ -315,7 +318,7 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
             $this->model->{$key} = $val;
         }
         $this->checkForUploads($attributes);
-        
+
         return $this->model->save();
     }
 

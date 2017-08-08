@@ -4,8 +4,9 @@ namespace P3in\Providers;
 
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Route;
 use Intervention\Image\Facades\Image;
+use P3in\Middleware\SanitizeEmail;
+use Tymon\JWTAuth\Http\Middleware\RefreshToken;
 
 class PilotIoServiceProvider extends BaseServiceProvider
 {
@@ -30,6 +31,7 @@ class PilotIoServiceProvider extends BaseServiceProvider
     protected $middlewareGroups = [
         'web'  => [
             \P3in\Middleware\ValidateWebsite::class,
+            SanitizeEmail::class,
         ],
         'auth' => [
             \Illuminate\Auth\Middleware\Authenticate::class,
@@ -37,7 +39,7 @@ class PilotIoServiceProvider extends BaseServiceProvider
         ],
         'api'  => [
             \P3in\Middleware\ValidateWebsite::class,
-            // \P3in\Middleware\AfterRoute::class,
+            SanitizeEmail::class,
         ],
         'cp'   => [
             \P3in\Middleware\ValidateControlPanel::class,
@@ -53,8 +55,8 @@ class PilotIoServiceProvider extends BaseServiceProvider
      * @var array
      */
     protected $routeMiddleware = [
-        'jwt.auth'    => Tymon\JWTAuth\Middleware\GetUserFromToken::class,
-        'jwt.refresh' => Tymon\JWTAuth\Middleware\RefreshToken::class,
+//        'jwt.auth'    => GetUserFromToken::class,
+        'jwt.refresh' => RefreshToken::class,
 
     ];
 
