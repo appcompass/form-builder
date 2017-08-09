@@ -4,9 +4,12 @@ namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use P3in\ModularBaseModel;
+use P3in\Traits\SetsAndChecksPermission;
 
 class Permission extends ModularBaseModel
 {
+    use SetsAndChecksPermission;
+
     protected $table = 'permissions';
 
     protected $fillable = [
@@ -21,9 +24,29 @@ class Permission extends ModularBaseModel
      *
      */
     public static $rules = [
-        'name' => 'required',
+        'name'  => 'required',
         'label' => 'required',
     ];
+
+    public function permissionFieldName()
+    {
+        return 'assignable_by_id';
+    }
+
+    public function permissionRelationshipName()
+    {
+        return 'assignable_by';
+    }
+
+    public function allowNullPermission()
+    {
+        return false;
+    }
+
+    public function assignable_by()
+    {
+        return $this->belongsTo(Permission::class, $this->permissionFieldName());
+    }
 
     public function users()
     {

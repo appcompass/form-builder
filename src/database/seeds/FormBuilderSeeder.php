@@ -5,6 +5,7 @@ namespace P3in\Seeders;
 use Illuminate\Database\Seeder;
 use P3in\Builders\FormBuilder;
 use P3in\Models\FieldSource;
+use P3in\Models\Permission;
 use P3in\Models\Section;
 
 class FormBuilderSeeder extends Seeder
@@ -46,6 +47,11 @@ class FormBuilderSeeder extends Seeder
             $builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();
             $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
             $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
+
+            $builder->select('Assignable By', 'assignable_by_id')
+                ->dynamic(Permission::class, function (FieldSource $source) {
+                    $source->select(['id AS index', 'name AS label']);
+                })->list(false);
         })->linkToResources([
             'permissions.index',
             'permissions.show',
@@ -58,6 +64,10 @@ class FormBuilderSeeder extends Seeder
             $builder->string('Role Name', 'name')->list()->required()->sortable()->searchable();
             $builder->string('Role Label', 'label')->list()->required()->sortable()->searchable();
             $builder->text('Description', 'description')->list(false)->required()->sortable()->searchable();
+            $builder->select('Assignable By', 'assignable_by_id')
+                ->dynamic(Permission::class, function (FieldSource $source) {
+                    $source->select(['id AS index', 'name AS label']);
+                })->list(false);
             $builder->string('Created', 'created_at')->list()->edit(false)->sortable()->searchable();
             $builder->string('Updated', 'updated_at')->list()->edit(false)->sortable()->searchable();
         })->linkToResources([

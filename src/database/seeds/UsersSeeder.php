@@ -17,23 +17,32 @@ class UsersSeeder extends Seeder
      */
     public function run()
     {
+        $systemRole = Role::create([
+            'name'        => 'system',
+            'label'       => 'System',
+            'description' => 'System users',
+            'active'      => true,
+        ]);
+
+        Role::create([
+            'name'        => 'admin',
+            'label'       => 'Admin',
+            'description' => 'Administrators',
+            'active'      => true,
+        ]);
+
         $userRole = Role::create([
             'name'        => 'user',
             'label'       => 'User',
             'description' => 'Regular User',
             'active'      => true,
         ]);
-        $adminRole = Role::create([
-            'name'        => 'admin',
-            'label'       => 'Admin',
-            'description' => 'Administrators',
-            'active'      => true,
-        ]);
-        $systemRole = Role::create([
-            'name'        => 'system',
-            'label'       => 'System',
-            'description' => 'System users',
-            'active'      => true,
+
+        Permission::create([
+            'name'        => 'guest',
+            'label'       => 'Guest',
+            'description' => 'Permission used to allow resources to be viewable only to guest users.',
+            'system'      => true,
         ]);
 
         $loggedInPerm = Permission::create([
@@ -42,30 +51,96 @@ class UsersSeeder extends Seeder
             'description' => 'The user can log into the application frontend (websites)',
             'system'      => true,
         ]);
-        $guestPerm = Permission::create([
-            'name'        => 'guest',
-            'label'       => 'Guest',
-            'description' => 'Guest Permission',
-            'system'      => true,
-        ]);
-        $mediaPerm = Permission::create([
-            'name'        => 'media',
-            'label'       => 'Media Editor',
-            'description' => 'Media Editor Permission',
-            'system'      => true,
-        ]);
-        $contentPerm = Permission::create([
-            'name'        => 'content',
-            'label'       => 'Content Creator/Editor',
-            'description' => 'Content Creator/Editor',
+
+        Permission::create([
+            'name'        => 'cp_login',
+            'label'       => 'Cp Login',
+            'description' => 'A Permission giving it\'s holder the ability to log into the control panel.',
             'system'      => true,
         ]);
 
-        $userRole->grantPermission($loggedInPerm);
-//        $adminRole->grantPermission($adminPerm);
-        // $systemRole->grantPermission($adminPerm);
+        $users_admin = Permission::create([
+            'name'        => 'users_admin',
+            'label'       => 'Users Admin',
+            'description' => 'A Permission giving it\'s holder the ability to manage all users in the system.',
+            'system'      => true,
+        ]);
 
-        $system = User::create([
+        Permission::create([
+            'name'        => 'permissions_admin',
+            'label'       => 'Permissions Admin',
+            'description' => 'A Permission giving it\'s holder the ability to manage all permissions in the system.',
+            'system'      => true,
+        ]);
+
+        Permission::create([
+            'name'        => 'resources_admin',
+            'label'       => 'Resources Admin',
+            'description' => 'A Permission giving it\'s holder the ability to manage all Control Panel available features.',
+            'system'      => true,
+        ]);
+
+        Permission::create([
+            'name'        => 'websites_admin_view',
+            'label'       => 'Websites Admin View',
+            'description' => 'A Permission giving it\'s holder the ability to view all websites from within the control panel.',
+            'system'      => true,
+        ]);
+
+        Permission::create([
+            'name'        => 'websites_admin_create',
+            'label'       => 'Websites Admin Create',
+            'description' => 'A Permission giving it\'s holder the ability to create websites.',
+            'system'      => true,
+        ]);
+
+        Permission::create([
+            'name'        => 'websites_layouts_admin',
+            'label'       => 'Websites Layouts Admin',
+            'description' => 'A Permission giving it\'s holder the ability to manage website layouts.',
+            'system'      => true,
+        ]);
+
+        Permission::create([
+            'name'        => 'websites_menus_admin',
+            'label'       => 'Websites Menus Admin',
+            'description' => 'A Permission giving it\'s holder the ability to manage Website Navigation Menus.',
+            'system'      => true,
+        ]);
+
+        Permission::create([
+            'name'        => 'websites_pages_admin',
+            'label'       => 'Websites Pages Admin',
+            'description' => 'A Permission giving it\'s holder the ability to manage a website\'s pages.',
+            'system'      => true,
+        ]);
+
+        Permission::create([
+            'name'        => 'storage_admin',
+            'label'       => 'Storage Admin',
+            'description' => 'A Permission giving it\'s holder the ability to manage Disk instances used by the websites.',
+            'system'      => true,
+        ]);
+
+        Permission::create([
+            'name'        => 'forms_admin',
+            'label'       => 'Forms Admin',
+            'description' => 'A Permission giving it\'s holder the ability to manage Forms.',
+            'system'      => true,
+        ]);
+
+        Permission::create([
+            'name'        => 'websites_admin_destroy',
+            'label'       => 'Websites Admin Destroy',
+            'description' => 'A Permission giving it\'s holder the ability to delete a website.',
+            'system'      => true,
+        ]);
+
+        $userRole->setPermission($users_admin);
+
+        $loggedInPerm->setPermission($users_admin);
+
+        User::create([
             'first_name' => 'System',
             'last_name'  => 'User',
             'email'      => config('app.pilot_io_system_user'),

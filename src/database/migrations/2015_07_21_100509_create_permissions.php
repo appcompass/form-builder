@@ -18,8 +18,15 @@ class CreatePermissions extends Migration
             $table->string('name')->unique();
             $table->string('label');
             $table->text('description')->nullable();
+            $table->integer('assignable_by_id')->nullable()->unsigned();
+            $table->foreign('assignable_by_id')->references('id')->on('permissions'); //->onDelete('cascade')
             $table->boolean('system')->default(false);
             $table->timestamps();
+        });
+
+        Schema::table('roles', function (Blueprint $table) {
+            $table->integer('assignable_by_id')->nullable()->unsigned();
+            $table->foreign('assignable_by_id')->references('id')->on('permissions'); //->onDelete('cascade')
         });
 
         // link permissions to roles

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 use P3in\Interfaces\AbstractRepositoryInterface;
 use P3in\Models\Form;
 use P3in\Models\Resource;
+use P3in\Models\User;
 
 abstract class AbstractRepository implements AbstractRepositoryInterface
 {
@@ -20,6 +21,9 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
 
     // looged user sees any, edits owned
     const EDIT_OWNED = 0;
+
+    // each model may require a permission that the user must have in order for it to be returned.
+    const REQUIRES_PERMISSION = 0;
 
     // key on the model representing relation
     // @TODO explore dot.separation (maybe after loading relations)
@@ -91,6 +95,10 @@ abstract class AbstractRepository implements AbstractRepositoryInterface
             }
         }
 
+        if (static::REQUIRES_PERMISSION) {
+            // kinda hackish, but it doesn't let us just do it by ref.
+            $this->builder = $this->builder->byAllowed();
+        }
         $this->loadRelations();
 
         $this->sort();
