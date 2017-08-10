@@ -25,7 +25,7 @@ class PublicWebsiteController extends BaseController
 
         $data = $request
             ->website
-            ->getPageFromUrl('/'.trim($uri, '/'))
+            ->getPageFromUrl('/' . trim($uri, '/'))
             ->getData();
 
         //     return $data;
@@ -42,7 +42,7 @@ class PublicWebsiteController extends BaseController
             ->website
             ->menus()->with('items')->get();
 
-        $permIds = Auth::check() ? (array) Cache::tags('auth_permissions')->get(Auth::user()->id) : [];
+        $permIds = Auth::check() ? (array)Cache::tags('auth_permissions')->get(Auth::user()->id) : [];
         foreach ($menus as $menu) {
             $rtn[$menu->name] = $menu->render(true, $permIds);
         }
@@ -53,12 +53,13 @@ class PublicWebsiteController extends BaseController
     public function getSiteMeta(Request $request)
     {
         $site = $request->website;
+
         // return response()->json(
 
         return array_merge([
             'name' => $site->name,
-            'url' => $site->url,
-        ], !is_null($site->config) ? (array) $site->config->meta : []);
+            'url'  => $site->url,
+        ], !is_null($site->config) ? (array)$site->config->meta : []);
     }
 
     public function renderSitemap(Request $request, $type = 'xml')
@@ -68,7 +69,7 @@ class PublicWebsiteController extends BaseController
 
         foreach ($pages as $page) {
             if ($page->dynamic_url) {
-                // here's where we fetch all the dynamic entries/pages/posts/etc that are children of this page.
+                // @TODO: here's where we fetch all the dynamic entries/pages/posts/etc that are children of this page.
             } else {
                 $sitemap->add(
                     $page->full_url,
@@ -86,6 +87,7 @@ class PublicWebsiteController extends BaseController
     public function renderRobotsTxt(Request $request)
     {
         $site_meta = $request->website->meta;
+
         return isset($site_meta->robots_txt) ? $site_meta->robots_txt : '';
     }
 

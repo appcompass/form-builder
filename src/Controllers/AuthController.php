@@ -146,6 +146,12 @@ class AuthController extends Controller
         } else {
             return $this->sendFailedLoginResponse($request);
         }
+        $user->makeHidden([
+            'roles',
+            'created_at',
+            'updated_at',
+            'deleted_at',
+        ]);
 
         return response()->json([
             'access_token' => $token,
