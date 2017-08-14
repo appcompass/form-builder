@@ -14,5 +14,12 @@
     "psr-4": {
       "P3in\\": "src"
     }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "P3in\\Providers\\FormBuilderServiceProvider"
+      ]
+    }
   }
 }
