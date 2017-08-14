@@ -13,12 +13,12 @@ class Form extends Model
 
     protected $fillable = [
         'name',
-        'editor'
+        'editor',
     ];
 
     protected $hidden = [
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
     protected $casts = [
@@ -50,54 +50,56 @@ class Form extends Model
         return $this->hasMany(Field::class);
     }
 
-    /**
-     * resources connected to the form
-     *
-     * @return     <type>  ( description_of_the_return_value )
-     */
-    public function resources()
-    {
-        return $this->hasMany(Resource::class);
-    }
+    // @TODO: move logic to AppCompass
+//    /**
+//     * resources connected to the form
+//     *
+//     * @return     <type>  ( description_of_the_return_value )
+//     */
+//    public function resources()
+//    {
+//        return $this->hasMany(Resource::class);
+//    }
 
-    /**
-     * Render form, build fields hierarchy
-     *
-     * @return     <type>  ( description_of_the_return_value )
-     */
-    public function render($mode = null)
-    {
-        $form = $this->attributes;
-
-        $fields = null;
-
-        switch ($mode) {
-            case 'list': //@TODO: Delete/rename, index is the resource to use.
-            case 'index':
-                $fields = $this->fields->where('to_list', true);
-                break;
-            case 'edit': //@TODO: Delete/rename, show is the resource to use.
-            case 'show': //@TODO: show and update use the same set of fields.
-            case 'update':
-            case 'create': //@TODO: create and store use the same set of fields.
-            case 'store':
-            case 'destroy': //@TODO: add field(s) for validation on delete. for example, "hey this is a related field, first please move or delete xyz".
-                $fields = $this->fields->where('to_edit', true);
-                break;
-            default:
-                $fields = $this->fields;
-                break;
-        }
-
-        $form['fields'] = $this->buildTree($fields);
-
-        return $form;
-    }
+    // @TODO: move logic to AppCompass
+//    /**
+//     * Render form, build fields hierarchy
+//     *
+//     * @return     <type>  ( description_of_the_return_value )
+//     */
+//    public function render($mode = null)
+//    {
+//        $form = $this->attributes;
+//
+//        $fields = null;
+//
+//        switch ($mode) {
+//            case 'list': //@TODO: Delete/rename, index is the resource to use.
+//            case 'index':
+//                $fields = $this->fields->where('to_list', true);
+//                break;
+//            case 'edit': //@TODO: Delete/rename, show is the resource to use.
+//            case 'show': //@TODO: show and update use the same set of fields.
+//            case 'update':
+//            case 'create': //@TODO: create and store use the same set of fields.
+//            case 'store':
+//            case 'destroy': //@TODO: add field(s) for validation on delete. for example, "hey this is a related field, first please move or delete xyz".
+//                $fields = $this->fields->where('to_edit', true);
+//                break;
+//            default:
+//                $fields = $this->fields;
+//                break;
+//        }
+//
+//        $form['fields'] = $this->buildTree($fields);
+//
+//        return $form;
+//    }
 
     /**
      * Sets the owner.
      *
-     * @param      \Illuminate\Database\Eloquent\Model  $owner  The owner
+     * @param      \Illuminate\Database\Eloquent\Model $owner The owner
      *
      * @return     <type>                               ( description_of_the_return_value )
      */
@@ -116,20 +118,21 @@ class Form extends Model
     }
 
 
-    /**
-     * like website.create or page.content
-     *
-     * @param      \Illuminate\Database\Eloquent\Builder  $query          The query
-     * @param      <string>                               $resource_name  The resource name
-     *
-     * @return     \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeByResource(Builder $query, $resource_name)
-    {
-        return $query->whereHas('resources', function (Builder $query) use ($resource_name) {
-            return $query->where('resource', $resource_name);
-        });
-    }
+    // @TODO move logic to AppCompass.
+//    /**
+//     * like website.create or page.content
+//     *
+//     * @param      \Illuminate\Database\Eloquent\Builder  $query          The query
+//     * @param      <string>                               $resource_name  The resource name
+//     *
+//     * @return     \Illuminate\Database\Eloquent\Builder
+//     */
+//    public function scopeByResource(Builder $query, $resource_name)
+//    {
+//        return $query->whereHas('resources', function (Builder $query) use ($resource_name) {
+//            return $query->where('resource', $resource_name);
+//        });
+//    }
 
     /**
      * Sets the editor
@@ -182,22 +185,23 @@ class Form extends Model
         return $this->fields->count();
     }
 
-    /**
-     * store
-     *
-     * @param      <type>  $content  The content
-     *
-     * @return     <type>  ( description_of_the_return_value )
-     */
-    public function store($content)
-    {
-        return FormStorage::store($content, $this);
-    }
+    // @TODO: move logic to FormStorage.
+//    /**
+//     * store
+//     *
+//     * @param      <type>  $content  The content
+//     *
+//     * @return     <type>  ( description_of_the_return_value )
+//     */
+//    public function store($content)
+//    {
+//        return FormStorage::store($content, $this);
+//    }
 
     /**
      * Gets the dot separated field's parents chain.
      *
-     * @param      Field   $field  The field
+     * @param      Field $field The field
      *
      * @return     string  The parents chain.
      */
@@ -217,7 +221,7 @@ class Form extends Model
     /**
      * Builds a menu tree recursively.
      *
-     * @param      array   $items     The items
+     * @param      array $items The items
      * @param      <type>  $parent_id  The parent identifier
      *
      * @return     array   The tree.
