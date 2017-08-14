@@ -2,7 +2,6 @@
 
 namespace P3in\Traits;
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use P3in\Models\Form;
 
 trait FormableTrait

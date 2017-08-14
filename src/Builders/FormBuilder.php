@@ -3,6 +3,7 @@
 namespace P3in\Builders;
 
 use Closure;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use P3in\Models\Field;
@@ -62,7 +63,7 @@ class FormBuilder
      *
      * @return     static  ( description_of_the_return_value )
      */
-    public static function edit($form): FormBuilder
+    public static function edit($form, Closure $closure = null): FormBuilder
     {
         if ($form instanceof Form) {
             $instance = new static($form);
@@ -70,6 +71,10 @@ class FormBuilder
             $instance = new static(Form::whereName($form)->firstOrFail());
         } elseif (is_integer($form)) {
             $instance = new static(Form::findOrFail($form));
+        }
+
+        if ($closure) {
+            $closure($instance);
         }
 
         return $instance;
@@ -97,30 +102,40 @@ class FormBuilder
         return $this;
     }
 
+
+    public function linkToResource($resource, $permission = null)
+    {
+        if (is_string($resource)) {
+            $record = Resource::firstOrNew([
+                'resource' => $resource
+            ]);
+        } elseif ($resource instanceof Resource) {
+            $record = $resource;
+        } else {
+            return false;
+        }
+
+        $record->form()->associate($this->form);
+
+        if ($permission) {
+            $record->setPermission($permission);
+        }
+        $record->save();
+
+        return $this;
+    }
+
     /**
      * Links to resources.
      *
      * @param      Mixed  $resources  The resources you're linking the form to
+     * @param      String  $permission  The default permission to assign to each resource.
      */
-    public function linkToResources($resources)
+    public function linkToResources($resources, $permission = null)
     {
-        foreach ((array) $resources as $resource) {
-            $name = $resource;
-            $role = null;
-            if (is_array($resource)) {
-                $name = key($resource);
-                $role = $resource[$name];
-            }
-            $record = new Resource([
-                'resource' => $name
-            ]);
 
-            $record->form()->associate($this->form);
-
-            if (!is_null($role)) {
-                $record->setRole($role);
-            }
-            $record->save();
+        foreach ($resources as $resource) {
+            $this->linkToResource($resource, $permission);
         }
 
         return $this;

@@ -2,9 +2,8 @@
 
 namespace P3in\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use P3in\Models\FieldSource;
-use P3in\Models\Scopes\OrderScope;
 use P3in\Traits\HasDynamicContent;
 use P3in\Traits\HasJsonConfigFieldTrait;
 
@@ -13,7 +12,6 @@ class Field extends Model
     use HasDynamicContent {
         dynamic as dynamicTrait;
     }
-    use HasJsonConfigFieldTrait;
 
     public $fillable = [
         'name',
@@ -23,12 +21,13 @@ class Field extends Model
         'validation',
         'dynamic',
         'form_id',
-        'help'
+        'help',
     ];
 
     protected $casts = [
         'config' => 'object',
     ];
+
 
     protected $hidden = [];
 
@@ -38,14 +37,17 @@ class Field extends Model
 
     /**
      * override boot method
-     * @NOTE remember Field::withoutGlobalScope(OrderScope::class)->get();
+     *
+     * @NOTE remember Field::withoutGlobalScope('order')->get();
      * @TODO we can probably get rid of this i added the scope for the sake of it -f
      */
     protected static function boot()
     {
-        static::addGlobalScope(new OrderScope('id', 'asc'));
-
         parent::boot();
+
+        static::addGlobalScope('order', function (Builder $builder) {
+            $builder->orderBy('id', 'asc');
+        });
     }
 
     /**
@@ -98,6 +100,38 @@ class Field extends Model
         return $this->morphOne(FieldSource::class, 'linked');
     }
 
+    // usage:  $model->getConfig('something.deep.inside.config')
+    public function getConfig($key)
+    {
+        // array_get is what we need but only works with arrays.
+        $conf = json_decode(json_encode($this->config ?: []), true);
+        return array_get($conf, $key, null);
+    }
+
+    public function setConfig($key, $val = null)
+    {
+        if (gettype($key) == 'string') {
+            $key = 'config->'.$key;
+        } else {
+            $val = $key;
+            $key = 'config';
+        }
+
+        $key = str_replace('.', '->', $key);
+
+        $this->update([$key => $val]);
+
+        return $this;
+    }
+    // usage: ModelWithThisTrait::byConfig('field->sub_field->other_field', 'value of other_field')->get()
+    public function scopeByConfig($query, $key, $operator = null, $value = null, $boolean = 'and')
+    {
+        $key = str_replace('.', '->', $key);
+
+        return $query->where("config->$key", $operator, $value, $boolean);
+    }
+
+
     /**
      * Set the
      */
@@ -113,7 +147,7 @@ class Field extends Model
     /**
      * { function_description }
      *
-     * @param      boolean  $nullable  The nullable
+     * @param      boolean $nullable The nullable
      */
     public function nullable($nullable = true)
     {
@@ -133,7 +167,7 @@ class Field extends Model
     /**
      * Sets the parent.
      *
-     * @param      Field  $field  The field
+     * @param      Field $field The field
      */
     public function setParent(Field $field)
     {
@@ -184,6 +218,13 @@ class Field extends Model
     public function repeatable($repeatable = true)
     {
         $this->setConfig('repeatable', $repeatable);
+
+        return $this;
+    }
+
+    public function multiple($multiple = true)
+    {
+        $this->setConfig('multiple', $multiple);
 
         return $this;
     }

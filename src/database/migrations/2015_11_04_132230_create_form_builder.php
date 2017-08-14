@@ -61,27 +61,6 @@ class CreateFormBuilder extends Migration
             $table->json('data')->nullable();
             $table->json('criteria')->nullable();
         });
-
-        Schema::create('resources', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('resource')->unique();
-            $table->integer('form_id')->unsigned();
-            $table->foreign('form_id')->references('id')->on('forms')->onDelete('cascade');
-            $table->integer('req_role')->unsigned()->nullable();
-            $table->foreign('req_role')->references('id')->on('roles');
-            $table->timestamps();
-
-            $table->index('resource');
-            $table->index('form_id');
-        });
-
-        Schema::create('form_storage', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('form_id')->unsigned();
-            $table->foreign('form_id')->references('id')->on('forms');
-            $table->json('content');
-            $table->timestamps();
-        });
     }
 
     /**
@@ -91,8 +70,6 @@ class CreateFormBuilder extends Migration
      */
     public function down()
     {
-        Schema::drop('form_storage');
-        Schema::drop('resources');
         Schema::drop('field_sources');
         Schema::drop('fields');
         Schema::drop('fieldtypes');

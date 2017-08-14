@@ -33,29 +33,6 @@ class Fieldtype extends Model
             'template' => $field_type->getTemplate()
         ]);
 
-        // maintain components library
-
-        Fieldtype::renderComponents();
-
         return $instance->name;
-    }
-
-    // @TODO: we have a view template that we can abstract and use for this currently in websites module.
-    private static function renderComponents()
-    {
-        $disk = Storage::disk('cp_components');
-
-        $importer_block = [];
-        $exporter_block = [];
-
-        // foreach ($manager->listContents('source://', true) as $file) {
-        foreach (Fieldtype::all() as $component) {
-            $importer_block[] = "import {$component->name}Type from './FormBuilder/$component->name'";
-            $exporter_block[] = "export var $component->name = {$component->name}Type";
-        }
-
-        $content = implode("\n", array_merge($importer_block, $exporter_block))."\n"; // . "\n" . implode("\n", $exporter_block) . "\n";
-
-        $disk->put('Components.js', $content);
     }
 }
