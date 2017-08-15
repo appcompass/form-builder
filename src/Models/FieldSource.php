@@ -19,18 +19,16 @@ class FieldSource extends Model
     public $fillable = [
         'sourceable_id',    // we get data from
         'sourceable_type',
-        'linked_id',        // data belongs to
-        'linked_type',
         'data',
         'criteria',
-        'related_field'
+        'related_field',
     ];
 
     public $timestamps = false;
 
     protected $casts = [
-        'data' => 'array',
-        'criteria' => 'array'
+        'data'     => 'array',
+        'criteria' => 'array',
     ];
 
     public function sourceable()
@@ -38,9 +36,9 @@ class FieldSource extends Model
         return $this->morphTo();
     }
 
-    public function linked()
+    public function field()
     {
-        return $this->morphTo();
+        return $this->belongsTo(Field::class);
     }
 
     //////////////////////////////////////////////
@@ -59,7 +57,7 @@ class FieldSource extends Model
     /**
      * adds a sub select
      *
-     * @param      array   $fields  The fields
+     * @param      array $fields The fields
      *
      * @return     <type>  ( description_of_the_return_value )
      */
@@ -87,7 +85,7 @@ class FieldSource extends Model
     {
         $criteria = $this->criteria;
 
-        $criteria['join'] = [ $destination_table, $origin_field, $destination_field ];
+        $criteria['join'] = [$destination_table, $origin_field, $destination_field];
 
         $this->update(['criteria' => $criteria]);
 
@@ -145,9 +143,9 @@ class FieldSource extends Model
     {
         if (is_null($config)) {
             return [
-                'criteria' => $this->criteria,
+                'criteria'        => $this->criteria,
                 'sourceable_type' => $this->sourceable_type,
-                'related_field' => $this->related_field
+                'related_field'   => $this->related_field,
             ];
         }
     }

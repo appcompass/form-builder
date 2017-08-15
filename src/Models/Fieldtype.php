@@ -3,16 +3,16 @@
 namespace P3in\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use P3in\Storage;
 use P3in\Models\FieldTypes\BaseField;
 
 class Fieldtype extends Model
 {
+
     // public $table = 'fieldtypes';
 
     public $fillable = [
         'name',
-        'template'
+        'template',
     ];
 
     protected $primaryKey = 'name';
@@ -23,14 +23,14 @@ class Fieldtype extends Model
 
     public function fields()
     {
-        return $this->hasMany(Field::class);
+        return $this->hasMany(Field::class, 'type', 'name');
     }
 
     public static function make(BaseField $field_type)
     {
         $instance = Fieldtype::firstOrCreate([
-            'name' => $field_type->getName(),
-            'template' => $field_type->getTemplate()
+            'name'     => $field_type->getName(),
+            'template' => $field_type->getTemplate(),
         ]);
 
         return $instance->name;

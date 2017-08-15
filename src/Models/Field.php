@@ -61,6 +61,11 @@ class Field extends Model
         return $this->belongsTo(Form::class);
     }
 
+    public function type()
+    {
+        return $this->belongsTo(Fieldtype::class, 'name', 'type');
+    }
+
     /**
      * The Parent
      *
@@ -98,7 +103,7 @@ class Field extends Model
      */
     public function source()
     {
-        return $this->morphOne(FieldSource::class, 'linked');
+        return $this->hasOne(FieldSource::class);
     }
 
     // usage:  $model->getConfig('something.deep.inside.config')

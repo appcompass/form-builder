@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateFormBuilder extends Migration
 {
+
     /**
      * Run the migrations.
      *
@@ -36,6 +37,7 @@ class CreateFormBuilder extends Migration
             $table->string('name')->index();
             $table->string('label');
             $table->string('type');
+            $table->foreign('type')->references('name')->on('fieldtypes')->onDelete('cascade');
             $table->boolean('to_list')->default(false); // should field show up in list view?
             $table->boolean('to_edit')->default(true); // should the field show up in edit view? default true
             $table->string('help')->nullable(); // help text
@@ -53,7 +55,11 @@ class CreateFormBuilder extends Migration
             $table->increments('id');
             // sourceable allows us to link the field to a model
             $table->nullableMorphs('sourceable');
-            $table->nullableMorphs('linked'); //linked_type // linked_id
+            $table->integer('field_id')->nullable();
+            $table->foreign('field_id')->references('id')->on('fields')->onDelete('cascade');
+
+            // @TODO: why polymorphic? it's always a field link.
+//            $table->nullableMorphs('linked'); //linked_type // linked_id
 
             // related field is either the field we store, or the content value we push data into
             $table->string('related_field')->nullable();
