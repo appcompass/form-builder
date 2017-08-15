@@ -11,10 +11,12 @@ class Form extends Model
 {
     use HasJsonConfigFieldTrait;
 
-    protected $fillable = [
-        'name',
-        'editor',
-    ];
+//    protected $fillable = [
+//        'name',
+//        'editor',
+//    ];
+
+    protected static $unguarded = true;
 
     protected $hidden = [
         'created_at',

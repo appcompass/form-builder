@@ -5,7 +5,6 @@ namespace P3in\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use P3in\Traits\HasDynamicContent;
-use P3in\Traits\HasJsonConfigFieldTrait;
 
 class Field extends Model
 {
@@ -13,16 +12,18 @@ class Field extends Model
         dynamic as dynamicTrait;
     }
 
-    public $fillable = [
-        'name',
-        'label',
-        'type',
-        'config',
-        'validation',
-        'dynamic',
-        'form_id',
-        'help',
-    ];
+    protected static $unguarded = true;
+
+//    public $fillable = [
+//        'name',
+//        'label',
+//        'type',
+//        'config',
+//        'validation',
+//        'dynamic',
+//        'form_id',
+//        'help',
+//    ];
 
     protected $casts = [
         'config' => 'object',
@@ -105,13 +106,14 @@ class Field extends Model
     {
         // array_get is what we need but only works with arrays.
         $conf = json_decode(json_encode($this->config ?: []), true);
+
         return array_get($conf, $key, null);
     }
 
     public function setConfig($key, $val = null)
     {
         if (gettype($key) == 'string') {
-            $key = 'config->'.$key;
+            $key = 'config->' . $key;
         } else {
             $val = $key;
             $key = 'config';
@@ -123,6 +125,7 @@ class Field extends Model
 
         return $this;
     }
+
     // usage: ModelWithThisTrait::byConfig('field->sub_field->other_field', 'value of other_field')->get()
     public function scopeByConfig($query, $key, $operator = null, $value = null, $boolean = 'and')
     {
