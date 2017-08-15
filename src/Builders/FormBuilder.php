@@ -100,43 +100,43 @@ class FormBuilder
         return $this;
     }
 
-
-    public function linkToResource($resource, $permission = null)
-    {
-        if (is_string($resource)) {
-            $record = Resource::firstOrNew([
-                'name' => $resource,
-            ]);
-        } elseif ($resource instanceof Resource) {
-            $record = $resource;
-        } else {
-            return false;
-        }
-
-        $record->form()->associate($this->form);
-
-        if ($permission) {
-            $record->setPermission($permission);
-        }
-        $record->save();
-
-        return $this;
-    }
-
-    /**
-     * Links to resources.
-     *
-     * @param      Mixed  $resources  The resources you're linking the form to
-     * @param      String $permission The default permission to assign to each resource.
-     */
-    public function linkToResources($resources, $permission = null)
-    {
-        foreach ($resources as $resource) {
-            $this->linkToResource($resource, $permission);
-        }
-
-        return $this;
-    }
+//
+//    public function linkToResource($resource, $permission = null)
+//    {
+//        if (is_string($resource)) {
+//            $record = Resource::firstOrNew([
+//                'name' => $resource,
+//            ]);
+//        } elseif ($resource instanceof Resource) {
+//            $record = $resource;
+//        } else {
+//            return false;
+//        }
+//
+//        $record->form()->associate($this->form);
+//
+//        if ($permission) {
+//            $record->setPermission($permission);
+//        }
+//        $record->save();
+//
+//        return $this;
+//    }
+//
+//    /**
+//     * Links to resources.
+//     *
+//     * @param      Mixed  $resources  The resources you're linking the form to
+//     * @param      String $permission The default permission to assign to each resource.
+//     */
+//    public function linkToResources($resources, $permission = null)
+//    {
+//        foreach ($resources as $resource) {
+//            $this->linkToResource($resource, $permission);
+//        }
+//
+//        return $this;
+//    }
 
     /**
      * sets the editor view
