@@ -228,7 +228,7 @@ class Form extends Model
      *
      * @return     array   The tree.
      */
-    private function buildTree(Collection &$items, $parent_id = null, $tree = null)
+    public function buildTree(Collection &$items, $parent_id = null, $tree = null)
     {
         if (is_null($tree)) {
             $tree = [];
