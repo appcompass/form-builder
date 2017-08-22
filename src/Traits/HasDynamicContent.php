@@ -7,6 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 
 trait HasDynamicContent
 {
+    /**
+     * Link to FieldSource
+     *
+     * @return     morphOne
+     */
+    public function source()
+    {
+        // @TODO @jubair can we make this ->load() to cut queries #
+        return $this->morphOne(FieldSource::class, 'sourceable');
+    }
 
     /**
      * Make Content dynamic
