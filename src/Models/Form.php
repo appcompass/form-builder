@@ -10,10 +10,10 @@ class Form extends Model
 {
     use HasJsonConfigFieldTrait;
 
-//    protected $fillable = [
-//        'name',
-//        'editor',
-//    ];
+    //    protected $fillable = [
+    //        'name',
+    //        'editor',
+    //    ];
 
     protected static $unguarded = true;
 
@@ -30,6 +30,9 @@ class Form extends Model
     protected $with = ['fields.source'];
 
     protected $appends = ['fieldsCount'];
+
+    //used to pass where filtering to the form->render() method.
+    protected $render_where = [];
 
     /**
      * Links to models
@@ -71,7 +74,7 @@ class Form extends Model
 
         return $this;
     }
-    
+
     /**
      * Sets the editor
      *
@@ -124,17 +127,17 @@ class Form extends Model
     }
 
     // @TODO: move logic to FormStorage.
-//    /**
-//     * store
-//     *
-//     * @param      <type>  $content  The content
-//     *
-//     * @return     <type>  ( description_of_the_return_value )
-//     */
-//    public function store($content)
-//    {
-//        return FormStorage::store($content, $this);
-//    }
+    //    /**
+    //     * store
+    //     *
+    //     * @param      <type>  $content  The content
+    //     *
+    //     * @return     <type>  ( description_of_the_return_value )
+    //     */
+    //    public function store($content)
+    //    {
+    //        return FormStorage::store($content, $this);
+    //    }
 
     /**
      * Gets the dot separated field's parents chain.
@@ -186,5 +189,32 @@ class Form extends Model
         }
 
         return $tree;
+    }
+
+    public function setRenderWhere(array $array)
+    {
+        $this->render_where = $array;
+    }
+
+    public function getRenderWhere()
+    {
+        return $this->render_where;
+    }
+
+    public function render()
+    {
+        $form = $this->attributes;
+
+        $fields = $this->fields;
+
+        if ($wheres = $this->getRenderWhere()) {
+            foreach ($wheres as $key => $val) {
+                $fields = $fields->where($key, $val);
+            }
+        }
+
+        $form['fields'] = $this->buildTree($fields);
+
+        return $form;
     }
 }
