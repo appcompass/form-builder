@@ -3,11 +3,9 @@
 namespace P3in\Builders;
 
 use Closure;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use P3in\Models\Field;
-use P3in\Models\FieldTypes\BaseField;
 use P3in\Models\Form;
 use P3in\Models\Resource;
 
@@ -34,11 +32,11 @@ class FormBuilder
     /**
      * New up a FormBuilder
      *
-     * @param      string  $form   The form's name
+     * @param      string $form The form's name
      *
      * @return     FormBuilder
      */
-    public static function new($name, Closure $closure = null): FormBuilder
+    public static function new($name, Closure $closure = null) : FormBuilder
     {
         // @NOTE new form means new form. old is deleted.
         FormBuilder::seekAndDestroy($name);
@@ -59,11 +57,11 @@ class FormBuilder
     /**
      * Edit a form
      *
-     * @param      string  $form   The form
+     * @param      string $form The form
      *
      * @return     static  ( description_of_the_return_value )
      */
-    public static function edit($form, Closure $closure = null): FormBuilder
+    public static function edit($form, Closure $closure = null) : FormBuilder
     {
         if ($form instanceof Form) {
             $instance = new static($form);
@@ -85,7 +83,7 @@ class FormBuilder
      *
      * @return     <type>  The form.
      */
-    public function getForm(): Form
+    public function getForm() : Form
     {
         return $this->form;
     }
@@ -93,7 +91,7 @@ class FormBuilder
     /**
      * Sets the owner.
      *
-     * @param      Model  $owner  The owner
+     * @param      Model $owner The owner
      */
     public function setOwner(Model $owner)
     {
@@ -102,44 +100,43 @@ class FormBuilder
         return $this;
     }
 
-
-    public function linkToResource($resource, $permission = null)
-    {
-        if (is_string($resource)) {
-            $record = Resource::firstOrNew([
-                'resource' => $resource
-            ]);
-        } elseif ($resource instanceof Resource) {
-            $record = $resource;
-        } else {
-            return false;
-        }
-
-        $record->form()->associate($this->form);
-
-        if ($permission) {
-            $record->setPermission($permission);
-        }
-        $record->save();
-
-        return $this;
-    }
-
-    /**
-     * Links to resources.
-     *
-     * @param      Mixed  $resources  The resources you're linking the form to
-     * @param      String  $permission  The default permission to assign to each resource.
-     */
-    public function linkToResources($resources, $permission = null)
-    {
-
-        foreach ($resources as $resource) {
-            $this->linkToResource($resource, $permission);
-        }
-
-        return $this;
-    }
+//
+//    public function linkToResource($resource, $permission = null)
+//    {
+//        if (is_string($resource)) {
+//            $record = Resource::firstOrNew([
+//                'name' => $resource,
+//            ]);
+//        } elseif ($resource instanceof Resource) {
+//            $record = $resource;
+//        } else {
+//            return false;
+//        }
+//
+//        $record->form()->associate($this->form);
+//
+//        if ($permission) {
+//            $record->setPermission($permission);
+//        }
+//        $record->save();
+//
+//        return $this;
+//    }
+//
+//    /**
+//     * Links to resources.
+//     *
+//     * @param      Mixed  $resources  The resources you're linking the form to
+//     * @param      String $permission The default permission to assign to each resource.
+//     */
+//    public function linkToResources($resources, $permission = null)
+//    {
+//        foreach ($resources as $resource) {
+//            $this->linkToResource($resource, $permission);
+//        }
+//
+//        return $this;
+//    }
 
     /**
      * sets the editor view
@@ -187,6 +184,7 @@ class FormBuilder
 
         return $this;
     }
+
     /**
      * Set a Parent Field for subsequent fields
      *
@@ -248,7 +246,7 @@ class FormBuilder
      * Try to match FieldTypes
      *
      * @param      <type>  $field_type  The field_type we are trying to add
-     * @param      array   $args    [0] => Field Name [1] => Field Maps To
+     * @param      array $args [0] => Field Name [1] => Field Maps To
      *
      * @return     $this->addField
      */

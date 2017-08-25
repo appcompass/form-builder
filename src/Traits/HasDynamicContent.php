@@ -7,24 +7,32 @@ use Illuminate\Database\Eloquent\Model;
 
 trait HasDynamicContent
 {
+    /**
+     * Link to FieldSource
+     *
+     * @return     morphOne
+     */
+    public function source()
+    {
+        // @TODO @jubair can we make this ->load() to cut queries #
+        return $this->morphOne(FieldSource::class, 'sourceable');
+    }
 
     /**
      * Make Content dynamic
      *
      * @param      <type>    $source    The source
-     * @param      Function  $callback  the FieldSource instance will be injected into (if applicable)
+     * @param      Function $callback the FieldSource instance will be injected into (if applicable)
      *
      * @return     calling class
      */
     public function dynamic($source, $callback)
     {
-        FieldSource::whereLinkedId($this->id)->whereLinkedType(get_class($this))->delete();
+        $this->source()->delete();
 
-        $field_source = FieldSource::create([
-            'linked_id' => $this->id,
-            'linked_type' => get_class($this),
-            'data' => is_array($source) ? $source : [],
-            'criteria' => []
+        $field_source = $this->source()->create([
+            'data'     => is_array($source) ? $source : [],
+            'criteria' => [],
         ]);
 
         if (is_string($source) && class_exists($source)) {

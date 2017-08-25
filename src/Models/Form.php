@@ -2,7 +2,6 @@
 
 namespace P3in\Models;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use P3in\Traits\HasJsonConfigFieldTrait;
@@ -11,10 +10,12 @@ class Form extends Model
 {
     use HasJsonConfigFieldTrait;
 
-    protected $fillable = [
-        'name',
-        'editor',
-    ];
+//    protected $fillable = [
+//        'name',
+//        'editor',
+//    ];
+
+    protected static $unguarded = true;
 
     protected $hidden = [
         'created_at',
@@ -50,52 +51,6 @@ class Form extends Model
         return $this->hasMany(Field::class);
     }
 
-    // @TODO: move logic to AppCompass
-//    /**
-//     * resources connected to the form
-//     *
-//     * @return     <type>  ( description_of_the_return_value )
-//     */
-//    public function resources()
-//    {
-//        return $this->hasMany(Resource::class);
-//    }
-
-    // @TODO: move logic to AppCompass
-//    /**
-//     * Render form, build fields hierarchy
-//     *
-//     * @return     <type>  ( description_of_the_return_value )
-//     */
-//    public function render($mode = null)
-//    {
-//        $form = $this->attributes;
-//
-//        $fields = null;
-//
-//        switch ($mode) {
-//            case 'list': //@TODO: Delete/rename, index is the resource to use.
-//            case 'index':
-//                $fields = $this->fields->where('to_list', true);
-//                break;
-//            case 'edit': //@TODO: Delete/rename, show is the resource to use.
-//            case 'show': //@TODO: show and update use the same set of fields.
-//            case 'update':
-//            case 'create': //@TODO: create and store use the same set of fields.
-//            case 'store':
-//            case 'destroy': //@TODO: add field(s) for validation on delete. for example, "hey this is a related field, first please move or delete xyz".
-//                $fields = $this->fields->where('to_edit', true);
-//                break;
-//            default:
-//                $fields = $this->fields;
-//                break;
-//        }
-//
-//        $form['fields'] = $this->buildTree($fields);
-//
-//        return $form;
-//    }
-
     /**
      * Sets the owner.
      *
@@ -116,24 +71,7 @@ class Form extends Model
 
         return $this;
     }
-
-
-    // @TODO move logic to AppCompass.
-//    /**
-//     * like website.create or page.content
-//     *
-//     * @param      \Illuminate\Database\Eloquent\Builder  $query          The query
-//     * @param      <string>                               $resource_name  The resource name
-//     *
-//     * @return     \Illuminate\Database\Eloquent\Builder
-//     */
-//    public function scopeByResource(Builder $query, $resource_name)
-//    {
-//        return $query->whereHas('resources', function (Builder $query) use ($resource_name) {
-//            return $query->where('resource', $resource_name);
-//        });
-//    }
-
+    
     /**
      * Sets the editor
      *
@@ -226,7 +164,7 @@ class Form extends Model
      *
      * @return     array   The tree.
      */
-    private function buildTree(Collection &$items, $parent_id = null, $tree = null)
+    public function buildTree(Collection &$items, $parent_id = null, $tree = null)
     {
         if (is_null($tree)) {
             $tree = [];
