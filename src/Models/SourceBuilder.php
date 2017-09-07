@@ -92,9 +92,11 @@ class SourceBuilder
      *
      * @return     <type>  ( description_of_the_return_value )
      */
-    public function select($what)
+    public function select()
     {
-        return $this->builder->select(array_values(func_get_args()));
+        $what = array_values(func_get_args());
+        $what[] = '*';
+        return $this->builder->select($what);
     }
 
     /**
