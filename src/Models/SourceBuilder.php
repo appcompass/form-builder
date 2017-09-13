@@ -41,7 +41,7 @@ class SourceBuilder
             $builder = $instance->parseCriteria($field_data->criteria);
 
             // @NOTE @TODO we limit to 150 only to prevent cp hiccups. there is a note on trello on how to refactor this
-            $builder->limit(150);
+            // $builder->limit(150);
 
             // looks like toArray screws it up if you're not using a numeric id
             return $builder->get()->toArray();
