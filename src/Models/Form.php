@@ -8,6 +8,7 @@ use P3in\Traits\HasJsonConfigFieldTrait;
 
 class Form extends Model
 {
+
     use HasJsonConfigFieldTrait;
 
     //    protected $fillable = [
@@ -126,17 +127,29 @@ class Form extends Model
         return $this->fields->count();
     }
 
-    // @TODO: move logic to FormStorage.
     /**
-    * store
-    *
-    * @param      <type>  $content  The content
-    *
-    * @return     <type>  ( description_of_the_return_value )
-    */
+     * store
+     *
+     * @param      <type>  $content  The content
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
     public function store($content)
     {
+        if ($handler = $this->handler()) {
+            return $handler->handle($content);
+        }
+
+        //@TODO: fix all the other forms and then remove this.
         return FormStorage::store($content, $this);
+    }
+
+    public function handler()
+    {
+        if ($this->handler) {
+            $class = $this->handler;
+            return with(new $class($this));
+        }
     }
 
     /**
