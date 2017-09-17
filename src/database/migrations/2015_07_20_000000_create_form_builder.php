@@ -26,6 +26,7 @@ class CreateFormBuilder extends Migration
             $table->string('name')->unique();
             $table->json('config')->nullable();
             $table->string('editor')->default('Form'); // editors: ['Menu', 'Page'] specific components we can publish from modules
+            $table->string('handler')->nullable(); // If this form requires special handling on form submission, say contact forms or really any type of form.
             $table->nullableMorphs('formable');
             $table->timestamps();
 
