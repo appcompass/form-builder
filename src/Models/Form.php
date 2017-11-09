@@ -8,7 +8,6 @@ use P3in\Traits\HasJsonConfigFieldTrait;
 
 class Form extends Model
 {
-
     use HasJsonConfigFieldTrait;
 
     //    protected $fillable = [
@@ -148,6 +147,7 @@ class Form extends Model
     {
         if ($this->handler) {
             $class = $this->handler;
+
             return with(new $class($this));
         }
     }
@@ -214,6 +214,34 @@ class Form extends Model
         return $this->render_where;
     }
 
+    public function getDataStructure($default_value = null)
+    {
+        $form = $this->render();
+
+        return $this->parseDataStructureBranches($form['fields'], $default_value);
+    }
+
+    private function parseDataStructureBranches($fields, $default_value = null)
+    {
+        $rtn = [];
+        $default_value = (array) $default_value;
+
+        foreach ($fields as $row) {
+            $default = !empty($default_value[$row['name']]) ? $default_value[$row['name']] : null;
+            if ($default) {
+                $rtn[$row['name']] = $default;
+            } elseif (!empty($row['fields'])) {
+                $structure = $this->parseDataStructureBranches($row['fields']);
+
+                $rtn[$row['name']] = !empty($row['config']->repeatable) ? [$structure] : $structure;
+            } else {
+                $rtn[$row['name']] = $default;
+            }
+        }
+
+        return $rtn;
+    }
+
     public function render()
     {
         $form = $this->attributes;
@@ -225,8 +253,10 @@ class Form extends Model
                 $fields = $fields->where($key, $val);
             }
         }
+        $parsed_fields = $this->buildTree($fields);
 
-        $form['fields'] = $this->buildTree($fields);
+        $form['structure'] = $this->parseDataStructureBranches($parsed_fields);
+        $form['fields'] = $parsed_fields;
 
         return $form;
     }

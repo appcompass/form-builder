@@ -3,6 +3,7 @@
 namespace P3in\Builders;
 
 use Closure;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use P3in\Models\Field;
@@ -232,7 +233,7 @@ class FormBuilder
 
         // if no such class we dead
         if (!class_exists($class_name)) {
-            die("The FieldType: <$field_name> does not exist. Do Something!\n");
+            throw new Exception("The FieldType: <$field_name> does not exist. Do Something!\n");
         }
 
         // if class exists makes a field instance
@@ -262,7 +263,7 @@ class FormBuilder
     /**
      *
      */
-    private static function seekAndDestroy($name)
+    static function seekAndDestroy($name)
     {
         try {
             $form = Form::whereName($name)->firstOrFail();
