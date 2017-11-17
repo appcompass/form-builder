@@ -188,25 +188,24 @@ class FormBuilder
      */
     public function drop($name, $type = null)
     {
-        $field = $this->form->fields->where('name', $name);
-
-        if (!count($field)) {
+        $field = $this->form->fields()->where('name', $name)->get();
+        if (!$field->count()) {
             return $this;
         }
 
-        if (count($field) > 1 and is_null($type)) {
+        if ($field->count() > 1 and is_null($type)) {
             throw new Exception("Multiple <{$name}> found, please add type");
-        } elseif (count($field) > 1 and !is_null($type)) {
+        } elseif ($field->count() > 1 and !is_null($type)) {
             $field = $field->where('type', $type);
 
-            if (count($field) > 1) {
+            if ($field->count() > 1) {
                 throw new Exception("Sorry there doesn't seem to be an enough specific combination to get a single result. Halting.");
             } else {
                 $field->first()->delete();
 
                 return $this;
             }
-        } elseif (count($field) === 1) {
+        } elseif ($field->count() === 1) {
             $field->first()->delete();
         }
     }
