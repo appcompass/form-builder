@@ -1,10 +1,10 @@
 <?php
 
-namespace P3in\Models;
+namespace AppCompass\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use P3in\Traits\HasDynamicContent;
+use AppCompass\Traits\HasDynamicContent;
 
 class Field extends Model
 {

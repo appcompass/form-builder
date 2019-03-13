@@ -1,14 +1,14 @@
 <?php
 
-namespace P3in\Builders;
+namespace AppCompass\Builders;
 
 use Closure;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use P3in\Models\Field;
-use P3in\Models\Form;
-use P3in\Models\Resource;
+use AppCompass\Models\Field;
+use AppCompass\Models\Form;
+use AppCompass\Models\Resource;
 
 class FormBuilder
 {
@@ -227,8 +227,8 @@ class FormBuilder
         $field_name = ucfirst($field_type) . 'Type';
 
         // full class name
-        // @TODO: too vague, should be P3in\Models\FieldTypes\WhateverType
-        $class_name = '\P3in\Models\FieldTypes\\' . $field_name;
+        // @TODO: too vague, should be AppCompass\Models\FieldTypes\WhateverType
+        $class_name = '\AppCompass\Models\FieldTypes\\' . $field_name;
 
         // if no such class we dead
         if (!class_exists($class_name)) {

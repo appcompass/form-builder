@@ -1,6 +1,6 @@
 <?php
 
-namespace P3in\Models;
+namespace AppCompass\Models;
 
 /* Criteria field example
 [

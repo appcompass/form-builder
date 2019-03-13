@@ -1,10 +1,10 @@
 <?php
 
-namespace P3in\Models\FieldTypes;
+namespace AppCompass\Models\FieldTypes;
 
-use P3in\Models\Field;
-use P3in\Models\Form;
-use P3in\Models\Fieldtype;
+use AppCompass\Models\Field;
+use AppCompass\Models\Form;
+use AppCompass\Models\Fieldtype;
 
 abstract class BaseField
 {

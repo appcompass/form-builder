@@ -1,7 +1,7 @@
 <?php
 
 
-namespace P3in\Notifications;
+namespace AppCompass\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;

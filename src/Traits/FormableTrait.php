@@ -1,8 +1,8 @@
 <?php
 
-namespace P3in\Traits;
+namespace AppCompass\Traits;
 
-use P3in\Models\Form;
+use AppCompass\Models\Form;
 
 trait FormableTrait
 {

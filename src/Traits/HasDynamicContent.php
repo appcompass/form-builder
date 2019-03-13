@@ -1,8 +1,8 @@
 <?php
 
-namespace P3in\Traits;
+namespace AppCompass\Traits;
 
-use P3in\Models\FieldSource;
+use AppCompass\Models\FieldSource;
 use Illuminate\Database\Eloquent\Model;
 
 trait HasDynamicContent
@@ -35,6 +35,7 @@ trait HasDynamicContent
             'criteria' => [],
         ]);
 
+        // @TODO: This overwrites the above, so can't be right? look into it.
         if (is_string($source) && class_exists($source)) {
             $field_source->sourceable_type = $source;
         } elseif ($source instanceof Model) {

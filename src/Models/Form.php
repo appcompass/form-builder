@@ -1,10 +1,10 @@
 <?php
 
-namespace P3in\Models;
+namespace AppCompass\Models;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use P3in\Traits\HasJsonConfigFieldTrait;
+use AppCompass\Traits\HasJsonConfigFieldTrait;
 
 class Form extends Model
 {
