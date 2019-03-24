@@ -1,10 +1,10 @@
 <?php
 
-namespace AppCompass\Models;
+namespace AppCompass\FormBuilder\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use AppCompass\Traits\HasDynamicContent;
+use AppCompass\FormBuilder\Traits\HasDynamicContent;
 
 class Field extends Model
 {

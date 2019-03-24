@@ -6,7 +6,7 @@
  *
  */
 
-namespace AppCompass\Traits;
+namespace AppCompass\FormBuilder\Traits;
 
 trait HasJsonConfigFieldTrait
 {

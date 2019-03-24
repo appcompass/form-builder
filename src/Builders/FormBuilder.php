@@ -1,14 +1,14 @@
 <?php
 
-namespace AppCompass\Builders;
+namespace AppCompass\FormBuilder\Builders;
 
 use Closure;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use AppCompass\Models\Field;
-use AppCompass\Models\Form;
-use AppCompass\Models\Resource;
+use AppCompass\FormBuilder\Models\Field;
+use AppCompass\FormBuilder\Models\Form;
+use AppCompass\FormBuilder\Models\Resource;
 
 class FormBuilder
 {

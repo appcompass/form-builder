@@ -1,8 +1,8 @@
 <?php
 
-namespace AppCompass\Interfaces;
+namespace AppCompass\FormBuilder\Interfaces;
 
-use AppCompass\Models\Form;
+use AppCompass\FormBuilder\Models\Form;
 
 interface FormHandlerInterface
 {
