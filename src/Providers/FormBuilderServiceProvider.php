@@ -1,6 +1,6 @@
 <?php
 
-namespace AppCompass\Providers;
+namespace AppCompass\FormBuilder\Providers;
 
 use Illuminate\Support\ServiceProvider;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace AppCompass\Models;
+namespace AppCompass\FormBuilder\Models;
 
 /* Criteria field example
 [

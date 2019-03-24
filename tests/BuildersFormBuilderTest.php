@@ -1,7 +1,7 @@
 <?php
-namespace AppCompass\Tests;
+namespace AppCompass\FormBuilder\Tests;
 
-use AppCompass\Builders\FormBuilder;
+use AppCompass\FormBuilder\Builders\FormBuilder;
 
 class BuildersFormBuilderTest extends TestCase
 {
@@ -11,7 +11,7 @@ class BuildersFormBuilderTest extends TestCase
      */
     public function testCreateFormBuilder()
     {
-        $form_name = 'test_form';
+        $form_name = $this->faker->slug;
         $formBuilder = FormBuilder::new($form_name);
 
         $this->assertSame($form_name, $formBuilder->getName());

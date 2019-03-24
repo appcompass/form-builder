@@ -1,7 +1,7 @@
 <?php
 
 
-namespace AppCompass\Notifications;
+namespace AppCompass\FormBuilder\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;

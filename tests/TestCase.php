@@ -1,7 +1,7 @@
 <?php
-namespace AppCompass\Tests;
+namespace AppCompass\FormBuilder\Tests;
 
-use AppCompass\Providers\FormBuilderServiceProvider;
+use AppCompass\FormBuilder\Providers\FormBuilderServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use Faker\Factory as Faker;
 

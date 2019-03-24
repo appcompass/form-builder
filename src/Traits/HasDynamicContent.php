@@ -1,8 +1,8 @@
 <?php
 
-namespace AppCompass\Traits;
+namespace AppCompass\FormBuilder\Traits;
 
-use AppCompass\Models\FieldSource;
+use AppCompass\FormBuilder\Models\FieldSource;
 use Illuminate\Database\Eloquent\Model;
 
 trait HasDynamicContent

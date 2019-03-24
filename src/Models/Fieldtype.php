@@ -1,9 +1,9 @@
 <?php
 
-namespace AppCompass\Models;
+namespace AppCompass\FormBuilder\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use AppCompass\Models\FieldTypes\BaseField;
+use AppCompass\FormBuilder\Models\FieldTypes\BaseField;
 
 class Fieldtype extends Model
 {

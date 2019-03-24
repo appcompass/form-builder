@@ -1,5 +1,5 @@
 <?php
-namespace AppCompass\Tests;
+namespace AppCompass\FormBuilder\Tests;
 
 class MigrationsTest extends TestCase
 {

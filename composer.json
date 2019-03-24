@@ -19,18 +19,18 @@
     },
     "autoload": {
         "psr-4": {
-            "AppCompass\\": "src"
+            "AppCompass\\FormBuilder\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "AppCompass\\Tests\\": "tests"
+            "AppCompass\\FormBuilder\\Tests\\": "tests"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "AppCompass\\Providers\\FormBuilderServiceProvider"
+                "AppCompass\\FormBuilder\\Providers\\FormBuilderServiceProvider"
             ]
         }
     }
