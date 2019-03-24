@@ -1,0 +1,15 @@
+image: php:7.2
+
+cache:
+  paths:
+  - vendor/
+
+before_script:
+- apt-get update -yqq
+- apt-get install git -yqq
+- curl -sS https://getcomposer.org/installer | php
+- php composer.phar install
+
+test:app:
+  script:
+  - vendor/bin/phpunit --configuration phpunit.xml --coverage-text
