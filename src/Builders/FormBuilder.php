@@ -246,8 +246,7 @@ class FormBuilder
         // handle a nested form
         if (isset($args[2])) {
             if (is_object($args[2]) && get_class($args[2]) === 'Closure') {
-
-                // formbuilder instance with the correct parent set
+                // form builder instance with the correct parent set
                 $fb = FormBuilder::edit($this->form->id)->setParent($field_type->field);
 
                 $args[2]($fb);
@@ -262,7 +261,7 @@ class FormBuilder
     /**
      *
      */
-    static function seekAndDestroy($name)
+    public static function seekAndDestroy($name)
     {
         try {
             $form = Form::whereName($name)->firstOrFail();
