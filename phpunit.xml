@@ -14,6 +14,14 @@
             <directory>tests</directory>
         </testsuite>
     </testsuites>
+    <php>
+        <env name="DB_CONNECTION" value="pgsql" />
+        <env name="DB_HOST" value="localhost" />
+        <env name="DB_PORT" value="5432" />
+        <env name="DB_DATABASE" value="test_db" />
+        <env name="DB_USERNAME" value="testrunnner" />
+        <env name="DB_PASSWORD" value="" />
+    </php>
     <filter>
         <whitelist>
             <directory suffix=".php">src/</directory>

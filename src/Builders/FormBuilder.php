@@ -228,11 +228,11 @@ class FormBuilder
 
         // full class name
         // @TODO: too vague, should be AppCompass\Models\FieldTypes\WhateverType
-        $class_name = '\AppCompass\Models\FieldTypes\\' . $field_name;
+        $class_name = '\AppCompass\FormBuilder\Models\FieldTypes\\' . $field_name;
 
         // if no such class we dead
         if (!class_exists($class_name)) {
-            throw new Exception("The FieldType: <$field_name> does not exist. Do Something!\n");
+            throw new Exception("The FieldType: <$class_name> does not exist. Do Something!\n");
         }
 
         // if class exists makes a field instance

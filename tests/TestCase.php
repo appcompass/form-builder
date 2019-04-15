@@ -1,6 +1,7 @@
 <?php
 namespace AppCompass\FormBuilder\Tests;
 
+use Illuminate\Support\Facades\DB;
 use AppCompass\FormBuilder\Providers\FormBuilderServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use Faker\Factory as Faker;
@@ -16,12 +17,7 @@ class TestCase extends OrchestraTestCase
 
     protected function getEnvironmentSetUp($app)
     {
-        $app['config']->set('database.default', 'testbench');
-        $app['config']->set('database.connections.testbench', [
-            'driver'   => 'sqlite',
-            'database' => ':memory:',
-            'prefix'   => '',
-        ]);
+        //
     }
 
     public function setUp(): void
