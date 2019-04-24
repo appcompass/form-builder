@@ -1,18 +1,21 @@
 <?php
 namespace AppCompass\FormBuilder\Tests;
 
+use Illuminate\Support\Facades\Schema;
+
 class MigrationsTest extends TestCase
 {
     public function testMigrations()
     {
-
-        $fieldtypes = \Schema::getColumnListing('fieldtypes');
+        // TODO: use this when the change merged to make this method public is released.
+        // dd(Schema::getAllTables());
+        $fieldtypes = Schema::getColumnListing('fieldtypes');
         $this->assertEquals([
             'name',
             'template'
         ], $fieldtypes);
 
-        $forms = \Schema::getColumnListing('forms');
+        $forms = Schema::getColumnListing('forms');
         $this->assertEquals([
             'id',
             'name',
@@ -25,7 +28,7 @@ class MigrationsTest extends TestCase
             'updated_at'
         ], $forms);
 
-        $fields = \Schema::getColumnListing('fields');
+        $fields = Schema::getColumnListing('fields');
         $this->assertEquals([
             'id',
             'name',
@@ -43,7 +46,7 @@ class MigrationsTest extends TestCase
         ], $fields);
 
 
-        $field_sources = \Schema::getColumnListing('field_sources');
+        $field_sources = Schema::getColumnListing('field_sources');
         $this->assertEquals([
             'id',
             'sourceable_type',
